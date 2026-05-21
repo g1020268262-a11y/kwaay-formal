@@ -1,0 +1,22 @@
+type skey.
+type pkey.
+type sskey.
+type ciphertext.
+
+free c: channel.
+free ss0: sskey [private].
+
+fun pk(skey): pkey.
+fun encap(pkey, sskey): ciphertext.
+
+reduc forall sk: skey, ss: sskey;
+  decap(sk, encap(pk(sk), ss)) = ss.
+
+query attacker(ss0).
+
+process
+  new skB: skey;
+  let pkB = pk(skB) in
+  let ct = encap(pkB, ss0) in
+  out(c, ct);
+  0

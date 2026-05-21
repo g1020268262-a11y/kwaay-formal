@@ -1,0 +1,1 @@
+This project aims to build a first symbolic ProVerif model of the original K-Waay core protocol without batching, focusing on authentication, agreement, and session key secrecy.

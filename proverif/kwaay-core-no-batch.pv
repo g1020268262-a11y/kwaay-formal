@@ -1,0 +1,156 @@
+type agent.
+type sig_sk.
+type sig_pk.
+type kem_sk.
+type kem_pk.
+type pk_tuple.
+type skem_sender_sk.
+type skem_sender_pk.
+type skem_receiver_sk.
+type skem_receiver_pk.
+type ekem_sk.
+type ekem_pk.
+type kem_ct.
+type ekem_ct.
+type skem_ct.
+type shared_secret.
+type sid_t.
+type session_key.
+type signature.
+type prekey_payload.
+type sender_prekey_bundle.
+type receiver_prekey_bundle.
+type message_tuple.
+type randomness.
+
+free A: agent.
+free B: agent.
+
+fun spk(sig_sk): sig_pk.
+fun payload_sender(skem_sender_pk): prekey_payload.
+fun payload_receiver(skem_receiver_pk, ekem_pk): prekey_payload.
+fun sign(sig_sk, prekey_payload): signature.
+
+reduc forall ssk: sig_sk, p: prekey_payload;
+  verify(spk(ssk), p, sign(ssk, p)) = true.
+
+fun kpk(kem_sk): kem_pk.
+fun lkem_enc(kem_pk, randomness): kem_ct.
+fun lkem_ss(kem_pk, randomness): shared_secret.
+
+reduc forall ksk: kem_sk, r: randomness;
+  lkem_dec(ksk, lkem_enc(kpk(ksk), r)) = lkem_ss(kpk(ksk), r).
+
+fun ekpk(ekem_sk): ekem_pk.
+fun ekem_enc(ekem_pk, randomness): ekem_ct.
+fun ekem_ss(ekem_pk, randomness): shared_secret.
+
+reduc forall eksk: ekem_sk, r: randomness;
+  ekem_dec(eksk, ekem_enc(ekpk(eksk), r)) = ekem_ss(ekpk(eksk), r).
+
+fun pk_skem_sender(skem_sender_sk): skem_sender_pk.
+fun pk_skem_receiver(skem_receiver_sk): skem_receiver_pk.
+fun skem_enc(skem_sender_sk, skem_receiver_pk, randomness): skem_ct.
+fun skem_ss(skem_sender_sk, skem_receiver_pk, randomness): shared_secret.
+
+reduc forall sender_sk: skem_sender_sk,
+              receiver_sk: skem_receiver_sk,
+              r: randomness;
+  skem_dec(receiver_sk,
+           pk_skem_sender(sender_sk),
+           skem_enc(sender_sk, pk_skem_receiver(receiver_sk), r))
+  = skem_ss(sender_sk, pk_skem_receiver(receiver_sk), r).
+
+fun sender_prekey(skem_sender_pk, signature): sender_prekey_bundle.
+fun receiver_prekey(skem_receiver_pk, ekem_pk, signature): receiver_prekey_bundle.
+
+fun msg(kem_ct, ekem_ct, skem_ct): message_tuple.
+
+fun pk(sig_pk, kem_pk): pk_tuple.
+fun sid_of(agent, agent, pk_tuple, pk_tuple, sender_prekey_bundle,
+           receiver_prekey_bundle, message_tuple): sid_t.
+
+fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
+
+event InitSender(agent).
+event InitReceiver(agent).
+event SendDone(agent, agent, sid_t, session_key).
+event RecvDone(agent, agent, sid_t, session_key).
+event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
+event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
+event CompromiseSigSk(agent).
+event CompromiseKemSk(agent).
+event CompromiseSenderSkemState(agent).
+event CompromiseReceiverSkemState(agent).
+event CompromiseReceiverEkemState(agent).
+event HonestRun(session_key).
+
+query k: session_key; event(HonestRun(k)).
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+
+
+process
+  new sskA: sig_sk;
+  new kskA: kem_sk;
+  new sskB: sig_sk;
+  new kskB: kem_sk;
+
+  new senderSkA: skem_sender_sk;
+  new receiverSkB: skem_receiver_sk;
+  new ekskB: ekem_sk;
+
+  let spkA = spk(sskA) in
+  let kpkA = kpk(kskA) in
+  let pkA = pk(spkA, kpkA) in
+
+  let spkB = spk(sskB) in
+  let kpkB = kpk(kskB) in
+  let pkB = pk(spkB, kpkB) in
+
+  let senderPkA = pk_skem_sender(senderSkA) in
+  let senderPayloadA = payload_sender(senderPkA) in
+  let senderSigA = sign(sskA, senderPayloadA) in
+  let senderPrekeyA = sender_prekey(senderPkA, senderSigA) in
+
+  let receiverPkB = pk_skem_receiver(receiverSkB) in
+  let ekpkB = ekpk(ekskB) in
+  let receiverPayloadB = payload_receiver(receiverPkB, ekpkB) in
+  let receiverSigB = sign(sskB, receiverPayloadB) in
+  let receiverPrekeyB = receiver_prekey(receiverPkB, ekpkB, receiverSigB) in
+
+  let (=true) = verify(spkB, receiverPayloadB, receiverSigB) in
+  event ReceiverPrekeyVerified(A, B, receiverPrekeyB);
+
+  let (=true) = verify(spkA, senderPayloadA, senderSigA) in
+  event SenderPrekeyVerified(B, A, senderPrekeyA);
+
+  new rL: randomness;
+  new rE: randomness;
+  new rS: randomness;
+
+  let ctL = lkem_enc(kpkB, rL) in
+  let KL = lkem_ss(kpkB, rL) in
+
+  let ctE = ekem_enc(ekpkB, rE) in
+  let KE = ekem_ss(ekpkB, rE) in
+
+  let ctS = skem_enc(senderSkA, receiverPkB, rS) in
+  let KS = skem_ss(senderSkA, receiverPkB, rS) in
+
+  let m = msg(ctL, ctE, ctS) in
+  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyB, m) in
+
+  let kSend = kdf(KL, KE, KS, sidAB) in
+  event SendDone(A, B, sidAB, kSend);
+
+  let KL2 = lkem_dec(kskB, ctL) in
+  let KE2 = ekem_dec(ekskB, ctE) in
+  let KS2 = skem_dec(receiverSkB, senderPkA, ctS) in
+
+  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyB, m) in
+  let kRecv = kdf(KL2, KE2, KS2, sidBA) in
+  event RecvDone(B, A, sidBA, kRecv);
+
+  event HonestRun(kRecv);
+  0

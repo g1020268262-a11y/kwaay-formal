@@ -1,0 +1,30 @@
+type skey.
+type pkey.
+type sskey.
+type ciphertext.
+
+free c: channel.
+
+fun pk(skey): pkey.
+fun encap(pkey, sskey): ciphertext.
+
+
+reduc forall sk: skey, ss: sskey;
+  decap(sk, encap(pk(sk), ss)) = ss.
+
+event SendDone(sskey).
+event RecvDone(sskey).
+
+query ss: sskey; event(RecvDone(ss)) ==> event(SendDone(ss)).
+
+process
+  new skB: skey;
+  new ss: sskey;
+  let pkB = pk(skB) in
+  let ct = encap(pkB, ss) in
+  event SendDone(ss);
+  out(c, ct);
+  in(c, ct2: ciphertext);
+  let ss2 = decap(skB, ct2) in
+  event RecvDone(ss2);
+  0
