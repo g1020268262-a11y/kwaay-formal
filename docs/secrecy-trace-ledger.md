@@ -181,6 +181,79 @@ session_key = KDF(K_l, K_k, K_s, sid)
 
 下一步测试单独泄露长期 KEM 私钥 `kem_sk` 对 session-key secrecy 的影响。
 
+## ST-004: kem_sk compromise 下的 session key secrecy
+
+### Trace ID
+
+ST-004
+
+### 模型文件
+
+`proverif/kwaay-core-public-channel-leak-kemsk.pv`
+
+### 实验条件
+
+攻击者获得 B 的长期 KEM 私钥：
+
+```text
+out(c, kskB)
+event CompromiseKemSk(B)
+```
+
+没有泄露：
+
+```text
+sig_sk
+ekem_sk
+sender_skem_sk
+receiver_skem_sk
+```
+
+### 查询对象
+
+sender-side 和 receiver-side session key secrecy。
+
+### Query
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+### Result
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+### Classification
+
+符号化保密性成立
+
+### Explanation
+
+在当前模型中，单独泄露 B 的长期 KEM 私钥 `kem_sk` 不会让攻击者直接获得 session key。
+
+攻击者获得 `kskB` 后，理论上可以从 `ct_l` 恢复 `K_l`。但是当前 session key 由以下输入派生：
+
+```text
+session_key = KDF(K_l, K_k, K_s, sid)
+```
+
+攻击者如果只获得 `K_l`，仍然缺少 `K_k` 和 `K_s`，因此无法恢复完整 session key。
+
+因此，在当前 Figure 7 core symbolic model 中，单独的 `kem_sk` compromise 不破坏 sender-side 或 receiver-side session-key secrecy。
+
+这个结论不等价于完整 computational security proof，也不说明更多组合泄露下仍然安全。
+
+### Next action
+
+下一步测试单独泄露 receiver ephemeral KEM 私钥 `ekem_sk` 对 session-key secrecy 的影响。
+
 ## 总结
 
 当前 secrecy 查询结果：
@@ -190,11 +263,13 @@ session_key = KDF(K_l, K_k, K_s, sid)
 | ST-001 | SenderKey(A,B,s,k) | true | 符号化保密性成立 |
 | ST-002 | ReceiverKey(B,A,s,k) | true | 符号化保密性成立 |
 | ST-003 | sig_sk compromise | true | 符号化保密性成立 |
+| ST-004 | kem_sk compromise | true | 符号化保密性成立 |
 
 当前结论：
 
 - sender-side session key secrecy 在当前 symbolic model 下成立。
 - receiver-side session key secrecy 在当前 symbolic model 下成立。
 - 单独的 `sig_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
+- 单独的 `kem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - exact receiver agreement 仍然作为 diagnostic false 保留。
 - 不通过加入 AEAD/MAC/tag/key confirmation 来改变 Figure 7 core。
