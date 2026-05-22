@@ -99,6 +99,8 @@ fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
 
 event InitSender(agent).
 event InitReceiver(agent).
+event SenderKey(agent, agent, sid_t, session_key).
+event ReceiverKey(agent, agent, sid_t, session_key).
 event SendDone(agent, agent, sid_t, session_key).
 event RecvComputed(agent, agent, sid_t, session_key).
 event RecvDone(agent, agent, sid_t, session_key).
@@ -138,6 +140,20 @@ query A: agent, B: agent, sp: sender_prekey_bundle, s: sid_t, k: session_key;
 
 query A: agent, B: agent, rp: receiver_prekey_bundle, s: sid_t, k: session_key;
   event(RecvDone(B,A,s,k)) ==> event(ReceiverPrekeyVerified(A,B,rp)).
+
+(* Q2-S1 sender-side session-key secrecy.
+   This query checks whether the key produced by an honest sender run
+   remains unknown to the attacker in the current no-compromise public-channel
+   model. It is a symbolic approximation, not the full computational KIND game. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+(* Q2-S2 receiver-side session-key secrecy.
+   This query checks whether a key output by the receiver remains unknown
+   to the attacker in the current no-compromise public-channel model.
+   Receiver sessions may be unpartnered, so this is secrecy, not exact agreement. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
 
 (* This public-channel version lets the adversary control prekey bundles and message
    tuples through c.
@@ -216,6 +232,7 @@ process
   let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyFromNet, m) in
 
   let kSend = kdf(KL, KE, KS, sidAB) in
+  event SenderKey(A, B, sidAB, kSend);
   event SendDone(A, B, sidAB, kSend);
 
   in(c, mFromNet: message_tuple);
@@ -230,6 +247,7 @@ process
   let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyFromNet, mFromNet) in
   let kRecv = kdf(KL2, KE2, KS2, sidBA) in
   event RecvComputed(B, A, sidBA, kRecv);
+  event ReceiverKey(B, A, sidBA, kRecv);
   event RecvDone(B, A, sidBA, kRecv);
 
   event HonestRun(kRecv);
