@@ -100,6 +100,7 @@ fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
 event InitSender(agent).
 event InitReceiver(agent).
 event SendDone(agent, agent, sid_t, session_key).
+event RecvComputed(agent, agent, sid_t, session_key).
 event RecvDone(agent, agent, sid_t, session_key).
 event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
 event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
@@ -111,8 +112,32 @@ event CompromiseReceiverEkemState(agent).
 event HonestRun(session_key).
 
 query k: session_key; event(HonestRun(k)).
+
+(* Q1-exact diagnostic query.
+   This query asks for exact receiver authentication:
+   RecvDone(B,A,s,k) must correspond to SendDone(A,B,s,k).
+
+   In the Figure 7 core public-channel model, this query is expected to be false.
+   An adversary can replace a KEM ciphertext, for example ct_k, causing the
+   receiver to derive an unpartnered receiver session key.
+
+   Do not "fix" this by adding AEAD, MAC, tag, or key confirmation to m.
+   In this core model, m must remain exactly (ct_l, ct_k, ct_s).
+*)
 query A: agent, B: agent, s: sid_t, k: session_key;
   event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+
+(* Q1a/Q1b structural prekey-verification queries.
+   These queries are weaker than exact session agreement.
+   They only check that RecvDone is not reached without the corresponding
+   prekey verification events.
+   They do not prove full authentication or key agreement.
+*)
+query A: agent, B: agent, sp: sender_prekey_bundle, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SenderPrekeyVerified(B,A,sp)).
+
+query A: agent, B: agent, rp: receiver_prekey_bundle, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(ReceiverPrekeyVerified(A,B,rp)).
 
 (* This public-channel version lets the adversary control prekey bundles and message
    tuples through c.
@@ -204,6 +229,7 @@ process
 
   let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyFromNet, mFromNet) in
   let kRecv = kdf(KL2, KE2, KS2, sidBA) in
+  event RecvComputed(B, A, sidBA, kRecv);
   event RecvDone(B, A, sidBA, kRecv);
 
   event HonestRun(kRecv);
