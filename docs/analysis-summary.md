@@ -14,12 +14,15 @@
 - 工具: ProVerif
 - 模型类型: 符号模型
 - 攻击者模型: public-channel attacker
+- 长期公钥材料 `spkA/kpkA/pkA/spkB/kpkB/pkB` 已显式输出到 public channel。
 - 不包含 full BatchReceive
 - 不包含 compromise exceptions
 - 不包含 AEAD
 - 不包含 MAC
 - 不包含 tag
 - 不包含 key confirmation
+
+这个修正很重要，因为 `sid` 包含长期公钥元组。如果长期公钥没有公开，攻击者可能无法构造完整 `sid`，从而导致 secrecy query 过强地保持 true。
 
 ## 当前已验证或记录的查询
 
@@ -142,16 +145,145 @@ true
 
 这也说明：`Q1-exact` 的 false 不自动意味着 receiver-side secrecy 失败。
 
+## Compromise 实验结果
+
+当前已测试以下 compromise 条件。
+
+### 单独泄露 `sig_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-sigsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+解释：
+
+单独泄露长期签名私钥不会直接泄露 `K_l`、`K_k`、`K_s`，因此当前 symbolic model 下 session key secrecy 仍然成立。
+
+### 单独泄露 `kem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-kemsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+解释：
+
+单独泄露 B 的长期 KEM 私钥最多帮助攻击者恢复 `K_l`，但还缺少 `K_k` 和 `K_s`。
+
+### 单独泄露 `ekem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-ekemsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+解释：
+
+单独泄露 B 的 receiver ephemeral KEM 私钥最多帮助攻击者恢复 `K_k`，但还缺少 `K_l` 和 `K_s`。
+
+### 单独泄露 `receiver_skem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-rskemsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+解释：
+
+单独泄露 B 的 receiver split-KEM secret state 不会泄露 honest sender-side session key，因此 sender-side secrecy 仍然成立。
+
+但是 receiver-side secrecy 失败。原因是 public-channel attacker 可以替换 receiver 接收的消息，并在获得 `receiverSkB` 后诱导 receiver 输出一个攻击者也能推出的 unpartnered receiver session key。
+
+该结果应分类为 expected receiver-side bad case，而不是 honest sender-side key 泄露。
+
+### 组合泄露 `kem_sk + ekem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-kemsk-ekemsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+解释：
+
+攻击者可以恢复 `K_l` 和 `K_k`，但仍然缺少 `K_s`，因此当前 symbolic model 下 session key secrecy 仍然成立。
+
+### 组合泄露 `kem_sk + ekem_sk + receiver_skem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-all-receiver-secrets.pv`
+
+结果：
+
+```text
+sender-side secrecy: false
+receiver-side secrecy: false
+```
+
+解释：
+
+攻击者获得 B 侧恢复三个 KDF 输入所需的全部 secret 后，可以恢复：
+
+```text
+K_l
+K_k
+K_s
+```
+
+由于长期公钥和 `sid` 相关公开材料也已经公开，攻击者可以计算：
+
+```text
+session_key = KDF(K_l, K_k, K_s, sid)
+```
+
+因此 sender-side 和 receiver-side secrecy 都失败。这个结果属于 normal bad case。
+
 ## 当前结论
 
 当前 Figure 7 core public-channel 符号模型得到以下阶段性结论：
 
 - honest-run 可达。
+- 长期公钥必须在 public-channel model 中显式公开，否则 secrecy 结果可能过强。
 - exact receiver agreement query 过强，作为 diagnostic false 保留。
 - receiver 侧接受前存在 sender prekey verification。
 - receiver 侧接受前存在 receiver prekey verification。
 - sender-side session key secrecy 在当前 no-compromise 符号模型下成立。
 - receiver-side session key secrecy 在当前 no-compromise 符号模型下成立。
+- 单独泄露 `sig_sk`、`kem_sk`、`ekem_sk` 不破坏当前 session-key secrecy。
+- 单独泄露 `receiver_skem_sk` 会破坏 receiver-side unpartnered session secrecy，但不破坏 honest sender-side secrecy。
+- 泄露 `kem_sk + ekem_sk` 仍不足以恢复 session key。
+- 泄露 `kem_sk + ekem_sk + receiver_skem_sk` 属于 normal bad case，会破坏 session-key secrecy。
 - 不通过改变 m 的结构来让 exact agreement query 变 true。
 
 ## 当前不能声称的内容
@@ -164,6 +296,9 @@ true
 - 已经证明 deniability。
 - 已经完成 computational key indistinguishability 证明。
 - ProVerif symbolic secrecy 等价于论文 computational KIND game。
+- 不能把 `receiver_skem_sk` compromise 下的 receiver-side secrecy false 直接表述为 K-Waay 协议漏洞。
+- 不能把 full receiver-side state compromise 下的 secrecy false 表述为协议漏洞，因为这是 normal bad case。
+- 不能把当前 ProVerif compromise 实验等同于完整 adaptive compromise security proof。
 
 ## 下一步候选任务
 
