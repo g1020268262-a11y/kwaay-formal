@@ -400,6 +400,86 @@ session_key = KDF(K_l, K_k, K_s, sid)
 
 下一步开始测试组合泄露，例如 `kem_sk + ekem_sk`、`kem_sk + receiver_skem_sk`、`ekem_sk + receiver_skem_sk`，最后测试 `kem_sk + ekem_sk + receiver_skem_sk`。
 
+## ST-007: kem_sk + ekem_sk compromise 下的 session key secrecy
+
+### Trace ID
+
+ST-007
+
+### 模型文件
+
+`proverif/kwaay-core-public-channel-leak-kemsk-ekemsk.pv`
+
+### 实验条件
+
+攻击者获得 B 的长期 KEM 私钥和 receiver ephemeral KEM 私钥：
+
+```text
+out(c, kskB)
+out(c, ekskB)
+event CompromiseKemSk(B)
+event CompromiseReceiverEkemState(B)
+```
+
+没有泄露：
+
+```text
+sig_sk
+sender_skem_sk
+receiver_skem_sk
+```
+
+### 查询对象
+
+sender-side 和 receiver-side session key secrecy。
+
+### Query
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+### Result
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: true
+```
+
+### Classification
+
+符号化保密性成立
+
+### Explanation
+
+在当前模型中，同时泄露 B 的 `kem_sk` 和 `ekem_sk` 不会让攻击者直接获得 session key。
+
+攻击者获得 `kskB` 后，可以从 `ct_l` 恢复 `K_l`。攻击者获得 `ekskB` 后，可以从 `ct_k` 恢复 `K_k`。但是当前 session key 由以下输入派生：
+
+```text
+session_key = KDF(K_l, K_k, K_s, sid)
+```
+
+攻击者如果只获得 `K_l` 和 `K_k`，仍然缺少 `K_s`，因此无法恢复完整 session key。
+
+因此，在当前 Figure 7 core symbolic model 中，`kem_sk + ekem_sk` 组合泄露不破坏 sender-side 或 receiver-side session-key secrecy。
+
+这个结论不等价于完整 computational security proof，也不说明所有组合泄露下仍然安全。
+
+### Next action
+
+下一步测试三个 receiver-side decapsulation secrets 同时泄露：
+
+```text
+kskB + ekskB + receiverSkB
+```
+
+该组合预计会导致 session-key secrecy 失败，并应分类为 normal bad case。
+
 ## 总结
 
 当前 secrecy 查询结果：
@@ -412,6 +492,7 @@ session_key = KDF(K_l, K_k, K_s, sid)
 | ST-004 | kem_sk compromise | true | 符号化保密性成立 |
 | ST-005 | ekem_sk compromise | true | 符号化保密性成立 |
 | ST-006 | receiver_skem_sk compromise | true | 符号化保密性成立 |
+| ST-007 | kem_sk + ekem_sk compromise | true | 符号化保密性成立 |
 
 当前结论：
 
@@ -421,5 +502,6 @@ session_key = KDF(K_l, K_k, K_s, sid)
 - 单独的 `kem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - 单独的 `ekem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - 单独的 `receiver_skem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
+- `kem_sk + ekem_sk` 组合泄露在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - exact receiver agreement 仍然作为 diagnostic false 保留。
 - 不通过加入 AEAD/MAC/tag/key confirmation 来改变 Figure 7 core。

@@ -1,0 +1,269 @@
+(* Experiment: leak receiver long-term KEM secret and receiver ephemeral KEM
+   secret only.
+   This model tests whether leaking B's kskB and ekskB reveals session keys.
+   It keeps Figure 7 core unchanged: m = (ct_l, ct_k, ct_s). *)
+
+type agent.
+type sig_sk.
+type sig_pk.
+type kem_sk.
+type kem_pk.
+type pk_tuple.
+type skem_sender_sk.
+type skem_sender_pk.
+type skem_receiver_sk.
+type skem_receiver_pk.
+type ekem_sk.
+type ekem_pk.
+type kem_ct.
+type ekem_ct.
+type skem_ct.
+type shared_secret.
+type sid_t.
+type session_key.
+type signature.
+type prekey_payload.
+type sender_prekey_bundle.
+type receiver_prekey_bundle.
+type message_tuple.
+type randomness.
+
+free A: agent.
+free B: agent.
+free c: channel.
+
+fun spk(sig_sk): sig_pk.
+fun payload_sender(skem_sender_pk): prekey_payload.
+fun payload_receiver(skem_receiver_pk, ekem_pk): prekey_payload.
+fun sign(sig_sk, prekey_payload): signature.
+
+reduc forall ssk: sig_sk, p: prekey_payload;
+  verify(spk(ssk), p, sign(ssk, p)) = true.
+
+fun kpk(kem_sk): kem_pk.
+fun lkem_enc(kem_pk, randomness): kem_ct.
+fun lkem_ss(kem_pk, randomness): shared_secret.
+
+reduc forall ksk: kem_sk, r: randomness;
+  lkem_dec(ksk, lkem_enc(kpk(ksk), r)) = lkem_ss(kpk(ksk), r).
+
+fun ekpk(ekem_sk): ekem_pk.
+fun ekem_enc(ekem_pk, randomness): ekem_ct.
+fun ekem_ss(ekem_pk, randomness): shared_secret.
+
+reduc forall eksk: ekem_sk, r: randomness;
+  ekem_dec(eksk, ekem_enc(ekpk(eksk), r)) = ekem_ss(ekpk(eksk), r).
+
+fun pk_skem_sender(skem_sender_sk): skem_sender_pk.
+fun pk_skem_receiver(skem_receiver_sk): skem_receiver_pk.
+fun skem_enc(skem_sender_sk, skem_receiver_pk, randomness): skem_ct.
+fun skem_ss(skem_sender_sk, skem_receiver_pk, randomness): shared_secret.
+
+reduc forall sender_sk: skem_sender_sk,
+              receiver_sk: skem_receiver_sk,
+              r: randomness;
+  skem_dec(receiver_sk,
+           pk_skem_sender(sender_sk),
+           skem_enc(sender_sk, pk_skem_receiver(receiver_sk), r))
+  = skem_ss(sender_sk, pk_skem_receiver(receiver_sk), r).
+
+fun sender_prekey(skem_sender_pk, signature): sender_prekey_bundle.
+fun receiver_prekey(skem_receiver_pk, ekem_pk, signature): receiver_prekey_bundle.
+
+reduc forall spk_s: skem_sender_pk, sig: signature;
+  get_sender_prekey_pk(sender_prekey(spk_s, sig)) = spk_s.
+
+reduc forall spk_s: skem_sender_pk, sig: signature;
+  get_sender_prekey_sig(sender_prekey(spk_s, sig)) = sig.
+
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_pk(receiver_prekey(rpk, epk, sig)) = rpk.
+
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_ekpk(receiver_prekey(rpk, epk, sig)) = epk.
+
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_sig(receiver_prekey(rpk, epk, sig)) = sig.
+
+fun msg(kem_ct, ekem_ct, skem_ct): message_tuple.
+
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_lkem_ct(msg(ctL, ctE, ctS)) = ctL.
+
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_ekem_ct(msg(ctL, ctE, ctS)) = ctE.
+
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_skem_ct(msg(ctL, ctE, ctS)) = ctS.
+
+fun pk(sig_pk, kem_pk): pk_tuple.
+fun sid_of(agent, agent, pk_tuple, pk_tuple, sender_prekey_bundle,
+           receiver_prekey_bundle, message_tuple): sid_t.
+
+fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
+
+event InitSender(agent).
+event InitReceiver(agent).
+event SenderKey(agent, agent, sid_t, session_key).
+event ReceiverKey(agent, agent, sid_t, session_key).
+event SendDone(agent, agent, sid_t, session_key).
+event RecvComputed(agent, agent, sid_t, session_key).
+event RecvDone(agent, agent, sid_t, session_key).
+event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
+event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
+
+(* Compromise events for experiments.
+   This experiment emits CompromiseKemSk(B) and CompromiseReceiverEkemState(B)
+   and leaks only kskB and ekskB. *)
+event CompromiseSigSk(agent).
+event CompromiseKemSk(agent).
+event CompromiseSenderSkemState(agent).
+event CompromiseReceiverSkemState(agent).
+event CompromiseReceiverEkemState(agent).
+event HonestRun(session_key).
+
+query k: session_key; event(HonestRun(k)).
+
+(* Q1-exact diagnostic query.
+   This query asks for exact receiver authentication:
+   RecvDone(B,A,s,k) must correspond to SendDone(A,B,s,k).
+
+   In the Figure 7 core public-channel model, this query is expected to be false.
+   An adversary can replace a KEM ciphertext, for example ct_k, causing the
+   receiver to derive an unpartnered receiver session key.
+
+   Do not "fix" this by adding AEAD, MAC, tag, or key confirmation to m.
+   In this core model, m must remain exactly (ct_l, ct_k, ct_s).
+*)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+
+(* Q1a/Q1b structural prekey-verification queries.
+   These queries are weaker than exact session agreement.
+   They only check that RecvDone is not reached without the corresponding
+   prekey verification events.
+   They do not prove full authentication or key agreement.
+*)
+query A: agent, B: agent, sp: sender_prekey_bundle, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SenderPrekeyVerified(B,A,sp)).
+
+query A: agent, B: agent, rp: receiver_prekey_bundle, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(ReceiverPrekeyVerified(A,B,rp)).
+
+(* Q2-S1 sender-side session-key secrecy.
+   This query checks whether the key produced by an honest sender run
+   remains unknown to the attacker in the current no-compromise public-channel
+   model. It is a symbolic approximation, not the full computational KIND game. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+(* Q2-S2 receiver-side session-key secrecy.
+   This query checks whether a key output by the receiver remains unknown
+   to the attacker in the current no-compromise public-channel model.
+   Receiver sessions may be unpartnered, so this is secrecy, not exact agreement. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+
+(* This public-channel version lets the adversary control prekey bundles and message
+   tuples through c.
+   This version extracts fields from both public-channel prekey bundles and
+   public-channel message tuples.
+   Signature verification is performed over payloads reconstructed from the received
+   prekey bundles.
+   Sender encapsulation uses the receiver prekey fields extracted from
+   receiverPrekeyFromNet.
+   Receiver split-KEM decapsulation uses the sender prekey field extracted from
+   senderPrekeyFromNet.
+   This version extracts ct_l, ct_k, and ct_s from the public-channel message mFromNet
+   before decapsulation. *)
+process
+  new sskA: sig_sk;
+  new kskA: kem_sk;
+  new sskB: sig_sk;
+  new kskB: kem_sk;
+
+  event CompromiseKemSk(B);
+  out(c, kskB);
+
+  new senderSkA: skem_sender_sk;
+  new receiverSkB: skem_receiver_sk;
+  new ekskB: ekem_sk;
+
+  event CompromiseReceiverEkemState(B);
+  out(c, ekskB);
+
+  let spkA = spk(sskA) in
+  let kpkA = kpk(kskA) in
+  let pkA = pk(spkA, kpkA) in
+
+  let spkB = spk(sskB) in
+  let kpkB = kpk(kskB) in
+  let pkB = pk(spkB, kpkB) in
+
+  let senderPkA = pk_skem_sender(senderSkA) in
+  let senderPayloadA = payload_sender(senderPkA) in
+  let senderSigA = sign(sskA, senderPayloadA) in
+  let senderPrekeyA = sender_prekey(senderPkA, senderSigA) in
+  out(c, senderPrekeyA);
+
+  let receiverPkB = pk_skem_receiver(receiverSkB) in
+  let ekpkB = ekpk(ekskB) in
+  let receiverPayloadB = payload_receiver(receiverPkB, ekpkB) in
+  let receiverSigB = sign(sskB, receiverPayloadB) in
+  let receiverPrekeyB = receiver_prekey(receiverPkB, ekpkB, receiverSigB) in
+  out(c, receiverPrekeyB);
+  in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
+
+  let receiverPkFromNet = get_receiver_prekey_pk(receiverPrekeyFromNet) in
+  let ekpkFromNet = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
+  let receiverSigFromNet = get_receiver_prekey_sig(receiverPrekeyFromNet) in
+  let receiverPayloadFromNet = payload_receiver(receiverPkFromNet, ekpkFromNet) in
+  let (=true) = verify(spkB, receiverPayloadFromNet, receiverSigFromNet) in
+  event ReceiverPrekeyVerified(A, B, receiverPrekeyFromNet);
+
+  in(c, senderPrekeyFromNet: sender_prekey_bundle);
+
+  let senderPkFromNet = get_sender_prekey_pk(senderPrekeyFromNet) in
+  let senderSigFromNet = get_sender_prekey_sig(senderPrekeyFromNet) in
+  let senderPayloadFromNet = payload_sender(senderPkFromNet) in
+  let (=true) = verify(spkA, senderPayloadFromNet, senderSigFromNet) in
+  event SenderPrekeyVerified(B, A, senderPrekeyFromNet);
+
+  new rL: randomness;
+  new rE: randomness;
+  new rS: randomness;
+
+  let ctL = lkem_enc(kpkB, rL) in
+  let KL = lkem_ss(kpkB, rL) in
+
+  let ctE = ekem_enc(ekpkFromNet, rE) in
+  let KE = ekem_ss(ekpkFromNet, rE) in
+
+  let ctS = skem_enc(senderSkA, receiverPkFromNet, rS) in
+  let KS = skem_ss(senderSkA, receiverPkFromNet, rS) in
+
+  let m = msg(ctL, ctE, ctS) in
+  out(c, m);
+  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyFromNet, m) in
+
+  let kSend = kdf(KL, KE, KS, sidAB) in
+  event SenderKey(A, B, sidAB, kSend);
+  event SendDone(A, B, sidAB, kSend);
+
+  in(c, mFromNet: message_tuple);
+  let ctLFromNet = get_lkem_ct(mFromNet) in
+  let ctEFromNet = get_ekem_ct(mFromNet) in
+  let ctSFromNet = get_skem_ct(mFromNet) in
+
+  let KL2 = lkem_dec(kskB, ctLFromNet) in
+  let KE2 = ekem_dec(ekskB, ctEFromNet) in
+  let KS2 = skem_dec(receiverSkB, senderPkFromNet, ctSFromNet) in
+
+  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyFromNet, mFromNet) in
+  let kRecv = kdf(KL2, KE2, KS2, sidBA) in
+  event RecvComputed(B, A, sidBA, kRecv);
+  event ReceiverKey(B, A, sidBA, kRecv);
+  event RecvDone(B, A, sidBA, kRecv);
+
+  event HonestRun(kRecv);
+  0
