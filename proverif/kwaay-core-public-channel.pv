@@ -190,6 +190,14 @@ process
   let kpkB = kpk(kskB) in
   let pkB = pk(spkB, kpkB) in
 
+  (* 长期公钥是公开信息。这里显式输出，避免攻击者因为缺少 pkA/pkB 而无法构造 sid。 *)
+  out(c, spkA);
+  out(c, kpkA);
+  out(c, pkA);
+  out(c, spkB);
+  out(c, kpkB);
+  out(c, pkB);
+
   let senderPkA = pk_skem_sender(senderSkA) in
   let senderPayloadA = payload_sender(senderPkA) in
   let senderSigA = sign(sskA, senderPayloadA) in

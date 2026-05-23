@@ -373,32 +373,24 @@ query A: agent, B: agent, s: sid_t, k: session_key;
 
 ```text
 sender-side secrecy: true
-receiver-side secrecy: true
+receiver-side secrecy: false
 ```
 
 ### Classification
 
-符号化保密性成立
+sender-side 符号化保密性成立；receiver-side 在 receiver_skem_sk compromise 下失败，分类为 expected receiver-side bad case
 
 ### Explanation
 
-在当前模型中，单独泄露 B 的 receiver split-KEM secret state `receiver_skem_sk` 不会让攻击者直接获得 session key。
+在修正长期公钥公开后，单独泄露 B 的 receiver split-KEM secret state `receiverSkB` 不会泄露 honest sender-side session key，因此 sender-side secrecy 仍然为 true。
 
-攻击者获得 `receiverSkB` 后，理论上可以从 `ct_s` 恢复 `K_s`。但是当前 session key 由以下输入派生：
+但是 receiver-side secrecy 变为 false。原因是 public-channel attacker 可以构造 receiver 接收的消息，并且在获得 `receiverSkB` 后控制或恢复 split-KEM 部分的 `K_s`。由于 public-channel 中长期公钥和 prekey 都是公开信息，攻击者可以诱导 receiver 输出一个 unpartnered receiver session key，并且该 key 可被攻击者推出。
 
-```text
-session_key = KDF(K_l, K_k, K_s, sid)
-```
-
-攻击者如果只获得 `K_s`，仍然缺少 `K_l` 和 `K_k`，因此无法恢复完整 session key。
-
-因此，在当前 Figure 7 core symbolic model 中，单独的 `receiver_skem_sk` compromise 不破坏 sender-side 或 receiver-side session-key secrecy。
-
-这个结论不等价于完整 computational security proof，也不说明更多组合泄露下仍然安全。
+因此，这不是 honest sender-side key 泄露，而是 receiver-side unpartnered session 在 receiver_skem_sk compromise 下的 expected bad case。
 
 ### Next action
 
-下一步开始测试组合泄露，例如 `kem_sk + ekem_sk`、`kem_sk + receiver_skem_sk`、`ekem_sk + receiver_skem_sk`，最后测试 `kem_sk + ekem_sk + receiver_skem_sk`。
+后续在 compromise exception 设计中，需要区分 sender-side key secrecy 和 receiver-side unpartnered session secrecy。
 
 ## ST-007: kem_sk + ekem_sk compromise 下的 session key secrecy
 
@@ -480,6 +472,85 @@ kskB + ekskB + receiverSkB
 
 该组合预计会导致 session-key secrecy 失败，并应分类为 normal bad case。
 
+## ST-008: kem_sk + ekem_sk + receiver_skem_sk compromise 下的 session key secrecy
+
+### Trace ID
+
+ST-008
+
+### 模型文件
+
+`proverif/kwaay-core-public-channel-leak-all-receiver-secrets.pv`
+
+### 实验条件
+
+攻击者获得 B 侧恢复三个 KDF 输入所需的全部 secret：
+
+```text
+out(c, kskB)
+out(c, ekskB)
+out(c, receiverSkB)
+event CompromiseKemSk(B)
+event CompromiseReceiverEkemState(B)
+event CompromiseReceiverSkemState(B)
+```
+
+没有泄露：
+
+```text
+sig_sk
+sender_skem_sk
+```
+
+### 查询对象
+
+sender-side 和 receiver-side session key secrecy。
+
+### Query
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+### Result
+
+```text
+sender-side secrecy: false
+receiver-side secrecy: false
+```
+
+### Classification
+
+normal bad case
+
+### Explanation
+
+在当前模型中，攻击者同时获得 `kskB`、`ekskB` 和 `receiverSkB` 后，可以恢复 receiver 侧 decapsulation 所需的三个 KDF 输入：
+
+```text
+K_l
+K_k
+K_s
+```
+
+由于长期公钥和 sid 相关公开材料也已经在 public channel 中公开，攻击者可以构造完整的：
+
+```text
+session_key = KDF(K_l, K_k, K_s, sid)
+```
+
+因此 sender-side 和 receiver-side session-key secrecy 都变为 false。
+
+这个结果属于 normal bad case，因为攻击者已经获得恢复完整 session key 所需的全部核心 secret。
+
+### Next action
+
+后续需要把该情况作为 compromise exception / normal bad case 记录，而不是作为协议漏洞。
+
 ## 总结
 
 当前 secrecy 查询结果：
@@ -491,8 +562,9 @@ kskB + ekskB + receiverSkB
 | ST-003 | sig_sk compromise | true | 符号化保密性成立 |
 | ST-004 | kem_sk compromise | true | 符号化保密性成立 |
 | ST-005 | ekem_sk compromise | true | 符号化保密性成立 |
-| ST-006 | receiver_skem_sk compromise | true | 符号化保密性成立 |
+| ST-006 | receiver_skem_sk compromise | sender true / receiver false | expected receiver-side bad case |
 | ST-007 | kem_sk + ekem_sk compromise | true | 符号化保密性成立 |
+| ST-008 | kem_sk + ekem_sk + receiver_skem_sk compromise | false | normal bad case |
 
 当前结论：
 
@@ -501,7 +573,8 @@ kskB + ekskB + receiverSkB
 - 单独的 `sig_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - 单独的 `kem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
 - 单独的 `ekem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
-- 单独的 `receiver_skem_sk` compromise 在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
+- 单独的 `receiver_skem_sk` compromise 不泄露 honest sender-side key，但 receiver-side unpartnered session secrecy 会失败。
 - `kem_sk + ekem_sk` 组合泄露在当前 symbolic model 下不破坏 sender-side 或 receiver-side session-key secrecy。
+- `kem_sk + ekem_sk + receiver_skem_sk` 组合泄露导致 sender-side 和 receiver-side session-key secrecy 都失败，分类为 normal bad case。
 - exact receiver agreement 仍然作为 diagnostic false 保留。
 - 不通过加入 AEAD/MAC/tag/key confirmation 来改变 Figure 7 core。
