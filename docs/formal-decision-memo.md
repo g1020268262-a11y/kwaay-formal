@@ -106,6 +106,15 @@ receiver-side secrecy: false
 
 暂时不写统一的 receiver-side exception query。
 
+最新补充实验显示，单独泄露 A 的 sender split-KEM secret state `senderSkA` 时，结果为：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+这说明 receiver-side secrecy false 不只可能来自 `CompromiseReceiverSkemState(B)`，也可能来自 `CompromiseSenderSkemState(A)`。
+
 暂不采用:
 
 ```proverif
@@ -115,7 +124,15 @@ attacker(k) && event(ReceiverKey(B,A,s,k))
 
 原因:
 
-该 query 太粗，会把所有 receiver-side key leakage 都归因于 `receiverSkB` compromise。
+该 query 会漏掉 `sender_skem_sk` compromise 导致的 receiver-side unpartnered session key leakage。
+
+receiver-side exception 暂缓的原因包括:
+
+- `receiver_skem_sk` compromise 会导致 receiver-side secrecy false；
+- `sender_skem_sk` compromise 也会导致 receiver-side secrecy false；
+- 两种情况都不破坏 honest sender-side secrecy；
+- 当前这些 false 更像 receiver-side unpartnered session under split-KEM state compromise；
+- 在没有明确 partnered / unpartnered session 语义之前，不应写统一 receiver-side exception query。
 
 当前更合理的解释是：`receiverSkB` 泄露后，public-channel attacker 可以诱导 receiver 输出一个 attacker 可知的 unpartnered receiver session key。
 
@@ -281,6 +298,8 @@ event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
 当前暂缓:
 
 - receiver-side exception query
+- receiver-side exception 需要同时考虑 `CompromiseReceiverSkemState(B)` 和 `CompromiseSenderSkemState(A)`
+- receiver-side exception 需要先明确 partnered / unpartnered session 语义
 - Partnered / UnpartneredReceiver event
 - full BatchReceive
 - Tamarin model
@@ -296,4 +315,7 @@ event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
 2. 确认 `secrecy-trace-ledger.md` 已记录 optional compromise sender-side exception。
 3. 更新 `analysis-summary.md`，确保上述决策已经反映在总总结中。
 4. 暂停新增文档，开始清理和稳定当前 `.pv` 文件。
-5. 后续再规划是否测试 `sender_skem_sk compromise`。
+5. 已补测 `sender_skem_sk compromise`。
+6. 下一步应同步更新 `analysis-summary.md` 和 `secrecy-trace-ledger.md`，记录 `sender_skem_sk compromise` 的结果。
+7. receiver-side exception 继续暂缓。
+8. 后续如果要继续处理 receiver-side，需要优先研究 split-KEM state compromise 下的 unpartnered receiver session 分类。
