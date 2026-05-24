@@ -551,6 +551,109 @@ session_key = KDF(K_l, K_k, K_s, sid)
 
 后续需要把该情况作为 compromise exception / normal bad case 记录，而不是作为协议漏洞。
 
+## ST-009: sender-side exception necessity under optional compromise
+
+### Trace ID
+
+ST-009
+
+### 模型文件
+
+`proverif/kwaay-core-public-channel-exception-choice.pv`
+
+### 实验条件
+
+该模型允许攻击者自由选择是否泄露 B 侧三个 decapsulation secrets：
+
+```text
+kskB
+ekskB
+receiverSkB
+```
+
+每个泄露通过独立 public-channel 分支触发：
+
+```proverif
+event CompromiseKemSk(B);
+out(c, kskB)
+
+event CompromiseReceiverEkemState(B);
+out(c, ekskB)
+
+event CompromiseReceiverSkemState(B);
+out(c, receiverSkB)
+```
+
+攻击者可以选择触发任意子集，而不是固定全泄露。
+
+### 查询对象
+
+sender-side exception necessity query。
+
+### 原始 secrecy 结果
+
+```text
+sender-side secrecy: false
+receiver-side secrecy: false
+```
+
+### Exception Query
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k))
+  ==> event(CompromiseKemSk(B))
+   && event(CompromiseReceiverEkemState(B))
+   && event(CompromiseReceiverSkemState(B)).
+```
+
+### Exception Result
+
+```text
+true
+```
+
+### Classification
+
+sender-side secrecy failure requires full receiver-side decapsulation compromise in the current symbolic model
+
+### Explanation
+
+这个实验比 fixed all-leak model 更强。
+
+在 fixed all-leak model 中，三个 compromise event 本来就无条件发生，因此 exception query 为 true 只能说明 full receiver secret compromise 可以解释 key leakage。
+
+而在当前 optional compromise model 中，攻击者可以选择触发 0 个、1 个、2 个或 3 个 compromise。ProVerif 证明：
+
+```text
+attacker(k) && event(SenderKey(A,B,s,k))
+```
+
+发生时，以下三个事件必须都已经发生：
+
+```text
+event(CompromiseKemSk(B))
+event(CompromiseReceiverEkemState(B))
+event(CompromiseReceiverSkemState(B))
+```
+
+因此，在当前 Figure 7 core symbolic model 中，sender-side session key 泄露必须伴随 B 侧三个 decapsulation secrets 全部 compromise。
+
+这个结论仍然不是最终 theorem。它还没有覆盖：
+
+```text
+sender_skem_sk compromise
+receiver-side exception
+partnered / unpartnered session
+full BatchReceive
+adaptive compromise ordering
+computational KIND game
+```
+
+### Next action
+
+下一步补充 split-KEM component authenticity query，用组件级 correspondence 替代过强的 full-message exact agreement query。
+
 ## 总结
 
 当前 secrecy 查询结果：
