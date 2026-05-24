@@ -1,7 +1,8 @@
-(* Experiment: leak receiver long-term KEM secret and receiver ephemeral KEM
-   secret only.
-   This model tests whether leaking B's kskB and ekskB reveals session keys.
-   It keeps Figure 7 core unchanged: m = (ct_l, ct_k, ct_s). *)
+(* 组合泄露实验模型，不是 baseline model。
+   只泄露 kskB + ekskB。
+   不泄露 receiverSkB 或其他 secret。
+   保持 K-Waay Figure 7 core，保持 m = (ct_l, ct_k, ct_s)。
+   用于 normal bad case / compromise classification。 *)
 
 type agent.
 type sig_sk.

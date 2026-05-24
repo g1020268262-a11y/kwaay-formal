@@ -1,3 +1,10 @@
+(* Split-KEM component authenticity 实验模型，不是 baseline model。
+   用于测试 SplitKemAccepted ==> SenderSplitKemComponent。
+   它替代过强的 full-message exact agreement，
+   作为更贴近 split-KEM sender authentication 的 component-level query。
+   它不修改 baseline。
+   保持 K-Waay Figure 7 core，保持 m = (ct_l, ct_k, ct_s)。 *)
+
 type agent.
 type sig_sk.
 type sig_pk.

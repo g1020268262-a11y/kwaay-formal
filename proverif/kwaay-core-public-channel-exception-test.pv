@@ -1,7 +1,8 @@
-(* 实验: sender-side exception query。
-   本模型测试 sender-side session key 泄露是否只能由 B 侧三个 decapsulation secret 同时泄露解释。
-   保持 Figure 7 core 不变: m = (ct_l, ct_k, ct_s)。
-   receiver-side exception 暂不处理。 *)
+(* Fixed all-leak sanity check 实验模型，不是 baseline model。
+   固定泄露 kskB + ekskB + receiverSkB。
+   它不能证明 sender-side leakage 必须依赖三泄露。
+   真正的 necessity check 在 exception-choice.pv 中。
+   保持 K-Waay Figure 7 core，保持 m = (ct_l, ct_k, ct_s)。 *)
 
 type agent.
 type sig_sk.

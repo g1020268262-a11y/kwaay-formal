@@ -1,7 +1,8 @@
-(* Experiment: leak receiver long-term KEM secret key only.
-   This model tests whether leaking B's kem_sk alone reveals session keys.
-   It keeps Figure 7 core unchanged: m = (ct_l, ct_k, ct_s).
-*)
+(* 单独泄露实验模型，不是 baseline model。
+   只泄露 receiver long-term KEM secret，即 kskB。
+   不泄露其他 secret。
+   保持 K-Waay Figure 7 core，保持 m = (ct_l, ct_k, ct_s)。
+   用于观察原始 secrecy query 在单独 compromise 下的结果。 *)
 
 type agent.
 type sig_sk.

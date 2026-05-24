@@ -1,3 +1,7 @@
+(* 实验模型，不是 baseline model。
+   玩具 KEM secrecy 模型，用于最小化检查 attacker(ss0)。
+   不是 K-Waay Figure 7 core。 *)
+
 type skey.
 type pkey.
 type sskey.

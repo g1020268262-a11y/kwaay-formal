@@ -1,3 +1,10 @@
+(* Baseline model.
+   K-Waay Figure 7 core public-channel symbolic model.
+   保持 m = (ct_l, ct_k, ct_s)。
+   不包含 compromise 输出。
+   不包含 AEAD/MAC/tag/key confirmation。
+   Q1 exact agreement 只作为 diagnostic query 保留。 *)
+
 type agent.
 type sig_sk.
 type sig_pk.

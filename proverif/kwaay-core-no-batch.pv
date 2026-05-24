@@ -1,3 +1,9 @@
+(* Baseline model.
+   K-Waay Figure 7 core no-batch symbolic model。
+   不是 public-channel compromise experiment。
+   保持 m = (ct_l, ct_k, ct_s)。
+   不包含 AEAD/MAC/tag/key confirmation。 *)
+
 type agent.
 type sig_sk.
 type sig_pk.

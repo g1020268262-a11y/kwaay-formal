@@ -1,3 +1,10 @@
+(* Optional compromise experiment model，不是 baseline model。
+   attacker 可以选择触发 0 个、1 个、2 个或 3 个 receiver-side decapsulation secret compromise。
+   用于测试 sender-side exception necessity query。
+   不是 fixed all-leak model。
+   不写 receiver-side exception query。
+   保持 K-Waay Figure 7 core，保持 m = (ct_l, ct_k, ct_s)。 *)
+
 type agent.
 type sig_sk.
 type sig_pk.
