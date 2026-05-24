@@ -357,6 +357,265 @@ receiver-side secrecy: false
 
 该分类后续需要和论文中的 state exposure / partnered / unpartnered session 定义继续对齐。
 
+## 对齐 10: KIND oracle / freshness 与当前 ProVerif 模型的关系
+
+论文中的 KIND game 不是简单的 secrecy query。
+
+KIND game 的核心是：
+
+```text
+TEST session key: real key vs random key
+```
+
+攻击者需要区分挑战者返回的 key 是真实 session key 还是随机 key。攻击者优势 negligible 时，DAKE 才满足 KIND。
+
+当前 ProVerif 模型没有直接建模 real-or-random `TEST`。当前使用的是 symbolic secrecy proxy：
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+因此，当前 `SenderKey secrecy` 和 `ReceiverKey secrecy` 只能作为 KIND 的 symbolic proxy，不能等同于完整 computational KIND proof。
+
+### Oracle 对齐表
+
+| KIND oracle / 机制 | 论文语义 | 当前 ProVerif 近似 | 当前是否完整 |
+|---|---|---|---|
+| `EXEC` | 攻击者驱动协议执行，并可以注入消息 | public channel `c`，攻击者可拦截、替换、重放 | 部分对齐 |
+| `LTK` | 长期密钥泄露 | `sig_sk` / `kem_sk` compromise experiment | 部分对齐 |
+| `REGISTER` | 攻击者注册恶意公钥 | 当前未建模恶意注册 oracle | 未建模 |
+| `STATE` | session state exposure | `sender_skem_sk`、`receiver_skem_sk`、`ekem_sk` compromise experiment | 部分对齐 |
+| `KEY` | session key exposure | 当前没有完整 KEY oracle，只用 `attacker(k)` secrecy query | 未完整建模 |
+| `TEST` | 返回真实 key 或随机 key | 当前没有 real-or-random test，只做 symbolic secrecy | 未建模 |
+| freshness predicates | 排除 trivial attacks | 当前用 exception / normal bad case 分类近似 | 未完整建模 |
+| partnering identifiers | 定义 sender / receiver session 如何匹配 | 当前只有 `SendDone` / `RecvDone`，未完整建模 partnered / unpartnered | 未完整建模 |
+| receiver vector identifiers | 支持 `BatchReceive` 中一个 receiver session 对应多个 sender component | 当前 single receive approximation，未建模 vector partnering | 未建模 |
+
+### Freshness 与当前 compromise 结果的关系
+
+当前 ProVerif 结果不能简单解释为：
+
+```text
+攻击者永远不能知道任何 key
+```
+
+更准确的解释是：
+
+```text
+在当前 symbolic model 和当前 compromise 分类下，某些 key 泄露属于 normal bad case 或 receiver-side expected bad case。
+```
+
+例如：
+
+```text
+kem_sk + ekem_sk + receiver_skem_sk compromise:
+sender-side secrecy: false
+receiver-side secrecy: false
+```
+
+该结果应分类为 normal bad case，因为攻击者已经获得恢复 `K_l / K_k / K_s` 所需的全部 receiver-side decapsulation secrets。
+
+又例如：
+
+```text
+receiver_skem_sk compromise:
+sender-side secrecy: true
+receiver-side secrecy: false
+
+sender_skem_sk compromise:
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+这两个结果不表示 honest sender-side key 泄露。它们更像 split-KEM state compromise 下的 receiver-side unpartnered session bad case。
+
+### 当前不能完成的 freshness 对齐
+
+当前 ProVerif 模型还不能完整表达论文 KIND 中的 freshness predicates。
+
+尤其还没有表达：
+
+```text
+KEY reveal 之后哪些 session 不再 fresh
+STATE reveal 之前 / 之后对 TEST session 的影响
+LTK reveal 与 session freshness 的关系
+partnered receiver session 与 unpartnered receiver session 的区分
+BatchReceive 中 receiver partner/key identifiers 的向量语义
+```
+
+因此，当前 receiver-side exception 继续暂缓。
+
+不能直接写成：
+
+```proverif
+attacker(k) && event(ReceiverKey(B,A,s,k))
+==> event(CompromiseReceiverSkemState(B)).
+```
+
+原因是该 query 无法表达完整 freshness，也无法区分 receiver-side partnered / unpartnered session。
+
+### 对当前 ProVerif 结论的影响
+
+当前可以说：
+
+```text
+SenderKey secrecy / ReceiverKey secrecy 是 KIND 的 symbolic proxy。
+```
+
+当前不能说：
+
+```text
+已经证明 K-Waay 满足 computational KIND。
+```
+
+当前可以说：
+
+```text
+optional compromise model 下，sender-side key 泄露必须伴随 B 侧三个 decapsulation secret compromise。
+```
+
+当前不能说：
+
+```text
+已经完成所有 freshness exception theorem。
+```
+
+### 后续工具边界
+
+如果后续要精确表达 freshness、state exposure ordering、partnered / unpartnered session 和 BatchReceive vector identifiers，优先考虑 Tamarin。
+
+如果后续要逼近论文 computational KIND game，优先考虑 CryptoVerif 或手工 computational proof。
+
+## 对齐 11: partner / key identifiers 与 receiver vector semantics
+
+论文中的 partner identifiers 和 key identifiers 用于定义 session 之间如何匹配。
+
+直观上：
+
+```text
+partner identifier = 当前 session 认为自己在和谁通信
+key identifier     = 当前 session key 绑定哪份 transcript / 哪个 component
+```
+
+在普通一对一 AKE 中，一个 sender session 通常对应一个 receiver session，因此 partner / key identifiers 可以被理解成标量。
+
+但是 K-Waay 支持 `BatchReceive`。receiver 可以一次处理一组输入消息，并输出一组 session keys。因此 receiver 侧的 partner identifiers 和 key identifiers 可能是向量。
+
+例如，一个 receiver batch session 可以处理：
+
+```text
+message from A -> k1
+message from C -> k2
+message from D -> k3
+```
+
+此时 receiver 的 partner identifiers 可以理解为：
+
+```text
+[A, C, D]
+```
+
+receiver 的 key identifiers 可以理解为：
+
+```text
+[sid_1, sid_2, sid_3]
+```
+
+其中每个 `sid_i` 对应 batch 中的一个 component。
+
+### 对当前 ProVerif query 的影响
+
+当前 diagnostic query：
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+```
+
+隐含了一个较强的一对一标量匹配关系：
+
+```text
+entire receiver session <-> one sender session
+```
+
+但是论文中的 `BatchReceive` 语义更接近：
+
+```text
+sender session <-> receiver batch component
+```
+
+也就是说，一个 sender session 可能只对应 receiver batch session 中的某一个 component，而不是对应整个 receiver session。
+
+因此，`RecvDone ==> SendDone` 作为 full-message exact receiver agreement 对当前 Figure 7 core 来说过强。它保留为 diagnostic query，但不作为主安全目标。
+
+### 与 split-KEM component authenticity query 的关系
+
+当前 ProVerif 中新增的 split-KEM component query 是：
+
+```proverif
+query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
+  event(SplitKemAccepted(B,A,cts,Ks))
+  ==> event(SenderSplitKemComponent(A,B,cts,Ks)).
+```
+
+该 query 不要求整个 receiver session 与整个 sender session 完全匹配。
+
+它只检查：
+
+```text
+receiver 接受的 split-KEM component
+是否对应 honest sender 生成过的 split-KEM component
+```
+
+因此，它比 full-message exact agreement 更接近论文中的 component-level partnering 直觉。
+
+但是，该 query 仍然只是当前 ProVerif symbolic approximation。它还没有完整表达：
+
+```text
+BatchReceive vector input
+receiver vector partner identifiers
+receiver vector key identifiers
+batch slot index
+one-time state consumption
+partnered / unpartnered session freshness
+```
+
+### 当前对齐判断
+
+当前可以说：
+
+```text
+SplitKemAccepted ==> SenderSplitKemComponent
+```
+
+是 K-Waay split-KEM component-level authenticity 的 ProVerif proxy。
+
+当前不能说：
+
+```text
+当前 ProVerif model 已经完整表达论文中的 BatchReceive vector partnering。
+```
+
+### 后续影响
+
+如果后续继续研究 receiver-side authentication、partnered / unpartnered session、BatchReceive 或 state consumption，应优先考虑 Tamarin。
+
+原因是这些语义需要表达：
+
+```text
+batch slot
+receiver vector identifiers
+time ordering
+state consumption
+compromise before / after accept
+```
+
+这些在 ProVerif 中可以近似，但不自然。
+
 ## 当前 query 分类
 
 ### Main queries
