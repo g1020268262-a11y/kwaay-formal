@@ -279,6 +279,27 @@ receiver-side secrecy: false
 
 该结果应分类为 expected receiver-side bad case，而不是 honest sender-side key 泄露。
 
+### 单独泄露 `sender_skem_sk`
+
+模型文件：
+
+`proverif/kwaay-core-public-channel-leak-sskemsk.pv`
+
+结果：
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+解释：
+
+单独泄露 A 的 sender split-KEM secret state `senderSkA` 不会泄露 honest sender-side session key，因此 sender-side secrecy 仍然成立。
+
+但是 receiver-side secrecy 失败。原因是 public-channel attacker 可以构造 receiver 接收的消息，并在获得 `senderSkA` 后构造 split-KEM 组件，使 receiver 输出一个 attacker 也能推出的 unpartnered receiver session key。
+
+该结果不是 honest sender-side key 泄露，而是 split-KEM state compromise 下的 receiver-side unpartnered session bad case。
+
 ### 组合泄露 `kem_sk + ekem_sk`
 
 模型文件：
@@ -344,6 +365,10 @@ session_key = KDF(K_l, K_k, K_s, sid)
 - receiver-side session key secrecy 在当前 no-compromise 符号模型下成立。
 - 单独泄露 `sig_sk`、`kem_sk`、`ekem_sk` 不破坏当前 session-key secrecy。
 - 单独泄露 `receiver_skem_sk` 会破坏 receiver-side unpartnered session secrecy，但不破坏 honest sender-side secrecy。
+- 单独泄露 `sender_skem_sk` 不破坏 sender-side secrecy。
+- 单独泄露 `sender_skem_sk` 会破坏 receiver-side secrecy。
+- receiver-side secrecy false 的来源不只包括 `receiver_skem_sk compromise`，也包括 `sender_skem_sk compromise`。
+- 因此 receiver-side exception 继续暂缓，不能简单写成只依赖 `CompromiseReceiverSkemState(B)`。
 - 泄露 `kem_sk + ekem_sk` 仍不足以恢复 session key。
 - 泄露 `kem_sk + ekem_sk + receiver_skem_sk` 属于 normal bad case，会破坏 session-key secrecy。
 - 不通过改变 m 的结构来让 exact agreement query 变 true。
@@ -362,6 +387,9 @@ session_key = KDF(K_l, K_k, K_s, sid)
 - split-KEM component authenticity 等同于完整协议认证。
 - ProVerif component correspondence 等同于论文完整 computational KIND proof。
 - 不能把 `receiver_skem_sk` compromise 下的 receiver-side secrecy false 直接表述为 K-Waay 协议漏洞。
+- 不能把 `sender_skem_sk compromise` 下的 receiver-side secrecy false 表述为 honest sender-side key 泄露。
+- 不能把 receiver-side exception 简化为单一 `CompromiseReceiverSkemState(B)` 条件。
+- 不能在没有 partnered / unpartnered session 语义前给出最终 receiver-side exception theorem。
 - 不能把 full receiver-side state compromise 下的 secrecy false 表述为协议漏洞，因为这是 normal bad case。
 - 不能把当前 ProVerif compromise 实验等同于完整 adaptive compromise security proof。
 
@@ -370,6 +398,9 @@ session_key = KDF(K_l, K_k, K_s, sid)
 1. 给当前模型加入受控 compromise events，并观察哪些 secrecy/correspondence query 会变 false。
 2. 设计 normal bad case / exception ledger，用于记录允许的泄露条件。
 3. 研究 unpartnered receiver session 与论文 KIND game 中 unpartnered receiver case 的对应关系。
-4. 准备从 no-batch core 转向 full BatchReceive / receiver-side prekey reuse。
-5. 后续考虑 Tamarin state model。
-6. 后续考虑 CryptoVerif computational proof abstraction。
+4. 后续如果继续研究 receiver-side exception，需要同时考虑 `CompromiseSenderSkemState(A)` 和 `CompromiseReceiverSkemState(B)`。
+5. 后续需要研究 split-KEM state compromise 下的 receiver-side unpartnered session 分类。
+6. receiver-side partnered / unpartnered 语义可能更适合后续交给 Tamarin。
+7. 准备从 no-batch core 转向 full BatchReceive / receiver-side prekey reuse。
+8. 后续考虑 Tamarin state model。
+9. 后续考虑 CryptoVerif computational proof abstraction。
