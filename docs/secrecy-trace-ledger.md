@@ -654,6 +654,73 @@ computational KIND game
 
 下一步补充 split-KEM component authenticity query，用组件级 correspondence 替代过强的 full-message exact agreement query。
 
+## ST-010: sender_skem_sk compromise 下的 session key secrecy
+
+### Trace ID
+
+ST-010
+
+### 模型文件
+
+`proverif/kwaay-core-public-channel-leak-sskemsk.pv`
+
+### 实验条件
+
+攻击者获得 A 的 sender split-KEM secret state：
+
+```text
+out(c, senderSkA)
+event CompromiseSenderSkemState(A)
+```
+
+没有泄露：
+
+```text
+sig_sk
+kem_sk
+ekem_sk
+receiver_skem_sk
+```
+
+### 查询对象
+
+sender-side 和 receiver-side session key secrecy。
+
+### Query
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+### Result
+
+```text
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+### Classification
+
+sender-side 符号化保密性成立；receiver-side 在 sender_skem_sk compromise 下失败，分类为 expected receiver-side bad case
+
+### Explanation
+
+在当前模型中，单独泄露 A 的 sender split-KEM secret state `senderSkA` 不会泄露 honest sender-side session key，因此 sender-side secrecy 仍然为 true。
+
+但是 receiver-side secrecy 变为 false。原因是 public-channel attacker 可以构造 receiver 接收的消息，并且在获得 `senderSkA` 后构造 split-KEM 组件，使 receiver 输出一个 attacker 也能推出的 unpartnered receiver session key。
+
+因此，这不是 honest sender-side key 泄露，而是 receiver-side unpartnered session 在 sender_skem_sk compromise 下的 expected bad case。
+
+这个结果进一步说明 receiver-side exception 不能只用 `CompromiseReceiverSkemState(B)` 表达，因为 `CompromiseSenderSkemState(A)` 也可能导致 receiver-side secrecy false。
+
+### Next action
+
+后续 receiver-side exception 需要同时考虑 sender_skem_sk compromise、receiver_skem_sk compromise，以及 partnered / unpartnered session 语义。
+
 ## 总结
 
 当前 secrecy 查询结果：
