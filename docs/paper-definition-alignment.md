@@ -616,6 +616,285 @@ compromise before / after accept
 
 这些在 ProVerif 中可以近似，但不自然。
 
+## 对齐 12: UNF-1KMA 与 split-KEM component authenticity
+
+论文指出，split-KEM 的不可区分性定义只关注保密性，不足以保证发送方真实性。
+
+也就是说，旧的 split-KEM 安全定义可以说明密文中的密钥不容易被区分或恢复，但它不能保证：
+
+```text
+只有诚实发送方才能生成诚实解封装方会接受的 split-KEM 密文
+```
+
+因此，论文引入 UNF-1KMA，即：
+
+```text
+Unforgeability against one known-message attacks
+```
+
+其直观目标是：
+
+```text
+攻击者即使看过一个合法 split-KEM 密文和对应密钥，
+也不能伪造另一个新的密文，
+使对应的诚实解封装方成功解封装。
+```
+
+### UNF-1KMA 的正确角色关系
+
+需要注意，UNF-1KMA 不能和 deniability game 混淆。
+
+在 UNF-1KMA game 中，攻击者看到：
+
+```text
+pkA
+pkB
+ct
+KB
+```
+
+其中 `ct` 和 `KB` 来自一次合法封装。
+
+攻击者的目标是输出一个新的密文：
+
+```text
+ct' != ct
+```
+
+并让对应的诚实解封装方对 `ct'` 解封装成功。
+
+用论文 Figure 4 的抽象方向可以理解为：
+
+```text
+pkA, skA <- KeyGenA
+pkB, skB <- KeyGenB
+KB, ct <- Encaps(pkA, skB)
+ct' <- adversary(pkA, pkB, ct, KB)
+KA <- Decaps(pkB, skA, ct')
+```
+
+攻击者成功条件是：
+
+```text
+ct' != ct
+KA != bottom
+```
+
+也就是说，攻击者不知道解封装密钥 `skA`，但仍试图伪造一个新的 `ct'`，让诚实解封装方成功接受。
+
+如果攻击者已经知道解封装方的密钥，那么很多性质会退化，这不是 UNF-1KMA 正常挑战要表达的内容。
+
+### 与 deniability game 的区别
+
+论文中的 deniability game 是另一件事。
+
+在 deniability game 中，攻击者可能会得到：
+
+```text
+pkA
+pkB
+skA
+K
+ct
+```
+
+这里攻击者知道 `skA`，目标是区分真实生成和模拟生成。
+
+因此：
+
+```text
+UNF-1KMA 攻击者不知道 skA。
+deniability game 攻击者可以知道 skA。
+```
+
+这两个安全游戏不能混在一起。
+
+### 当前 ProVerif 符号代理
+
+当前 ProVerif split-KEM 组件 query 是：
+
+```proverif
+query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
+  event(SplitKemAccepted(B,A,cts,Ks))
+  ==> event(SenderSplitKemComponent(A,B,cts,Ks)).
+```
+
+其中：
+
+```proverif
+event SenderSplitKemComponent(agent, agent, skem_ct, shared_secret).
+event SplitKemAccepted(agent, agent, skem_ct, shared_secret).
+```
+
+当前结果：
+
+```text
+true
+```
+
+该 query 的含义是：
+
+```text
+如果接收方接受了声称来自 A 的 split-KEM 组件 cts，并得到 Ks，
+那么诚实发送方 A 之前确实生成过同一个 cts 和 Ks。
+```
+
+因此，该 query 可以作为 UNF-1KMA 直觉的 ProVerif 符号代理。
+
+### 角色方向的注意事项
+
+需要注意，论文 Figure 4 中 `Encaps(pkA, skB)` / `Decaps(pkB, skA, ct')` 是 split-KEM 抽象安全游戏的记号。
+
+而在 K-Waay Figure 7 的协议方向中，我们通常叙述为：
+
+```text
+发送方 A 生成 split-KEM 组件 ct_s
+接收方 B 解封装 ct_s
+```
+
+因此，不应把 Figure 4 中的 A/B 名字直接粗暴等同于 K-Waay Figure 7 中的发送方 A / 接收方 B。
+
+更稳妥的说法是：
+
+```text
+UNF-1KMA 是 split-KEM 抽象层的不可伪造性安全游戏。
+它保证攻击者不能在看到一个合法密文和密钥后，
+伪造新的密文，使对应诚实解封装方接受。
+```
+
+在 K-Waay Figure 7 的协议方向中，我们用：
+
+```text
+SplitKemAccepted(B,A,cts,Ks) ==> SenderSplitKemComponent(A,B,cts,Ks)
+```
+
+作为这个直觉的符号代理。
+
+### 为什么它比 RecvDone ==> SendDone 更合适
+
+当前 diagnostic query：
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+```
+
+要求的是：
+
+```text
+完整 sid 一样
+完整 session_key 一样
+完整 m = (ct_l, ct_k, ct_s) 一样
+```
+
+这更接近完整消息精确一致性。
+
+但是 UNF-1KMA 关注的是 split-KEM 组件是否可伪造：
+
+```text
+ct_s
+K_s
+```
+
+因此，`SplitKemAccepted ==> SenderSplitKemComponent` 比 `RecvDone ==> SendDone` 更接近论文中 split-KEM 承载发送方真实性的组件级语义。
+
+### 限制
+
+当前 ProVerif query 不是完整 UNF-1KMA 证明。
+
+原因包括：
+
+```text
+UNF-1KMA 是计算型安全游戏
+当前 query 是符号对应关系
+当前 query 没有建模完整攻击者挑战游戏
+当前 query 没有给出可忽略优势证明
+当前 query 没有覆盖完整 BatchReceive
+当前 query 没有完整表达状态泄露顺序
+当前 query 没有完整表达已知消息攻击游戏
+```
+
+因此，当前只能说：
+
+```text
+SplitKemAccepted ==> SenderSplitKemComponent
+是 UNF-1KMA 直觉的符号代理
+```
+
+不能说：
+
+```text
+ProVerif 已经证明 split-KEM 满足计算型 UNF-1KMA
+```
+
+### 与接收方侧泄露结果的关系
+
+当前实验中：
+
+```text
+receiver_skem_sk compromise:
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+以及：
+
+```text
+sender_skem_sk compromise:
+sender-side secrecy: true
+receiver-side secrecy: false
+```
+
+这些结果说明 split-KEM 状态泄露会破坏接收方侧保密性，但不等于诚实发送方侧密钥泄露。
+
+这些结果应理解为：
+
+```text
+split-KEM 状态泄露下的接收方侧未配对会话异常情形
+```
+
+而不是：
+
+```text
+完整协议认证失败
+```
+
+### 当前对齐判断
+
+当前可以说：
+
+```text
+SplitKemAccepted ==> SenderSplitKemComponent
+```
+
+是当前 ProVerif 阶段用于刻画 split-KEM 组件级真实性的主要 query。
+
+当前不能说：
+
+```text
+该 query 已经证明完整 UNF-1KMA。
+```
+
+当前也不能说：
+
+```text
+该 query 已经证明完整 K-Waay 认证。
+```
+
+### 后续影响
+
+后续如果要更严格对齐 UNF-1KMA，需要考虑：
+
+```text
+计算型安全游戏
+已知消息攻击结构
+新鲜性 / 状态泄露顺序
+BatchReceive 中的组件复用
+接收方向量标识符
+```
+
+这些内容可能需要后续结合 CryptoVerif、Tamarin 或手工证明继续分析。
+
 ## 当前 query 分类
 
 ### Main queries
