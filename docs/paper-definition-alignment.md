@@ -895,6 +895,255 @@ BatchReceive 中的组件复用
 
 这些内容可能需要后续结合 CryptoVerif、Tamarin 或手工证明继续分析。
 
+## 对齐 13: IND-1BatchCCA / BatchReceive 与 single receive approximation
+
+论文中的 `BatchReceive` 不是普通单条接收。
+
+它用于处理接收方离线，或接收方 split-KEM 临时公钥被多个发送方复用的情况。接收方上线后，可以把一组使用同一个接收方侧 split-KEM 状态的消息放入一个批次中统一处理。
+
+直观上，`BatchReceive` 输入的是一组消息：
+
+```text
+(pk_1, prekey_1, m_1)
+(pk_2, prekey_2, m_2)
+...
+(pk_d, prekey_d, m_d)
+```
+
+输出的是一组会话密钥：
+
+```text
+k_1
+k_2
+...
+k_d
+```
+
+其中每个输出密钥对应批次中的一个组件。
+
+### IND-1BatchCCA 的直觉
+
+`IND-1BatchCCA` 是 split-KEM 的计算型保密性安全游戏。
+
+它不是认证 query，而是密钥不可区分性 / 保密性安全游戏。
+
+直观目标是：
+
+```text
+即使攻击者获得一次批量解封装能力，
+也不能区分挑战 split-KEM 密钥是真实密钥还是随机密钥。
+```
+
+其中 `1Batch` 的意思是：
+
+```text
+攻击者最多获得一次批量解封装 query。
+```
+
+批量解封装的特点是：
+
+```text
+如果批次中任意一个解封装失败，
+整个批次返回 bottom。
+```
+
+这和普通逐条解封装不同。它避免攻击者从每个密文的独立成功 / 失败结果中获得额外信息。
+
+### 为什么 K-Waay 需要 IND-1BatchCCA
+
+K-Waay 的接收方 split-KEM 临时公钥可能被多个发送方使用。
+
+这会产生批量复用场景：
+
+```text
+多个发送方使用同一个接收方 split-KEM 公钥
+接收方后续用同一个接收方 split-KEM 秘密状态批量解封装
+```
+
+因此，普通 split-KEM 保密性定义不足以覆盖这种批量复用场景。
+
+论文使用 `IND-1BatchCCA` 来表达：
+
+```text
+在一次批量解封装能力存在的情况下，
+split-KEM 挑战密钥仍应保持不可区分。
+```
+
+### 与 UNF-1KMA 的分工
+
+`UNF-1KMA` 和 `IND-1BatchCCA` 关注不同性质。
+
+```text
+UNF-1KMA:
+组件级真实性 / 不可伪造性。
+攻击者不能伪造新的 split-KEM 密文，使诚实解封装方接受。
+
+IND-1BatchCCA:
+组件级保密性 / 不可区分性。
+攻击者即使获得一次批量解封装能力，也不能区分挑战密钥是真实还是随机。
+```
+
+因此，K-Waay split-KEM 层面同时需要：
+
+```text
+UNF-1KMA
+IND-1BatchCCA
+```
+
+前者支撑发送方认证的 split-KEM 组件级语义，后者支撑 split-KEM 共享秘密的保密性。
+
+### 当前 ProVerif 模型的近似
+
+当前 ProVerif 模型没有完整建模 `BatchReceive`。
+
+当前接收方侧更接近单条接收近似：
+
+```proverif
+in(c, mFromNet);
+let ctLFromNet = get_lkem_ct(mFromNet) in
+let ctEFromNet = get_ekem_ct(mFromNet) in
+let ctSFromNet = get_skem_ct(mFromNet) in
+...
+event RecvDone(B,A,sidBA,kRecv);
+event ReceiverKey(B,A,sidBA,kRecv);
+```
+
+当前模型只处理一条消息：
+
+```text
+m = (ct_l, ct_k, ct_s)
+```
+
+它还没有表达：
+
+```text
+批次输入向量
+批次输出向量
+批次位置索引
+接收方向量配对标识符
+接收方向量密钥标识符
+如果任意组件解封装失败则整个批次返回 bottom
+同一个接收方 split-KEM 状态被多个发送方组件使用
+状态消耗 / 一次性使用
+完整 BatchReceive 复用语义
+```
+
+因此，当前 ProVerif 模型不能声称已经完整表达 `IND-1BatchCCA` 或完整 `BatchReceive`。
+
+### 当前 ProVerif 保密性 query 的位置
+
+当前 ProVerif 保密性 query：
+
+```proverif
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+```
+
+可以作为 KIND / 会话密钥保密性的符号代理。
+
+但是它不是 `IND-1BatchCCA` 证明。
+
+原因：
+
+```text
+IND-1BatchCCA 是计算型 real-or-random 安全游戏
+当前 query 是符号攻击者可知性 query
+IND-1BatchCCA 允许一次批量解封装 query
+当前模型没有批量解封装调用机制
+IND-1BatchCCA 涉及挑战密钥不可区分性
+当前模型只检查 attacker 是否可推出会话密钥
+```
+
+因此，当前只能说：
+
+```text
+当前 ProVerif 保密性 query 是会话密钥保密性的符号近似。
+```
+
+不能说：
+
+```text
+当前 ProVerif 已经证明 split-KEM 满足 IND-1BatchCCA。
+```
+
+### 对 RecvDone ==> SendDone 的影响
+
+`BatchReceive` 进一步说明：
+
+```proverif
+event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k))
+```
+
+这个完整消息精确一致性 query 对当前 Figure 7 core 来说过强。
+
+原因是，在完整 `BatchReceive` 语义中，一个接收方批次会话可能处理多个发送方组件，并输出多个密钥。
+
+也就是说，真实结构更接近：
+
+```text
+发送方会话 <-> 接收方批次组件
+```
+
+而不是：
+
+```text
+整个接收方会话 <-> 一个发送方会话
+```
+
+因此，`RecvDone ==> SendDone` 继续保留为诊断 query，不作为当前主安全目标。
+
+### 当前对齐判断
+
+当前可以说：
+
+```text
+当前 ProVerif 模型覆盖了 Figure 7 core 的单条接收近似。
+```
+
+当前不能说：
+
+```text
+当前 ProVerif 模型已经完整覆盖 BatchReceive。
+```
+
+当前可以说：
+
+```text
+SplitKemAccepted ==> SenderSplitKemComponent
+是 UNF-1KMA 直觉的符号代理。
+```
+
+当前不能说：
+
+```text
+当前 ProVerif 已经证明 IND-1BatchCCA。
+```
+
+### 后续影响
+
+如果后续要完整对齐 `IND-1BatchCCA` 和 `BatchReceive`，需要考虑：
+
+```text
+批次输入向量
+批次输出向量
+批次中止行为
+批次位置索引
+接收方向量配对标识符
+接收方向量密钥标识符
+接收方 split-KEM 状态复用
+状态消耗
+一次性预密钥语义
+```
+
+这些语义在 ProVerif 中可以近似，但不自然。
+
+后续如果继续研究完整 `BatchReceive`，优先考虑 Tamarin。
+
+如果后续要研究计算型 `IND-1BatchCCA`，需要考虑 CryptoVerif 或手工计算型证明。
+
 ## 当前 query 分类
 
 ### Main queries
