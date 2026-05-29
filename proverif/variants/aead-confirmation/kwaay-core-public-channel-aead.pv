@@ -151,6 +151,24 @@ query k: session_key; event(HonestRun(k)).
 query A: agent, B: agent, s: sid_t, k: session_key;
   event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
 
+(* AEAD confirmation helper queries.
+   These decompose Q1 through the explicit confirmation gate:
+   RecvDone ==> AeadConfirmed ==> SendDone. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(AeadConfirmed(B,A,s,k)).
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(AeadConfirmed(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+
+(* Reachability diagnostics.
+   ProVerif reports reachability as "Query not event(...) is false"
+   when the corresponding event is reachable. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvComputed(B,A,s,k)).
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(AeadConfirmed(B,A,s,k)).
+
 (* Q1a/Q1b structural prekey-verification queries.
    These queries are weaker than exact session agreement.
    They only check that RecvDone is not reached without the corresponding
