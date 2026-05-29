@@ -1,0 +1,342 @@
+Process 0 (that is, the initial process):
+{1}new sskA: sig_sk;
+{2}new kskA: kem_sk;
+{3}new sskB: sig_sk;
+{4}new kskB: kem_sk;
+{5}new senderSkA: skem_sender_sk;
+{6}new receiverSkB: skem_receiver_sk;
+{7}new ekskB: ekem_sk;
+{8}let spkA: sig_pk = spk(sskA) in
+{9}let kpkA: kem_pk = kpk(kskA) in
+{10}let pkA: pk_tuple = pk(spkA,kpkA) in
+{11}let spkB: sig_pk = spk(sskB) in
+{12}let kpkB: kem_pk = kpk(kskB) in
+{13}let pkB: pk_tuple = pk(spkB,kpkB) in
+{14}out(c, spkA);
+{15}out(c, kpkA);
+{16}out(c, pkA);
+{17}out(c, spkB);
+{18}out(c, kpkB);
+{19}out(c, pkB);
+{20}let senderPkA: skem_sender_pk = pk_skem_sender(senderSkA) in
+{21}let senderPayloadA: prekey_payload = payload_sender(senderPkA) in
+{22}let senderSigA: signature = sign(sskA,senderPayloadA) in
+{23}let senderPrekeyA: sender_prekey_bundle = sender_prekey(senderPkA,senderSigA) in
+{24}out(c, senderPrekeyA);
+{25}let receiverPkB: skem_receiver_pk = pk_skem_receiver(receiverSkB) in
+{26}let ekpkB: ekem_pk = ekpk(ekskB) in
+{27}let receiverPayloadB: prekey_payload = payload_receiver(receiverPkB,ekpkB) in
+{28}let receiverSigB: signature = sign(sskB,receiverPayloadB) in
+{29}let receiverPrekeyB: receiver_prekey_bundle = receiver_prekey(receiverPkB,ekpkB,receiverSigB) in
+{30}out(c, receiverPrekeyB);
+{31}in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
+{32}let receiverPkFromNet: skem_receiver_pk = get_receiver_prekey_pk(receiverPrekeyFromNet) in
+{33}let ekpkFromNet: ekem_pk = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
+{34}let receiverSigFromNet: signature = get_receiver_prekey_sig(receiverPrekeyFromNet) in
+{35}let receiverPayloadFromNet: prekey_payload = payload_receiver(receiverPkFromNet,ekpkFromNet) in
+{36}let =true = verify(spkB,receiverPayloadFromNet,receiverSigFromNet) in
+{37}event ReceiverPrekeyVerified(A,B,receiverPrekeyFromNet);
+{38}in(c, senderPrekeyFromNet: sender_prekey_bundle);
+{39}let senderPkFromNet: skem_sender_pk = get_sender_prekey_pk(senderPrekeyFromNet) in
+{40}let senderSigFromNet: signature = get_sender_prekey_sig(senderPrekeyFromNet) in
+{41}let senderPayloadFromNet: prekey_payload = payload_sender(senderPkFromNet) in
+{42}let =true = verify(spkA,senderPayloadFromNet,senderSigFromNet) in
+{43}event SenderPrekeyVerified(B,A,senderPrekeyFromNet);
+{44}new rL: randomness;
+{45}new rE: randomness;
+{46}new rS: randomness;
+{47}let ctL: kem_ct = lkem_enc(kpkB,rL) in
+{48}let KL: shared_secret = lkem_ss(kpkB,rL) in
+{49}let ctE: ekem_ct = ekem_enc(ekpkFromNet,rE) in
+{50}let KE: shared_secret = ekem_ss(ekpkFromNet,rE) in
+{51}let ctS: skem_ct = skem_enc(senderSkA,receiverPkFromNet,rS) in
+{52}let KS: shared_secret = skem_ss(senderSkA,receiverPkFromNet,rS) in
+{53}let mCore: core_message = core_msg(ctL,ctE,ctS) in
+{54}let sidAB: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyA,receiverPrekeyFromNet,mCore) in
+{55}let kSend: session_key = kdf(KL,KE,KS,sidAB) in
+{56}let kc: aead_ct = aead_tag(kSend,sidAB) in
+{57}let m: confirmed_message = confirmed_msg(mCore,kc) in
+{58}out(c, m);
+{59}event SenderKey(A,B,sidAB,kSend);
+{60}event SendDone(A,B,sidAB,kSend);
+{61}in(c, mFromNet: confirmed_message);
+{62}let mCoreFromNet: core_message = get_core(mFromNet) in
+{63}let kcFromNet: aead_ct = get_key_confirmation(mFromNet) in
+{64}let ctLFromNet: kem_ct = get_lkem_ct(mCoreFromNet) in
+{65}let ctEFromNet: ekem_ct = get_ekem_ct(mCoreFromNet) in
+{66}let ctSFromNet: skem_ct = get_skem_ct(mCoreFromNet) in
+{67}let KL2: shared_secret = lkem_dec(kskB,ctLFromNet) in
+{68}let KE2: shared_secret = ekem_dec(ekskB,ctEFromNet) in
+{69}let KS2: shared_secret = skem_dec(receiverSkB,senderPkFromNet,ctSFromNet) in
+{70}let sidBA: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyFromNet,receiverPrekeyFromNet,mCoreFromNet) in
+{71}let kRecv: session_key = kdf(KL2,KE2,KS2,sidBA) in
+{72}event RecvComputed(B,A,sidBA,kRecv);
+{73}let =aead_ok = aead_verify(kRecv,sidBA,kcFromNet) in
+{74}event AeadConfirmed(B,A,sidBA,kRecv);
+{75}event ReceiverKey(B,A,sidBA,kRecv);
+{76}event RecvDone(B,A,sidBA,kRecv);
+{77}event HonestRun(kRecv)
+
+File "kwaay-core-public-channel-aead.pv", line 151, character 7:
+Warning: identifier A rebound.
+File "kwaay-core-public-channel-aead.pv", line 151, character 17:
+Warning: identifier B rebound.
+File "kwaay-core-public-channel-aead.pv", line 160, character 7:
+Warning: identifier A rebound.
+File "kwaay-core-public-channel-aead.pv", line 160, character 17:
+Warning: identifier B rebound.
+File "kwaay-core-public-channel-aead.pv", line 163, character 7:
+Warning: identifier A rebound.
+File "kwaay-core-public-channel-aead.pv", line 163, character 17:
+Warning: identifier B rebound.
+File "kwaay-core-public-channel-aead.pv", line 170, character 7:
+Warning: identifier A rebound.
+File "kwaay-core-public-channel-aead.pv", line 170, character 17:
+Warning: identifier B rebound.
+File "kwaay-core-public-channel-aead.pv", line 177, character 7:
+Warning: identifier A rebound.
+File "kwaay-core-public-channel-aead.pv", line 177, character 17:
+Warning: identifier B rebound.
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}new sskA: sig_sk;
+{2}new kskA: kem_sk;
+{3}new sskB: sig_sk;
+{4}new kskB: kem_sk;
+{5}new senderSkA: skem_sender_sk;
+{6}new receiverSkB: skem_receiver_sk;
+{7}new ekskB: ekem_sk;
+{8}let spkA: sig_pk = spk(sskA) in
+{14}out(c, spkA);
+{9}let kpkA: kem_pk = kpk(kskA) in
+{15}out(c, kpkA);
+{10}let pkA: pk_tuple = pk(spkA,kpkA) in
+{16}out(c, pkA);
+{11}let spkB: sig_pk = spk(sskB) in
+{17}out(c, spkB);
+{12}let kpkB: kem_pk = kpk(kskB) in
+{18}out(c, kpkB);
+{13}let pkB: pk_tuple = pk(spkB,kpkB) in
+{19}out(c, pkB);
+{20}let senderPkA: skem_sender_pk = pk_skem_sender(senderSkA) in
+{21}let senderPayloadA: prekey_payload = payload_sender(senderPkA) in
+{22}let senderSigA: signature = sign(sskA,senderPayloadA) in
+{23}let senderPrekeyA: sender_prekey_bundle = sender_prekey(senderPkA,senderSigA) in
+{24}out(c, senderPrekeyA);
+{26}let ekpkB: ekem_pk = ekpk(ekskB) in
+{25}let receiverPkB: skem_receiver_pk = pk_skem_receiver(receiverSkB) in
+{27}let receiverPayloadB: prekey_payload = payload_receiver(receiverPkB,ekpkB) in
+{28}let receiverSigB: signature = sign(sskB,receiverPayloadB) in
+{29}let receiverPrekeyB: receiver_prekey_bundle = receiver_prekey(receiverPkB,ekpkB,receiverSigB) in
+{30}out(c, receiverPrekeyB);
+{31}in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
+{32}let receiverPkFromNet: skem_receiver_pk = get_receiver_prekey_pk(receiverPrekeyFromNet) in
+{33}let ekpkFromNet: ekem_pk = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
+{34}let receiverSigFromNet: signature = get_receiver_prekey_sig(receiverPrekeyFromNet) in
+{35}let receiverPayloadFromNet: prekey_payload = payload_receiver(receiverPkFromNet,ekpkFromNet) in
+{36}let =true = verify(spkB,receiverPayloadFromNet,receiverSigFromNet) in
+{37}event ReceiverPrekeyVerified(A,B,receiverPrekeyFromNet);
+{38}in(c, senderPrekeyFromNet: sender_prekey_bundle);
+{39}let senderPkFromNet: skem_sender_pk = get_sender_prekey_pk(senderPrekeyFromNet) in
+{40}let senderSigFromNet: signature = get_sender_prekey_sig(senderPrekeyFromNet) in
+{41}let senderPayloadFromNet: prekey_payload = payload_sender(senderPkFromNet) in
+{42}let =true = verify(spkA,senderPayloadFromNet,senderSigFromNet) in
+{43}event SenderPrekeyVerified(B,A,senderPrekeyFromNet);
+{44}new rL: randomness;
+{45}new rE: randomness;
+{46}new rS: randomness;
+{51}let ctS: skem_ct = skem_enc(senderSkA,receiverPkFromNet,rS) in
+{49}let ctE: ekem_ct = ekem_enc(ekpkFromNet,rE) in
+{47}let ctL: kem_ct = lkem_enc(kpkB,rL) in
+{53}let mCore: core_message = core_msg(ctL,ctE,ctS) in
+{54}let sidAB: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyA,receiverPrekeyFromNet,mCore) in
+{52}let KS: shared_secret = skem_ss(senderSkA,receiverPkFromNet,rS) in
+{50}let KE: shared_secret = ekem_ss(ekpkFromNet,rE) in
+{48}let KL: shared_secret = lkem_ss(kpkB,rL) in
+{55}let kSend: session_key = kdf(KL,KE,KS,sidAB) in
+{56}let kc: aead_ct = aead_tag(kSend,sidAB) in
+{57}let m: confirmed_message = confirmed_msg(mCore,kc) in
+{58}out(c, m);
+{59}event SenderKey(A,B,sidAB,kSend);
+{60}event SendDone(A,B,sidAB,kSend);
+{61}in(c, mFromNet: confirmed_message);
+{62}let mCoreFromNet: core_message = get_core(mFromNet) in
+{63}let kcFromNet: aead_ct = get_key_confirmation(mFromNet) in
+{64}let ctLFromNet: kem_ct = get_lkem_ct(mCoreFromNet) in
+{65}let ctEFromNet: ekem_ct = get_ekem_ct(mCoreFromNet) in
+{66}let ctSFromNet: skem_ct = get_skem_ct(mCoreFromNet) in
+{67}let KL2: shared_secret = lkem_dec(kskB,ctLFromNet) in
+{68}let KE2: shared_secret = ekem_dec(ekskB,ctEFromNet) in
+{69}let KS2: shared_secret = skem_dec(receiverSkB,senderPkFromNet,ctSFromNet) in
+{70}let sidBA: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyFromNet,receiverPrekeyFromNet,mCoreFromNet) in
+{71}let kRecv: session_key = kdf(KL2,KE2,KS2,sidBA) in
+{72}event RecvComputed(B,A,sidBA,kRecv);
+{73}let =aead_ok = aead_verify(kRecv,sidBA,kcFromNet) in
+{74}event AeadConfirmed(B,A,sidBA,kRecv);
+{75}event ReceiverKey(B,A,sidBA,kRecv);
+{76}event RecvDone(B,A,sidBA,kRecv);
+{77}event HonestRun(kRecv)
+
+-- Query not event(HonestRun(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not event(HonestRun(k))
+goal reachable: event(HonestRun(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))))
+Abbreviations:
+rL_1 = rL[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rE_1 = rE[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+
+Derivation:
+Abbreviations:
+rL_1 = rL[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rE_1 = rE[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+
+1. The message receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))) may be sent to the attacker at output {30}.
+attacker(receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))).
+
+2. The message sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))) may be sent to the attacker at output {24}.
+attacker(sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[]))))).
+
+3. The message receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))) that the attacker may have by 1 may be received at input {31}.
+The message sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))) that the attacker may have by 2 may be received at input {38}.
+So the message confirmed_msg(core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)),aead_tag(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))) may be sent to the attacker at output {58}.
+attacker(confirmed_msg(core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)),aead_tag(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))))).
+
+4. The message receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))) that the attacker may have by 1 may be received at input {31}.
+The message sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))) that the attacker may have by 2 may be received at input {38}.
+The message confirmed_msg(core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)),aead_tag(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))) that the attacker may have by 3 may be received at input {61}.
+So event HonestRun(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))) may be executed at {77}.
+event(HonestRun(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))))).
+
+5. By 4, event(HonestRun(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))))).
+The goal is reached, represented in the following fact:
+event(HonestRun(kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new sskA: sig_sk creating sskA_1 at {1}
+
+new kskA: kem_sk creating kskA_1 at {2}
+
+new sskB: sig_sk creating sskB_1 at {3}
+
+new kskB: kem_sk creating kskB_1 at {4}
+
+new senderSkA: skem_sender_sk creating senderSkA_1 at {5}
+
+new receiverSkB: skem_receiver_sk creating receiverSkB_1 at {6}
+
+new ekskB: ekem_sk creating ekskB_1 at {7}
+
+out(c, ~M) with ~M = spk(sskA_1) at {14}
+
+out(c, ~M_1) with ~M_1 = kpk(kskA_1) at {15}
+
+out(c, ~M_2) with ~M_2 = pk(spk(sskA_1),kpk(kskA_1)) at {16}
+
+out(c, ~M_3) with ~M_3 = spk(sskB_1) at {17}
+
+out(c, ~M_4) with ~M_4 = kpk(kskB_1) at {18}
+
+out(c, ~M_5) with ~M_5 = pk(spk(sskB_1),kpk(kskB_1)) at {19}
+
+out(c, ~M_6) with ~M_6 = sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))) at {24}
+
+out(c, ~M_7) with ~M_7 = receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))) at {30}
+
+in(c, ~M_7) with ~M_7 = receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))) at {31}
+
+event ReceiverPrekeyVerified(A,B,receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1))))) at {37}
+
+in(c, ~M_6) with ~M_6 = sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))) at {38}
+
+event SenderPrekeyVerified(B,A,sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1))))) at {43}
+
+new rL: randomness creating rL_2 at {44}
+
+new rE: randomness creating rE_2 at {45}
+
+new rS: randomness creating rS_2 at {46}
+
+out(c, ~M_8) with ~M_8 = confirmed_msg(core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2)),aead_tag(kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2)))),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {58}
+
+event SenderKey(A,B,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {59}
+
+event SendDone(A,B,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {60}
+
+in(c, ~M_8) with ~M_8 = confirmed_msg(core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2)),aead_tag(kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2)))),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {61}
+
+event RecvComputed(B,A,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {72}
+
+event AeadConfirmed(B,A,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {74}
+
+event ReceiverKey(B,A,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {75}
+
+event RecvDone(B,A,sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))),kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {76}
+
+event HonestRun(kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) at {77} (goal)
+
+The event HonestRun(kdf(lkem_ss(kpk(kskB_1),rL_2),ekem_ss(ekpk(ekskB_1),rE_2),skem_ss(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2),sid_of(A,B,pk(spk(sskA_1),kpk(kskA_1)),pk(spk(sskB_1),kpk(kskB_1)),sender_prekey(pk_skem_sender(senderSkA_1),sign(sskA_1,payload_sender(pk_skem_sender(senderSkA_1)))),receiver_prekey(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1),sign(sskB_1,payload_receiver(pk_skem_receiver(receiverSkB_1),ekpk(ekskB_1)))),core_msg(lkem_enc(kpk(kskB_1),rL_2),ekem_enc(ekpk(ekskB_1),rE_2),skem_enc(senderSkA_1,pk_skem_receiver(receiverSkB_1),rS_2))))) is executed at {77}.
+A trace has been found.
+RESULT not event(HonestRun(k)) is false.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k))
+goal reachable: b-event(SendDone(A[],B[],sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))),kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))),kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))))
+Abbreviations:
+rL_1 = rL[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rE_1 = rE[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp))
+goal reachable: b-event(SenderPrekeyVerified(B[],A[],sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))),kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))))
+Abbreviations:
+rL_1 = rL[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rE_1 = rE[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp))
+goal reachable: b-event(ReceiverPrekeyVerified(A[],B[],receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))),kdf(lkem_ss(kpk(kskB[]),rL_1),ekem_ss(ekpk(ekskB[]),rE_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),sid_of(A[],B[],pk(spk(sskA[]),kpk(kskA[])),pk(spk(sskB[]),kpk(kskB[])),sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[])))),core_msg(lkem_enc(kpk(kskB[]),rL_1),ekem_enc(ekpk(ekskB[]),rE_1),skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))))))
+Abbreviations:
+rL_1 = rL[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rE_1 = rE[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+-- Query not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not (event(SenderKey(A_1,B_1,s,k)) && attacker(k))
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+-- Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k))
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query not event(HonestRun(k)) is false.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+
+Query not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+
+Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+
+--------------------------------------------------------------
+
