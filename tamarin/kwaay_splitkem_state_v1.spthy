@@ -1,0 +1,185 @@
+theory kwaay_splitkem_state_v1
+begin
+
+functions: cts/4, ks/4, rkey/5 [private]
+
+// V1 不是完整 K-Waay secrecy proof。
+// V1 只测试 receiver-side exception candidate。
+// AttackerKnowsKey 是抽象事件，不是完整 Dolev-Yao secrecy proof。
+// UnpartneredReceiver 是当前 toy model 中的分类事件，不是最终论文定义。
+
+// V1 仍然是 split-KEM state lifecycle 的 toy model。
+// cts(...) 是不透明 component：接收方只把它当作整体消息处理，不从中拆出 sst 或 r。
+// !ComponentKey(A,B,rst,cts,Ks) 表示抽象 decapsulation relation，不建完整 KEM/KDF/签名模型。
+// rkey(B,A,rst,cts,Ks) 表示 receiver 侧根据 accepted component 派生出的抽象 key。
+
+// 接收方状态是线性 fact；!ReceiverPublicState 只是让发送方和抽象规则引用同一个 rst。
+rule InitReceiverState:
+  [ Fr(~rst) ]
+--[ InitReceiverState($B, ~rst) ]->
+  [ ReceiverState($B, ~rst)
+  , !ReceiverPublicState($B, ~rst)
+  ]
+
+// 发送方长期状态在本模型中是持久 fact。
+rule InitSenderState:
+  [ Fr(~sst) ]
+--[ InitSenderState($A, ~sst) ]->
+  [ !SenderState($A, ~sst) ]
+
+// 发送方生成不透明 split-KEM component，并登记它和接收方状态 rst 的抽象 key relation。
+rule SenderCreatesComponent:
+  let c = cts($A, $B, sst, ~r)
+      k = ks($A, $B, sst, ~r)
+  in
+  [ !SenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , Fr(~r)
+  ]
+--[ SenderComponent($A, $B, rst, c, k) ]->
+  [ Out(<$A, $B, c>)
+  , !ComponentKey($A, $B, rst, c, k)
+  ]
+
+// 接收方只接收一个不透明 cts_in，并通过 !ComponentKey 抽象 relation 得到 Ks。
+// honest accept 产生 ReceiverKey 和 Partnered，但不输出 rkey，也不产生 AttackerKnowsKey。
+// ReceiverState 是线性的，因此成功接受会消耗 rst。
+rule ReceiverAcceptsComponent:
+  let k = rkey($B, $A, rst, cts_in, Ks)
+  in
+  [ In(<$A, $B, cts_in>)
+  , ReceiverState($B, rst)
+  , !ComponentKey($A, $B, rst, cts_in, Ks)
+  ]
+--[ UseReceiverState($B, rst)
+  , ConsumeReceiverState($B, rst)
+  , ReceiverAcceptsComponent($B, $A, rst, cts_in, Ks)
+  , ReceiverKey($B, $A, rst, cts_in, Ks, k)
+  , Partnered($A, $B, rst, cts_in, Ks)
+  ]->
+  [ UsedReceiverState($B, rst) ]
+
+// 泄露接收方状态只记录 compromise 并输出 rst；不消费 ReceiverState。
+rule CompromiseReceiverState:
+  [ !ReceiverPublicState($B, rst) ]
+--[ CompromiseReceiverState($B, rst) ]->
+  [ Out(rst)
+  , !CompromisedReceiverState($B, rst)
+  ]
+
+// 泄露发送方状态只记录 compromise 并输出 sst。
+rule CompromiseSenderState:
+  [ !SenderState($A, sst) ]
+--[ CompromiseSenderState($A, sst) ]->
+  [ Out(sst)
+  , !CompromisedSenderState($A, sst)
+  ]
+
+// 抽象 bad-case：接收方状态已泄露时，模型允许直接产生 forged accept。
+// 这不是 Dolev-Yao 推导，也不表示攻击者真的拆开或构造了合法 split-KEM component。
+// forged accept 是 receiver-side bad case，攻击者知道该 receiver-side key。
+rule ForgedAcceptAfterReceiverStateCompromise:
+  let k = rkey($B, $A, rst, ~fake_cts, ~fake_Ks)
+  in
+  [ !CompromisedReceiverState($B, rst)
+  , !SenderState($A, sst)
+  , Fr(~fake_cts)
+  , Fr(~fake_Ks)
+  ]
+--[ ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks)
+  , ReceiverKey($B, $A, rst, ~fake_cts, ~fake_Ks, k)
+  , AttackerKnowsKey(k)
+  , UnpartneredReceiver($B, $A, rst, ~fake_cts, ~fake_Ks, k)
+  ]->
+  [ Out(k) ]
+
+// 抽象 bad-case：发送方状态已泄露时，模型允许对任意已初始化接收方状态产生 forged accept。
+// forged cts/Ks 是抽象 fresh 值，不建完整 decapsulation 或 KDF。
+// forged accept 是 receiver-side bad case，攻击者知道该 receiver-side key。
+rule ForgedAcceptAfterSenderStateCompromise:
+  let k = rkey($B, $A, rst, ~fake_cts, ~fake_Ks)
+  in
+  [ !CompromisedSenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , Fr(~fake_cts)
+  , Fr(~fake_Ks)
+  ]
+--[ ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks)
+  , ReceiverKey($B, $A, rst, ~fake_cts, ~fake_Ks, k)
+  , AttackerKnowsKey(k)
+  , UnpartneredReceiver($B, $A, rst, ~fake_cts, ~fake_Ks, k)
+  ]->
+  [ Out(k) ]
+
+lemma executable_honest_accept:
+  exists-trace
+  "Ex A B rst c Ks #i #j.
+     SenderComponent(A, B, rst, c, Ks) @ #i
+   & ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma receiver_state_single_use:
+  "All B A1 A2 rst c1 c2 Ks1 Ks2 #i #j.
+     ReceiverAcceptsComponent(B, A1, rst, c1, Ks1) @ #i
+   & ReceiverAcceptsComponent(B, A2, rst, c2, Ks2) @ #j
+   ==> #i = #j"
+
+lemma component_origin_without_early_compromise:
+  "All B A rst c Ks #i.
+     ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #i
+   & not (Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+   & not (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i)
+   ==> (Ex #k. SenderComponent(A, B, rst, c, Ks) @ #k & #k < #i)"
+
+lemma forged_accept_requires_early_compromise:
+  "All B A rst c Ks #i.
+     ForgedReceiverAccept(B, A, rst, c, Ks) @ #i
+   ==> ((Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+      | (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i))"
+
+lemma executable_receiver_compromise_bad_case:
+  exists-trace
+  "Ex A B rst c Ks #i #j.
+     CompromiseReceiverState(B, rst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma executable_sender_compromise_bad_case:
+  exists-trace
+  "Ex A B rst c Ks sst #i #j.
+     CompromiseSenderState(A, sst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma executable_partnered_receiver_key:
+  exists-trace
+  "Ex A B rst cts Ks k #i.
+      ReceiverKey(B,A,rst,cts,Ks,k) @ #i
+    & Partnered(A,B,rst,cts,Ks) @ #i"
+
+lemma executable_unpartnered_attacker_known_key:
+  exists-trace
+  "Ex A B rst cts Ks k #i.
+      ReceiverKey(B,A,rst,cts,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    & UnpartneredReceiver(B,A,rst,cts,Ks,k) @ #i"
+
+lemma receiver_key_known_requires_exception:
+  "All B A rst cts Ks k #i.
+      ReceiverKey(B,A,rst,cts,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    ==> (
+          (Ex #j. UnpartneredReceiver(B,A,rst,cts,Ks,k) @ #j)
+        | (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+        | (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+        )"
+
+lemma partnered_key_not_attacker_known_without_early_compromise:
+  "All B A rst cts Ks k #i.
+      ReceiverKey(B,A,rst,cts,Ks,k) @ #i
+    & Partnered(A,B,rst,cts,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> not (Ex #j. AttackerKnowsKey(k) @ #j)"
+
+end
