@@ -1,273 +1,129 @@
-theory Kwaay_SplitKem_State_V0
+theory kwaay_splitkem_state_v0
 begin
 
-/*
-  K-Waay Tamarin V0 skeleton.
+functions: cts/4, ks/4
 
-  目标：
-  1. 建模 split-KEM component 的发送与接收；
-  2. 建模 receiver state 的一次性使用；
-  3. 建模 receiver/sender state compromise；
-  4. 检查 receiver accept 的 component origin；
-  5. 为后续 partnered / unpartnered、BatchReceive、receiver-side exception 打基础。
+// V0 是 split-KEM state lifecycle 的 toy model。
+// cts(...) 是不透明 component：接收方只把它当作整体消息处理，不从中拆出 sst 或 r。
+// !ComponentKey(A,B,rst,cts,Ks) 表示抽象 decapsulation relation，不建完整 KEM/KDF/签名模型。
 
-  当前不建模：
-  - 完整 KEM；
-  - 完整 KDF；
-  - 完整签名；
-  - 完整 BatchReceive；
-  - computational KIND；
-  - UNF-1KMA / IND-1BatchCCA computational proof。
-
-  建模原则：
-  - cts 被当作 opaque split-KEM component；
-  - receiver 不能从 cts 中直接拆出 sender state 或 randomness；
-  - ComponentKey 是抽象 decapsulation relation；
-  - ReceiverState 是 linear fact，用于表达 state consumption；
-  - forged accept 规则只是 compromise 后的抽象 bad-case，不是完整攻击推导。
-*/
-
-functions:
-  cts/4 [private],
-  ks/4 [private]
-
-/*
-  生成 receiver state。
-
-  ReceiverState(B,rst) 是 linear fact：
-  - receiver accept 会消耗它；
-  - 这用于表达 receiver state one-time use。
-
-  !ReceiverPublicState(B,rst) 是 persistent fact：
-  - 表示该 receiver state 对应的 public prekey / public component 已经发布；
-  - sender 可以用它生成针对该 receiver state 的 split-KEM component。
-*/
+// 接收方状态是线性 fact；!ReceiverPublicState 只是让发送方和抽象规则引用同一个 rst。
 rule InitReceiverState:
   [ Fr(~rst) ]
-  --[ ReceiverStateCreated($B, ~rst) ]->
-  [
-    ReceiverState($B, ~rst),
-    !ReceiverPublicState($B, ~rst)
+--[ InitReceiverState($B, ~rst) ]->
+  [ ReceiverState($B, ~rst)
+  , !ReceiverPublicState($B, ~rst)
   ]
 
-/*
-  生成 sender state。
-
-  V0 中先把 SenderState 建成 persistent fact。
-  后续如果要研究 sender state consumption，可以再把它改成 linear fact。
-*/
+// 发送方长期状态在本模型中是持久 fact。
 rule InitSenderState:
   [ Fr(~sst) ]
-  --[ SenderStateCreated($A, ~sst) ]->
+--[ InitSenderState($A, ~sst) ]->
   [ !SenderState($A, ~sst) ]
 
-/*
-  honest sender 生成 split-KEM component。
-
-  cts($A,$B,sst,~r) 是 opaque ciphertext/component；
-  ks($A,$B,sst,~r) 是对应 split-KEM shared secret。
-
-  注意：
-  - cts 是 private function 生成的 opaque term；
-  - receiver 不通过模式匹配拆 cts；
-  - receiver 后续通过 !ComponentKey(...) 这个抽象 relation 得到 Ks。
-*/
+// 发送方生成不透明 split-KEM component，并登记它和接收方状态 rst 的抽象 key relation。
 rule SenderCreatesComponent:
-  [
-    !SenderState($A, sst),
-    !ReceiverPublicState($B, rst),
-    Fr(~r)
+  let c = cts($A, $B, sst, ~r)
+      k = ks($A, $B, sst, ~r)
+  in
+  [ !SenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , Fr(~r)
   ]
-  --[
-    SenderComponent($A, $B, rst, cts($A,$B,sst,~r), ks($A,$B,sst,~r))
-  ]->
-  [
-    Out(<$A, $B, cts($A,$B,sst,~r)>),
-    !ComponentKey($A, $B, rst, cts($A,$B,sst,~r), ks($A,$B,sst,~r))
+--[ SenderComponent($A, $B, rst, c, k) ]->
+  [ Out(<$A, $B, c>)
+  , !ComponentKey($A, $B, rst, c, k)
   ]
 
-/*
-  honest receiver 接收并接受 split-KEM component。
-
-  receiver 从网络收到 opaque cts_in；
-  它不能拆开 cts_in；
-  它必须同时拥有 ReceiverState(B,rst)
-  并且存在 !ComponentKey(A,B,rst,cts_in,Ks)
-  才能接受并得到 Ks。
-
-  ReceiverState(B,rst) 被消费。
-*/
+// 接收方只接收一个不透明 cts_in，并通过 !ComponentKey 抽象 relation 得到 Ks。
+// ReceiverState 是线性的，因此成功接受会消耗 rst。
 rule ReceiverAcceptsComponent:
-  [
-    In(<$A, $B, cts_in>),
-    ReceiverState($B, rst),
-    !ComponentKey($A, $B, rst, cts_in, Ks)
+  [ In(<$A, $B, cts_in>)
+  , ReceiverState($B, rst)
+  , !ComponentKey($A, $B, rst, cts_in, Ks)
   ]
-  --[
-    UseReceiverState($B, rst),
-    ConsumeReceiverState($B, rst),
-    ReceiverAcceptsComponent($B, $A, rst, cts_in, Ks)
+--[ UseReceiverState($B, rst)
+  , ConsumeReceiverState($B, rst)
+  , ReceiverAcceptsComponent($B, $A, rst, cts_in, Ks)
   ]->
-  [
-    UsedReceiverState($B, rst)
-  ]
+  [ UsedReceiverState($B, rst) ]
 
-/*
-  receiver state compromise。
-
-  这里 compromise 不消费 ReceiverState，而是把 ReceiverState 放回去。
-  含义：
-  - 泄露发生后，协议仍可能继续使用这个 state；
-  - compromise action fact 记录泄露时间；
-  - !CompromisedReceiverState 用于后续 forged accept bad-case rule。
-*/
+// 泄露接收方状态只记录 compromise 并输出 rst；不消费 ReceiverState。
 rule CompromiseReceiverState:
-  [ ReceiverState($B, rst) ]
-  --[ CompromiseReceiverState($B, rst) ]->
-  [
-    ReceiverState($B, rst),
-    !CompromisedReceiverState($B, rst),
-    Out(rst)
+  [ !ReceiverPublicState($B, rst) ]
+--[ CompromiseReceiverState($B, rst) ]->
+  [ Out(rst)
+  , !CompromisedReceiverState($B, rst)
   ]
 
-/*
-  sender state compromise。
-
-  V0 中 sender state 是 persistent fact。
-  泄露后记录 !CompromisedSenderState。
-*/
+// 泄露发送方状态只记录 compromise 并输出 sst。
 rule CompromiseSenderState:
   [ !SenderState($A, sst) ]
-  --[ CompromiseSenderState($A, sst) ]->
-  [
-    !CompromisedSenderState($A, sst),
-    Out(sst)
+--[ CompromiseSenderState($A, sst) ]->
+  [ Out(sst)
+  , !CompromisedSenderState($A, sst)
   ]
 
-/*
-  abstract bad-case:
-  如果 receiver state 已经泄露，攻击者可以诱导 receiver 接受一个 forged component。
-
-  注意：
-  这是抽象规则，用来表达 ProVerif 中 receiver_skem_sk compromise
-  导致 receiver-side false 的 bad-case 直觉。
-
-  它不是完整 Dolev-Yao 推导。
-*/
-rule ForgedAcceptAfterReceiverStateCompromise:
-  [
-    !CompromisedReceiverState($B, rst),
-    ReceiverState($B, rst),
-    Fr(~fake_cts),
-    Fr(~fake_Ks)
+// 抽象 bad-case：接收方状态已泄露时，模型允许直接产生 forged accept。
+// 这不是 Dolev-Yao 推导，也不表示攻击者真的拆开或构造了合法 split-KEM component。
+rule AbstractForgedAcceptFromReceiverStateCompromise:
+  [ !CompromisedReceiverState($B, rst)
+  , !SenderState($A, sst)
+  , Fr(~fake_cts)
+  , Fr(~fake_Ks)
   ]
-  --[
-    UseReceiverState($B, rst),
-    ConsumeReceiverState($B, rst),
-    ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks),
-    ReceiverAcceptsComponent($B, $A, rst, ~fake_cts, ~fake_Ks)
-  ]->
-  [
-    UsedReceiverState($B, rst)
+--[ ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks) ]->
+  [ ]
+
+// 抽象 bad-case：发送方状态已泄露时，模型允许对任意已初始化接收方状态产生 forged accept。
+// forged cts/Ks 是抽象 fresh 值，不建完整 decapsulation 或 KDF。
+rule AbstractForgedAcceptFromSenderStateCompromise:
+  [ !CompromisedSenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , Fr(~fake_cts)
+  , Fr(~fake_Ks)
   ]
+--[ ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks) ]->
+  [ ]
 
-/*
-  abstract bad-case:
-  如果 sender state 已经泄露，攻击者也可以诱导 receiver 接受一个 forged component。
-
-  这对应 ProVerif 中 sender_skem_sk compromise 下：
-  sender-side secrecy true
-  receiver-side secrecy false
-
-  同样，这只是抽象 bad-case rule，不是完整 Dolev-Yao 推导。
-*/
-rule ForgedAcceptAfterSenderStateCompromise:
-  [
-    !CompromisedSenderState($A, sst),
-    ReceiverState($B, rst),
-    Fr(~r)
-  ]
-  --[
-    UseReceiverState($B, rst),
-    ConsumeReceiverState($B, rst),
-    ForgedReceiverAccept($B, $A, rst, cts($A,$B,sst,~r), ks($A,$B,sst,~r)),
-    ReceiverAcceptsComponent($B, $A, rst, cts($A,$B,sst,~r), ks($A,$B,sst,~r))
-  ]->
-  [
-    UsedReceiverState($B, rst)
-  ]
-
-/*
-  Lemma 1:
-  honest accept trace exists.
-*/
 lemma executable_honest_accept:
   exists-trace
-  "Ex A B rst cts_in Ks #i.
-      ReceiverAcceptsComponent(B,A,rst,cts_in,Ks) @ #i"
+  "Ex A B rst c Ks #i #j.
+     SenderComponent(A, B, rst, c, Ks) @ #i
+   & ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #j
+   & #i < #j"
 
-/*
-  Lemma 2:
-  同一个 receiver state 不能被消费两次。
-
-  这是 state consumption 的最小检查。
-*/
 lemma receiver_state_single_use:
-  "All B rst #i #j.
-      ConsumeReceiverState(B,rst) @ #i
-    & ConsumeReceiverState(B,rst) @ #j
-    ==> #i = #j"
+  "All B A1 A2 rst c1 c2 Ks1 Ks2 #i #j.
+     ReceiverAcceptsComponent(B, A1, rst, c1, Ks1) @ #i
+   & ReceiverAcceptsComponent(B, A2, rst, c2, Ks2) @ #j
+   ==> #i = #j"
 
-/*
-  Lemma 3:
-  如果 receiver 接受了某个 component，
-  并且 accept 前没有 receiver state compromise，
-  并且 accept 前没有 sender state compromise，
-  那么这个 component 必须来自 honest sender component。
-
-  这是 ProVerif 中：
-  SplitKemAccepted ==> SenderSplitKemComponent
-  的 Tamarin 时间顺序增强版。
-*/
 lemma component_origin_without_early_compromise:
-  "All B A rst cts_in Ks #i.
-      ReceiverAcceptsComponent(B,A,rst,cts_in,Ks) @ #i
-    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
-    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
-    ==> (Ex #j. SenderComponent(A,B,rst,cts_in,Ks) @ #j & #j < #i)"
+  "All B A rst c Ks #i.
+     ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #i
+   & not (Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+   & not (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i)
+   ==> (Ex #k. SenderComponent(A, B, rst, c, Ks) @ #k & #k < #i)"
 
-/*
-  Lemma 4:
-  forged receiver accept 只能发生在某种 state compromise 之后。
-*/
 lemma forged_accept_requires_early_compromise:
-  "All B A rst cts_in Ks #i.
-      ForgedReceiverAccept(B,A,rst,cts_in,Ks) @ #i
-    ==> (
-          (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
-        | (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
-        )"
+  "All B A rst c Ks #i.
+     ForgedReceiverAccept(B, A, rst, c, Ks) @ #i
+   ==> ((Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+      | (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i))"
 
-/*
-  Lemma 5:
-  receiver-state compromise bad-case trace exists.
-  用来确认模型中确实能出现 receiver state 泄露后的 forged accept。
-*/
 lemma executable_receiver_compromise_bad_case:
   exists-trace
-  "Ex B A rst cts_in Ks #i.
-      ForgedReceiverAccept(B,A,rst,cts_in,Ks) @ #i
-    & (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)"
+  "Ex A B rst c Ks #i #j.
+     CompromiseReceiverState(B, rst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
 
-/*
-  Lemma 6:
-  sender-state compromise bad-case trace exists.
-  用来确认模型中确实能出现 sender state 泄露后的 forged accept。
-*/
 lemma executable_sender_compromise_bad_case:
   exists-trace
-  "Ex B A rst cts_in Ks #i.
-      ForgedReceiverAccept(B,A,rst,cts_in,Ks) @ #i
-    & (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)"
+  "Ex A B rst c Ks sst #i #j.
+     CompromiseSenderState(A, sst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
 
 end
