@@ -1,0 +1,378 @@
+theory Kwaay_SplitKem_Batch_Dynamic_V6
+begin
+
+functions:
+  cts/4 [private],
+  ks/4 [private],
+  rkey/5 [private]
+
+/*
+  K-Waay Tamarin V6 dynamic batch skeleton.
+
+  目标：
+  - 从 V5 的固定两槽 batch 推进到动态 batch 生命周期骨架；
+  - 表达 AddSlot -> SealBatch -> ProcessSlot -> Complete/Fail；
+  - 使用 PendingSlot / DoneSlot 表达 slot 生命周期；
+  - 继续保留 receiver-side key exception 分类；
+  - 避免整数 counter 和 “没有 PendingSlot” 这类 Tamarin 中不自然的全局判断。
+
+  当前不建模：
+  - 任意长度 batch 的 all pending slots done -> complete；
+  - 真实 counter +1 / -1；
+  - 完整 BatchReceive vector traversal；
+  - 真实 KEM decapsulation fail；
+  - 完整 KDF / 签名；
+  - computational KIND / UNF-1KMA / IND-1BatchCCA。
+*/
+
+rule InitReceiverState:
+  [ Fr(~rst) ]
+  --[ ReceiverStateCreated($B, ~rst) ]->
+  [
+    ReceiverState($B, ~rst),
+    !ReceiverPublicState($B, ~rst),
+    ReceiverCompromiseToken($B, ~rst)
+  ]
+
+rule InitSenderState:
+  [ Fr(~sst) ]
+  --[ SenderStateCreated($A, ~sst) ]->
+  [
+    !SenderState($A, ~sst),
+    SenderCompromiseToken($A, ~sst)
+  ]
+
+rule SenderCreatesComponent:
+  let c = cts($A,$B,sst,~r)
+      k = ks($A,$B,sst,~r)
+  in
+  [
+    !SenderState($A, sst),
+    !ReceiverPublicState($B, rst),
+    Fr(~r)
+  ]
+  --[ SenderComponent($A,$B,rst,c,k) ]->
+  [
+    Out(<$A,$B,c>),
+    !ComponentKey($A,$B,rst,c,k)
+  ]
+
+/*
+  CreateBatch:
+  - 消耗 ReceiverState，表示 rst 被该 batch 锁定；
+  - 生成有限 AddSlotToken，避免 AddSlot 无限发生；
+  - 生成 SealToken，表示 batch 可以被 sealed；
+  - 生成 BatchEndToken，保证 complete/fail 只能发生一次。
+*/
+rule CreateBatch:
+  [
+    ReceiverState($B, rst),
+    Fr(~bid)
+  ]
+  --[ BatchCreated($B, ~bid, rst) ]->
+  [
+    AddSlotToken($B, ~bid, rst),
+    AddSlotToken($B, ~bid, rst),
+    SealToken($B, ~bid, rst),
+    BatchEndToken($B, ~bid, rst),
+    BatchCompromiseToken($B, ~bid, rst)
+  ]
+
+/*
+  AddSlot:
+  - 消耗一个 AddSlotToken；
+  - 产生一个 PendingSlot；
+  - 当前最多添加两个 slot，只是 bounded dynamic skeleton。
+*/
+rule AddSlot:
+  [
+    AddSlotToken($B, bid, rst),
+    In(<$A,$B,cts_in>),
+    Fr(~idx)
+  ]
+  --[ SlotAdded($B,bid,~idx,$A,cts_in) ]->
+  [
+    PendingSlot($B,bid,~idx,$A,cts_in)
+  ]
+
+/*
+  SealBatch:
+  - 消耗 SealToken；
+  - 产生 persistent sealed fact；
+  - sealed 后允许 ProcessSlot / Complete / Fail。
+*/
+rule SealBatch:
+  [ SealToken($B, bid, rst) ]
+  --[ SealBatchEvent($B,bid,rst) ]->
+  [
+    !BatchSealedFact($B,bid,rst)
+  ]
+
+/*
+  Honest ProcessPendingSlot:
+  - 必须先 sealed；
+  - 必须有 PendingSlot；
+  - 必须能通过 ComponentKey 得到 Ks；
+  - 产生 DoneSlot 和 receiver-side key。
+*/
+rule ProcessPendingSlot:
+  let k = rkey($B,$A,rst,cts_in,Ks)
+  in
+  [
+    !BatchSealedFact($B,bid,rst),
+    PendingSlot($B,bid,idx,$A,cts_in),
+    !ComponentKey($A,$B,rst,cts_in,Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,Ks,k),
+    PartneredSlot($A,$B,bid,idx,rst,cts_in,Ks),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    DoneSlotEvent($B,bid,idx,$A,cts_in)
+  ]->
+  [
+    DoneSlot($B,bid,idx,$A,cts_in)
+  ]
+
+/*
+  receiver state compromise before batch creation.
+*/
+rule CompromiseReceiverState:
+  [
+    ReceiverState($B, rst),
+    ReceiverCompromiseToken($B, rst)
+  ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    ReceiverState($B, rst),
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+/*
+  receiver state compromise after batch creation.
+*/
+rule CompromiseActiveReceiverState:
+  [ BatchCompromiseToken($B, bid, rst) ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseSenderState:
+  [
+    !SenderState($A, sst),
+    SenderCompromiseToken($A, sst)
+  ]
+  --[ CompromiseSenderState($A, sst) ]->
+  [
+    !CompromisedSenderState($A, sst),
+    Out(sst)
+  ]
+
+/*
+  receiver-state compromise bad case.
+*/
+rule ForgedProcessAfterReceiverStateCompromise:
+  let k = rkey($B,$A,rst,cts_in,~fake_Ks)
+  in
+  [
+    !BatchSealedFact($B,bid,rst),
+    PendingSlot($B,bid,idx,$A,cts_in),
+    !CompromisedReceiverState($B,rst),
+    Fr(~fake_Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,~fake_Ks),
+    ForgedReceiverAccept($B,$A,rst,cts_in,~fake_Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,~fake_Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,~fake_Ks,k),
+    AttackerKnowsKey(k),
+    UnpartneredReceiverSlot($B,$A,bid,idx,rst,cts_in,~fake_Ks,k),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    DoneSlotEvent($B,bid,idx,$A,cts_in)
+  ]->
+  [
+    DoneSlot($B,bid,idx,$A,cts_in),
+    Out(k)
+  ]
+
+/*
+  sender-state compromise bad case.
+*/
+rule ForgedProcessAfterSenderStateCompromise:
+  let c = cts($A,$B,sst,~r)
+      Ks = ks($A,$B,sst,~r)
+      k = rkey($B,$A,rst,c,Ks)
+  in
+  [
+    !BatchSealedFact($B,bid,rst),
+    PendingSlot($B,bid,idx,$A,c),
+    !CompromisedSenderState($A,sst),
+    Fr(~r)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,c),
+    BatchSlotAccept($B,bid,idx,$A,rst,c,Ks),
+    ForgedReceiverAccept($B,$A,rst,c,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,c,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,c,Ks,k),
+    AttackerKnowsKey(k),
+    UnpartneredReceiverSlot($B,$A,bid,idx,rst,c,Ks,k),
+    SlotProcessed($B,bid,idx,$A,c),
+    DoneSlotEvent($B,bid,idx,$A,c)
+  ]->
+  [
+    DoneSlot($B,bid,idx,$A,c),
+    Out(k)
+  ]
+
+/*
+  CompleteSealedBatch:
+  - V6 不证明 all pending slots done 后才能 complete；
+  - 这里只表达 sealed batch 可以 complete；
+  - BatchEndToken 保证 batch 只能结束一次。
+*/
+rule CompleteSealedBatch:
+  [
+    !BatchSealedFact($B,bid,rst),
+    BatchEndToken($B,bid,rst)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchComplete($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+/*
+  FailSealedBatch:
+  - sealed batch 中某个 pending slot fail；
+  - fail 消耗 BatchEndToken；
+  - batch fail 后 receiver state 被消费。
+*/
+rule FailSealedBatch:
+  [
+    !BatchSealedFact($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    PendingSlot($B,bid,idx,$A,cts_in)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotFail($B,bid,idx,$A,rst,cts_in),
+    BatchFail($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+/* ---------- executability ---------- */
+
+lemma executable_add_slot:
+  exists-trace
+  "Ex B A bid idx cts #i.
+      SlotAdded(B,bid,idx,A,cts) @ #i"
+
+lemma executable_seal_batch:
+  exists-trace
+  "Ex B bid rst #i.
+      SealBatchEvent(B,bid,rst) @ #i"
+
+lemma executable_process_slot:
+  exists-trace
+  "Ex B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i"
+
+lemma executable_batch_complete:
+  exists-trace
+  "Ex B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i"
+
+lemma executable_batch_fail:
+  exists-trace
+  "Ex B A bid idx rst cts #i.
+      BatchSlotFail(B,bid,idx,A,rst,cts) @ #i
+    & BatchFail(B,bid,rst) @ #i"
+
+/* ---------- dynamic lifecycle lemmas ---------- */
+
+lemma process_requires_slot_added:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    ==> Ex #j. SlotAdded(B,bid,idx,A,cts) @ #j & #j < #i"
+
+lemma process_requires_seal:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma complete_requires_seal:
+  "All B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma fail_requires_seal:
+  "All B bid rst #i.
+      BatchFail(B,bid,rst) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma batch_complete_consumes_state:
+  "All B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i
+    ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_fail_consumes_state:
+  "All B bid rst #i.
+      BatchFail(B,bid,rst) @ #i
+    ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_end_token_single_use:
+  "All B bid rst #i #j.
+      UseBatchEndToken(B,bid,rst) @ #i
+    & UseBatchEndToken(B,bid,rst) @ #j
+    ==> #i = #j"
+
+lemma batch_fail_complete_exclusive:
+  "All B bid rst #i #j.
+      BatchFail(B,bid,rst) @ #i
+    & BatchComplete(B,bid,rst) @ #j
+    ==> F"
+
+/* ---------- slot-level origin / exception ---------- */
+
+lemma slot_origin_without_early_compromise:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> Ex #j. SenderComponent(A,B,rst,cts,Ks) @ #j & #j < #i"
+
+lemma slot_key_known_requires_exception:
+  "All B A bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    ==> (
+          (Ex #j. UnpartneredReceiverSlot(B,A,bid,idx,rst,cts,Ks,k) @ #j)
+        | (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+        | (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+        )"
+
+lemma partnered_slot_key_not_attacker_known_without_early_compromise:
+  "All B A bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & PartneredSlot(A,B,bid,idx,rst,cts,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> not (Ex #j. AttackerKnowsKey(k) @ #j)"
+
+end

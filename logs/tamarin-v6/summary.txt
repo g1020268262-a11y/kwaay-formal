@@ -1,0 +1,16 @@
+executable_add_slot                                                    VERIFIED
+executable_seal_batch                                                  VERIFIED
+executable_process_slot                                                VERIFIED
+executable_batch_complete                                              VERIFIED
+executable_batch_fail                                                  VERIFIED
+process_requires_slot_added                                            VERIFIED
+process_requires_seal                                                  VERIFIED
+complete_requires_seal                                                 VERIFIED
+fail_requires_seal                                                     VERIFIED
+batch_complete_consumes_state                                          VERIFIED
+batch_fail_consumes_state                                              VERIFIED
+batch_end_token_single_use                                             VERIFIED
+batch_fail_complete_exclusive                                          VERIFIED
+slot_origin_without_early_compromise                                   VERIFIED
+slot_key_known_requires_exception                                      VERIFIED
+partnered_slot_key_not_attacker_known_without_early_compromise         VERIFIED
