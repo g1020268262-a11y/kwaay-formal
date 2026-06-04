@@ -1,0 +1,312 @@
+theory Kwaay_SplitKem_Batch_Abort_V3
+begin
+
+functions: cts/4 [private], ks/4 [private], rkey/5 [private]
+
+// V3 adds a minimal batch abort / batch fail abstraction.
+// V3 does not build a complete BatchReceive.
+// V3 does not build complete vector iteration.
+// V3 does not prove real KEM decapsulation failure conditions.
+// V3 only expresses slot fail -> batch fail, and fail / complete exclusivity.
+//
+// V3 不是完整 K-Waay secrecy proof。
+// V3 只测试 receiver-side exception candidate 在 batch slot 坐标下的形状。
+// AttackerKnowsKey 是抽象事件，不是完整 Dolev-Yao secrecy proof。
+// PartneredSlot / UnpartneredReceiverSlot 是当前 toy model 分类，不是最终论文定义。
+
+// cts(...) 是不透明 component：接收方只把它当作整体消息处理，不从中拆出 sst 或 r。
+// !ComponentKey(A,B,rst,cts,Ks) 表示抽象 decapsulation relation，不建完整 KEM/KDF/签名模型。
+// rkey(B,A,rst,cts,Ks) 表示 receiver 侧根据 accepted component 派生出的抽象 key。
+// bid 表示一次 batch receive 实例；idx 表示该 batch 中的某个 slot。
+
+// 接收方状态是线性 fact；!ReceiverPublicState 只是让发送方和抽象规则引用同一个 rst。
+rule InitReceiverState:
+  [ Fr(~rst) ]
+--[ InitReceiverState($B, ~rst) ]->
+  [ ReceiverState($B, ~rst)
+  , !ReceiverPublicState($B, ~rst)
+  ]
+
+// 发送方长期状态在本模型中是持久 fact。
+rule InitSenderState:
+  [ Fr(~sst) ]
+--[ InitSenderState($A, ~sst) ]->
+  [ !SenderState($A, ~sst) ]
+
+// 发送方生成不透明 split-KEM component，并登记它和接收方状态 rst 的抽象 key relation。
+rule SenderCreatesComponent:
+  let c = cts($A, $B, sst, ~r)
+      k = ks($A, $B, sst, ~r)
+  in
+  [ !SenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , Fr(~r)
+  ]
+--[ SenderComponent($A, $B, rst, c, k) ]->
+  [ Out(<$A, $B, c>)
+  , !ComponentKey($A, $B, rst, c, k)
+  ]
+
+// honest accept 坐标化为一个 batch slot。
+// V3 仍然让一个 accepted slot 消耗一次 receiver state；这不是完整 BatchReceive。
+rule ReceiverAcceptsComponent:
+  let k = rkey($B, $A, rst, cts_in, Ks)
+  in
+  [ In(<$A, $B, cts_in>)
+  , ReceiverState($B, rst)
+  , !ComponentKey($A, $B, rst, cts_in, Ks)
+  , Fr(~bid)
+  , Fr(~idx)
+  ]
+--[ BatchCreated($B, ~bid, rst)
+  , BatchSlot($B, ~bid, ~idx, $A, cts_in)
+  , BatchSlotAccept($B, ~bid, ~idx, $A, rst, cts_in, Ks)
+  , UseReceiverState($B, rst)
+  , ConsumeReceiverState($B, rst)
+  , ReceiverAcceptsComponent($B, $A, rst, cts_in, Ks)
+  , ReceiverKey($B, $A, ~bid, ~idx, rst, cts_in, Ks, k)
+  , PartneredSlot($A, $B, ~bid, ~idx, rst, cts_in, Ks)
+  ]->
+  [ UsedReceiverState($B, rst)
+  , OpenBatch($B, ~bid, rst)
+  ]
+
+// 泄露接收方状态只记录 compromise 并输出 rst；不消费 ReceiverState。
+rule CompromiseReceiverState:
+  [ !ReceiverPublicState($B, rst) ]
+--[ CompromiseReceiverState($B, rst) ]->
+  [ Out(rst)
+  , !CompromisedReceiverState($B, rst)
+  ]
+
+// 泄露发送方状态只记录 compromise 并输出 sst。
+rule CompromiseSenderState:
+  [ !SenderState($A, sst) ]
+--[ CompromiseSenderState($A, sst) ]->
+  [ Out(sst)
+  , !CompromisedSenderState($A, sst)
+  ]
+
+// 抽象 bad-case：接收方状态已泄露时，模型允许产生 forged receiver slot accept。
+// 这不是 Dolev-Yao 推导，也不表示攻击者真的拆开或构造了合法 split-KEM component。
+rule ForgedAcceptAfterReceiverStateCompromise:
+  let k = rkey($B, $A, rst, ~fake_cts, ~fake_Ks)
+  in
+  [ !CompromisedReceiverState($B, rst)
+  , ReceiverState($B, rst)
+  , Fr(~fake_cts)
+  , Fr(~fake_Ks)
+  , Fr(~bid)
+  , Fr(~idx)
+  ]
+--[ BatchCreated($B, ~bid, rst)
+  , BatchSlot($B, ~bid, ~idx, $A, ~fake_cts)
+  , BatchSlotAccept($B, ~bid, ~idx, $A, rst, ~fake_cts, ~fake_Ks)
+  , UseReceiverState($B, rst)
+  , ConsumeReceiverState($B, rst)
+  , ReceiverAcceptsComponent($B, $A, rst, ~fake_cts, ~fake_Ks)
+  , ForgedReceiverAccept($B, $A, rst, ~fake_cts, ~fake_Ks)
+  , ReceiverKey($B, $A, ~bid, ~idx, rst, ~fake_cts, ~fake_Ks, k)
+  , AttackerKnowsKey(k)
+  , UnpartneredReceiverSlot($B, $A, ~bid, ~idx, rst, ~fake_cts, ~fake_Ks, k)
+  ]->
+  [ UsedReceiverState($B, rst)
+  , OpenBatch($B, ~bid, rst)
+  , Out(k)
+  ]
+
+// 抽象 bad-case：发送方状态已泄露时，模型允许产生 forged receiver slot accept。
+// forged cts/Ks 由 compromised sender state 抽象生成，不建完整 decapsulation 或 KDF。
+rule ForgedAcceptAfterSenderStateCompromise:
+  let c = cts($A, $B, sst, ~r)
+      Ks = ks($A, $B, sst, ~r)
+      k = rkey($B, $A, rst, c, Ks)
+  in
+  [ !CompromisedSenderState($A, sst)
+  , !ReceiverPublicState($B, rst)
+  , ReceiverState($B, rst)
+  , Fr(~r)
+  , Fr(~bid)
+  , Fr(~idx)
+  ]
+--[ BatchCreated($B, ~bid, rst)
+  , BatchSlot($B, ~bid, ~idx, $A, c)
+  , BatchSlotAccept($B, ~bid, ~idx, $A, rst, c, Ks)
+  , UseReceiverState($B, rst)
+  , ConsumeReceiverState($B, rst)
+  , ReceiverAcceptsComponent($B, $A, rst, c, Ks)
+  , ForgedReceiverAccept($B, $A, rst, c, Ks)
+  , ReceiverKey($B, $A, ~bid, ~idx, rst, c, Ks, k)
+  , AttackerKnowsKey(k)
+  , UnpartneredReceiverSlot($B, $A, ~bid, ~idx, rst, c, Ks, k)
+  ]->
+  [ UsedReceiverState($B, rst)
+  , OpenBatch($B, ~bid, rst)
+  , Out(k)
+  ]
+
+// BatchSlotFail: independent fail trace.
+// This is an abstract fail rule, not a concrete KEM decapsulation-failure condition.
+rule BatchSlotFail:
+  [ ReceiverState($B, rst)
+  , Fr(~bid)
+  , Fr(~idx)
+  , Fr(~bad_cts)
+  ]
+--[ BatchCreated($B, ~bid, rst)
+  , BatchSlot($B, ~bid, ~idx, $A, ~bad_cts)
+  , BatchSlotFail($B, ~bid, ~idx, $A, rst, ~bad_cts)
+  , BatchFail($B, ~bid, rst)
+  ]->
+  [ UsedReceiverState($B, rst) ]
+
+// An accepted slot creates an open batch, which can complete.
+rule CompleteOpenBatch:
+  [ OpenBatch($B, bid, rst) ]
+--[ BatchComplete($B, bid, rst) ]->
+  [ ClosedBatch($B, bid, rst) ]
+
+// FailOpenBatch: fail / complete exclusivity over OpenBatch.
+rule FailOpenBatch:
+  [ OpenBatch($B, bid, rst)
+  , Fr(~idx)
+  , Fr(~bad_cts)
+  ]
+--[ BatchSlot($B, bid, ~idx, $A, ~bad_cts)
+  , BatchSlotFail($B, bid, ~idx, $A, rst, ~bad_cts)
+  , BatchFail($B, bid, rst)
+  ]->
+  [ ClosedBatch($B, bid, rst) ]
+
+lemma executable_honest_accept:
+  exists-trace
+  "Ex A B rst c Ks #i #j.
+     SenderComponent(A, B, rst, c, Ks) @ #i
+   & ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma receiver_state_single_use:
+  "All B A1 A2 rst c1 c2 Ks1 Ks2 #i #j.
+     ReceiverAcceptsComponent(B, A1, rst, c1, Ks1) @ #i
+   & ReceiverAcceptsComponent(B, A2, rst, c2, Ks2) @ #j
+   ==> #i = #j"
+
+lemma component_origin_without_early_compromise:
+  "All B A rst c Ks #i.
+     ReceiverAcceptsComponent(B, A, rst, c, Ks) @ #i
+   & not (Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+   & not (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i)
+   ==> (Ex #k. SenderComponent(A, B, rst, c, Ks) @ #k & #k < #i)"
+
+lemma forged_accept_requires_early_compromise:
+  "All B A rst c Ks #i.
+     ForgedReceiverAccept(B, A, rst, c, Ks) @ #i
+   ==> ((Ex #j. CompromiseReceiverState(B, rst) @ #j & #j < #i)
+      | (Ex sst #j. CompromiseSenderState(A, sst) @ #j & #j < #i))"
+
+lemma executable_receiver_compromise_bad_case:
+  exists-trace
+  "Ex A B rst c Ks #i #j.
+     CompromiseReceiverState(B, rst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma executable_sender_compromise_bad_case:
+  exists-trace
+  "Ex A B rst c Ks sst #i #j.
+     CompromiseSenderState(A, sst) @ #i
+   & ForgedReceiverAccept(B, A, rst, c, Ks) @ #j
+   & #i < #j"
+
+lemma executable_partnered_receiver_key:
+  exists-trace
+  "Ex A B bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & PartneredSlot(A,B,bid,idx,rst,cts,Ks) @ #i"
+
+lemma executable_unpartnered_attacker_known_key:
+  exists-trace
+  "Ex A B bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    & UnpartneredReceiverSlot(B,A,bid,idx,rst,cts,Ks,k) @ #i"
+
+lemma receiver_key_known_requires_exception:
+  "All B A bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    ==> (
+          (Ex #j. UnpartneredReceiverSlot(B,A,bid,idx,rst,cts,Ks,k) @ #j)
+        | (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+        | (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+        )"
+
+lemma partnered_key_not_attacker_known_without_early_compromise:
+  "All B A bid idx rst cts Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts,Ks,k) @ #i
+    & PartneredSlot(A,B,bid,idx,rst,cts,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> not (Ex #j. AttackerKnowsKey(k) @ #j)"
+
+lemma executable_honest_batch_slot_accept:
+  exists-trace
+  "Ex A B bid idx rst cts_in Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts_in,Ks) @ #i
+    & PartneredSlot(A,B,bid,idx,rst,cts_in,Ks) @ #i"
+
+lemma executable_unpartnered_attacker_known_slot:
+  exists-trace
+  "Ex A B bid idx rst cts_in Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts_in,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    & UnpartneredReceiverSlot(B,A,bid,idx,rst,cts_in,Ks,k) @ #i"
+
+lemma slot_origin_without_early_compromise:
+  "All B A bid idx rst cts_in Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts_in,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> (Ex #j. SenderComponent(A,B,rst,cts_in,Ks) @ #j & #j < #i)"
+
+lemma slot_key_known_requires_exception:
+  "All B A bid idx rst cts_in Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts_in,Ks,k) @ #i
+    & AttackerKnowsKey(k) @ #i
+    ==> (
+          (Ex #j. UnpartneredReceiverSlot(B,A,bid,idx,rst,cts_in,Ks,k) @ #j)
+        | (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+        | (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+        )"
+
+lemma partnered_slot_key_not_attacker_known_without_early_compromise:
+  "All B A bid idx rst cts_in Ks k #i.
+      ReceiverKey(B,A,bid,idx,rst,cts_in,Ks,k) @ #i
+    & PartneredSlot(A,B,bid,idx,rst,cts_in,Ks) @ #i
+    & not (Ex #j. CompromiseReceiverState(B,rst) @ #j & #j < #i)
+    & not (Ex sst #j. CompromiseSenderState(A,sst) @ #j & #j < #i)
+    ==> not (Ex #j. AttackerKnowsKey(k) @ #j)"
+
+lemma executable_batch_slot_fail:
+  exists-trace
+  "Ex B A bid idx rst bad_cts #i.
+      BatchSlotFail(B,bid,idx,A,rst,bad_cts) @ #i
+    & BatchFail(B,bid,rst) @ #i"
+
+lemma executable_batch_complete:
+  exists-trace
+  "Ex B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i"
+
+lemma slot_fail_causes_batch_fail:
+  "All B A bid idx rst bad_cts #i.
+      BatchSlotFail(B,bid,idx,A,rst,bad_cts) @ #i
+    ==> (Ex #j. BatchFail(B,bid,rst) @ #j)"
+
+lemma batch_fail_complete_exclusive:
+  "All B bid rst #i #j.
+      BatchFail(B,bid,rst) @ #i
+    & BatchComplete(B,bid,rst) @ #j
+    ==> F"
+
+end
