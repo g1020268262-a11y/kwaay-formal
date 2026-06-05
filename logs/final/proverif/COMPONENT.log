@@ -1,0 +1,184 @@
+Process 0 (that is, the initial process):
+{1}new sskA: sig_sk;
+{2}new kskA: kem_sk;
+{3}new sskB: sig_sk;
+{4}new kskB: kem_sk;
+{5}new senderSkA: skem_sender_sk;
+{6}new receiverSkB: skem_receiver_sk;
+{7}new ekskB: ekem_sk;
+{8}let sskA_1: sig_sk = sskA in
+{9}let kskA_1: kem_sk = kskA in
+{10}let sskB_1: sig_sk = sskB in
+{11}let kskB_1: kem_sk = kskB in
+{12}let senderSkA_1: skem_sender_sk = senderSkA in
+{13}let receiverSkB_1: skem_receiver_sk = receiverSkB in
+{14}let ekskB_1: ekem_sk = ekskB in
+{15}let spkA: sig_pk = spk(sskA_1) in
+{16}let kpkA: kem_pk = kpk(kskA_1) in
+{17}let pkA: pk_tuple = pk(spkA,kpkA) in
+{18}let spkB: sig_pk = spk(sskB_1) in
+{19}let kpkB: kem_pk = kpk(kskB_1) in
+{20}let pkB: pk_tuple = pk(spkB,kpkB) in
+{21}out(c, spkA);
+{22}out(c, kpkA);
+{23}out(c, pkA);
+{24}out(c, spkB);
+{25}out(c, kpkB);
+{26}out(c, pkB);
+{27}let senderPkA: skem_sender_pk = pk_skem_sender(senderSkA_1) in
+{28}let senderPayloadA: prekey_payload = payload_sender(senderPkA) in
+{29}let senderSigA: signature = sign(sskA_1,senderPayloadA) in
+{30}let senderPrekeyA: sender_prekey_bundle = sender_prekey(senderPkA,senderSigA) in
+{31}out(c, senderPrekeyA);
+{32}let receiverPkB: skem_receiver_pk = pk_skem_receiver(receiverSkB_1) in
+{33}let ekpkB: ekem_pk = ekpk(ekskB_1) in
+{34}let receiverPayloadB: prekey_payload = payload_receiver(receiverPkB,ekpkB) in
+{35}let receiverSigB: signature = sign(sskB_1,receiverPayloadB) in
+{36}let receiverPrekeyB: receiver_prekey_bundle = receiver_prekey(receiverPkB,ekpkB,receiverSigB) in
+{37}out(c, receiverPrekeyB);
+{38}in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
+{39}let receiverPkFromNet: skem_receiver_pk = get_receiver_prekey_pk(receiverPrekeyFromNet) in
+{40}let ekpkFromNet: ekem_pk = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
+{41}let receiverSigFromNet: signature = get_receiver_prekey_sig(receiverPrekeyFromNet) in
+{42}let receiverPayloadFromNet: prekey_payload = payload_receiver(receiverPkFromNet,ekpkFromNet) in
+{43}let =true = verify(spkB,receiverPayloadFromNet,receiverSigFromNet) in
+{44}event ReceiverPrekeyVerified(A,B,receiverPrekeyFromNet);
+{45}in(c, senderPrekeyFromNet: sender_prekey_bundle);
+{46}let senderPkFromNet: skem_sender_pk = get_sender_prekey_pk(senderPrekeyFromNet) in
+{47}let senderSigFromNet: signature = get_sender_prekey_sig(senderPrekeyFromNet) in
+{48}let senderPayloadFromNet: prekey_payload = payload_sender(senderPkFromNet) in
+{49}let =true = verify(spkA,senderPayloadFromNet,senderSigFromNet) in
+{50}event SenderPrekeyVerified(B,A,senderPrekeyFromNet);
+{51}new rL: randomness;
+{52}new rE: randomness;
+{53}new rS: randomness;
+{54}let ctL: kem_ct = lkem_enc(kpkB,rL) in
+{55}let KL: shared_secret = lkem_ss(kpkB,rL) in
+{56}let ctE: ekem_ct = ekem_enc(ekpkFromNet,rE) in
+{57}let KE: shared_secret = ekem_ss(ekpkFromNet,rE) in
+{58}let ctS: skem_ct = skem_enc(senderSkA_1,receiverPkFromNet,rS) in
+{59}let KS: shared_secret = skem_ss(senderSkA_1,receiverPkFromNet,rS) in
+{60}event SenderSplitKemComponent(A,B,ctS,KS);
+{61}let m: message_tuple = msg(ctL,ctE,ctS) in
+{62}out(c, m);
+{63}let sidAB: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyA,receiverPrekeyFromNet,m) in
+{64}let kSend: session_key = kdf(KL,KE,KS,sidAB) in
+{65}event SenderKey(A,B,sidAB,kSend);
+{66}event SendDone(A,B,sidAB,kSend);
+{67}in(c, mFromNet: message_tuple);
+{68}let ctLFromNet: kem_ct = get_lkem_ct(mFromNet) in
+{69}let ctEFromNet: ekem_ct = get_ekem_ct(mFromNet) in
+{70}let ctSFromNet: skem_ct = get_skem_ct(mFromNet) in
+{71}let KL2: shared_secret = lkem_dec(kskB_1,ctLFromNet) in
+{72}let KE2: shared_secret = ekem_dec(ekskB_1,ctEFromNet) in
+{73}let KS2: shared_secret = skem_dec(receiverSkB_1,senderPkFromNet,ctSFromNet) in
+{74}event SplitKemAccepted(B,A,ctSFromNet,KS2);
+{75}let sidBA: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyFromNet,receiverPrekeyFromNet,mFromNet) in
+{76}let kRecv: session_key = kdf(KL2,KE2,KS2,sidBA) in
+{77}event RecvComputed(B,A,sidBA,kRecv);
+{78}event ReceiverKey(B,A,sidBA,kRecv);
+{79}event RecvDone(B,A,sidBA,kRecv);
+{80}event HonestRun(kRecv)
+
+File "D:\kwaay-formal\logs\final\proverif\COMPONENT.pv", line 116, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\final\proverif\COMPONENT.pv", line 116, character 17:
+Warning: identifier B rebound.
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}new sskA: sig_sk;
+{2}new kskA: kem_sk;
+{3}new sskB: sig_sk;
+{4}new kskB: kem_sk;
+{5}new senderSkA: skem_sender_sk;
+{6}new receiverSkB: skem_receiver_sk;
+{7}new ekskB: ekem_sk;
+{8}let sskA_1: sig_sk = sskA in
+{15}let spkA: sig_pk = spk(sskA_1) in
+{21}out(c, spkA);
+{9}let kskA_1: kem_sk = kskA in
+{16}let kpkA: kem_pk = kpk(kskA_1) in
+{22}out(c, kpkA);
+{17}let pkA: pk_tuple = pk(spkA,kpkA) in
+{23}out(c, pkA);
+{10}let sskB_1: sig_sk = sskB in
+{18}let spkB: sig_pk = spk(sskB_1) in
+{24}out(c, spkB);
+{11}let kskB_1: kem_sk = kskB in
+{19}let kpkB: kem_pk = kpk(kskB_1) in
+{25}out(c, kpkB);
+{20}let pkB: pk_tuple = pk(spkB,kpkB) in
+{26}out(c, pkB);
+{12}let senderSkA_1: skem_sender_sk = senderSkA in
+{27}let senderPkA: skem_sender_pk = pk_skem_sender(senderSkA_1) in
+{28}let senderPayloadA: prekey_payload = payload_sender(senderPkA) in
+{29}let senderSigA: signature = sign(sskA_1,senderPayloadA) in
+{30}let senderPrekeyA: sender_prekey_bundle = sender_prekey(senderPkA,senderSigA) in
+{31}out(c, senderPrekeyA);
+{14}let ekskB_1: ekem_sk = ekskB in
+{33}let ekpkB: ekem_pk = ekpk(ekskB_1) in
+{13}let receiverSkB_1: skem_receiver_sk = receiverSkB in
+{32}let receiverPkB: skem_receiver_pk = pk_skem_receiver(receiverSkB_1) in
+{34}let receiverPayloadB: prekey_payload = payload_receiver(receiverPkB,ekpkB) in
+{35}let receiverSigB: signature = sign(sskB_1,receiverPayloadB) in
+{36}let receiverPrekeyB: receiver_prekey_bundle = receiver_prekey(receiverPkB,ekpkB,receiverSigB) in
+{37}out(c, receiverPrekeyB);
+{38}in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
+{39}let receiverPkFromNet: skem_receiver_pk = get_receiver_prekey_pk(receiverPrekeyFromNet) in
+{40}let ekpkFromNet: ekem_pk = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
+{41}let receiverSigFromNet: signature = get_receiver_prekey_sig(receiverPrekeyFromNet) in
+{42}let receiverPayloadFromNet: prekey_payload = payload_receiver(receiverPkFromNet,ekpkFromNet) in
+{43}let =true = verify(spkB,receiverPayloadFromNet,receiverSigFromNet) in
+{44}event ReceiverPrekeyVerified(A,B,receiverPrekeyFromNet);
+{45}in(c, senderPrekeyFromNet: sender_prekey_bundle);
+{46}let senderPkFromNet: skem_sender_pk = get_sender_prekey_pk(senderPrekeyFromNet) in
+{47}let senderSigFromNet: signature = get_sender_prekey_sig(senderPrekeyFromNet) in
+{48}let senderPayloadFromNet: prekey_payload = payload_sender(senderPkFromNet) in
+{49}let =true = verify(spkA,senderPayloadFromNet,senderSigFromNet) in
+{50}event SenderPrekeyVerified(B,A,senderPrekeyFromNet);
+{51}new rL: randomness;
+{52}new rE: randomness;
+{53}new rS: randomness;
+{59}let KS: shared_secret = skem_ss(senderSkA_1,receiverPkFromNet,rS) in
+{58}let ctS: skem_ct = skem_enc(senderSkA_1,receiverPkFromNet,rS) in
+{60}event SenderSplitKemComponent(A,B,ctS,KS);
+{56}let ctE: ekem_ct = ekem_enc(ekpkFromNet,rE) in
+{54}let ctL: kem_ct = lkem_enc(kpkB,rL) in
+{61}let m: message_tuple = msg(ctL,ctE,ctS) in
+{62}out(c, m);
+{63}let sidAB: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyA,receiverPrekeyFromNet,m) in
+{57}let KE: shared_secret = ekem_ss(ekpkFromNet,rE) in
+{55}let KL: shared_secret = lkem_ss(kpkB,rL) in
+{64}let kSend: session_key = kdf(KL,KE,KS,sidAB) in
+{65}event SenderKey(A,B,sidAB,kSend);
+{66}event SendDone(A,B,sidAB,kSend);
+{67}in(c, mFromNet: message_tuple);
+{68}let ctLFromNet: kem_ct = get_lkem_ct(mFromNet) in
+{69}let ctEFromNet: ekem_ct = get_ekem_ct(mFromNet) in
+{70}let ctSFromNet: skem_ct = get_skem_ct(mFromNet) in
+{71}let KL2: shared_secret = lkem_dec(kskB_1,ctLFromNet) in
+{72}let KE2: shared_secret = ekem_dec(ekskB_1,ctEFromNet) in
+{73}let KS2: shared_secret = skem_dec(receiverSkB_1,senderPkFromNet,ctSFromNet) in
+{74}event SplitKemAccepted(B,A,ctSFromNet,KS2);
+{75}let sidBA: sid_t = sid_of(A,B,pkA,pkB,senderPrekeyFromNet,receiverPrekeyFromNet,mFromNet) in
+{76}let kRecv: session_key = kdf(KL2,KE2,KS2,sidBA) in
+{77}event RecvComputed(B,A,sidBA,kRecv);
+{78}event ReceiverKey(B,A,sidBA,kRecv);
+{79}event RecvDone(B,A,sidBA,kRecv);
+{80}event HonestRun(kRecv)
+
+-- Query event(SplitKemAccepted(B_1,A_1,cts,Ks)) ==> event(SenderSplitKemComponent(A_1,B_1,cts,Ks)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(SplitKemAccepted(B_1,A_1,cts,Ks)) ==> event(SenderSplitKemComponent(A_1,B_1,cts,Ks))
+goal reachable: b-event(SenderSplitKemComponent(A[],B[],skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1))) -> event(SplitKemAccepted(B[],A[],skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1),skem_ss(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)))
+Abbreviations:
+rS_1 = rS[senderPrekeyFromNet = sender_prekey(pk_skem_sender(senderSkA[]),sign(sskA[],payload_sender(pk_skem_sender(senderSkA[])))),receiverPrekeyFromNet = receiver_prekey(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]),sign(sskB[],payload_receiver(pk_skem_receiver(receiverSkB[]),ekpk(ekskB[]))))]
+RESULT event(SplitKemAccepted(B_1,A_1,cts,Ks)) ==> event(SenderSplitKemComponent(A_1,B_1,cts,Ks)) is true.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query event(SplitKemAccepted(B_1,A_1,cts,Ks)) ==> event(SenderSplitKemComponent(A_1,B_1,cts,Ks)) is true.
+
+--------------------------------------------------------------
+

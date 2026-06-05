@@ -1,0 +1,121 @@
+K-Waay ProVerif final model summary
+model: /mnt/d/kwaay-formal/proverif/kwaay_core_final.pv
+proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
+generated: 2026-06-05T17:56:58Z
+
+target: BASELINE
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/BASELINE.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/BASELINE.pv
+
+target: COMPONENT
+status: proverif_finished
+query_results:
+RESULT event(SplitKemAccepted(B_1,A_1,cts,Ks)) ==> event(SenderSplitKemComponent(A_1,B_1,cts,Ks)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/COMPONENT.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/COMPONENT.pv
+
+target: EXCEPTION_CHOICE
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+RESULT event(SenderKey(A_1,B_1,s,k)) && attacker(k) ==> event(CompromiseKemSk(B_1)) && event(CompromiseReceiverEkemState(B_1)) && event(CompromiseReceiverSkemState(B_1)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/EXCEPTION_CHOICE.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/EXCEPTION_CHOICE.pv
+
+target: LEAK_SIGSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_SIGSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_SIGSK.pv
+
+target: LEAK_KEMSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_KEMSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_KEMSK.pv
+
+target: LEAK_EKEMSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_EKEMSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_EKEMSK.pv
+
+target: LEAK_RSKEMSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_RSKEMSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_RSKEMSK.pv
+
+target: LEAK_SSKEMSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_SSKEMSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_SSKEMSK.pv
+
+target: LEAK_KEMSK_EKEMSK
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_KEMSK_EKEMSK.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_KEMSK_EKEMSK.pv
+
+target: LEAK_ALL_RECEIVER_SECRETS
+status: proverif_finished
+query_results:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+log: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_ALL_RECEIVER_SECRETS.log
+preprocessed: /mnt/d/kwaay-formal/logs/final/proverif/LEAK_ALL_RECEIVER_SECRETS.pv
+
