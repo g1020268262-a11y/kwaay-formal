@@ -15,6 +15,13 @@
    - theorem / main targets: BASELINE, COMPONENT, EXCEPTION_CHOICE
    - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
 
+   2026-06-06 修正：receiver-side prekey ownership。
+   原文 Figure 7 的 BatchReceive 从本地 sti 展开 (esski, ekski, preki)，
+   因此 receiver 接收时使用本地 preki，而不是从网络接受任意 receiver prekey。
+   本模型现在区分：
+   - receiverPrekeyForSend：sender 侧从 public-channel / server 获取的 B prekey；
+   - receiverPrekeyB：receiver B 本地 state 中已有的 prekey。
+
    不要把 leak / compromise 无条件全部启用。BASELINE 和 COMPONENT 不启用
    leak process。LEAK_* 是 compromise experiments，不是 baseline security
    theorem。
@@ -143,6 +150,7 @@ event RecvComputed(agent, agent, sid_t, session_key).
 event RecvDone(agent, agent, sid_t, session_key).
 event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
 event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
+event ReceiverLocalPrekeyUsed(agent, agent, receiver_prekey_bundle).
 event SenderSplitKemComponent(agent, agent, skem_ct, shared_secret).
 event SplitKemAccepted(agent, agent, skem_ct, shared_secret).
 event CompromiseSigSk(agent).
@@ -152,7 +160,7 @@ event CompromiseReceiverSkemState(agent).
 event CompromiseReceiverEkemState(agent).
 event HonestRun(session_key).
 
-#if defined(BASELINE) || defined(EXCEPTION_CHOICE) || defined(LEAK_SIGSK) || defined(LEAK_KEMSK) || defined(LEAK_EKEMSK) || defined(LEAK_RSKEMSK) || defined(LEAK_SSKEMSK) || defined(LEAK_KEMSK_EKEMSK) || defined(LEAK_ALL_RECEIVER_SECRETS)
+#if defined(BASELINE) || defined(EXCEPTION_CHOICE) || defined(LEAK_SIGSK) || defined(LEAK_SIGSK_A) || defined(LEAK_SIGSK_B) || defined(LEAK_SIGSK_AB) || defined(LEAK_KEMSK) || defined(LEAK_EKEMSK) || defined(LEAK_RSKEMSK) || defined(LEAK_SSKEMSK) || defined(LEAK_KEMSK_EKEMSK) || defined(LEAK_ALL_RECEIVER_SECRETS)
 (* executability sanity query，照搬现有 public-channel / leak 实验。 *)
 query k: session_key; event(HonestRun(k)).
 
@@ -166,7 +174,7 @@ query A: agent, B: agent, sp: sender_prekey_bundle, s: sid_t, k: session_key;
   event(RecvDone(B,A,s,k)) ==> event(SenderPrekeyVerified(B,A,sp)).
 
 query A: agent, B: agent, rp: receiver_prekey_bundle, s: sid_t, k: session_key;
-  event(RecvDone(B,A,s,k)) ==> event(ReceiverPrekeyVerified(A,B,rp)).
+  event(RecvDone(B,A,s,k)) ==> event(ReceiverLocalPrekeyUsed(B,A,rp)).
 
 (* sender-side / receiver-side secrecy。LEAK_* target 中保留这些原始 query
    是为了复现实验结果，不表示 baseline theorem。 *)
@@ -224,8 +232,10 @@ query A: agent, B: agent, s: sid_t, k: session_key;
    该分类由 RECEIVER_EXCEPTION_CLASSIFICATION、LEAK_RSKEMSK / LEAK_SSKEMSK target 和文档说明。 *)
 #endif
 
-(* 协议主体复制自 public-channel 主干：attacker 控制 receiver prekey bundle、
-   sender prekey bundle 和 message tuple；m 保持为 (ct_l, ct_k, ct_s)。 *)
+(* 协议主体：
+   - sender 侧可以从 public-channel / prekey server 获取 claimed receiver prekey；
+   - receiver 侧按照 K-Waay BatchReceive 语义使用本地 sti 中的 receiverPrekeyB；
+   - receiver 不再从网络接受任意 receiver prekey 作为自己的 preki。 *)
 let ProtocolRun(
     sskA: sig_sk, kskA: kem_sk,
     sskB: sig_sk, kskB: kem_sk,
@@ -261,14 +271,16 @@ let ProtocolRun(
   let receiverPrekeyB = receiver_prekey(receiverPkB, ekpkB, receiverSigB) in
   out(c, receiverPrekeyB);
 
-  in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
-  let receiverPkFromNet = get_receiver_prekey_pk(receiverPrekeyFromNet) in
-  let ekpkFromNet = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
-  let receiverSigFromNet = get_receiver_prekey_sig(receiverPrekeyFromNet) in
-  let receiverPayloadFromNet = payload_receiver(receiverPkFromNet, ekpkFromNet) in
-  let (=true) = verify(spkB, receiverPayloadFromNet, receiverSigFromNet) in
-  event ReceiverPrekeyVerified(A, B, receiverPrekeyFromNet);
+  (* Send: A obtains B's claimed receiver prekey from the server / public channel. *)
+  in(c, receiverPrekeyForSend: receiver_prekey_bundle);
+  let receiverPkForSend = get_receiver_prekey_pk(receiverPrekeyForSend) in
+  let ekpkForSend = get_receiver_prekey_ekpk(receiverPrekeyForSend) in
+  let receiverSigForSend = get_receiver_prekey_sig(receiverPrekeyForSend) in
+  let receiverPayloadForSend = payload_receiver(receiverPkForSend, ekpkForSend) in
+  let (=true) = verify(spkB, receiverPayloadForSend, receiverSigForSend) in
+  event ReceiverPrekeyVerified(A, B, receiverPrekeyForSend);
 
+  (* BatchReceive input contains the claimed sender prekey, not receiver's own prekey. *)
   in(c, senderPrekeyFromNet: sender_prekey_bundle);
   let senderPkFromNet = get_sender_prekey_pk(senderPrekeyFromNet) in
   let senderSigFromNet = get_sender_prekey_sig(senderPrekeyFromNet) in
@@ -283,16 +295,16 @@ let ProtocolRun(
   let ctL = lkem_enc(kpkB, rL) in
   let KL = lkem_ss(kpkB, rL) in
 
-  let ctE = ekem_enc(ekpkFromNet, rE) in
-  let KE = ekem_ss(ekpkFromNet, rE) in
+  let ctE = ekem_enc(ekpkForSend, rE) in
+  let KE = ekem_ss(ekpkForSend, rE) in
 
-  let ctS = skem_enc(senderSkA, receiverPkFromNet, rS) in
-  let KS = skem_ss(senderSkA, receiverPkFromNet, rS) in
+  let ctS = skem_enc(senderSkA, receiverPkForSend, rS) in
+  let KS = skem_ss(senderSkA, receiverPkForSend, rS) in
   event SenderSplitKemComponent(A, B, ctS, KS);
 
   let m = msg(ctL, ctE, ctS) in
   out(c, m);
-  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyFromNet, m) in
+  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyForSend, m) in
 
   let kSend = kdf(KL, KE, KS, sidAB) in
   event SenderKey(A, B, sidAB, kSend);
@@ -303,12 +315,14 @@ let ProtocolRun(
   let ctEFromNet = get_ekem_ct(mFromNet) in
   let ctSFromNet = get_skem_ct(mFromNet) in
 
+  (* Receive: B uses local receiver state/prekey from sti. *)
+  event ReceiverLocalPrekeyUsed(B, A, receiverPrekeyB);
   let KL2 = lkem_dec(kskB, ctLFromNet) in
   let KE2 = ekem_dec(ekskB, ctEFromNet) in
   let KS2 = skem_dec(receiverSkB, senderPkFromNet, ctSFromNet) in
   event SplitKemAccepted(B, A, ctSFromNet, KS2);
 
-  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyFromNet, mFromNet) in
+  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyB, mFromNet) in
   let kRecv = kdf(KL2, KE2, KS2, sidBA) in
   event RecvComputed(B, A, sidBA, kRecv);
   event ReceiverKey(B, A, sidBA, kRecv);
@@ -317,12 +331,26 @@ let ProtocolRun(
   event HonestRun(kRecv);
   0.
 
-let LeakSigSk(sskA: sig_sk, sskB: sig_sk) =
+let LeakSigSkA(sskA: sig_sk) =
   event CompromiseSigSk(A);
   out(c, sskA);
+  0.
+
+let LeakSigSkB(sskB: sig_sk) =
   event CompromiseSigSk(B);
   out(c, sskB);
   0.
+
+let LeakSigSkAB(sskA: sig_sk, sskB: sig_sk) =
+  (
+    event CompromiseSigSk(A);
+    out(c, sskA)
+  )
+  |
+  (
+    event CompromiseSigSk(B);
+    out(c, sskB)
+  ).
 
 let LeakKemSk(kskB: kem_sk) =
   event CompromiseKemSk(B);
@@ -419,7 +447,17 @@ process
   | LeakSenderSkemState(senderSkA)
 #endif
 #ifdef LEAK_SIGSK
-  | LeakSigSk(sskA, sskB)
+  (* Backward-compatible alias: leaks both A and B signature keys. Prefer LEAK_SIGSK_A / LEAK_SIGSK_B / LEAK_SIGSK_AB in new experiments. *)
+  | LeakSigSkAB(sskA, sskB)
+#endif
+#ifdef LEAK_SIGSK_A
+  | LeakSigSkA(sskA)
+#endif
+#ifdef LEAK_SIGSK_B
+  | LeakSigSkB(sskB)
+#endif
+#ifdef LEAK_SIGSK_AB
+  | LeakSigSkAB(sskA, sskB)
 #endif
 #ifdef LEAK_KEMSK
   | LeakKemSk(kskB)
