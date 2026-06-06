@@ -3,9 +3,12 @@
 set -u
 
 ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-MODEL="$ROOT_DIR/proverif/kwaay_core_final.pv"
-OUT_DIR="$ROOT_DIR/logs/final/proverif"
-SUMMARY="$OUT_DIR/summary.txt"
+MODEL="$ROOT_DIR/proverif/kwaay_core_final.cpp.pv"
+LOG_ROOT="$ROOT_DIR/logs/final/proverif"
+GENERATED_DIR="$LOG_ROOT/generated"
+OUT_DIR="$LOG_ROOT/out"
+SUMMARY="$LOG_ROOT/summary.txt"
+TIMEOUT_SECONDS=300
 
 ALL_TARGETS=(
   BASELINE
@@ -26,7 +29,7 @@ else
   TARGETS=("${ALL_TARGETS[@]}")
 fi
 
-mkdir -p "$OUT_DIR"
+mkdir -p "$GENERATED_DIR" "$OUT_DIR"
 
 PROVERIF_CMD=()
 PROVERIF_NEEDS_WIN_PATH=0
@@ -52,18 +55,22 @@ fi
 } > "$SUMMARY"
 
 for target in "${TARGETS[@]}"; do
-  generated="$OUT_DIR/${target}.pv"
-  log="$OUT_DIR/${target}.log"
+  generated="$GENERATED_DIR/${target}.pv"
+  out="$OUT_DIR/${target}.out"
+  cpp_err="$OUT_DIR/${target}.cpp.err"
 
   echo "== $target =="
-  echo "target: $target" >> "$SUMMARY"
+  echo "TARGET: $target" >> "$SUMMARY"
 
-  cpp -P -D "$target" "$MODEL" > "$generated" 2> "$OUT_DIR/${target}.cpp.err"
+  cpp -P -D "$target" "$MODEL" > "$generated" 2> "$cpp_err"
   cpp_status=$?
   if [ "$cpp_status" -ne 0 ]; then
-    echo "  cpp: failed ($cpp_status)"
-    echo "status: cpp_failed($cpp_status)" >> "$SUMMARY"
-    sed 's/^/cpp: /' "$OUT_DIR/${target}.cpp.err" >> "$SUMMARY"
+    echo "  cpp: FAIL ($cpp_status)"
+    echo "STATUS: FAIL" >> "$SUMMARY"
+    echo "REASON: cpp_failed($cpp_status)" >> "$SUMMARY"
+    echo "OUTPUT: $out" >> "$SUMMARY"
+    echo "GENERATED: $generated" >> "$SUMMARY"
+    sed 's/^/CPP: /' "$cpp_err" >> "$SUMMARY"
     echo >> "$SUMMARY"
     continue
   fi
@@ -74,26 +81,39 @@ for target in "${TARGETS[@]}"; do
     proverif_input="$generated"
   fi
 
-  "${PROVERIF_CMD[@]}" "$proverif_input" > "$log" 2>&1
-  pv_status=$?
+  if command -v timeout >/dev/null 2>&1; then
+    timeout "$TIMEOUT_SECONDS" "${PROVERIF_CMD[@]}" "$proverif_input" > "$out" 2>&1
+    pv_status=$?
+    if [ "$pv_status" -eq 124 ]; then
+      echo "  proverif: TIMEOUT"
+      echo "STATUS: TIMEOUT" >> "$SUMMARY"
+      echo "OUTPUT: $out" >> "$SUMMARY"
+      echo "GENERATED: $generated" >> "$SUMMARY"
+      echo >> "$SUMMARY"
+      continue
+    fi
+  else
+    "${PROVERIF_CMD[@]}" "$proverif_input" > "$out" 2>&1
+    pv_status=$?
+  fi
 
   if [ "$pv_status" -eq 0 ]; then
-    echo "  proverif: finished"
-    echo "status: proverif_finished" >> "$SUMMARY"
+    echo "  proverif: OK"
+    echo "STATUS: OK" >> "$SUMMARY"
   else
-    echo "  proverif: failed ($pv_status)"
-    echo "status: proverif_failed($pv_status)" >> "$SUMMARY"
+    echo "  proverif: FAIL ($pv_status)"
+    echo "STATUS: FAIL" >> "$SUMMARY"
+    echo "REASON: proverif_failed($pv_status)" >> "$SUMMARY"
   fi
 
-  if grep -q '^RESULT' "$log"; then
-    echo "query_results:" >> "$SUMMARY"
-    grep '^RESULT' "$log" >> "$SUMMARY"
+  echo "OUTPUT: $out" >> "$SUMMARY"
+  echo "GENERATED: $generated" >> "$SUMMARY"
+  if grep -q '^RESULT' "$out"; then
+    echo "RESULTS:" >> "$SUMMARY"
+    grep '^RESULT' "$out" >> "$SUMMARY"
   else
-    echo "query_results: none-found" >> "$SUMMARY"
+    echo "RESULTS: none-found" >> "$SUMMARY"
   fi
-
-  echo "log: $log" >> "$SUMMARY"
-  echo "preprocessed: $generated" >> "$SUMMARY"
   echo >> "$SUMMARY"
 done
 

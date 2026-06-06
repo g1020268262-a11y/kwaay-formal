@@ -1,8 +1,12 @@
 # ProVerif Final Targets
 
-`proverif/kwaay_core_final.pv` 是 K-Waay Figure 7 core 的 macro-based final symbolic model。它合并了 no-batch baseline、split-KEM component authenticity、optional compromise exception 和多个 single-leak experiments。
+`proverif/kwaay_core_final.cpp.pv` 是 K-Waay Figure 7 core 的 macro-based final model。它使用 C preprocessor 风格宏组织多个验证目标，普通 ProVerif 不直接读取这个文件，而是先由脚本执行：
 
-这个模型是 no-batch / single-receive abstraction，不是 full `BatchReceive`。BatchReceive 的 state、slot、lifecycle 由 Tamarin final model 处理。该 ProVerif 文件也不证明 computational `KIND`、`UNF-1KMA`、`IND-1BatchCCA` 或 deniability。
+```bash
+cpp -P -D TARGET proverif/kwaay_core_final.cpp.pv
+```
+
+生成的普通 `.pv` 文件会放在 `logs/final/proverif/generated/`，ProVerif 输出放在 `logs/final/proverif/out/`，汇总文件是 `logs/final/proverif/summary.txt`。
 
 运行方式：
 
@@ -11,36 +15,48 @@ bash scripts/run-proverif-final.sh
 bash scripts/run-proverif-final.sh BASELINE
 ```
 
-脚本会用 `cpp -P -D TARGET` 预处理 `kwaay_core_final.pv`，再把生成的目标 `.pv` 文件交给 ProVerif。输出位于 `logs/final/proverif/`，汇总文件是 `logs/final/proverif/summary.txt`。
+这个模型是 K-Waay Figure 7 core 的 no-batch / single-receive abstraction，不是 full `BatchReceive`。BatchReceive 的 state、slot、lifecycle 由 Tamarin final model 处理。该文件不证明 computational `KIND`、`UNF-1KMA`、`IND-1BatchCCA` 或 deniability。
 
-## Targets
+## Target 说明
 
-`BASELINE` 是 no-compromise baseline。它不启用任何 leak process，保留 executability sanity query、`RecvDone ==> SendDone` diagnostic query、prekey verification queries、sender-side secrecy 和 receiver-side secrecy。
+`BASELINE` 是 no-compromise baseline。它不启用任何 leak process，包含 executability sanity query、`RecvDone ==> SendDone` diagnostic query、prekey sanity queries、sender-side secrecy 和 receiver-side secrecy。
 
-`COMPONENT` 用于 split-KEM component-level authenticity。核心 query 是 `SplitKemAccepted ==> SenderSplitKemComponent`。它不启用任何 leak process。
+`COMPONENT` 是 split-KEM component authenticity target。核心 query 是：
 
-`EXCEPTION_CHOICE` 是 optional compromise model。attacker 可以通过公开命令选择触发 B 侧 0 个、1 个、2 个或 3 个 decapsulation secret compromise。它用于 exception classification，不代表 baseline secrecy。
+```proverif
+SplitKemAccepted ==> SenderSplitKemComponent
+```
 
-`LEAK_SIGSK` 只启用 signature secret compromise experiment，泄露 `sskA` 和 `sskB`，复现 `kwaay-core-public-channel-leak-sigsk.pv` 的实验目的。
+它只检查 receiver 接受的 split-KEM component 是否对应 honest sender 生成的 component，不要求完整消息或 session key exact agreement。`COMPONENT` 不启用任何 leak process。
 
-`LEAK_KEMSK` 只启用 receiver long-term KEM secret compromise，泄露 `kskB`。
+`EXCEPTION_CHOICE` 是 optional compromise classification target。attacker 可以选择触发 B 侧 0 个、1 个、2 个或 3 个 decapsulation secret compromise。它用于 bad-case / exception classification，不是 baseline secrecy theorem。
 
-`LEAK_EKEMSK` 只启用 receiver ephemeral KEM state compromise，泄露 `ekskB`。
+`LEAK_SIGSK` 是 signature secret compromise experiment，泄露 `sskA` 和 `sskB`。
 
-`LEAK_RSKEMSK` 只启用 receiver split-KEM state compromise，泄露 `receiverSkB`。
+`LEAK_KEMSK` 是 receiver long-term KEM secret compromise experiment，泄露 `kskB`。
 
-`LEAK_SSKEMSK` 只启用 sender split-KEM state compromise，泄露 `senderSkA`。
+`LEAK_EKEMSK` 是 receiver ephemeral KEM state compromise experiment，泄露 `ekskB`。
 
-`LEAK_KEMSK_EKEMSK` 启用 `kskB + ekskB` 组合泄露。
+`LEAK_RSKEMSK` 是 receiver split-KEM state compromise experiment，泄露 `receiverSkB`。
 
-`LEAK_ALL_RECEIVER_SECRETS` 启用 B 侧三个 decapsulation secrets compromise：`CompromiseKemSk(B)`、`CompromiseReceiverEkemState(B)`、`CompromiseReceiverSkemState(B)`。
+`LEAK_SSKEMSK` 是 sender split-KEM state compromise experiment，泄露 `senderSkA`。
 
-## Query Semantics
+`LEAK_KEMSK_EKEMSK` 是组合泄露实验，泄露 `kskB + ekskB`。
 
-`RecvDone ==> SendDone` 是 diagnostic query。它用于观察 Figure 7 core public-channel abstraction 下的 full-message exact agreement 缺口，不应被解释为最终认证定理。
+`LEAK_ALL_RECEIVER_SECRETS` 是 B 侧三个 decapsulation secrets compromise experiment，触发：
 
-`SplitKemAccepted ==> SenderSplitKemComponent` 是 component-level authenticity query。它只检查 receiver 接受的 split-KEM component 是否对应 honest sender 生成的 component，不要求整条消息或 session key exact agreement。
+```text
+CompromiseKemSk(B)
+CompromiseReceiverEkemState(B)
+CompromiseReceiverSkemState(B)
+```
 
-`LEAK_*` targets 是 compromise experiments，不是 baseline security theorem。它们保留原始 leak 文件中的 secrecy / agreement query，是为了复现实验结果并观察不同 secret compromise 对结果的影响。
+## Query 语义
 
-Baseline 和 compromise targets 不能混淆：`BASELINE` 中没有泄露进程；`EXCEPTION_CHOICE` 和 `LEAK_*` 中主动泄露 secret 或允许 attacker 选择泄露，因此它们的 query 结果只说明对应 compromise experiment 的行为。
+`RecvDone ==> SendDone` 是 diagnostic query。它用于观察 public-channel core 中 full-message exact agreement 的缺口，不是最终认证定理。
+
+`SplitKemAccepted ==> SenderSplitKemComponent` 是 component-level authenticity query。它是 split-KEM component 层面的 correspondence，不等价于完整 session agreement。
+
+`LEAK_*` target 的结果是 compromise experiment 的结果，不是 baseline security theorem。Baseline 和 compromise target 不能混淆：`BASELINE` 中没有泄露进程；`EXCEPTION_CHOICE` 和 `LEAK_*` 中主动泄露 secret 或允许 attacker 选择泄露。
+
+如果某个 leak target 中 secrecy query 为 false，只能说明该 compromise experiment 下 ProVerif 找到了对应攻击轨迹，不能把它解释为 no-compromise baseline 被破坏。
