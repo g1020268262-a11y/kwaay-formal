@@ -9,7 +9,7 @@
    public-channel \U0000534f\U00008bae\U00004e3b\U00004f53\U0000ff0c\U00004f46 query / leak process \U00007531\U00005b8f\U000063a7\U00005236。
    target \U00005206\U00004e3a\U00004e24\U00007c7b\U0000ff1a
    - theorem / main targets: BASELINE, COMPONENT, 1
-   - experiment targets: LEAK_*
+   - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
    \U00004e0d\U00008981\U0000628a leak / compromise \U000065e0\U00006761\U00004ef6\U00005168\U000090e8\U0000542f\U00007528。BASELINE \U0000548c COMPONENT \U00004e0d\U0000542f\U00007528
    leak process。LEAK_* \U0000662f compromise experiments\U0000ff0c\U00004e0d\U0000662f baseline security
    theorem。
@@ -144,21 +144,20 @@ query A: agent, B: agent, s: sid_t, k: session_key;
    compromise \U00004e5f\U00004f1a\U00008ba9 attacker \U00006700\U00007ec8\U000077e5\U00009053 k。\U000056e0\U00006b64\U00008fd9\U000091cc\U00005148\U00005206\U00007c7b“\U000054ea\U00004e9b secret \U00006cc4\U00009732
    \U00008db3\U00004ee5\U000089e3\U000091ca attacker-known key”\U0000ff0c\U00004e0d\U0000628a\U00005b83\U000089e3\U000091ca\U00006210 freshness theorem。
    freshness / before-accept ordering \U00007531 Tamarin \U00006a21\U0000578b\U00005904\U00007406。 *)
-(* sender-side exception\U0000ff1a\U00005982\U0000679c sender-side session key \U00006700\U00007ec8 attacker-known\U0000ff0c
-   \U00005219\U00005fc5\U0000987b\U000080fd\U00007531 B \U00004fa7\U00004e09\U00004e2a decapsulation secrets compromise \U000089e3\U000091ca。 *)
+(* Sender-side exception theorem:
+   \U00005728 optional receiver-side decapsulation compromise model \U00004e2d\U0000ff0c
+   \U00005982\U0000679c attacker \U000077e5\U00009053 honest sender-side session key\U0000ff0c
+   \U00005219 B \U00004fa7\U00004e09\U00004e2a decapsulation secrets \U00005fc5\U0000987b\U00005168\U000090e8 compromise。
+   \U00008fd9\U00004e2a query \U00004e0d\U00007528\U00004e8e\U000089e3\U000091ca receiver-side unpartnered bad case。 *)
 query A: agent, B: agent, s: sid_t, k: session_key;
   attacker(k) && event(SenderKey(A,B,s,k))
   ==> event(CompromiseKemSk(B))
    && event(CompromiseReceiverEkemState(B))
    && event(CompromiseReceiverSkemState(B)).
-(* receiver-side exception\U0000ff1a\U0000548c sender-side \U00005bf9\U000079f0\U00005730\U00008bb0\U00005f55 receiver-side key \U00007684
-   attacker-known \U00006761\U00004ef6。\U00008fd9\U00004e2a query \U00007528\U00004e8e\U00008865\U00009f50 1 target\U0000ff0c\U0000907f\U0000514d
-   \U000053ea\U000089e3\U000091ca SenderKey \U0000800c\U00006ca1\U00006709\U000089e3\U000091ca ReceiverKey。 *)
-query A: agent, B: agent, s: sid_t, k: session_key;
-  attacker(k) && event(ReceiverKey(B,A,s,k))
-  ==> event(CompromiseKemSk(B))
-   && event(CompromiseReceiverEkemState(B))
-   && event(CompromiseReceiverSkemState(B)).
+(* \U00004e0d\U000052a0\U00005165 receiver-side \U00004e09\U000091cd\U00006cc4\U00009732 exception query。
+   receiver-side secrecy false \U000053ef\U000080fd\U00007531 sender_skem_sk \U00006216 receiver_skem_sk \U00005355\U000072ec\U00006cc4\U00009732\U00005bfc\U000081f4\U0000ff0c
+   \U00005c5e\U00004e8e expected receiver-side unpartnered bad case。
+   \U00008be5\U00005206\U00007c7b\U00007531 RECEIVER_EXCEPTION_CLASSIFICATION、LEAK_RSKEMSK / LEAK_SSKEMSK target \U0000548c\U00006587\U00006863\U00008bf4\U0000660e。 *)
 (* \U0000534f\U00008bae\U00004e3b\U00004f53\U0000590d\U00005236\U000081ea public-channel \U00004e3b\U00005e72\U0000ff1aattacker \U000063a7\U00005236 receiver prekey bundle、
    sender prekey bundle \U0000548c message tuple\U0000ff1bm \U00004fdd\U00006301\U00004e3a (ct_l, ct_k, ct_s)。 *)
 let ProtocolRun(

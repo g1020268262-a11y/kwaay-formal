@@ -13,7 +13,7 @@
 
    target 分为两类：
    - theorem / main targets: BASELINE, COMPONENT, EXCEPTION_CHOICE
-   - experiment targets: LEAK_*
+   - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
 
    不要把 leak / compromise 无条件全部启用。BASELINE 和 COMPONENT 不启用
    leak process。LEAK_* 是 compromise experiments，不是 baseline security
@@ -177,6 +177,19 @@ query A: agent, B: agent, s: sid_t, k: session_key;
   attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
 #endif
 
+#ifdef RECEIVER_EXCEPTION_CLASSIFICATION
+(* RECEIVER_EXCEPTION_CLASSIFICATION:
+   该 target 用于确认 receiver-side attacker-known key 属于 expected receiver-side bad case。
+   这里同时允许 sender_skem_sk 和 receiver_skem_sk compromise。
+   预期结果是 SenderKey secrecy 仍成立，ReceiverKey secrecy 失败。
+   这不是 key-recovery break，而是 receiver-side unpartnered session / bad-case 分类。 *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+#endif
+
 #ifdef COMPONENT
 (* Split-KEM component-level authenticity query，来自 splitkem-component 文件。 *)
 query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
@@ -194,22 +207,21 @@ query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
    足以解释 attacker-known key”，不把它解释成 freshness theorem。
    freshness / before-accept ordering 由 Tamarin 模型处理。 *)
 
-(* sender-side exception：如果 sender-side session key 最终 attacker-known，
-   则必须能由 B 侧三个 decapsulation secrets compromise 解释。 *)
+(* Sender-side exception theorem:
+   在 optional receiver-side decapsulation compromise model 中，
+   如果 attacker 知道 honest sender-side session key，
+   则 B 侧三个 decapsulation secrets 必须全部 compromise。
+   这个 query 不用于解释 receiver-side unpartnered bad case。 *)
 query A: agent, B: agent, s: sid_t, k: session_key;
   attacker(k) && event(SenderKey(A,B,s,k))
   ==> event(CompromiseKemSk(B))
    && event(CompromiseReceiverEkemState(B))
    && event(CompromiseReceiverSkemState(B)).
 
-(* receiver-side exception：和 sender-side 对称地记录 receiver-side key 的
-   attacker-known 条件。这个 query 用于补齐 EXCEPTION_CHOICE target，避免
-   只解释 SenderKey 而没有解释 ReceiverKey。 *)
-query A: agent, B: agent, s: sid_t, k: session_key;
-  attacker(k) && event(ReceiverKey(B,A,s,k))
-  ==> event(CompromiseKemSk(B))
-   && event(CompromiseReceiverEkemState(B))
-   && event(CompromiseReceiverSkemState(B)).
+(* 不加入 receiver-side 三重泄露 exception query。
+   receiver-side secrecy false 可能由 sender_skem_sk 或 receiver_skem_sk 单独泄露导致，
+   属于 expected receiver-side unpartnered bad case。
+   该分类由 RECEIVER_EXCEPTION_CLASSIFICATION、LEAK_RSKEMSK / LEAK_SSKEMSK target 和文档说明。 *)
 #endif
 
 (* 协议主体复制自 public-channel 主干：attacker 控制 receiver prekey bundle、
@@ -401,6 +413,10 @@ process
   )
 #ifdef EXCEPTION_CHOICE
   | ExceptionChoiceLeaks(kskB, ekskB, receiverSkB)
+#endif
+#ifdef RECEIVER_EXCEPTION_CLASSIFICATION
+  | LeakReceiverSkemState(receiverSkB)
+  | LeakSenderSkemState(senderSkA)
 #endif
 #ifdef LEAK_SIGSK
   | LeakSigSk(sskA, sskB)

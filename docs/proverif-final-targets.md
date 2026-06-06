@@ -31,6 +31,8 @@ SplitKemAccepted ==> SenderSplitKemComponent
 
 `EXCEPTION_CHOICE` 是 optional compromise classification target。attacker 可以选择触发 B 侧 0 个、1 个、2 个或 3 个 decapsulation secret compromise。它用于 bad-case / exception classification，不是 baseline secrecy theorem。
 
+`RECEIVER_EXCEPTION_CLASSIFICATION` 是 receiver-side bad-case 分类实验。它同时启用 `LeakReceiverSkemState` 和 `LeakSenderSkemState`，只检查 `SenderKey` / `ReceiverKey` secrecy 两个 query。该 target 不尝试把 receiver-side attacker-known key 证明为某个三重泄露公式；receiver-side partnered / unpartnered 语义留给 Tamarin 或更细的 ProVerif model。
+
 `LEAK_SIGSK` 是 signature secret compromise experiment，泄露 `sskA` 和 `sskB`。
 
 `LEAK_KEMSK` 是 receiver long-term KEM secret compromise experiment，泄露 `kskB`。
@@ -57,6 +59,6 @@ CompromiseReceiverSkemState(B)
 
 `SplitKemAccepted ==> SenderSplitKemComponent` 是 component-level authenticity query。它是 split-KEM component 层面的 correspondence，不等价于完整 session agreement。
 
-`LEAK_*` target 的结果是 compromise experiment 的结果，不是 baseline security theorem。Baseline 和 compromise target 不能混淆：`BASELINE` 中没有泄露进程；`EXCEPTION_CHOICE` 和 `LEAK_*` 中主动泄露 secret 或允许 attacker 选择泄露。
+`LEAK_*` target 和 `RECEIVER_EXCEPTION_CLASSIFICATION` 的结果是 compromise / classification experiment 的结果，不是 baseline security theorem。Baseline 和 compromise target 不能混淆：`BASELINE` 中没有泄露进程；`EXCEPTION_CHOICE`、`RECEIVER_EXCEPTION_CLASSIFICATION` 和 `LEAK_*` 中主动泄露 secret 或允许 attacker 选择泄露。
 
 如果某个 leak target 中 secrecy query 为 false，只能说明该 compromise experiment 下 ProVerif 找到了对应攻击轨迹，不能把它解释为 no-compromise baseline 被破坏。

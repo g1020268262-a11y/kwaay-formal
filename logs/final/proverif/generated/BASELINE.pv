@@ -9,7 +9,7 @@
    public-channel \U0000534f\U00008bae\U00004e3b\U00004f53\U0000ff0c\U00004f46 query / leak process \U00007531\U00005b8f\U000063a7\U00005236。
    target \U00005206\U00004e3a\U00004e24\U00007c7b\U0000ff1a
    - theorem / main targets: 1, COMPONENT, EXCEPTION_CHOICE
-   - experiment targets: LEAK_*
+   - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
    \U00004e0d\U00008981\U0000628a leak / compromise \U000065e0\U00006761\U00004ef6\U00005168\U000090e8\U0000542f\U00007528。1 \U0000548c COMPONENT \U00004e0d\U0000542f\U00007528
    leak process。LEAK_* \U0000662f compromise experiments\U0000ff0c\U00004e0d\U0000662f baseline security
    theorem。

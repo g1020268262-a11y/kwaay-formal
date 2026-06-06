@@ -1,7 +1,9 @@
 K-Waay ProVerif final model summary
 model: /mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv
 proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
-generated: 2026-06-06T07:19:52Z
+generated: 2026-06-06T11:52:49Z
+THEOREM TARGETS: BASELINE COMPONENT EXCEPTION_CHOICE
+CLASSIFICATION / EXPERIMENT TARGETS: RECEIVER_EXCEPTION_CLASSIFICATION LEAK_SIGSK LEAK_KEMSK LEAK_EKEMSK LEAK_RSKEMSK LEAK_SSKEMSK LEAK_KEMSK_EKEMSK LEAK_ALL_RECEIVER_SECRETS
 
 TARGET: BASELINE
 STATUS: OK
@@ -34,7 +36,14 @@ RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverPrekeyVerified(A_1,B_1,rp)
 RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is false.
 RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
 RESULT event(SenderKey(A_1,B_1,s,k)) && attacker(k) ==> event(CompromiseKemSk(B_1)) && event(CompromiseReceiverEkemState(B_1)) && event(CompromiseReceiverSkemState(B_1)) is true.
-RESULT event(ReceiverKey(B_1,A_1,s,k)) && attacker(k) ==> event(CompromiseKemSk(B_1)) && event(CompromiseReceiverEkemState(B_1)) && event(CompromiseReceiverSkemState(B_1)) is false.
+
+TARGET: RECEIVER_EXCEPTION_CLASSIFICATION
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/final/proverif/out/RECEIVER_EXCEPTION_CLASSIFICATION.out
+GENERATED: /mnt/d/kwaay-formal/logs/final/proverif/generated/RECEIVER_EXCEPTION_CLASSIFICATION.pv
+RESULTS:
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
 
 TARGET: LEAK_SIGSK
 STATUS: OK

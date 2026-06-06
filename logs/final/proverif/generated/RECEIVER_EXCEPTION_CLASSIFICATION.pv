@@ -8,9 +8,9 @@
    exception \U0000548c\U00005404\U00004e2a single-leak experiments。\U00004e0d\U0000540c target \U00005171\U00004eab\U0000540c\U00004e00\U00004efd
    public-channel \U0000534f\U00008bae\U00004e3b\U00004f53\U0000ff0c\U00004f46 query / leak process \U00007531\U00005b8f\U000063a7\U00005236。
    target \U00005206\U00004e3a\U00004e24\U00007c7b\U0000ff1a
-   - theorem / main targets: BASELINE, 1, EXCEPTION_CHOICE
-   - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
-   \U00004e0d\U00008981\U0000628a leak / compromise \U000065e0\U00006761\U00004ef6\U00005168\U000090e8\U0000542f\U00007528。BASELINE \U0000548c 1 \U00004e0d\U0000542f\U00007528
+   - theorem / main targets: BASELINE, COMPONENT, EXCEPTION_CHOICE
+   - experiment targets: 1, LEAK_*
+   \U00004e0d\U00008981\U0000628a leak / compromise \U000065e0\U00006761\U00004ef6\U00005168\U000090e8\U0000542f\U00007528。BASELINE \U0000548c COMPONENT \U00004e0d\U0000542f\U00007528
    leak process。LEAK_* \U0000662f compromise experiments\U0000ff0c\U00004e0d\U0000662f baseline security
    theorem。
    \U0000672c\U00006587\U00004ef6\U00004e0d\U00008bc1\U0000660e computational KIND / UNF-1KMA / IND-1BatchCCA / deniability。
@@ -120,10 +120,15 @@ event CompromiseSenderSkemState(agent).
 event CompromiseReceiverSkemState(agent).
 event CompromiseReceiverEkemState(agent).
 event HonestRun(session_key).
-(* Split-KEM component-level authenticity query\U0000ff0c\U00006765\U000081ea splitkem-component \U00006587\U00004ef6。 *)
-query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
-  event(SplitKemAccepted(B,A,cts,Ks))
-  ==> event(SenderSplitKemComponent(A,B,cts,Ks)).
+(* 1:
+   \U00008be5 target \U00007528\U00004e8e\U0000786e\U00008ba4 receiver-side attacker-known key \U00005c5e\U00004e8e expected receiver-side bad case。
+   \U00008fd9\U000091cc\U0000540c\U000065f6\U00005141\U00008bb8 sender_skem_sk \U0000548c receiver_skem_sk compromise。
+   \U00009884\U0000671f\U00007ed3\U0000679c\U0000662f SenderKey secrecy \U00004ecd\U00006210\U00007acb\U0000ff0cReceiverKey secrecy \U00005931\U00008d25。
+   \U00008fd9\U00004e0d\U0000662f key-recovery break\U0000ff0c\U0000800c\U0000662f receiver-side unpartnered session / bad-case \U00005206\U00007c7b。 *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
 (* \U0000534f\U00008bae\U00004e3b\U00004f53\U0000590d\U00005236\U000081ea public-channel \U00004e3b\U00005e72\U0000ff1aattacker \U000063a7\U00005236 receiver prekey bundle、
    sender prekey bundle \U0000548c message tuple\U0000ff1bm \U00004fdd\U00006301\U00004e3a (ct_l, ct_k, ct_s)。 *)
 let ProtocolRun(
@@ -284,3 +289,5 @@ process
   (
     ! ProtocolRun(sskA, kskA, sskB, kskB, senderSkA, receiverSkB, ekskB)
   )
+  | LeakReceiverSkemState(receiverSkB)
+  | LeakSenderSkemState(senderSkA)
