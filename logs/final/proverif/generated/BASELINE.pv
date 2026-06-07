@@ -10,6 +10,12 @@
    target \U00005206\U00004e3a\U00004e24\U00007c7b\U0000ff1a
    - theorem / main targets: 1, COMPONENT, EXCEPTION_CHOICE
    - experiment targets: RECEIVER_EXCEPTION_CLASSIFICATION, LEAK_*
+   2026-06-06 \U00004fee\U00006b63\U0000ff1areceiver-side prekey ownership。
+   \U0000539f\U00006587 Figure 7 \U00007684 BatchReceive \U00004ece\U0000672c\U00005730 sti \U00005c55\U00005f00 (esski, ekski, preki)\U0000ff0c
+   \U000056e0\U00006b64 receiver \U000063a5\U00006536\U000065f6\U00004f7f\U00007528\U0000672c\U00005730 preki\U0000ff0c\U0000800c\U00004e0d\U0000662f\U00004ece\U00007f51\U00007edc\U000063a5\U000053d7\U00004efb\U0000610f receiver prekey。
+   \U0000672c\U00006a21\U0000578b\U000073b0\U00005728\U0000533a\U00005206\U0000ff1a
+   - receiverPrekeyForSend\U0000ff1asender \U00004fa7\U00004ece public-channel / server \U000083b7\U000053d6\U00007684 B prekey\U0000ff1b
+   - receiverPrekeyB\U0000ff1areceiver B \U0000672c\U00005730 state \U00004e2d\U00005df2\U00006709\U00007684 prekey。
    \U00004e0d\U00008981\U0000628a leak / compromise \U000065e0\U00006761\U00004ef6\U00005168\U000090e8\U0000542f\U00007528。1 \U0000548c COMPONENT \U00004e0d\U0000542f\U00007528
    leak process。LEAK_* \U0000662f compromise experiments\U0000ff0c\U00004e0d\U0000662f baseline security
    theorem。
@@ -20,6 +26,31 @@
    - proverif/kwaay-core-public-channel-leak-*.pv
    - proverif/kwaay-core-no-batch.pv
 *)
+(* -------------------------------------------------------------------------- *)
+(* Reader map *)
+(* -------------------------------------------------------------------------- *)
+(* This file is intentionally smaller than the PQXDH artifact model. It is the
+   ProVerif final-core model for K-Waay, not the full batch/state lifecycle
+   model. Read it in this order:
+   1. Symbolic sorts and constructors:
+      abstract signatures, KEMs, split-KEM, prekey bundles, messages, and KDF.
+   2. Events:
+      the proof anchors used by secrecy, component-authenticity, and leak
+      classification targets.
+   3. Target-controlled queries:
+      1 / COMPONENT / EXCEPTION_CHOICE are theorem-style targets.
+      RECEIVER_EXCEPTION_CLASSIFICATION and LEAK_* are classification or
+      compromise experiments.
+   4. ProtocolRun:
+      one no-batch public-channel run containing public material publication,
+      the sender-side encapsulation path, and the receiver-side local-state
+      decapsulation path.
+   5. Leak processes and final process:
+      target macros wire in exactly the compromise processes that a target
+      needs. Do not enable leaks unconditionally. *)
+(* -------------------------------------------------------------------------- *)
+(* 1. Symbolic sorts *)
+(* -------------------------------------------------------------------------- *)
 type agent.
 type sig_sk.
 type sig_pk.
@@ -45,6 +76,9 @@ type receiver_prekey_bundle.
 type message_tuple.
 type randomness.
 type leak_cmd.
+(* -------------------------------------------------------------------------- *)
+(* 2. Global principals, channel, and attacker-controlled leak commands *)
+(* -------------------------------------------------------------------------- *)
 free A: agent.
 free B: agent.
 free c: channel.
@@ -53,22 +87,29 @@ free c: channel.
 free leakKemSkB: leak_cmd.
 free leakEkemSkB: leak_cmd.
 free leakReceiverSkB: leak_cmd.
+(* -------------------------------------------------------------------------- *)
+(* 3. Cryptographic constructors and destructors *)
+(* -------------------------------------------------------------------------- *)
+(* Signature abstraction for signed sender / receiver prekeys. *)
 fun spk(sig_sk): sig_pk.
 fun payload_sender(skem_sender_pk): prekey_payload.
 fun payload_receiver(skem_receiver_pk, ekem_pk): prekey_payload.
 fun sign(sig_sk, prekey_payload): signature.
 reduc forall ssk: sig_sk, p: prekey_payload;
   verify(spk(ssk), p, sign(ssk, p)) = true.
+(* Long-term receiver KEM component. *)
 fun kpk(kem_sk): kem_pk.
 fun lkem_enc(kem_pk, randomness): kem_ct.
 fun lkem_ss(kem_pk, randomness): shared_secret.
 reduc forall ksk: kem_sk, r: randomness;
   lkem_dec(ksk, lkem_enc(kpk(ksk), r)) = lkem_ss(kpk(ksk), r).
+(* Receiver ephemeral KEM component. *)
 fun ekpk(ekem_sk): ekem_pk.
 fun ekem_enc(ekem_pk, randomness): ekem_ct.
 fun ekem_ss(ekem_pk, randomness): shared_secret.
 reduc forall eksk: ekem_sk, r: randomness;
   ekem_dec(eksk, ekem_enc(ekpk(eksk), r)) = ekem_ss(ekpk(eksk), r).
+(* Sender-to-receiver split-KEM component. *)
 fun pk_skem_sender(skem_sender_sk): skem_sender_pk.
 fun pk_skem_receiver(skem_receiver_sk): skem_receiver_pk.
 fun skem_enc(skem_sender_sk, skem_receiver_pk, randomness): skem_ct.
@@ -80,6 +121,7 @@ reduc forall sender_sk: skem_sender_sk,
            pk_skem_sender(sender_sk),
            skem_enc(sender_sk, pk_skem_receiver(receiver_sk), r))
   = skem_ss(sender_sk, pk_skem_receiver(receiver_sk), r).
+(* Prekey bundles. *)
 fun sender_prekey(skem_sender_pk, signature): sender_prekey_bundle.
 fun receiver_prekey(skem_receiver_pk, ekem_pk, signature): receiver_prekey_bundle.
 reduc forall spk_s: skem_sender_pk, sig: signature;
@@ -92,6 +134,7 @@ reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
   get_receiver_prekey_ekpk(receiver_prekey(rpk, epk, sig)) = epk.
 reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
   get_receiver_prekey_sig(receiver_prekey(rpk, epk, sig)) = sig.
+(* Message tuple and transcript-bound session identifier. *)
 fun msg(kem_ct, ekem_ct, skem_ct): message_tuple.
 reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
   get_lkem_ct(msg(ctL, ctE, ctS)) = ctL.
@@ -103,6 +146,10 @@ fun pk(sig_pk, kem_pk): pk_tuple.
 fun sid_of(agent, agent, pk_tuple, pk_tuple, sender_prekey_bundle,
            receiver_prekey_bundle, message_tuple): sid_t.
 fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
+(* -------------------------------------------------------------------------- *)
+(* 4. Events *)
+(* -------------------------------------------------------------------------- *)
+(* Role lifecycle and key-computation anchors. *)
 event InitSender(agent).
 event InitReceiver(agent).
 event SenderKey(agent, agent, sid_t, session_key).
@@ -112,14 +159,19 @@ event RecvComputed(agent, agent, sid_t, session_key).
 event RecvDone(agent, agent, sid_t, session_key).
 event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
 event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
+event ReceiverLocalPrekeyUsed(agent, agent, receiver_prekey_bundle).
 event SenderSplitKemComponent(agent, agent, skem_ct, shared_secret).
 event SplitKemAccepted(agent, agent, skem_ct, shared_secret).
+(* Compromise markers used by exception / leak classification targets. *)
 event CompromiseSigSk(agent).
 event CompromiseKemSk(agent).
 event CompromiseSenderSkemState(agent).
 event CompromiseReceiverSkemState(agent).
 event CompromiseReceiverEkemState(agent).
 event HonestRun(session_key).
+(* -------------------------------------------------------------------------- *)
+(* 5. Target-controlled queries *)
+(* -------------------------------------------------------------------------- *)
 (* executability sanity query\U0000ff0c\U00007167\U0000642c\U000073b0\U00006709 public-channel / leak \U00005b9e\U00009a8c。 *)
 query k: session_key; event(HonestRun(k)).
 (* RecvDone ==> SendDone \U0000662f diagnostic query。\U00005b83\U00007528\U00004e8e\U000089c2\U00005bdf public-channel
@@ -130,15 +182,20 @@ query A: agent, B: agent, s: sid_t, k: session_key;
 query A: agent, B: agent, sp: sender_prekey_bundle, s: sid_t, k: session_key;
   event(RecvDone(B,A,s,k)) ==> event(SenderPrekeyVerified(B,A,sp)).
 query A: agent, B: agent, rp: receiver_prekey_bundle, s: sid_t, k: session_key;
-  event(RecvDone(B,A,s,k)) ==> event(ReceiverPrekeyVerified(A,B,rp)).
+  event(RecvDone(B,A,s,k)) ==> event(ReceiverLocalPrekeyUsed(B,A,rp)).
 (* sender-side / receiver-side secrecy。LEAK_* target \U00004e2d\U00004fdd\U00007559\U00008fd9\U00004e9b\U0000539f\U000059cb query
    \U0000662f\U00004e3a\U00004e86\U0000590d\U000073b0\U00005b9e\U00009a8c\U00007ed3\U0000679c\U0000ff0c\U00004e0d\U00008868\U0000793a baseline theorem。 *)
 query A: agent, B: agent, s: sid_t, k: session_key;
   attacker(k) && event(SenderKey(A,B,s,k)) ==> false.
 query A: agent, B: agent, s: sid_t, k: session_key;
   attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
-(* \U0000534f\U00008bae\U00004e3b\U00004f53\U0000590d\U00005236\U000081ea public-channel \U00004e3b\U00005e72\U0000ff1aattacker \U000063a7\U00005236 receiver prekey bundle、
-   sender prekey bundle \U0000548c message tuple\U0000ff1bm \U00004fdd\U00006301\U00004e3a (ct_l, ct_k, ct_s)。 *)
+(* \U0000534f\U00008bae\U00004e3b\U00004f53\U0000ff1a
+   - sender \U00004fa7\U000053ef\U00004ee5\U00004ece public-channel / prekey server \U000083b7\U000053d6 claimed receiver prekey\U0000ff1b
+   - receiver \U00004fa7\U00006309\U00007167 K-Waay BatchReceive \U00008bed\U00004e49\U00004f7f\U00007528\U0000672c\U00005730 sti \U00004e2d\U00007684 receiverPrekeyB\U0000ff1b
+   - receiver \U00004e0d\U0000518d\U00004ece\U00007f51\U00007edc\U000063a5\U000053d7\U00004efb\U0000610f receiver prekey \U00004f5c\U00004e3a\U000081ea\U00005df1\U00007684 preki。 *)
+(* -------------------------------------------------------------------------- *)
+(* 6. Protocol process *)
+(* -------------------------------------------------------------------------- *)
 let ProtocolRun(
     sskA: sig_sk, kskA: kem_sk,
     sskB: sig_sk, kskB: kem_sk,
@@ -146,6 +203,9 @@ let ProtocolRun(
     receiverSkB: skem_receiver_sk,
     ekskB: ekem_sk
   ) =
+  (* Phase 0: derive public identities and public receiver/sender material.
+     The secrets are generated once in the final process and shared by all
+     replicated ProtocolRun instances, matching this no-batch abstraction. *)
   let spkA = spk(sskA) in
   let kpkA = kpk(kskA) in
   let pkA = pk(spkA, kpkA) in
@@ -158,6 +218,10 @@ let ProtocolRun(
   out(c, spkB);
   out(c, kpkB);
   out(c, pkB);
+  (* Phase 1: publish A's sender prekey and B's local receiver prekey.
+     B's receiver prekey is the local state that BatchReceive would unfold
+     from sti in the full protocol; the network may still feed A a claimed
+     receiver prekey later. *)
   let senderPkA = pk_skem_sender(senderSkA) in
   let senderPayloadA = payload_sender(senderPkA) in
   let senderSigA = sign(sskA, senderPayloadA) in
@@ -169,56 +233,86 @@ let ProtocolRun(
   let receiverSigB = sign(sskB, receiverPayloadB) in
   let receiverPrekeyB = receiver_prekey(receiverPkB, ekpkB, receiverSigB) in
   out(c, receiverPrekeyB);
-  in(c, receiverPrekeyFromNet: receiver_prekey_bundle);
-  let receiverPkFromNet = get_receiver_prekey_pk(receiverPrekeyFromNet) in
-  let ekpkFromNet = get_receiver_prekey_ekpk(receiverPrekeyFromNet) in
-  let receiverSigFromNet = get_receiver_prekey_sig(receiverPrekeyFromNet) in
-  let receiverPayloadFromNet = payload_receiver(receiverPkFromNet, ekpkFromNet) in
-  let (=true) = verify(spkB, receiverPayloadFromNet, receiverSigFromNet) in
-  event ReceiverPrekeyVerified(A, B, receiverPrekeyFromNet);
+  (* Phase 2: sender-side setup.
+     A obtains B's claimed receiver prekey from the server / public channel
+     and verifies that it is signed by B. *)
+  in(c, receiverPrekeyForSend: receiver_prekey_bundle);
+  let receiverPkForSend = get_receiver_prekey_pk(receiverPrekeyForSend) in
+  let ekpkForSend = get_receiver_prekey_ekpk(receiverPrekeyForSend) in
+  let receiverSigForSend = get_receiver_prekey_sig(receiverPrekeyForSend) in
+  let receiverPayloadForSend = payload_receiver(receiverPkForSend, ekpkForSend) in
+  let (=true) = verify(spkB, receiverPayloadForSend, receiverSigForSend) in
+  event ReceiverPrekeyVerified(A, B, receiverPrekeyForSend);
+  (* Phase 3: receiver-side input precheck.
+     BatchReceive input contains the claimed sender prekey. It does not
+     replace B's local receiver prekey/state. *)
   in(c, senderPrekeyFromNet: sender_prekey_bundle);
   let senderPkFromNet = get_sender_prekey_pk(senderPrekeyFromNet) in
   let senderSigFromNet = get_sender_prekey_sig(senderPrekeyFromNet) in
   let senderPayloadFromNet = payload_sender(senderPkFromNet) in
   let (=true) = verify(spkA, senderPayloadFromNet, senderSigFromNet) in
   event SenderPrekeyVerified(B, A, senderPrekeyFromNet);
+  (* Phase 4: A encapsulates the three Figure 7 KEM components and records
+     the split-KEM component event used by COMPONENT. *)
   new rL: randomness;
   new rE: randomness;
   new rS: randomness;
   let ctL = lkem_enc(kpkB, rL) in
   let KL = lkem_ss(kpkB, rL) in
-  let ctE = ekem_enc(ekpkFromNet, rE) in
-  let KE = ekem_ss(ekpkFromNet, rE) in
-  let ctS = skem_enc(senderSkA, receiverPkFromNet, rS) in
-  let KS = skem_ss(senderSkA, receiverPkFromNet, rS) in
+  let ctE = ekem_enc(ekpkForSend, rE) in
+  let KE = ekem_ss(ekpkForSend, rE) in
+  let ctS = skem_enc(senderSkA, receiverPkForSend, rS) in
+  let KS = skem_ss(senderSkA, receiverPkForSend, rS) in
   event SenderSplitKemComponent(A, B, ctS, KS);
   let m = msg(ctL, ctE, ctS) in
   out(c, m);
-  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyFromNet, m) in
+  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyForSend, m) in
   let kSend = kdf(KL, KE, KS, sidAB) in
   event SenderKey(A, B, sidAB, kSend);
   event SendDone(A, B, sidAB, kSend);
+  (* Phase 5: B receives a message and decapsulates with local receiver state.
+     This is the key ownership fix: B uses receiverPrekeyB / receiverSkB /
+     ekskB from local state, not an attacker-chosen receiver prekey from the
+     network. *)
   in(c, mFromNet: message_tuple);
   let ctLFromNet = get_lkem_ct(mFromNet) in
   let ctEFromNet = get_ekem_ct(mFromNet) in
   let ctSFromNet = get_skem_ct(mFromNet) in
+  (* Receive: B uses local receiver state/prekey from sti. *)
+  event ReceiverLocalPrekeyUsed(B, A, receiverPrekeyB);
   let KL2 = lkem_dec(kskB, ctLFromNet) in
   let KE2 = ekem_dec(ekskB, ctEFromNet) in
   let KS2 = skem_dec(receiverSkB, senderPkFromNet, ctSFromNet) in
   event SplitKemAccepted(B, A, ctSFromNet, KS2);
-  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyFromNet, mFromNet) in
+  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyB, mFromNet) in
   let kRecv = kdf(KL2, KE2, KS2, sidBA) in
   event RecvComputed(B, A, sidBA, kRecv);
   event ReceiverKey(B, A, sidBA, kRecv);
   event RecvDone(B, A, sidBA, kRecv);
+  (* Executability anchor. The query asks whether some honest run is reachable. *)
   event HonestRun(kRecv);
   0.
-let LeakSigSk(sskA: sig_sk, sskB: sig_sk) =
+(* -------------------------------------------------------------------------- *)
+(* 7. Leak / compromise processes *)
+(* -------------------------------------------------------------------------- *)
+let LeakSigSkA(sskA: sig_sk) =
   event CompromiseSigSk(A);
   out(c, sskA);
+  0.
+let LeakSigSkB(sskB: sig_sk) =
   event CompromiseSigSk(B);
   out(c, sskB);
   0.
+let LeakSigSkAB(sskA: sig_sk, sskB: sig_sk) =
+  (
+    event CompromiseSigSk(A);
+    out(c, sskA)
+  )
+  |
+  (
+    event CompromiseSigSk(B);
+    out(c, sskB)
+  ).
 let LeakKemSk(kskB: kem_sk) =
   event CompromiseKemSk(B);
   out(c, kskB);
@@ -269,6 +363,9 @@ let ExceptionChoiceLeaks(
     ekskB: ekem_sk,
     receiverSkB: skem_receiver_sk
   ) =
+  (* In EXCEPTION_CHOICE the attacker can choose any subset of the three
+     receiver-side decapsulation secrets by sending the corresponding public
+     command. This target is for classification, not baseline secrecy. *)
   (
     in(c, (=leakKemSkB));
     event CompromiseKemSk(B);
@@ -286,6 +383,9 @@ let ExceptionChoiceLeaks(
     event CompromiseReceiverSkemState(B);
     out(c, receiverSkB)
   ).
+(* -------------------------------------------------------------------------- *)
+(* 8. Main process and target wiring *)
+(* -------------------------------------------------------------------------- *)
 process
   new sskA: sig_sk;
   new kskA: kem_sk;
@@ -297,3 +397,5 @@ process
   (
     ! ProtocolRun(sskA, kskA, sskB, kskB, senderSkA, receiverSkB, ekskB)
   )
+  (* Theorem/classification targets below add only the leak processes needed
+     for that target. 1 and COMPONENT leave all leak processes disabled. *)

@@ -399,4 +399,4 @@ process
   )
   (* Theorem/classification targets below add only the leak processes needed
      for that target. BASELINE and COMPONENT leave all leak processes disabled. *)
-  | LeakSenderSkemState(senderSkA)
+  | LeakSigSkAB(sskA, sskB)

@@ -94,25 +94,25 @@ Process 0 (that is, the initial process):
     )
 )
 
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 179, character 7:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 179, character 7:
 Warning: identifier A rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 179, character 17:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 179, character 17:
 Warning: identifier B rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 182, character 7:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 182, character 7:
 Warning: identifier A rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 182, character 17:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 182, character 17:
 Warning: identifier B rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 184, character 7:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 184, character 7:
 Warning: identifier A rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 184, character 17:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 184, character 17:
 Warning: identifier B rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 188, character 7:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 188, character 7:
 Warning: identifier A rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 188, character 17:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 188, character 17:
 Warning: identifier B rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 190, character 7:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 190, character 7:
 Warning: identifier A rebound.
-File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK.pv", line 190, character 17:
+File "D:\kwaay-formal\logs\final\proverif\generated\LEAK_SIGSK_AB.pv", line 190, character 17:
 Warning: identifier B rebound.
 --  Process 1 (that is, process 0, with let moved downwards):
 {1}new sskA: sig_sk;
