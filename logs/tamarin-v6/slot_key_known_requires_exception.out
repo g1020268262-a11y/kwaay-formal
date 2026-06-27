@@ -52,6 +52,7 @@ rule (modulo E) CreateBatch:
   --[ BatchCreated( $B, ~bid, rst ) ]->
    [
    AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
+   AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
    SealToken( $B, ~bid, rst ), BatchEndToken( $B, ~bid, rst ),
    BatchCompromiseToken( $B, ~bid, rst )
    ]
@@ -146,6 +147,44 @@ rule (modulo E) ForgedProcessAfterReceiverStateCompromise:
 
   /* has exactly the trivial AC variant */
 
+rule (modulo E) ForgedProcessAfterSenderStateCompromise:
+   [
+   !BatchSealedFact( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   !CompromisedSenderState( $A, sst ), In( r )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  BatchSlotAccept( $B, bid, idx, $A, rst, cts($A, $B, sst, r),
+                   ks($A, $B, sst, r)
+  ),
+  ForgedReceiverAccept( $B, $A, rst, cts($A, $B, sst, r),
+                        ks($A, $B, sst, r)
+  ),
+  ReceiverAcceptsComponent( $B, $A, rst, cts($A, $B, sst, r),
+                            ks($A, $B, sst, r)
+  ),
+  ReceiverKey( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+               ks($A, $B, sst, r),
+               rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  AttackerKnowsKey( rkey($B, $A, rst, cts($A, $B, sst, r),
+                         ks($A, $B, sst, r))
+  ),
+  UnpartneredReceiverSlot( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+                           ks($A, $B, sst, r),
+                           rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  SlotProcessed( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  DoneSlotEvent( $B, bid, idx, $A, cts($A, $B, sst, r) )
+  ]->
+   [
+   DoneSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   Out( rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r)) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
 rule (modulo E) CompleteSealedBatch:
    [ !BatchSealedFact( $B, bid, rst ), BatchEndToken( $B, bid, rst ) ]
   --[
@@ -169,6 +208,22 @@ rule (modulo E) FailSealedBatch:
    [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
 
   /* has exactly the trivial AC variant */
+
+restriction strict_batch_completion:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+
+  /*
+  expanded formula:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+  */
 
 lemma executable_add_slot:
   exists-trace
@@ -367,119 +422,52 @@ guarded formula characterizing all counter-examples:
   (∀ sst #j. (CompromiseSenderState( A, sst ) @ #j) ⇒ ¬(#j < #i))"
 */
 simplify
-solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
-  case SealBatch_case_1
-  solve( PendingSlot( $B, ~bid, idx, $A, cts_in ) ▶₁ #i )
-    case AddSlot_case_1
-    solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
-      case CompromiseActiveReceiverState_case_1
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseActiveReceiverState_case_2
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseReceiverState
-      solve( ReceiverKey( B.1, A.1, bid.1, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    qed
-  next
-    case AddSlot_case_2
-    solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
-      case CompromiseActiveReceiverState_case_1
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseActiveReceiverState_case_2
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseReceiverState
-      solve( ReceiverKey( B.1, A.1, bid.1, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    qed
-  qed
+solve( ReceiverKey( B, A, bid, idx, rst, cts, Ks, k ) @ #i )
+  case ForgedProcessAfterReceiverStateCompromise
+  by contradiction /* from formulas */
 next
-  case SealBatch_case_2
-  solve( PendingSlot( $B, ~bid, idx, $A, cts_in ) ▶₁ #i )
-    case AddSlot_case_1
-    solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
-      case CompromiseActiveReceiverState_case_1
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
+  case ForgedProcessAfterSenderStateCompromise
+  by contradiction /* from formulas */
+next
+  case ProcessPendingSlot
+  solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
+    case SealBatch_case_1
+    solve( PendingSlot( $B, ~bid, idx, $A, cts ) ▶₁ #i )
+      case AddSlot_case_1
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by solve( AttackerKnowsKey( rkey($B, $A, ~rst, cts($A, $B, ~sst, ~r),
+                                         ks($A, $B, ~sst, ~r))
+                  ) @ #i )
       qed
     next
-      case CompromiseActiveReceiverState_case_2
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
+      case AddSlot_case_2
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by solve( AttackerKnowsKey( rkey($B, $A, ~rst, cts($A, $B, ~sst, ~r),
+                                         ks($A, $B, ~sst, ~r))
+                  ) @ #i )
       qed
     next
-      case CompromiseReceiverState
-      solve( ReceiverKey( B.1, A.1, bid.1, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
+      case AddSlot_case_3
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by solve( AttackerKnowsKey( rkey($B, $A, ~rst, cts($A, $B, ~sst, ~r),
+                                         ks($A, $B, ~sst, ~r))
+                  ) @ #i )
+      qed
+    next
+      case AddSlot_case_4
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by solve( AttackerKnowsKey( rkey($B, $A, ~rst, cts($A, $B, ~sst, ~r),
+                                         ks($A, $B, ~sst, ~r))
+                  ) @ #i )
       qed
     qed
   next
-    case AddSlot_case_2
-    solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
-      case CompromiseActiveReceiverState_case_1
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseActiveReceiverState_case_2
-      solve( ReceiverKey( B.1, A.1, bid.2, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    next
-      case CompromiseReceiverState
-      solve( ReceiverKey( B.1, A.1, bid.1, idx.1, rst.1, cts, Ks,
-                          rkey($B, $A, ~rst, cts_in, ~fake_Ks)
-             ) @ #i )
-        case ForgedProcessAfterReceiverStateCompromise
-        by contradiction /* from formulas */
-      qed
-    qed
+    case SealBatch_case_2
+    by contradiction /* from formulas */
   qed
 qed
 
@@ -503,16 +491,7 @@ guarded formula characterizing all counter-examples:
 */
 by sorry
 
-/*
-WARNING: the following wellformedness checks failed!
-
-Rule has no variants
-====================
-
-  Rule ForgedProcessAfterSenderStateCompromise has no variants.
-  
-  Most likely, this means that the rule's use of fresh variables is contradictory. For exaple, a rule with the premises In(~x) and Fr(~x) has no variants because ~x cannot be sent before it is generated.
-*/
+/* All wellformedness checks were successful. */
 
 /*
 Generated from:
@@ -529,10 +508,7 @@ summary of summaries:
 
 analyzed: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
 
-  processing time: 0.88s
-  
-  WARNING: 1 wellformedness check failed!
-           The analysis results might be wrong!
+  processing time: 1.90s
   
   executable_add_slot (exists-trace): analysis incomplete (1 steps)
   executable_seal_batch (exists-trace): analysis incomplete (1 steps)
@@ -548,7 +524,7 @@ analyzed: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
   batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
   batch_fail_complete_exclusive (all-traces): analysis incomplete (1 steps)
   slot_origin_without_early_compromise (all-traces): analysis incomplete (1 steps)
-  slot_key_known_requires_exception (all-traces): verified (32 steps)
+  slot_key_known_requires_exception (all-traces): verified (15 steps)
   partnered_slot_key_not_attacker_known_without_early_compromise (all-traces): analysis incomplete (1 steps)
 
 ==============================================================================

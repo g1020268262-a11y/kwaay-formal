@@ -1,0 +1,55 @@
+theory Kwaay_Deniability_With_Proof_Fixed
+begin
+
+builtins: hashing
+
+functions: 
+  pk/1, mac/2, 
+  skem_enc/3, skem_key/3, 
+  skem_forge_ct/3, skem_forge_key/3,
+  
+  pok/1 
+
+equations:
+  skem_forge_ct(skR, pk(skS), r) = skem_enc(skS, pk(skR), r),
+  skem_forge_key(skR, pk(skS), r) = skem_key(skS, pk(skR), r)
+
+
+rule Deniability_Malicious_Adversary_With_PoK:
+  let
+    pkA = pk(~skA)
+    
+    // 由底层抽取出的私钥，正常推导出恶意公钥
+    malicious_pkB = pk(malicious_skB)
+    
+    // Real World: Alice 收到网络数据后，正常封装
+    real_ct_s = skem_enc(~skA, malicious_pkB, ~r)
+    real_K_s  = skem_key(~skA, malicious_pkB, ~r)
+    real_sid  = h(<'sid', pkA, malicious_pkB, real_ct_s>)
+    real_key  = h(<'kdf', real_K_s>)
+    real_tag  = mac(real_key, real_sid)
+    real_transcript = <real_ct_s, real_tag>
+
+    // Fake World: 模拟器依靠模式匹配实现“知识抽取”，利用私钥合法伪造
+    fake_ct_s = skem_forge_ct(malicious_skB, pkA, ~r)
+    fake_K_s  = skem_forge_key(malicious_skB, pkA, ~r)
+    fake_sid  = h(<'sid', pkA, malicious_pkB, fake_ct_s>)
+    fake_key  = h(<'kdf', fake_K_s>)
+    fake_tag  = mac(fake_key, fake_sid)
+    fake_transcript = <fake_ct_s, fake_tag>
+  in
+  [
+    Fr(~skA), Fr(~r),
+    // 【全场最核心的魔法】：结构化模式匹配
+    // 强制 Dolev-Yao 攻击者必须构造并发送基于同一个私钥的 <公钥, 证明>！
+    In(< pk(malicious_skB), pok(malicious_skB) >) 
+  ]
+  --[ 
+    DeniabilityVerifiedMalicious_PoK() 
+  ]->
+  [
+    Out(pkA),
+    Out( diff(real_transcript, fake_transcript) )
+  ]
+
+end

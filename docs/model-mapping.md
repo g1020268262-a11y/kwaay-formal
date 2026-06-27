@@ -119,6 +119,7 @@ batch slot
 batch abort
 batch-level state consumption
 dynamic AddSlot / SealBatch / ProcessSlot skeleton
+Strict Completion Semantics
 ```
 
 它不建模：

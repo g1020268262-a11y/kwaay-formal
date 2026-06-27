@@ -1,0 +1,60 @@
+theory Kwaay_Deniability_Advanced_BigBrother
+begin
+
+/* K-Waay-MAC 进阶可否认性证明 
+  (对应 Fiedler & Janson 2024 论文中的高级分类学)
+  
+  证明目标: 
+  "1-out-of-2 Deniability against Malicious Adversaries in the Big Brother Model"
+  (在老大哥模型下，面对恶意攻击者的二分之一可否认性)
+*/
+
+builtins: hashing
+functions: pk/1, mac/2, skem_enc/3, skem_key/3, skem_forge_ct/3, skem_forge_key/3
+equations:
+  skem_forge_ct(skR, pk(skS), r) = skem_enc(skS, pk(skR), r),
+  skem_forge_key(skR, pk(skS), r) = skem_key(skS, pk(skR), r)
+
+// ==================================================================
+// 场景：面对老大哥模型下的 1-out-of-2 可否认性 (Big Brother Model)
+// ==================================================================
+rule Deniability_BigBrother_Model:
+  let
+    // 真实世界与伪造世界的公钥环境
+    pkA = pk(~skA)
+    pkB = pk(~skB)
+    
+    // 【Real World (左)】：诚实的 Sender (Alice) 正常生成密文和 HMAC
+    real_ct_s = skem_enc(~skA, pkB, ~r)
+    real_K_s  = skem_key(~skA, pkB, ~r)
+    real_sid  = h(<'sid', pkA, pkB, real_ct_s>)
+    real_key  = h(<'kdf', real_K_s>)
+    real_tag  = mac(real_key, real_sid)
+    real_transcript = <real_ct_s, real_tag>
+
+    // 【Fake World (右)】：Receiver (Bob) 利用自己的私钥 ~skB 进行伪造 (1-out-of-2)
+    fake_ct_s = skem_forge_ct(~skB, pkA, ~r)
+    fake_K_s  = skem_forge_key(~skB, pkA, ~r)
+    fake_sid  = h(<'sid', pkA, pkB, fake_ct_s>)
+    fake_key  = h(<'kdf', fake_K_s>)
+    fake_tag  = mac(fake_key, fake_sid)
+    fake_transcript = <fake_ct_s, fake_tag>
+  in
+  [
+    Fr(~skA), Fr(~skB), Fr(~r)
+  ]
+  --[ DeniabilityVerifiedBigBrother() ]->
+  [
+    // 将公开参数发给法官
+    Out(pkA), Out(pkB),
+    
+    // 核心升级：法官是老大哥 (Big Brother Distinguisher, OD={SKS})
+    // 法官在事后强行索要了双方的长期私钥！
+    Out(~skA), Out(~skB),
+    
+    // 在拥有双方私钥的极端情况下，法官依然无法区分这段转录本
+    Out( diff(real_transcript, fake_transcript) )
+  ]
+
+
+end

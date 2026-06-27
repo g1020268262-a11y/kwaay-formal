@@ -1,0 +1,37 @@
+Alice (Honest Sender)                 Attacker (Network)                  Bob (Honest Receiver)
+  |                                        |                                        |
+  |--- pkA, senderPrekeyA ---------------->|                                        |
+  |                                        |<---------------- pkB, receiverPrekeyB -|
+  |                                        |                                        |
+  | Compute rL, rE, rS                     |                                        |
+  | ctL = lkem_enc(kpkB, rL)               |                                        |
+  | ctE = ekem_enc(ekpkB, rE)              |                                        |
+  | ctS = skem_enc(senderSkA, pk_skem_B)   |                                        |
+  | m = (ctL, ctE, ctS)                    |                                        |
+  |--- m --------------------------------->|                                        |
+  |                                        | Extract ctS                            |
+  |                                        | Generate fake randomness r, r_1        |
+  |                                        | ctL' = lkem_enc(kpkB, r_1)             |
+  |                                        | ctE' = ekem_enc(ekpkB, r)              |
+  |                                        | m' = (ctL', ctE', ctS)                 |
+  |                                        |--- m' -------------------------------->|
+  |                                        |                                        | Decapsulate ctL', ctE', ctS
+  |                                        |                                        | Compute kRecv, sidBA (bound to m')
+  |                                        |                                        | Trigger RecvDone(B, A, sidBA, kRecv)
+  |                                        |                                        | 
+[SendDone mismatch: Alice has sidAB ≠ sidBA]                                        [Bob is left Unpartnered]
+
+
+在我们的 ProVerif 基线模型分析中，查询 event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) 返回 false。模型输出的 Horn 子句反例（Derivation）清晰地展示了一个针对接收方完成语义的网络级拼凑攻击，具体过程分为以下六步：
+
+预密钥分发被拦截 (Prekey Interception): 诚实的发送方 A 与接收方 B 在公开信道上公布了各自的身份公钥及签名的预密钥包（sender_prekey 与 receiver_prekey），网络攻击者合法地获取了这些公共参数。
+
+诚实发送方发起会话 (Honest Initiation): 发送方 A 期望与 B 建立会话。A 生成了合法的随机数，分别计算出传统 KEM 密文 ctL、临时 KEM 密文 ctE，以及核心的 Split-KEM 认证密文 ctS（即 skem_enc(senderSkA[],pk_skem_receiver(receiverSkB[]),rS_1)），并通过网络发送核心消息元组 m = (ctL, ctE, ctS)。
+
+攻击者分离认证组件 (Component Extraction): 攻击者拦截了消息 m。由于 Split-KEM 密文 ctS 隐含了发送方 A 的身份认证，攻击者无法在不掌握长期密钥的情况下对其进行伪造。因此，攻击者利用 get_skem_ct 函数直接从 m 中完整提取了原始的、未被篡改的认证组件 ctS。
+
+伪造临时组件 (Ephemeral Forgery): 攻击者自行生成了伪造的随机数 r 和 r_1。利用截获的 B 的公开参数，攻击者独立计算出全新的临时密文组件 ctL' = lkem_enc(kpk(kskB[]),r_1) 和 ctE' = ekem_enc(ekpk(ekskB[]),r)。
+
+重组并注入转录本 (Transcript Recombination & Injection): 攻击者将自己生成的未认证临时组件（ctL' 和 ctE'）与截获的合法认证组件（ctS）重新打包，构造出一个伪造的消息元组 m' = msg(ctL', ctE', ctS)，并将其注入发送给接收方 B。
+
+协议一致性破裂 (Agreement Failure): 接收方 B 接收到 m' 后，由于所有密文组件在密码学上均是合法封装的，B 成功解封装了这三个组件。随后，B 将 m' 纳入会话标识（sidBA）的计算，并派生出最终会话密钥，触发 RecvDone(B, A, sidBA, kRecv) 事件。然而，发送方 A 从未发送过包含 ctL' 和 ctE' 的转录本，因此不存在与之匹配的 SendDone 状态，导致 B 陷入了“未配对接收方（Unpartnered Receiver）”的状态，Exact Receiver Agreement 被破坏。

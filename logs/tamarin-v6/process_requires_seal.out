@@ -52,6 +52,7 @@ rule (modulo E) CreateBatch:
   --[ BatchCreated( $B, ~bid, rst ) ]->
    [
    AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
+   AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
    SealToken( $B, ~bid, rst ), BatchEndToken( $B, ~bid, rst ),
    BatchCompromiseToken( $B, ~bid, rst )
    ]
@@ -146,6 +147,44 @@ rule (modulo E) ForgedProcessAfterReceiverStateCompromise:
 
   /* has exactly the trivial AC variant */
 
+rule (modulo E) ForgedProcessAfterSenderStateCompromise:
+   [
+   !BatchSealedFact( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   !CompromisedSenderState( $A, sst ), In( r )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  BatchSlotAccept( $B, bid, idx, $A, rst, cts($A, $B, sst, r),
+                   ks($A, $B, sst, r)
+  ),
+  ForgedReceiverAccept( $B, $A, rst, cts($A, $B, sst, r),
+                        ks($A, $B, sst, r)
+  ),
+  ReceiverAcceptsComponent( $B, $A, rst, cts($A, $B, sst, r),
+                            ks($A, $B, sst, r)
+  ),
+  ReceiverKey( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+               ks($A, $B, sst, r),
+               rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  AttackerKnowsKey( rkey($B, $A, rst, cts($A, $B, sst, r),
+                         ks($A, $B, sst, r))
+  ),
+  UnpartneredReceiverSlot( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+                           ks($A, $B, sst, r),
+                           rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  SlotProcessed( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  DoneSlotEvent( $B, bid, idx, $A, cts($A, $B, sst, r) )
+  ]->
+   [
+   DoneSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   Out( rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r)) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
 rule (modulo E) CompleteSealedBatch:
    [ !BatchSealedFact( $B, bid, rst ), BatchEndToken( $B, bid, rst ) ]
   --[
@@ -169,6 +208,22 @@ rule (modulo E) FailSealedBatch:
    [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
 
   /* has exactly the trivial AC variant */
+
+restriction strict_batch_completion:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+
+  /*
+  expanded formula:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+  */
 
 lemma executable_add_slot:
   exists-trace
@@ -248,6 +303,15 @@ guarded formula characterizing all counter-examples:
 simplify
 solve( BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i )
   case ForgedProcessAfterReceiverStateCompromise
+  solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
+    case SealBatch_case_1
+    by contradiction /* from formulas */
+  next
+    case SealBatch_case_2
+    by contradiction /* from formulas */
+  qed
+next
+  case ForgedProcessAfterSenderStateCompromise
   solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
     case SealBatch_case_1
     by contradiction /* from formulas */
@@ -407,16 +471,7 @@ guarded formula characterizing all counter-examples:
 */
 by sorry
 
-/*
-WARNING: the following wellformedness checks failed!
-
-Rule has no variants
-====================
-
-  Rule ForgedProcessAfterSenderStateCompromise has no variants.
-  
-  Most likely, this means that the rule's use of fresh variables is contradictory. For exaple, a rule with the premises In(~x) and Fr(~x) has no variants because ~x cannot be sent before it is generated.
-*/
+/* All wellformedness checks were successful. */
 
 /*
 Generated from:
@@ -433,10 +488,7 @@ summary of summaries:
 
 analyzed: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
 
-  processing time: 0.85s
-  
-  WARNING: 1 wellformedness check failed!
-           The analysis results might be wrong!
+  processing time: 1.79s
   
   executable_add_slot (exists-trace): analysis incomplete (1 steps)
   executable_seal_batch (exists-trace): analysis incomplete (1 steps)
@@ -444,7 +496,7 @@ analyzed: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
   executable_batch_complete (exists-trace): analysis incomplete (1 steps)
   executable_batch_fail (exists-trace): analysis incomplete (1 steps)
   process_requires_slot_added (all-traces): analysis incomplete (1 steps)
-  process_requires_seal (all-traces): verified (8 steps)
+  process_requires_seal (all-traces): verified (11 steps)
   complete_requires_seal (all-traces): analysis incomplete (1 steps)
   fail_requires_seal (all-traces): analysis incomplete (1 steps)
   batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)

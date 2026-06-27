@@ -1,0 +1,84 @@
+theory Kwaay_Deniability_Combined
+begin
+
+/* K-Waay 综合可否认性模型 (Combined Deniability Model)
+  在一个理论中同时证明：
+  1. K-Waay Core (原版) 具有观测等价性 (可否认)
+  2. K-Waay-MAC (HMAC修复版) 依然保持观测等价性 (可否认)
+*/
+
+builtins: hashing
+
+functions:
+  pk/1, mac/2,
+  skem_enc/3, skem_key/3,
+  skem_forge_ct/3, skem_forge_key/3
+
+equations:
+  // 核心伪造等价性：Receiver 可以用 Sender 的公钥伪造出等价的密文和密钥
+  skem_forge_ct(skR, pk(skS), r) = skem_enc(skS, pk(skR), r),
+  skem_forge_key(skR, pk(skS), r) = skem_key(skS, pk(skR), r)
+
+
+// ==================================================================
+// 场景 1：原版 K-Waay Core 的可否认性 (Baseline Deniability)
+// ==================================================================
+rule Deniable_Transcript_Core:
+  let
+    pkA = pk(~skA)
+    pkB = pk(~skB)
+    
+    // Real World: Alice 真实发送的密文
+    real_ct_s = skem_enc(~skA, pkB, ~r)
+    real_transcript = real_ct_s
+
+    // Fake World: Bob 伪造的密文
+    fake_ct_s = skem_forge_ct(~skB, pkA, ~r)
+    fake_transcript = fake_ct_s
+  in
+  [
+    Fr(~skA), Fr(~skB), Fr(~r)
+  ]
+  --[ TranscriptCoreGenerated() ]->
+  [
+    Out(pkA), Out(pkB),
+    // 抛出等价性测试
+    Out( diff(real_transcript, fake_transcript) )
+  ]
+
+
+// ==================================================================
+// 场景 2：修复后 K-Waay-MAC 的可否认性 (Extension Deniability)
+// ==================================================================
+rule Deniable_Transcript_HMAC:
+  let
+    pkA = pk(~skA)
+    pkB = pk(~skB)
+    
+    // Real World: Alice 发送密文并附带 HMAC
+    real_ct_s = skem_enc(~skA, pkB, ~r)
+    real_K_s  = skem_key(~skA, pkB, ~r)
+    real_sid  = h(<'sid', pkA, pkB, real_ct_s>)
+    real_key  = h(<'kdf', real_K_s>)
+    real_tag  = mac(real_key, real_sid)
+    real_transcript = <real_ct_s, real_tag>
+
+    // Fake World: Bob 伪造密文，并用派生出的相同密钥自己计算 HMAC
+    fake_ct_s = skem_forge_ct(~skB, pkA, ~r)
+    fake_K_s  = skem_forge_key(~skB, pkA, ~r)
+    fake_sid  = h(<'sid', pkA, pkB, fake_ct_s>)
+    fake_key  = h(<'kdf', fake_K_s>)
+    fake_tag  = mac(fake_key, fake_sid)
+    fake_transcript = <fake_ct_s, fake_tag>
+  in
+  [
+    Fr(~skA), Fr(~skB), Fr(~r)
+  ]
+  --[ TranscriptHMACGenerated() ]->
+  [
+    Out(pkA), Out(pkB),
+    // 抛出带 HMAC 的等价性测试
+    Out( diff(real_transcript, fake_transcript) )
+  ]
+
+end

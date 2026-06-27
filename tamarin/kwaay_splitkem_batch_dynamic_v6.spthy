@@ -73,6 +73,8 @@ rule CreateBatch:
   [
     AddSlotToken($B, ~bid, rst),
     AddSlotToken($B, ~bid, rst),
+    AddSlotToken($B, ~bid, rst),
+    AddSlotToken($B, ~bid, rst),
     SealToken($B, ~bid, rst),
     BatchEndToken($B, ~bid, rst),
     BatchCompromiseToken($B, ~bid, rst)
@@ -82,7 +84,7 @@ rule CreateBatch:
   AddSlot:
   - 消耗一个 AddSlotToken；
   - 产生一个 PendingSlot；
-  - 当前最多添加两个 slot，只是 bounded dynamic skeleton。
+  - 当前最多添加4个 slot，只是 bounded dynamic skeleton。
 */
 rule AddSlot:
   [
@@ -205,15 +207,15 @@ rule ForgedProcessAfterReceiverStateCompromise:
   sender-state compromise bad case.
 */
 rule ForgedProcessAfterSenderStateCompromise:
-  let c = cts($A,$B,sst,~r)
-      Ks = ks($A,$B,sst,~r)
+  let c = cts($A,$B,sst,r)
+      Ks = ks($A,$B,sst,r)
       k = rkey($B,$A,rst,c,Ks)
   in
   [
     !BatchSealedFact($B,bid,rst),
     PendingSlot($B,bid,idx,$A,c),
     !CompromisedSenderState($A,sst),
-    Fr(~r)
+    In(r)
   ]
   --[
     BatchSlot($B,bid,idx,$A,c),
@@ -276,6 +278,19 @@ rule FailSealedBatch:
     UsedReceiverState($B,rst)
   ]
 
+/* 限制：严格完成语义。
+  如果一个 Batch 触发了 Complete 动作，那么所有被 Add 到这个 Batch 里的 Slot，
+  必须在此之前都已经触发了 Processed 动作。
+*/
+restriction strict_batch_completion:
+  "All B bid rst #i. 
+      BatchComplete(B, bid, rst) @ #i 
+    ==> 
+      not (
+          Ex idx A cts_in #j. 
+            SlotAdded(B, bid, idx, A, cts_in) @ #j 
+          & not (Ex #k. SlotProcessed(B, bid, idx, A, cts_in) @ #k & #k < #i)
+      )"
 /* ---------- executability ---------- */
 
 lemma executable_add_slot:
