@@ -1,0 +1,52 @@
+Q1 triage ProVerif summary
+model: /mnt/d/kwaay-formal/q1-analysis-model/q1_triage.cpp.pv
+proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
+generated: 2026-06-29T11:50:24Z
+
+TARGET: KWAAY_LIKE
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-analysis-model/out/KWAAY_LIKE.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-analysis-model/generated/KWAAY_LIKE.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(AuthComponentAccepted(B_1,A_1,cts,Ks)) ==> event(AuthComponentSent(A_1,B_1,cts,Ks)) is true.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: ATTACKER_KEY_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-analysis-model/out/ATTACKER_KEY_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-analysis-model/generated/ATTACKER_KEY_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+RESULT event(AuthComponentAccepted(B_1,A_1,cts,Ks)) ==> event(AuthComponentSent(A_1,B_1,cts,Ks)) is true.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is false.
+
+TARGET: AUTHZ_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-analysis-model/out/AUTHZ_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-analysis-model/generated/AUTHZ_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(AuthComponentAccepted(B_1,A_1,cts,Ks)) ==> event(AuthComponentSent(A_1,B_1,cts,Ks)) is true.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+RESULT event(AuthorizedAction(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+
+TARGET: CONFIRMED_FIX
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-analysis-model/out/CONFIRMED_FIX.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-analysis-model/generated/CONFIRMED_FIX.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(AuthComponentAccepted(B_1,A_1,cts,Ks)) ==> event(AuthComponentSent(A_1,B_1,cts,Ks)) is true.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(AeadConfirmed(B_1,A_1,s,k)) is true.
+RESULT event(AeadConfirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+

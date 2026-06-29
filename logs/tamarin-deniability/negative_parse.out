@@ -1,0 +1,208 @@
+diffLemma
+[Theory Kwaay_Deniability_Negative_Sender_Secret_Diff] Theory loaded
+theory Kwaay_Deniability_Negative_Sender_Secret_Diff
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: ekem_ct/2, ekpk/1, fst/1, kpk/1, lkem_ct/2, pair/2, pk/2,
+           receiver_payload/2, receiver_prekey/3, sender_payload/1, sender_prekey/2,
+           sender_tag_marker/0, sid_of/7, sign/2, simulated_tag_marker/0,
+           skem_component/3, skem_rpk/1, skem_spk/1, snd/1, spk/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+rule (modulo E) NegativeSenderSecretTranscript_Diff:
+   [
+   Fr( ~sigSkA ), Fr( ~kemSkA ), Fr( ~senderSkA ), Fr( ~sigSkB ),
+   Fr( ~kemSkB ), Fr( ~receiverSkB ), Fr( ~receiverEskB ), Fr( ~rhoL ),
+   Fr( ~rhoK ), Fr( ~rhoS )
+   ]
+  --[
+  NegativeRealTranscript( $A, $B,
+                          <$A, $B, pk(spk(~sigSkA), kpk(~kemSkA)), pk(spk(~sigSkB), kpk(~kemSkB)), 
+                           sender_prekey(skem_spk(~senderSkA),
+                                         sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))), 
+                           receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                           sign(~sigSkB,
+                                                receiver_payload(skem_rpk(~receiverSkB),
+                                                                 ekpk(~receiverEskB)))), 
+                           <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                            skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                            sender_tag_marker>, 
+                           sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                                  pk(spk(~sigSkB), kpk(~kemSkB)),
+                                  sender_prekey(skem_spk(~senderSkA),
+                                                sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                                  receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                  sign(~sigSkB,
+                                                       receiver_payload(skem_rpk(~receiverSkB),
+                                                                        ekpk(~receiverEskB)))),
+                                  <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                   skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                                   sender_tag_marker>)
+                          >,
+                          sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                                 pk(spk(~sigSkB), kpk(~kemSkB)),
+                                 sender_prekey(skem_spk(~senderSkA),
+                                               sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                                 receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                 sign(~sigSkB,
+                                                      receiver_payload(skem_rpk(~receiverSkB),
+                                                                       ekpk(~receiverEskB)))),
+                                 <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                  skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                                  sender_tag_marker>)
+  ),
+  NegativeSimulatedTranscript( $A, $B,
+                               <$A, $B, pk(spk(~sigSkA), kpk(~kemSkA)), pk(spk(~sigSkB), kpk(~kemSkB)), 
+                                sender_prekey(skem_spk(~senderSkA),
+                                              sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))), 
+                                receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                sign(~sigSkB,
+                                                     receiver_payload(skem_rpk(~receiverSkB),
+                                                                      ekpk(~receiverEskB)))), 
+                                <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                 skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                                 simulated_tag_marker>, 
+                                sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                                       pk(spk(~sigSkB), kpk(~kemSkB)),
+                                       sender_prekey(skem_spk(~senderSkA),
+                                                     sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                                       receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                       sign(~sigSkB,
+                                                            receiver_payload(skem_rpk(~receiverSkB),
+                                                                             ekpk(~receiverEskB)))),
+                                       <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                        skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                                        simulated_tag_marker>)
+                               >,
+                               sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                                      pk(spk(~sigSkB), kpk(~kemSkB)),
+                                      sender_prekey(skem_spk(~senderSkA),
+                                                    sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                                      receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                      sign(~sigSkB,
+                                                           receiver_payload(skem_rpk(~receiverSkB),
+                                                                            ekpk(~receiverEskB)))),
+                                      <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                       skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                                       simulated_tag_marker>)
+  )
+  ]->
+   [
+   Out( pk(spk(~sigSkA), kpk(~kemSkA)) ),
+   Out( pk(spk(~sigSkB), kpk(~kemSkB)) ),
+   Out( sender_prekey(skem_spk(~senderSkA),
+                      sign(~sigSkA, sender_payload(skem_spk(~senderSkA))))
+   ),
+   Out( receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                        sign(~sigSkB,
+                             receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB))))
+   ),
+   Out( diff(<$A, $B, pk(spk(~sigSkA), kpk(~kemSkA)), 
+              pk(spk(~sigSkB), kpk(~kemSkB)), 
+              sender_prekey(skem_spk(~senderSkA),
+                            sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))), 
+              receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                              sign(~sigSkB,
+                                   receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB)))), 
+              <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+               skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+               sender_tag_marker>, 
+              sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                     pk(spk(~sigSkB), kpk(~kemSkB)),
+                     sender_prekey(skem_spk(~senderSkA),
+                                   sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                     receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                     sign(~sigSkB,
+                                          receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB)))),
+                     <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                      skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                      sender_tag_marker>)
+             >, <$A, $B, pk(spk(~sigSkA), kpk(~kemSkA)), 
+                 pk(spk(~sigSkB), kpk(~kemSkB)), 
+                 sender_prekey(skem_spk(~senderSkA),
+                               sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))), 
+                 receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                 sign(~sigSkB,
+                                      receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB)))), 
+                 <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                  skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                  simulated_tag_marker>, 
+                 sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                        pk(spk(~sigSkB), kpk(~kemSkB)),
+                        sender_prekey(skem_spk(~senderSkA),
+                                      sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                        receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                        sign(~sigSkB,
+                                             receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB)))),
+                        <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                         skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                         simulated_tag_marker>)
+                >)
+   ),
+   Out( diff(sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                    pk(spk(~sigSkB), kpk(~kemSkB)),
+                    sender_prekey(skem_spk(~senderSkA),
+                                  sign(~sigSkA, sender_payload(skem_spk(~senderSkA)))),
+                    receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                    sign(~sigSkB,
+                                         receiver_payload(skem_rpk(~receiverSkB), ekpk(~receiverEskB)))),
+                    <lkem_ct(kpk(~kemSkB), ~rhoL), ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                     skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB), ~rhoS), 
+                     sender_tag_marker>), sid_of($A, $B, pk(spk(~sigSkA), kpk(~kemSkA)),
+                                                 pk(spk(~sigSkB), kpk(~kemSkB)),
+                                                 sender_prekey(skem_spk(~senderSkA),
+                                                               sign(~sigSkA,
+                                                                    sender_payload(skem_spk(~senderSkA)))),
+                                                 receiver_prekey(skem_rpk(~receiverSkB), ekpk(~receiverEskB),
+                                                                 sign(~sigSkB,
+                                                                      receiver_payload(skem_rpk(~receiverSkB),
+                                                                                       ekpk(~receiverEskB)))),
+                                                 <lkem_ct(kpk(~kemSkB), ~rhoL), 
+                                                  ekem_ct(ekpk(~receiverEskB), ~rhoK), 
+                                                  skem_component(skem_spk(~senderSkA), skem_rpk(~receiverSkB),
+                                                                 ~rhoS), 
+                                                  simulated_tag_marker>))
+   ),
+   Out( diff(sender_tag_marker, simulated_tag_marker) )
+   ]
+
+lemma executable_negative_real_transcript [right]:
+  exists-trace
+  "∃ A B tr sidv #i. NegativeRealTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (NegativeRealTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+lemma executable_negative_real_transcript [left]:
+  exists-trace
+  "∃ A B tr sidv #i. NegativeRealTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (NegativeRealTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+lemma executable_negative_simulated_transcript [right]:
+  exists-trace
+  "∃ A B tr sidv #i. NegativeSimulatedTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (NegativeSimulatedTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+lemma executable_negative_simulated_transcript [left]:
+  exists-trace
+  "∃ A B tr sidv #i. NegativeSimulatedTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (NegativeSimulatedTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+end

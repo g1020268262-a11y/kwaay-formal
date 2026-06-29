@@ -1,0 +1,14 @@
+core_parse                                                             OK
+malicious_pok_parse                                                    OK
+negative_parse                                                         OK
+core_executable_real                                                   VERIFIED
+core_executable_simulated                                              VERIFIED
+malicious_executable_real                                              VERIFIED
+malicious_executable_simulated                                         VERIFIED
+malicious_registered_witness                                           VERIFIED
+malicious_simulator_witness                                            VERIFIED
+negative_executable_real                                               VERIFIED
+negative_executable_simulated                                          VERIFIED
+core_observational_equivalence                                         VERIFIED
+malicious_observational_equivalence                                    TIMEOUT
+negative_observational_equivalence                                     EXPECTED_NON_EQUIV

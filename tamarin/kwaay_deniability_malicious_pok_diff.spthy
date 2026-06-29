@@ -1,0 +1,143 @@
+theory Kwaay_Deniability_Malicious_PoK_Diff
+begin
+
+builtins: hashing
+
+functions:
+  pk/2,
+  spk/1,
+  kpk/1,
+  skem_spk/1,
+  skem_rpk/1,
+  ekpk/1,
+  sign/2,
+  sender_payload/1,
+  receiver_payload/2,
+  sender_prekey/2,
+  receiver_prekey/3,
+  pok/1,
+  lkem_ct/2,
+  ekem_ct/2,
+  skem_component/3,
+  sid_of/7
+
+/*
+  Malicious receiver registration / PoK deniability model.
+
+  This is still a symbolic abstraction. The proof-of-knowledge scheme itself is
+  not proved by Tamarin. Instead, RegisterMaliciousReceiverWithPoK records the
+  standard extractor assumption as ExtractedWitness and !ExtractedReceiverSk.
+
+  The simulated transcript may be generated only after that extracted witness
+  exists. The malicious witness is modeled as an explicit extractor input
+  rather than recovered by pattern matching on pok(receiverSkB), because Tamarin
+  cannot invert an opaque PoK constructor during wellformedness checks.
+*/
+
+rule RegisterHonestSender:
+  let
+    sigPkA = spk(~sigSkA)
+    kemPkA = kpk(~kemSkA)
+    pkA = pk(sigPkA, kemPkA)
+    senderPkA = skem_spk(~senderSkA)
+    senderPrekeyA = sender_prekey(senderPkA, sign(~sigSkA, sender_payload(senderPkA)))
+  in
+  [
+    Fr(~sigSkA),
+    Fr(~kemSkA),
+    Fr(~senderSkA)
+  ]
+  --[ HonestSenderRegistered($A, pkA, senderPrekeyA) ]->
+  [
+    !HonestSender($A, pkA, senderPrekeyA),
+    Out(pkA),
+    Out(senderPrekeyA)
+  ]
+
+rule RegisterMaliciousReceiverWithPoK:
+  let
+    sigPkB = spk(~sigSkB)
+    kemPkB = kpk(~kemSkB)
+    pkB = pk(sigPkB, kemPkB)
+    receiverPkB = skem_rpk(receiverSkB)
+    receiverEpkB = ekpk(~receiverEskB)
+    receiverPrekeyB = receiver_prekey(
+      receiverPkB,
+      receiverEpkB,
+      sign(~sigSkB, receiver_payload(receiverPkB, receiverEpkB))
+    )
+  in
+  [
+    Fr(~sigSkB),
+    Fr(~kemSkB),
+    Fr(~receiverEskB),
+    In(<$B, receiverSkB, pok(receiverSkB)>)
+  ]
+  --[
+    MaliciousReceiverRegistered($B, pkB, receiverPrekeyB),
+    ExtractedWitness($B, receiverPrekeyB, receiverSkB)
+  ]->
+  [
+    !MaliciousReceiver($B, pkB, kemPkB, receiverEpkB, receiverPrekeyB),
+    !ExtractedReceiverSk($B, receiverPrekeyB, receiverSkB),
+    Out(pkB),
+    Out(receiverPrekeyB)
+  ]
+
+rule MaliciousPoKTranscript_Diff:
+  let
+    realCtL = lkem_ct(kemPkB, ~rhoL)
+    realCtK = ekem_ct(receiverEpkB, ~rhoK)
+    realCtS = skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)
+    realMsg = <realCtL, realCtK, realCtS>
+    realSid = sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, realMsg)
+    realTranscript = <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, realMsg, realSid>
+
+    fakeCtL = lkem_ct(kemPkB, ~rhoL)
+    fakeCtK = ekem_ct(receiverEpkB, ~rhoK)
+    fakeCtS = skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)
+    fakeMsg = <fakeCtL, fakeCtK, fakeCtS>
+    fakeSid = sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, fakeMsg)
+    fakeTranscript = <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, fakeMsg, fakeSid>
+  in
+  [
+    !HonestSender($A, pkA, senderPrekeyA),
+    !MaliciousReceiver($B, pkB, kemPkB, receiverEpkB, receiverPrekeyB),
+    !ExtractedReceiverSk($B, receiverPrekeyB, receiverSkB),
+    Fr(~rhoL),
+    Fr(~rhoK),
+    Fr(~rhoS)
+  ]
+  --[
+    MaliciousPoKRealTranscript($A,$B,realTranscript,realSid),
+    MaliciousPoKSimulatedTranscript($A,$B,fakeTranscript,fakeSid),
+    SimulatorUsesExtractedWitness($B,receiverPrekeyB,receiverSkB),
+    JudgeViewReceiverOpen($A,$B)
+  ]->
+  [
+    Out(diff(realTranscript, fakeTranscript)),
+    Out(diff(realSid, fakeSid))
+  ]
+
+lemma executable_malicious_pok_real_transcript:
+  exists-trace
+  "Ex A B tr sidv #i.
+      MaliciousPoKRealTranscript(A,B,tr,sidv) @ #i"
+
+lemma executable_malicious_pok_simulated_transcript:
+  exists-trace
+  "Ex A B tr sidv #i.
+      MaliciousPoKSimulatedTranscript(A,B,tr,sidv) @ #i"
+
+lemma registered_malicious_receiver_has_extracted_witness:
+  "All B pkB rpre #i.
+      MaliciousReceiverRegistered(B,pkB,rpre) @ #i
+    ==> Ex receiverSk #j.
+      ExtractedWitness(B,rpre,receiverSk) @ #j & #j = #i"
+
+lemma simulator_uses_extracted_witness:
+  "All B rpre receiverSk #i.
+      SimulatorUsesExtractedWitness(B,rpre,receiverSk) @ #i
+    ==> Ex #j. ExtractedWitness(B,rpre,receiverSk) @ #j & #j < #i"
+
+end

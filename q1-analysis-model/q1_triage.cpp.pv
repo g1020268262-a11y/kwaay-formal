@@ -1,0 +1,311 @@
+(* Q1 triage model for receiver-to-sender exact agreement gaps.
+
+   This is a compact ProVerif model template, not the full K-Waay model.
+   It answers two questions:
+
+   Q1-detect:
+     Does receiver acceptance imply a matching sender completion?
+       RecvDone(B,A,s,k) ==> SendDone(A,B,s,k)
+
+   Q1-harmlessness:
+     If Q1 is false, is the damage limited to an unpartnered receiver
+     session with a fresh attacker-unknown key, or does the protocol flow
+     let the attacker learn/use the receiver key or trigger sender-authorized
+     side effects?
+
+   Targets:
+     KWAAY_LIKE       Q1 is false, but receiver key remains secret and the
+                      authenticated component has sender origin.
+     ATTACKER_KEY_BAD Q1 is false and receiver key secrecy is false.
+     AUTHZ_BAD        Q1 is false; key secrecy can hold, but receiver accepts
+                      as if sender-authorized application action is safe.
+     CONFIRMED_FIX    A sid-bound confirmation tag restores Q1 in this model.
+*)
+
+type agent.
+type sig_sk.
+type sig_pk.
+type kem_sk.
+type kem_pk.
+type skem_sender_sk.
+type skem_sender_pk.
+type skem_receiver_sk.
+type skem_receiver_pk.
+type ekem_sk.
+type ekem_pk.
+type kem_ct.
+type ekem_ct.
+type skem_ct.
+type shared_secret.
+type sid_t.
+type session_key.
+type signature.
+type prekey_payload.
+type sender_prekey_bundle.
+type receiver_prekey_bundle.
+type message_tuple.
+type confirmed_message_tuple.
+type confirmation_tag.
+type randomness.
+type app_secret.
+type app_cipher.
+type pk_tuple.
+
+free A: agent.
+free B: agent.
+free c: channel.
+
+(* A private receiver-side application secret used to test whether a Q1 gap
+   becomes a confidentiality break for data protected under the receiver key. *)
+free protectedPayload: app_secret [private].
+
+fun spk(sig_sk): sig_pk.
+fun payload_sender(skem_sender_pk): prekey_payload.
+fun payload_receiver(skem_receiver_pk, ekem_pk): prekey_payload.
+fun sign(sig_sk, prekey_payload): signature.
+reduc forall ssk: sig_sk, p: prekey_payload;
+  verify(spk(ssk), p, sign(ssk, p)) = true.
+
+fun kpk(kem_sk): kem_pk.
+fun lkem_enc(kem_pk, randomness): kem_ct.
+fun lkem_ss(kem_pk, randomness): shared_secret.
+reduc forall ksk: kem_sk, r: randomness;
+  lkem_dec(ksk, lkem_enc(kpk(ksk), r)) = lkem_ss(kpk(ksk), r).
+
+fun ekpk(ekem_sk): ekem_pk.
+fun ekem_enc(ekem_pk, randomness): ekem_ct.
+fun ekem_ss(ekem_pk, randomness): shared_secret.
+reduc forall eksk: ekem_sk, r: randomness;
+  ekem_dec(eksk, ekem_enc(ekpk(eksk), r)) = ekem_ss(ekpk(eksk), r).
+
+fun pk_skem_sender(skem_sender_sk): skem_sender_pk.
+fun pk_skem_receiver(skem_receiver_sk): skem_receiver_pk.
+fun skem_enc(skem_sender_sk, skem_receiver_pk, randomness): skem_ct.
+fun skem_ss(skem_sender_sk, skem_receiver_pk, randomness): shared_secret.
+reduc forall sender_sk: skem_sender_sk,
+              receiver_sk: skem_receiver_sk,
+              r: randomness;
+  skem_dec(receiver_sk,
+           pk_skem_sender(sender_sk),
+           skem_enc(sender_sk, pk_skem_receiver(receiver_sk), r))
+  = skem_ss(sender_sk, pk_skem_receiver(receiver_sk), r).
+
+fun sender_prekey(skem_sender_pk, signature): sender_prekey_bundle.
+fun receiver_prekey(skem_receiver_pk, ekem_pk, signature): receiver_prekey_bundle.
+reduc forall spk_s: skem_sender_pk, sig: signature;
+  get_sender_prekey_pk(sender_prekey(spk_s, sig)) = spk_s.
+reduc forall spk_s: skem_sender_pk, sig: signature;
+  get_sender_prekey_sig(sender_prekey(spk_s, sig)) = sig.
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_pk(receiver_prekey(rpk, epk, sig)) = rpk.
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_ekpk(receiver_prekey(rpk, epk, sig)) = epk.
+reduc forall rpk: skem_receiver_pk, epk: ekem_pk, sig: signature;
+  get_receiver_prekey_sig(receiver_prekey(rpk, epk, sig)) = sig.
+
+fun msg(kem_ct, ekem_ct, skem_ct): message_tuple.
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_lkem_ct(msg(ctL, ctE, ctS)) = ctL.
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_ekem_ct(msg(ctL, ctE, ctS)) = ctE.
+reduc forall ctL: kem_ct, ctE: ekem_ct, ctS: skem_ct;
+  get_skem_ct(msg(ctL, ctE, ctS)) = ctS.
+
+fun cmsg(message_tuple, confirmation_tag): confirmed_message_tuple.
+reduc forall m: message_tuple, t: confirmation_tag;
+  get_confirmed_msg(cmsg(m, t)) = m.
+reduc forall m: message_tuple, t: confirmation_tag;
+  get_confirmed_tag(cmsg(m, t)) = t.
+
+fun pk(sig_pk, kem_pk): pk_tuple.
+reduc forall spk_x: sig_pk, kpk_x: kem_pk;
+  get_sig_pk(pk(spk_x, kpk_x)) = spk_x.
+reduc forall spk_x: sig_pk, kpk_x: kem_pk;
+  get_kem_pk(pk(spk_x, kpk_x)) = kpk_x.
+
+fun sid_of(agent, agent, pk_tuple, pk_tuple, sender_prekey_bundle,
+           receiver_prekey_bundle, message_tuple): sid_t.
+
+fun kdf(shared_secret, shared_secret, shared_secret, sid_t): session_key.
+fun kdf_bad(shared_secret, shared_secret, sid_t): session_key.
+fun confirm_tag(session_key, sid_t): confirmation_tag.
+fun senc(session_key, app_secret): app_cipher.
+reduc forall k: session_key, x: app_secret;
+  sdec(k, senc(k, x)) = x.
+
+event HonestRun(session_key).
+event SenderKey(agent, agent, sid_t, session_key).
+event ReceiverKey(agent, agent, sid_t, session_key).
+event SendDone(agent, agent, sid_t, session_key).
+event RecvComputed(agent, agent, sid_t, session_key).
+event RecvDone(agent, agent, sid_t, session_key).
+event AeadConfirmed(agent, agent, sid_t, session_key).
+event AuthorizedAction(agent, agent, sid_t, session_key).
+event ProtectedData(agent, agent, sid_t, app_secret).
+event SenderPrekeyVerified(agent, agent, sender_prekey_bundle).
+event ReceiverPrekeyVerified(agent, agent, receiver_prekey_bundle).
+event ReceiverLocalPrekeyUsed(agent, agent, receiver_prekey_bundle).
+event AuthComponentSent(agent, agent, skem_ct, shared_secret).
+event AuthComponentAccepted(agent, agent, skem_ct, shared_secret).
+
+query k: session_key; event(HonestRun(k)).
+
+(* Q1 detector. False means the model admits an unpartnered receiver session. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+
+(* Harmlessness checks. If Q1 is false but these remain true, the model is in
+   the K-Waay-like "agreement gap without key recovery" region. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+
+query A: agent, B: agent, cts: skem_ct, Ks: shared_secret;
+  event(AuthComponentAccepted(B,A,cts,Ks))
+  ==> event(AuthComponentSent(A,B,cts,Ks)).
+
+query A: agent, B: agent, s: sid_t, d: app_secret;
+  attacker(d) && event(ProtectedData(B,A,s,d)) ==> false.
+
+#ifdef AUTHZ_BAD
+(* This query intentionally fails in AUTHZ_BAD. It models a protocol flow that
+   treats receiver acceptance as a sender-authorized side effect. In that flow,
+   Q1 is not harmless even when the receiver key remains secret. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(AuthorizedAction(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+#endif
+
+#ifdef CONFIRMED_FIX
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(AeadConfirmed(B,A,s,k)).
+
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(AeadConfirmed(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+#endif
+
+let ProtocolRun(
+    sskA: sig_sk,
+    kskA: kem_sk,
+    sskB: sig_sk,
+    kskB: kem_sk,
+    senderSkA: skem_sender_sk,
+    receiverSkB: skem_receiver_sk,
+    ekskB: ekem_sk
+  ) =
+  let pkA = pk(spk(sskA), kpk(kskA)) in
+  let pkB = pk(spk(sskB), kpk(kskB)) in
+  out(c, pkA);
+  out(c, pkB);
+
+  let senderPkA = pk_skem_sender(senderSkA) in
+  let senderPayloadA = payload_sender(senderPkA) in
+  let senderPrekeyA = sender_prekey(senderPkA, sign(sskA, senderPayloadA)) in
+  out(c, senderPrekeyA);
+
+  let receiverPkB = pk_skem_receiver(receiverSkB) in
+  let receiverEpkB = ekpk(ekskB) in
+  let receiverPayloadB = payload_receiver(receiverPkB, receiverEpkB) in
+  let receiverPrekeyB = receiver_prekey(
+    receiverPkB,
+    receiverEpkB,
+    sign(sskB, receiverPayloadB)
+  ) in
+  out(c, receiverPrekeyB);
+
+  in(c, receiverPrekeyForSend: receiver_prekey_bundle);
+  let receiverPkForSend = get_receiver_prekey_pk(receiverPrekeyForSend) in
+  let receiverEpkForSend = get_receiver_prekey_ekpk(receiverPrekeyForSend) in
+  let receiverSigForSend = get_receiver_prekey_sig(receiverPrekeyForSend) in
+  let receiverPayloadForSend = payload_receiver(receiverPkForSend, receiverEpkForSend) in
+  let (=true) = verify(spk(sskB), receiverPayloadForSend, receiverSigForSend) in
+  event ReceiverPrekeyVerified(A, B, receiverPrekeyForSend);
+
+  in(c, senderPrekeyFromNet: sender_prekey_bundle);
+  let senderPkFromNet = get_sender_prekey_pk(senderPrekeyFromNet) in
+  let senderSigFromNet = get_sender_prekey_sig(senderPrekeyFromNet) in
+  let senderPayloadFromNet = payload_sender(senderPkFromNet) in
+  let (=true) = verify(spk(sskA), senderPayloadFromNet, senderSigFromNet) in
+  event SenderPrekeyVerified(B, A, senderPrekeyFromNet);
+
+  new rL: randomness;
+  new rE: randomness;
+  new rS: randomness;
+  let ctL = lkem_enc(kpk(kskB), rL) in
+  let KL = lkem_ss(kpk(kskB), rL) in
+  let ctE = ekem_enc(receiverEpkForSend, rE) in
+  let KE = ekem_ss(receiverEpkForSend, rE) in
+  let ctS = skem_enc(senderSkA, receiverPkForSend, rS) in
+  let KS = skem_ss(senderSkA, receiverPkForSend, rS) in
+  event AuthComponentSent(A, B, ctS, KS);
+
+  let m = msg(ctL, ctE, ctS) in
+  let sidAB = sid_of(A, B, pkA, pkB, senderPrekeyA, receiverPrekeyForSend, m) in
+
+#ifdef ATTACKER_KEY_BAD
+  let kSend = kdf_bad(KL, KE, sidAB) in
+#else
+  let kSend = kdf(KL, KE, KS, sidAB) in
+#endif
+
+  event SenderKey(A, B, sidAB, kSend);
+  event SendDone(A, B, sidAB, kSend);
+
+#ifdef CONFIRMED_FIX
+  out(c, cmsg(m, confirm_tag(kSend, sidAB)));
+#else
+  out(c, m);
+#endif
+
+#ifdef CONFIRMED_FIX
+  in(c, cmFromNet: confirmed_message_tuple);
+  let mFromNet = get_confirmed_msg(cmFromNet) in
+  let tagFromNet = get_confirmed_tag(cmFromNet) in
+#else
+  in(c, mFromNet: message_tuple);
+#endif
+
+  let ctLFromNet = get_lkem_ct(mFromNet) in
+  let ctEFromNet = get_ekem_ct(mFromNet) in
+  let ctSFromNet = get_skem_ct(mFromNet) in
+
+  event ReceiverLocalPrekeyUsed(B, A, receiverPrekeyB);
+  let KL2 = lkem_dec(kskB, ctLFromNet) in
+  let KE2 = ekem_dec(ekskB, ctEFromNet) in
+  let KS2 = skem_dec(receiverSkB, senderPkFromNet, ctSFromNet) in
+  event AuthComponentAccepted(B, A, ctSFromNet, KS2);
+
+  let sidBA = sid_of(A, B, pkA, pkB, senderPrekeyFromNet, receiverPrekeyB, mFromNet) in
+
+#ifdef ATTACKER_KEY_BAD
+  let kRecv = kdf_bad(KL2, KE2, sidBA) in
+#else
+  let kRecv = kdf(KL2, KE2, KS2, sidBA) in
+#endif
+
+  event RecvComputed(B, A, sidBA, kRecv);
+
+#ifdef CONFIRMED_FIX
+  let (=confirm_tag(kRecv, sidBA)) = tagFromNet in
+  event AeadConfirmed(B, A, sidBA, kRecv);
+#endif
+
+  event ReceiverKey(B, A, sidBA, kRecv);
+  event ProtectedData(B, A, sidBA, protectedPayload);
+  out(c, senc(kRecv, protectedPayload));
+
+#ifdef AUTHZ_BAD
+  event AuthorizedAction(B, A, sidBA, kRecv);
+#endif
+
+  event RecvDone(B, A, sidBA, kRecv);
+  event HonestRun(kRecv);
+  0.
+
+process
+  new sskA: sig_sk;
+  new kskA: kem_sk;
+  new sskB: sig_sk;
+  new kskB: kem_sk;
+  new senderSkA: skem_sender_sk;
+  new receiverSkB: skem_receiver_sk;
+  new ekskB: ekem_sk;
+  ! ProtocolRun(sskA, kskA, sskB, kskB, senderSkA, receiverSkB, ekskB)

@@ -1,0 +1,112 @@
+theory Kwaay_Deniability_Core_Diff
+begin
+
+builtins: hashing
+
+functions:
+  pk/2,
+  spk/1,
+  kpk/1,
+  skem_spk/1,
+  skem_rpk/1,
+  ekpk/1,
+  sign/2,
+  sender_payload/1,
+  receiver_payload/2,
+  sender_prekey/2,
+  receiver_prekey/3,
+  lkem_ct/2,
+  ekem_ct/2,
+  skem_component/3,
+  sid_of/7
+
+/*
+  K-Waay core deniability diff model.
+
+  Scope:
+  - Figure 7 core transcript only: public identities, signed sender/receiver
+    prekeys, m=(ct_l,ct_k,ct_s), and transcript-bound sid.
+  - No HMAC/AEAD/key-confirmation extension is modeled here.
+  - No full BatchReceive vector semantics is modeled here; batch lifecycle is
+    covered by the v6/v7 Tamarin models.
+
+  Deniability assumption:
+  - skem_component(senderPk, receiverPk, rho) is a symbolic abstraction of the
+    split-KEM component distribution.
+  - The simulator may sample the same public component distribution using a
+    receiver-side opening witness. We do not claim Tamarin proves the
+    computational split-KEM simulator; that is a primitive/proof assumption.
+*/
+
+rule CoreTranscript_Diff:
+  let
+    sigPkA = spk(~sigSkA)
+    kemPkA = kpk(~kemSkA)
+    pkA = pk(sigPkA, kemPkA)
+
+    sigPkB = spk(~sigSkB)
+    kemPkB = kpk(~kemSkB)
+    pkB = pk(sigPkB, kemPkB)
+
+    senderPkA = skem_spk(~senderSkA)
+    senderPrekeyA = sender_prekey(senderPkA, sign(~sigSkA, sender_payload(senderPkA)))
+
+    receiverPkB = skem_rpk(~receiverSkB)
+    receiverEpkB = ekpk(~receiverEskB)
+    receiverPrekeyB = receiver_prekey(
+      receiverPkB,
+      receiverEpkB,
+      sign(~sigSkB, receiver_payload(receiverPkB, receiverEpkB))
+    )
+
+    realCtL = lkem_ct(kemPkB, ~rhoL)
+    realCtK = ekem_ct(receiverEpkB, ~rhoK)
+    realCtS = skem_component(senderPkA, receiverPkB, ~rhoS)
+    realMsg = <realCtL, realCtK, realCtS>
+    realSid = sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, realMsg)
+    realTranscript = <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, realMsg, realSid>
+
+    fakeCtL = lkem_ct(kemPkB, ~rhoL)
+    fakeCtK = ekem_ct(receiverEpkB, ~rhoK)
+    fakeCtS = skem_component(senderPkA, receiverPkB, ~rhoS)
+    fakeMsg = <fakeCtL, fakeCtK, fakeCtS>
+    fakeSid = sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, fakeMsg)
+    fakeTranscript = <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, fakeMsg, fakeSid>
+  in
+  [
+    Fr(~sigSkA),
+    Fr(~kemSkA),
+    Fr(~senderSkA),
+    Fr(~sigSkB),
+    Fr(~kemSkB),
+    Fr(~receiverSkB),
+    Fr(~receiverEskB),
+    Fr(~rhoL),
+    Fr(~rhoK),
+    Fr(~rhoS)
+  ]
+  --[
+    CoreRealTranscript($A,$B,realTranscript,realSid),
+    CoreSimulatedTranscript($A,$B,fakeTranscript,fakeSid),
+    JudgeViewPublic($A,$B)
+  ]->
+  [
+    Out(pkA),
+    Out(pkB),
+    Out(senderPrekeyA),
+    Out(receiverPrekeyB),
+    Out(diff(realTranscript, fakeTranscript)),
+    Out(diff(realSid, fakeSid))
+  ]
+
+lemma executable_core_real_transcript:
+  exists-trace
+  "Ex A B tr sidv #i.
+      CoreRealTranscript(A,B,tr,sidv) @ #i"
+
+lemma executable_core_simulated_transcript:
+  exists-trace
+  "Ex A B tr sidv #i.
+      CoreSimulatedTranscript(A,B,tr,sidv) @ #i"
+
+end

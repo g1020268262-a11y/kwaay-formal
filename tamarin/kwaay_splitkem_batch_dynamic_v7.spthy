@@ -1,0 +1,515 @@
+theory Kwaay_SplitKem_Batch_Dynamic_V7
+begin
+
+functions:
+  cts/4 [private],
+  ks/4 [private],
+  rkey/5 [private]
+
+/*
+  K-Waay Tamarin V7.
+
+  V7 is a fixed ordered four-slot lifecycle model. It is intentionally not an
+  arbitrary-length BatchReceive model. Its job is to prove the terminal
+  lifecycle claims that are too expensive to force into the V6 dynamic
+  skeleton:
+
+  - seal freezes the modeled slot set;
+  - complete requires every modeled slot to have been processed;
+  - complete/fail are terminal, so no later slot accept can occur;
+  - batch end token and receiver state are consumed once.
+
+  V7 deliberately does not replace the V6 compromise/exception model. It keeps
+  only the lifecycle-relevant structure needed for the terminal batch claims.
+
+  The ordered slot discipline keeps Tamarin source saturation tractable:
+
+  OpenStage0 -> AddSlot1 -> OpenStage1 -> AddSlot2 -> OpenStage2
+             -> AddSlot3 -> OpenStage3 -> AddSlot4 -> OpenStage4
+             -> SealBatch -> SealedStage0
+             -> ProcessSlot1 -> SealedStage1
+             -> ProcessSlot2 -> SealedStage2
+             -> ProcessSlot3 -> SealedStage3
+             -> ProcessSlot4 -> SealedStage4
+             -> CompleteBatch.
+
+  FailSlotN consumes the current sealed stage and BatchEndToken, producing a
+  closed batch without any new stage fact.
+*/
+
+rule InitReceiverState:
+  [ Fr(~rst) ]
+  --[ ReceiverStateCreated($B, ~rst) ]->
+  [
+    ReceiverState($B, ~rst),
+    !ReceiverPublicState($B, ~rst),
+    ReceiverCompromiseToken($B, ~rst)
+  ]
+
+rule InitSenderState:
+  [ Fr(~sst) ]
+  --[ SenderStateCreated($A, ~sst) ]->
+  [
+    !SenderState($A, ~sst),
+    SenderCompromiseToken($A, ~sst)
+  ]
+
+rule SenderCreatesComponent:
+  let c = cts($A,$B,sst,~r)
+      k = ks($A,$B,sst,~r)
+  in
+  [
+    !SenderState($A, sst),
+    !ReceiverPublicState($B, rst),
+    Fr(~r)
+  ]
+  --[ SenderComponent($A,$B,rst,c,k) ]->
+  [
+    Out(<$A,$B,c>),
+    !ComponentKey($A,$B,rst,c,k)
+  ]
+
+rule CreateBatch:
+  [
+    ReceiverState($B, rst),
+    Fr(~bid)
+  ]
+  --[ BatchCreated($B, ~bid, rst) ]->
+  [
+    OpenStage0($B, ~bid, rst),
+    BatchEndToken($B, ~bid, rst),
+    BatchCompromiseToken($B, ~bid, rst)
+  ]
+
+rule AddSlot1:
+  [
+    OpenStage0($B,bid,rst),
+    In(<$A,$B,cts_in>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cts_in),
+    Slot1Added($B,bid,rst,~idx,$A,cts_in)
+  ]->
+  [
+    OpenStage1($B,bid,rst),
+    AddedSlot1($B,bid,rst,~idx,$A,cts_in)
+  ]
+
+rule AddSlot2:
+  [
+    OpenStage1($B,bid,rst),
+    In(<$A,$B,cts_in>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cts_in),
+    Slot2Added($B,bid,rst,~idx,$A,cts_in)
+  ]->
+  [
+    OpenStage2($B,bid,rst),
+    AddedSlot2($B,bid,rst,~idx,$A,cts_in)
+  ]
+
+rule AddSlot3:
+  [
+    OpenStage2($B,bid,rst),
+    In(<$A,$B,cts_in>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cts_in),
+    Slot3Added($B,bid,rst,~idx,$A,cts_in)
+  ]->
+  [
+    OpenStage3($B,bid,rst),
+    AddedSlot3($B,bid,rst,~idx,$A,cts_in)
+  ]
+
+rule AddSlot4:
+  [
+    OpenStage3($B,bid,rst),
+    In(<$A,$B,cts_in>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cts_in),
+    Slot4Added($B,bid,rst,~idx,$A,cts_in)
+  ]->
+  [
+    OpenStage4($B,bid,rst),
+    AddedSlot4($B,bid,rst,~idx,$A,cts_in)
+  ]
+
+rule SealBatch:
+  [ OpenStage4($B,bid,rst) ]
+  --[ SealBatchEvent($B,bid,rst) ]->
+  [ SealedStage0($B,bid,rst) ]
+
+rule ProcessSlot1:
+  let k = rkey($B,$A,rst,cts_in,Ks)
+  in
+  [
+    SealedStage0($B,bid,rst),
+    AddedSlot1($B,bid,rst,idx,$A,cts_in),
+    !ComponentKey($A,$B,rst,cts_in,Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,Ks,k),
+    PartneredSlot($A,$B,bid,idx,rst,cts_in,Ks),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    Slot1Done($B,bid,rst)
+  ]->
+  [
+    SealedStage1($B,bid,rst),
+    Slot1DoneFact($B,bid,rst)
+  ]
+
+rule ProcessSlot2:
+  let k = rkey($B,$A,rst,cts_in,Ks)
+  in
+  [
+    SealedStage1($B,bid,rst),
+    AddedSlot2($B,bid,rst,idx,$A,cts_in),
+    !ComponentKey($A,$B,rst,cts_in,Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,Ks,k),
+    PartneredSlot($A,$B,bid,idx,rst,cts_in,Ks),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    Slot2Done($B,bid,rst)
+  ]->
+  [
+    SealedStage2($B,bid,rst),
+    Slot2DoneFact($B,bid,rst)
+  ]
+
+rule ProcessSlot3:
+  let k = rkey($B,$A,rst,cts_in,Ks)
+  in
+  [
+    SealedStage2($B,bid,rst),
+    AddedSlot3($B,bid,rst,idx,$A,cts_in),
+    !ComponentKey($A,$B,rst,cts_in,Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,Ks,k),
+    PartneredSlot($A,$B,bid,idx,rst,cts_in,Ks),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    Slot3Done($B,bid,rst)
+  ]->
+  [
+    SealedStage3($B,bid,rst),
+    Slot3DoneFact($B,bid,rst)
+  ]
+
+rule ProcessSlot4:
+  let k = rkey($B,$A,rst,cts_in,Ks)
+  in
+  [
+    SealedStage3($B,bid,rst),
+    AddedSlot4($B,bid,rst,idx,$A,cts_in),
+    !ComponentKey($A,$B,rst,cts_in,Ks)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotAccept($B,bid,idx,$A,rst,cts_in,Ks),
+    ReceiverAcceptsComponent($B,$A,rst,cts_in,Ks),
+    ReceiverKey($B,$A,bid,idx,rst,cts_in,Ks,k),
+    PartneredSlot($A,$B,bid,idx,rst,cts_in,Ks),
+    SlotProcessed($B,bid,idx,$A,cts_in),
+    Slot4Done($B,bid,rst)
+  ]->
+  [
+    SealedStage4($B,bid,rst),
+    Slot4DoneFact($B,bid,rst)
+  ]
+
+rule CompleteBatch:
+  [
+    SealedStage4($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    Slot1DoneFact($B,bid,rst),
+    Slot2DoneFact($B,bid,rst),
+    Slot3DoneFact($B,bid,rst),
+    Slot4DoneFact($B,bid,rst)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchComplete($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot1:
+  [
+    SealedStage0($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot1($B,bid,rst,idx,$A,cts_in)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotFail($B,bid,idx,$A,rst,cts_in),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot2:
+  [
+    SealedStage1($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot2($B,bid,rst,idx,$A,cts_in)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotFail($B,bid,idx,$A,rst,cts_in),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot3:
+  [
+    SealedStage2($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot3($B,bid,rst,idx,$A,cts_in)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotFail($B,bid,idx,$A,rst,cts_in),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot4:
+  [
+    SealedStage3($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot4($B,bid,rst,idx,$A,cts_in)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlot($B,bid,idx,$A,cts_in),
+    BatchSlotFail($B,bid,idx,$A,rst,cts_in),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule CompromiseReceiverState:
+  [
+    ReceiverState($B, rst),
+    ReceiverCompromiseToken($B, rst)
+  ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    ReceiverState($B, rst),
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseActiveReceiverState:
+  [ BatchCompromiseToken($B, bid, rst) ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseSenderState:
+  [
+    !SenderState($A, sst),
+    SenderCompromiseToken($A, sst)
+  ]
+  --[ CompromiseSenderState($A, sst) ]->
+  [
+    !CompromisedSenderState($A, sst),
+    Out(sst)
+  ]
+
+/* ---------- executability ---------- */
+
+lemma executable_four_slots_added:
+  exists-trace
+  "Ex B A1 A2 A3 A4 bid i1 i2 i3 i4 c1 c2 c3 c4 #j1 #j2 #j3 #j4.
+      SlotAdded(B,bid,i1,A1,c1) @ #j1
+    & SlotAdded(B,bid,i2,A2,c2) @ #j2
+    & SlotAdded(B,bid,i3,A3,c3) @ #j3
+    & SlotAdded(B,bid,i4,A4,c4) @ #j4"
+
+lemma executable_seal_batch:
+  exists-trace
+  "Ex B bid rst #i.
+      SealBatchEvent(B,bid,rst) @ #i"
+
+lemma executable_four_slots_processed:
+  exists-trace
+  "Ex B bid rst A1 A2 A3 A4 i1 i2 i3 i4 c1 c2 c3 c4 K1 K2 K3 K4 #j1 #j2 #j3 #j4.
+      BatchSlotAccept(B,bid,i1,A1,rst,c1,K1) @ #j1
+    & BatchSlotAccept(B,bid,i2,A2,rst,c2,K2) @ #j2
+    & BatchSlotAccept(B,bid,i3,A3,rst,c3,K3) @ #j3
+    & BatchSlotAccept(B,bid,i4,A4,rst,c4,K4) @ #j4"
+
+lemma executable_batch_complete:
+  exists-trace
+  "Ex B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i"
+
+lemma executable_batch_fail:
+  exists-trace
+  "Ex B A bid idx rst cts #i.
+      BatchSlotFail(B,bid,idx,A,rst,cts) @ #i
+    & BatchFail(B,bid,rst) @ #i"
+
+/* ---------- lifecycle lemmas ---------- */
+
+lemma seal_requires_all_slots_added:
+  "All B bid rst #i.
+      SealBatchEvent(B,bid,rst) @ #i
+    ==> (
+      (Ex idx A c #j. Slot1Added(B,bid,rst,idx,A,c) @ #j & #j < #i)
+    & (Ex idx A c #j. Slot2Added(B,bid,rst,idx,A,c) @ #j & #j < #i)
+    & (Ex idx A c #j. Slot3Added(B,bid,rst,idx,A,c) @ #j & #j < #i)
+    & (Ex idx A c #j. Slot4Added(B,bid,rst,idx,A,c) @ #j & #j < #i)
+    )"
+
+lemma process_requires_slot_added:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    ==> Ex #j. SlotAdded(B,bid,idx,A,cts) @ #j & #j < #i"
+
+lemma process_requires_seal:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma complete_requires_seal:
+  "All B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma fail_requires_seal:
+  "All B bid rst #i.
+      BatchFail(B,bid,rst) @ #i
+    ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma complete_requires_all_slots_done:
+  "All B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i
+    ==> (
+      (Ex #j. Slot1Done(B,bid,rst) @ #j & #j < #i)
+    & (Ex #j. Slot2Done(B,bid,rst) @ #j & #j < #i)
+    & (Ex #j. Slot3Done(B,bid,rst) @ #j & #j < #i)
+    & (Ex #j. Slot4Done(B,bid,rst) @ #j & #j < #i)
+    )"
+
+lemma complete_requires_all_added_slots_processed:
+  "All B bid rst idx A cts #i #j.
+      BatchComplete(B,bid,rst) @ #i
+    & SlotAdded(B,bid,idx,A,cts) @ #j
+    ==> Ex #k. SlotProcessed(B,bid,idx,A,cts) @ #k & #j < #k & #k < #i"
+
+lemma no_add_after_seal:
+  "All B bid rst idx A cts #i #j.
+      SealBatchEvent(B,bid,rst) @ #i
+    & SlotAdded(B,bid,idx,A,cts) @ #j
+    ==> #j < #i"
+
+lemma no_add_after_complete:
+  "All B bid rst idx A cts #i #j.
+      BatchComplete(B,bid,rst) @ #i
+    & SlotAdded(B,bid,idx,A,cts) @ #j
+    ==> #j < #i"
+
+lemma no_add_after_fail:
+  "All B bid rst idx A cts #i #j.
+      BatchFail(B,bid,rst) @ #i
+    & SlotAdded(B,bid,idx,A,cts) @ #j
+    ==> #j < #i"
+
+lemma no_slot_accept_after_complete:
+  "All B bid rst A idx cts Ks #i #j.
+      BatchComplete(B,bid,rst) @ #i
+    & BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #j
+    ==> #j < #i"
+
+lemma no_slot_accept_after_fail:
+  "All B bid rst A idx cts Ks #i #j.
+      BatchFail(B,bid,rst) @ #i
+    & BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #j
+    ==> #j < #i"
+
+lemma no_slot_accept_after_close:
+  "All B bid rst A idx cts Ks #i #j.
+      BatchClosed(B,bid,rst) @ #i
+    & BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #j
+    ==> #j < #i"
+
+lemma batch_complete_consumes_state:
+  "All B bid rst #i.
+      BatchComplete(B,bid,rst) @ #i
+    ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_fail_consumes_state:
+  "All B bid rst #i.
+      BatchFail(B,bid,rst) @ #i
+    ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_end_token_single_use:
+  "All B bid rst #i #j.
+      UseBatchEndToken(B,bid,rst) @ #i
+    & UseBatchEndToken(B,bid,rst) @ #j
+    ==> #i = #j"
+
+lemma batch_fail_complete_exclusive:
+  "All B bid rst #i #j.
+      BatchFail(B,bid,rst) @ #i
+    & BatchComplete(B,bid,rst) @ #j
+    ==> F"
+
+lemma receiver_state_single_batch_end:
+  "All B rst #i #j.
+      ConsumeReceiverState(B,rst) @ #i
+    & ConsumeReceiverState(B,rst) @ #j
+    ==> #i = #j"
+
+lemma slot_origin:
+  "All B A bid idx rst cts Ks #i.
+      BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ #i
+    ==> Ex #j. SenderComponent(A,B,rst,cts,Ks) @ #j & #j < #i"
+
+end

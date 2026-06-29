@@ -18,7 +18,9 @@ tamarin/kwaay_deniability_with_proof
 tamarin/kwaay_deniability_advanced_BigBrother
 ```
 
-目前更像是“可否认性直觉的 toy equivalence sketch”，不能直接作为论文中的 formal deniability proof。核心原因不是 `diff` 用错了，而是模型把最难的部分用方程直接假设掉了，没有把 `K-Waay` 的完整消息、状态、对手能力、注册/证明、泄露视图和 simulator game 结构建模出来，也没有看到 `--diff` 模式下的 `Observational_equivalence` 证明日志。
+这三份旧模型更像是“可否认性直觉的 toy equivalence sketch”，不能直接作为论文中的 formal deniability proof。核心原因不是 `diff` 用错了，而是模型把最难的部分用方程直接假设掉了，没有把 `K-Waay` 的完整消息、状态、对手能力、注册/证明、泄露视图和 simulator game 结构建模出来。
+
+本轮已新增独立的 `kwaay_deniability_core_diff.spthy` / `kwaay_deniability_malicious_pok_diff.spthy` / `kwaay_deniability_negative_sender_secret_diff.spthy`。其中 core public-transcript observational equivalence 已 verified，negative sanity 已按预期 falsified，malicious PoK 的 witness lemmas 已 verified，但 malicious observational equivalence 仍 timeout。
 
 建议论文/投稿中现在只能谨慎声称：
 
@@ -42,15 +44,22 @@ tamarin/kwaay_deniability_advanced_BigBrother
 
 ```text
 tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
 tamarin/kwaay_deniability.spthy
 tamarin/kwaay_deniability_with_proof
 tamarin/kwaay_deniability_advanced_BigBrother
 docs/model-mapping.md
 docs/paper/threat-model.md
 docs/tamarin/tamarin-v6-results.md
+docs/tamarin/tamarin-v7-results.md
+docs/tamarin/tamarin-deniability-results.md
 docs/tamarin/tamarin-stage-summary.md
 logs/tamarin-v6/summary.txt
 logs/tamarin-v6/*.out
+logs/tamarin-v7/summary.txt
+logs/tamarin-v7/*.out
+logs/tamarin-deniability/summary.txt
+logs/tamarin-deniability/*.out
 ```
 
 同时对照了 `Tamarin` 官方手册中与本任务直接相关的部分：
@@ -58,7 +67,7 @@ logs/tamarin-v6/*.out
 - [Property Specification](https://tamarin-prover.com/manual/master/book/007_property-specification.html)：`trace properties`、`exists-trace`、`all-traces`、`diff`、`observational equivalence`、`restriction`。
 - [Protocol Specification using Rules](https://tamarin-prover.com/manual/master/book/005_protocol-specification-rules.html)：`In`、`Out`、`Fr`、linear facts、persistent facts、规则执行语义。
 
-本轮没有成功现场重跑 `tamarin-prover`。在当前 PowerShell 环境里 `tamarin-prover` 不在 `PATH` 中，`bash` 也无法启动。因此本评审的验证状态基于仓库内已有的 `logs/tamarin-v6` 输出。已有日志显示 selected v6 lemmas 的单独证明文件均包含 wellformedness 成功信息，`summary.txt` 中 16 个 selected lemmas 均为 `VERIFIED`。
+本轮后续已通过 WSL Ubuntu-24.04 现场调用 `tamarin-prover 1.12.0` 与 `maude 3.5.1`。恢复后的 `tamarin/kwaay_splitkem_batch_dynamic_v6.spthy` 可以通过 source saturation，`executable_add_slot` 在约 3 秒内 verified。对 `v6` 进行规则层 strict lifecycle 硬化的多个尝试均在 `[Saturating Sources] Step 1 (Max 5)` 阶段超过 75 到 90 秒未结束，因此本报告把这些尝试记录为不适合直接塞入 `v6` 的失败方向。作为替代，本轮新增 `tamarin/kwaay_splitkem_batch_dynamic_v7.spthy`，并用 `scripts/prove-v7-selected.sh` 验证了 24 个 fixed-slot lifecycle selected lemmas，结果均为 `VERIFIED`。
 
 ## 2. 对 `kwaay_splitkem_batch_dynamic_v6.spthy` 的审稿意见
 
@@ -97,7 +106,7 @@ attacker-known slot key 必须落入 exception
 
 这些性质对论文有价值。它们证明了 `K-Waay` 中一个重要工程语义：receiver state 不是无约束重复使用的资源，batch close 是有生命周期约束的，receiver-side key leakage 需要被分类为 unpartnered 或 compromise bad case，而不是直接解读为 honest key recovery。
 
-### 2.2 最大问题一：`SealBatch` 没有真正冻结 slot 集合
+### 2.2 当前仍是 `v6` 边界：`SealBatch` 没有真正冻结 slot 集合
 
 当前 `AddSlot` 只依赖：
 
@@ -128,111 +137,78 @@ AddSlot
 
 这和 `AddSlot -> SealBatch -> ProcessSlot -> Complete/Fail` 的生命周期叙述不完全一致。审稿人会问：如果 seal 表示 batch input vector 已经固定，为什么 seal 之后还能 add slot？
 
-解决方式：
-
-引入线性 phase fact，把 batch 状态从 token 集合改成显式状态机。
-
-建议结构：
-
-```tamarin
-OpenBatch(B,bid,rst)
-SealedBatch(B,bid,rst)
-ClosedBatch(B,bid,rst)
-```
-
-规则语义：
+本轮尝试过把该问题直接在 `v6` 中修掉，但实测不适合。尝试过的方案包括：
 
 ```text
-CreateBatch 产生 OpenBatch。
-AddSlot 消耗并重放 OpenBatch，表示 batch 仍处于 open phase。
-SealBatch 消耗 OpenBatch，产生 SealedBatch。
-ProcessPendingSlot 消耗并重放 SealedBatch，允许多个 slot 依次处理。
-CompleteSealedBatch / FailSealedBatch 消耗 SealedBatch，产生 ClosedBatch。
-AddSlot 只能在 OpenBatch 下发生。
-ProcessSlot 和 close 只能在 SealedBatch 下发生。
-ClosedBatch 后没有规则能重放 SealedBatch。
+OpenBatch / SealedBatch / ClosedBatch 线性 phase fact。
+SealToken 在 AddSlot 中消耗并重放。
+OpenCount0..4 -> SealedCount0..4 单向 bounded counter。
 ```
 
-然后新增 lemmas：
+这些方案都能表达更严格的 seal 语义，但会让 Tamarin 在 source precomputation 阶段卡住。尤其是 `AddSlot` 中消耗并重放同一个线性 phase fact 的写法，会制造 source saturation 很难处理的自循环；而拆成 bounded count 后，规则数量和 pending/source 匹配仍会让 `v6` 在 `[Saturating Sources] Step 1` 不收敛。
 
-```text
-no_add_after_seal
-no_add_after_complete
-no_add_after_fail
-no_process_after_complete
-no_process_after_fail
-close_requires_open_then_seal
-```
+因此，当前 `v6` 保持为可验证的 bounded dynamic skeleton，不再声称已经证明 “seal 后 slot 集合冻结”。如果论文需要这个 claim，不应继续压进 `v6`，而应引用本轮新增的 fixed-slot lifecycle 模型 `v7`。`v7` 通过线性 `OpenStage0..4 -> SealedStage0` 阶段建模，已经证明 `seal_requires_all_slots_added`、`no_add_after_seal`、`no_add_after_complete` 和 `no_add_after_fail`。
 
-这样 batch phase 才是由规则本身保证的，而不是由注释或读者理解保证的。
+### 2.3 当前仍是 `v6` 边界：`FailSealedBatch` 后仍可能处理其他 pending slots
 
-### 2.3 最大问题二：`FailSealedBatch` 后仍可能处理其他 pending slots
-
-当前 `FailSealedBatch` 消耗一个 `PendingSlot`，产生 `ClosedBatch` 和 `UsedReceiverState`，但 `!BatchSealedFact` 是 persistent fact，不会被消耗。若同一个 batch 里还有其他 `PendingSlot`，`ProcessPendingSlot` 仍然只需要：
+当前 `ProcessPendingSlot`、`ForgedProcessAfterReceiverStateCompromise` 和 `ForgedProcessAfterSenderStateCompromise` 只依赖 persistent fact：
 
 ```tamarin
 !BatchSealedFact($B,bid,rst)
-PendingSlot($B,bid,idx,$A,cts_in)
-!ComponentKey(...)
 ```
 
-因此 close 后继续 process 的轨迹没有被 phase fact 排除。已有 `batch_end_token_single_use` 只能保证 complete/fail 只发生一次，不能保证 close 后不再 accept/process slot。
+而 `FailSealedBatch` / `CompleteSealedBatch` 不会消耗该 persistent fact。因此，同一个 batch 在 close 后仍可能处理其他 pending slot。已有 `batch_end_token_single_use` 只能证明 close action 只发生一次，不能证明 close 后没有继续 accept/process。
 
-解决方式：
-
-使用上面的 `SealedBatch` 线性 phase fact。`FailSealedBatch` 消耗 `SealedBatch` 后，所有 `ProcessPendingSlot` 都无法再执行。
-
-新增 lemmas：
+本轮尝试过三类修复：
 
 ```text
-no_slot_accept_after_fail
-no_slot_accept_after_complete
-closed_batch_is_terminal
+1. OpenBatch / SealedBatch / ClosedBatch 线性 phase fact。
+2. 固定 slot1..slot4，加 DoneSlotFact 并让 Complete/Fail 枚举所有 slot 状态。
+3. OpenCount0..4 / SealedCount0..4 bounded counter。
 ```
 
-如果希望表达 “任一 slot fail 导致整个 batch bottom”，还应增加：
+实测结果一致：`--parse-only` 可以通过，但任意最小 lemma，例如 `executable_add_slot`，都会卡在 source saturation 第一阶段。因此没有把这些结构留在 `v6` 中。
+
+审稿层面的处理方式应写成：
 
 ```text
-BatchOutput(B,bid,'bottom')
-NoReceiverKeyAfterBatchFail(B,bid)
+v6 证明 batch close 的单次性和 selected lifecycle ordering。
+v6 不证明 close 后同一 batch 不能继续 process pending slot。
+该性质已由 fixed-slot lifecycle v7 补证。
 ```
 
-并证明：
+`v7` 中 `ProcessSlot1..4` 依赖线性 `SealedStageN`，而 `CompleteBatch` 和 `FailSlotN` 都不再产生后继 sealed stage。因此 close 之后没有规则可以继续产生 `BatchSlotAccept`。对应已验证 lemma 是 `no_slot_accept_after_complete`、`no_slot_accept_after_fail` 和 `no_slot_accept_after_close`。
 
-```text
-BatchFail(B,bid,rst) @ i
-& BatchSlotAccept(B,bid,idx,A,rst,cts,Ks) @ j
-==> j < i
-```
+### 2.4 当前仍依赖 restriction：`strict_batch_completion` 不是协议规则证明
 
-### 2.4 最大问题三：`strict_batch_completion` 是 restriction，不是协议规则证明
-
-当前模型用：
+当前模型仍使用：
 
 ```tamarin
 restriction strict_batch_completion
 ```
 
-过滤掉 “complete 时还有未处理 slot” 的轨迹。这可以作为建模辅助，但如果论文把 “complete 必须等所有 added slot processed” 当作核心安全性质，审稿人会认为这是把结论作为假设加入模型。
+裁剪掉 “complete 时还有未处理 slot” 的轨迹。这种写法能帮助证明，但容易被审稿人理解为把待证明结论作为环境假设加入模型。
 
-`Tamarin` 中 `restriction` 的作用是裁剪 trace space。它可以用于去掉退化轨迹或表达环境假设，但核心协议语义最好尽量由 rewrite rules 产生，然后用 lemma 验证，而不是直接用 restriction 强制。
-
-解决方式有三种，按成熟度排序：
-
-1. 对固定上界建模：例如 `N=4` 时，为每个 slot token 维护 `Todo/Done`，`Complete` 显式要求所有 slot 都 done。这和 `V5` 的 fixed two-slot 思路一致，但扩展到 4 slot。
-2. 使用计数抽象：引入 `natural-numbers`，维护 `PendingCount`，`AddSlot` 加一，`ProcessSlot` 减一，`Complete` 要求 count 为 0。这会增加证明难度，但语义更接近动态 batch。
-3. 保留 `restriction`，但在论文中明确写成 environment/modeling assumption，并避免把它说成已证明的 protocol property。
-
-建议投稿版本至少做到第 1 种。否则论文中应该写：
+本轮尝试把它改成规则层 bounded-4 token / counter 机制，但这些机制都会使 `v6` 在 source saturation 阶段不收敛。结论是：`v6` 不应该同时承担 dynamic skeleton、strict completion、terminal close 三个目标。当前 `v6` 的成熟定位应是：
 
 ```text
-We assume strict completion as a trace restriction and verify the remaining lifecycle properties under this assumption.
+在 strict completion trace restriction 下，验证 bounded dynamic batch skeleton 的 selected lifecycle properties。
 ```
 
-而不要写：
+如果论文要声称 “Tamarin 证明 complete 必须等待所有 added slots processed”，应该引用独立模型 `v7`，而不是引用当前 `v6`。`v7` 使用显式 `AddedSlot1..4`、线性 `SealedStage0..4` 和 `Slot1DoneFact..Slot4DoneFact` 建模，并已证明：
 
 ```text
-Tamarin proves arbitrary dynamic batch completion correctness.
+complete_requires_all_added_slots_processed
+complete_requires_all_slots_done
+no_slot_accept_after_complete
+no_slot_accept_after_fail
+no_add_after_seal
+```
+
+需要注意的是，`v7` 只能支撑 fixed 4 slot lifecycle claim。若只引用 `v6` 而不引用 `v7`，论文中仍应明确写成：
+
+```text
+We assume strict batch completion as a trace restriction in the bounded dynamic skeleton.
 ```
 
 ### 2.5 最大问题四：bounded dynamic skeleton 不等于任意长度 `BatchReceive`
@@ -364,9 +340,9 @@ public prekey bundle
 sid
 ```
 
-当前 core deniability 只比较 `ct_s`。这不足以说明完整 `K-Waay` transcript 可否认，因为攻击者或 judge 可能从 `ct_l`、`ct_k`、`sid`、prekey bundle 或状态泄露中区分 real/fake。
+旧 core deniability 只比较 `ct_s`。这不足以说明完整 `K-Waay` transcript 可否认，因为攻击者或 judge 可能从 `ct_l`、`ct_k`、`sid`、prekey bundle 或状态泄露中区分 real/fake。本轮新增的 `kwaay_deniability_core_diff.spthy` 已把 public core transcript 扩展到 identities、prekey bundle、`m=(ct_l,ct_k,ct_s)` 和 `sid`。
 
-问题三：没有证明 `Observational_equivalence`。
+问题三：旧模型没有证明 `Observational_equivalence`，新 core diff 模型已经补上初版证据。
 
 在 `Tamarin` 中，`diff` 文件需要在 `--diff` 模式下证明自动生成的：
 
@@ -374,7 +350,9 @@ sid
 Observational_equivalence
 ```
 
-当前仓库没有看到三份 deniability 模型对应的 `--diff` 日志，也没有看到 `Observational_equivalence` verified 证据。仅仅写出 `Out(diff(...))` 不是证明。
+本轮已新增 `tamarin/kwaay_deniability_core_diff.spthy`，并生成 `logs/tamarin-deniability/core_observational_equivalence.out`。该日志显示 `All wellformedness checks were successful`，且 `DiffLemma: Observational_equivalence : verified`。因此 core public-transcript deniability 已有初版 symbolic evidence。
+
+但这仍然不是完整 K-Waay deniability。它只覆盖 public core transcript abstraction，不覆盖完整 Big Brother opening-data game，也不覆盖 computational deniability。
 
 问题四：HMAC 场景不清楚是不是 `K-Waay` 原协议。
 
@@ -414,18 +392,18 @@ ct_k_fake
 最重要的是新增证明脚本：
 
 ```text
-scripts/prove-deniability-core-diff.sh
-logs/tamarin-deniability/core-diff.out
+scripts/prove-deniability-diff.sh
+logs/tamarin-deniability/core_observational_equivalence.out
 logs/tamarin-deniability/summary.txt
 ```
 
 命令形态应包含：
 
 ```bash
-tamarin-prover --diff --prove=Observational_equivalence tamarin/kwaay_deniability_core_diff.spthy
+tamarin-prover --diff --prove tamarin/kwaay_deniability_core_diff.spthy
 ```
 
-如果实际环境里 `--prove=Observational_equivalence` 不接受自动 lemma 名称，就用 interactive/export proof 或记录可复现命令，但必须有 `--diff` 模式下的结果证据。
+不要使用 `--prove=Observational_equivalence`。该名称是 Tamarin 在 `--diff` 模式下自动生成的 diff lemma，不是源文件中的显式 lemma；把它作为参数传入会产生 wellformedness warning。
 
 ## 4. 对 `kwaay_deniability_with_proof` 的审稿意见
 
@@ -465,7 +443,9 @@ which keys are adversarial
 what the simulator can extract
 ```
 
-当前模型中 malicious public key 是直接从输入 term 匹配出来的，没有全局注册状态，也没有 `ValidRegisteredKey`。
+旧模型中 malicious public key 是直接从输入 term 匹配出来的，没有全局注册状态，也没有 `ValidRegisteredKey`。本轮新增的 `tamarin/kwaay_deniability_malicious_pok_diff.spthy` 已经补了 `RegisterHonestSender`、`RegisterMaliciousReceiverWithPoK`、`ExtractedWitness` 和 `!ExtractedReceiverSk`。
+
+同时，模型已避免从 `pok(receiverSkB)` 反向模式匹配 witness；现在把 malicious witness 作为 symbolic extractor input 显式建模，parse 日志不再有 message derivation warning。
 
 问题三：仍然只比较一个单规则 transcript。
 
@@ -683,38 +663,43 @@ deniability game
 | exact agreement boundary | ProVerif | `kwaay_core_final.cpp.pv` | counterexample | 已有 |
 | receiver state lifecycle | Tamarin | `v6` | selected lemmas | 部分成熟 |
 | batch close exclusivity | Tamarin | `v6` | `batch_fail_complete_exclusive` | 已有 |
-| no process after close | Tamarin | 待新增 | lemma | 缺失 |
+| no process after close | Tamarin | `v7` | `no_slot_accept_after_complete`, `no_slot_accept_after_fail`, `no_slot_accept_after_close` | 已补 |
 | arbitrary BatchReceive | Tamarin/hand proof | 待新增 | theorem | 缺失 |
-| core deniability | Tamarin `--diff` | 待重构 | `Observational_equivalence` | 缺失 |
-| malicious PoK deniability | Tamarin `--diff` + assumption | 待重构 | equivalence + extractor assumption | 缺失 |
+| core deniability | Tamarin `--diff` | `kwaay_deniability_core_diff.spthy` | `Observational_equivalence` | 初版已补 |
+| malicious PoK deniability | Tamarin `--diff` + assumption | `kwaay_deniability_malicious_pok_diff.spthy` | witness lemmas verified, equivalence timeout | 部分补齐 |
 | Big Brother deniability | Tamarin `--diff` | 待重构 | specified OD equivalence | 缺失 |
 | computational KIND | CryptoVerif/hand proof | 待新增 | reduction | 缺失 |
 
-### 7.2 `v6` 必补 lemmas
+### 7.2 `v6` 未补、`v7` 已补的 terminal lifecycle lemmas
 
-建议新增：
+本轮确认不应把以下 lemmas 直接塞入当前 `v6`：
+
+```text
+complete_requires_all_added_slots_processed
+no_slot_accept_after_complete
+no_slot_accept_after_fail
+no_add_after_seal
+```
+
+原因不是语法问题，而是规则层硬化会让 Tamarin 在 source saturation 阶段不收敛。已经尝试过 `OpenBatch / SealedBatch / ClosedBatch`、固定 `slot1..slot4 + DoneSlotFact`、`OpenCount0..4 / SealedCount0..4` 三类写法，均不适合当前 `v6`。
+
+本轮已新增 `v7`，采用固定 4 slot lifecycle 模型，把这些 terminal lifecycle 性质放到更小、更专门的模型里证明。`v7` 已验证：
 
 ```text
 no_add_after_seal
 no_add_after_complete
 no_add_after_fail
-no_process_after_complete
-no_process_after_fail
-complete_requires_nonempty_batch
+no_slot_accept_after_complete
+no_slot_accept_after_fail
+no_slot_accept_after_close
 complete_requires_all_added_slots_processed
-fail_is_terminal
-closed_batch_is_terminal
-receiver_state_single_batch_lifecycle
+complete_requires_all_slots_done
+batch_end_token_single_use
+batch_fail_complete_exclusive
+receiver_state_single_batch_end
 ```
 
-其中最重要的是：
-
-```text
-no_process_after_fail
-no_process_after_complete
-```
-
-因为这两个直接修复 batch close 后还可能处理 pending slot 的审稿风险。
+其中 `fail_is_terminal` 和 `closed_batch_is_terminal` 在 `v7` 中分别由 `no_slot_accept_after_fail` 与 `no_slot_accept_after_close` 表达；`complete_requires_nonempty_batch` 在固定四槽模型中由 `seal_requires_all_slots_added` 和 `complete_requires_all_slots_done` 间接覆盖，不再单独列为核心 lemma。
 
 ### 7.3 deniability 必补 tests
 
@@ -745,32 +730,35 @@ exists-trace fake transcript generated
 
 ## 8. 建议的实施路线
 
-### Phase A：先把 `v6` 生命周期补严
+### Phase A：已新增 `v7`，不要继续硬改 `v6`
 
 目标：
 
 ```text
-让 batch phase 由规则保证，而不是只由注释和 restriction 保证。
+让 batch phase 和 terminal lifecycle 由规则保证，而不是只由注释和 restriction 保证。
 ```
 
 动作：
 
 ```text
-新增 OpenBatch / SealedBatch / ClosedBatch phase facts。
-修改 AddSlot / SealBatch / ProcessPendingSlot / Complete / Fail 的 phase premise。
-新增 no_add_after_* 和 no_process_after_* lemmas。
-保留现有 selected lemmas，确认旧性质不回退。
+保留 v6 作为可验证的 bounded dynamic skeleton。
+新增 v7，从 fixed-slot lifecycle 风格扩展到 4 slot。
+避免在 v7 中使用 AddSlot 的 phase self-loop。
+显式建模 OpenStage0..4、SealedStage0..4、AddedSlot1..4 和 Slot1DoneFact..Slot4DoneFact。
+新增并验证 complete_requires_all_added_slots_processed。
+新增并验证 no_slot_accept_after_complete / no_slot_accept_after_fail / no_slot_accept_after_close。
+新增并验证 no_add_after_seal / no_add_after_complete / no_add_after_fail。
 ```
 
 成功标准：
 
 ```text
-现有 16 个 selected lemmas 仍 verified。
-新增 terminal lifecycle lemmas verified。
-logs/tamarin-v6 或新 logs/tamarin-v7 中有可复现输出。
+v6 继续作为 bounded dynamic skeleton，不把 terminal lifecycle 硬塞回 v6。
+v7 的 24 个 selected lifecycle lemmas 均 verified。
+logs/tamarin-v7 中已保存可复现输出。
 ```
 
-建议文件名：
+新增文件：
 
 ```text
 tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
@@ -778,7 +766,7 @@ scripts/prove-v7-selected.sh
 docs/tamarin/tamarin-v7-results.md
 ```
 
-### Phase B：重构 core deniability diff model
+### Phase B：已重构 core deniability diff model
 
 目标：
 
@@ -794,17 +782,18 @@ docs/tamarin/tamarin-v7-results.md
 显式建模 public transcript。
 保留 split-KEM forge abstraction，但写清楚它是 primitive assumption。
 使用 --diff 证明 Observational_equivalence。
+新增 negative sanity check，并确认坏扩展不等价。
 ```
 
 成功标准：
 
 ```text
-core diff 模型 wellformed。
-Observational_equivalence verified 或明确给出 counterexample。
-有 negative sanity check。
+core diff 模型 wellformed。已完成。
+Observational_equivalence verified。已完成。
+有 negative sanity check。已完成，结果为 EXPECTED_NON_EQUIV。
 ```
 
-### Phase C：加入 malicious registration / PoK
+### Phase C：已加入 malicious registration / PoK，但 equivalence 尚未收敛
 
 目标：
 
@@ -815,18 +804,19 @@ Observational_equivalence verified 或明确给出 counterexample。
 动作：
 
 ```text
-新增 RegisterHonest / RegisterMaliciousWithPoK。
-新增 ExtractedWitness action/fact。
-simulator 只能使用 ExtractedWitness。
-证明 registered malicious key has witness。
-证明 malicious deniability diff。
+新增 RegisterHonest / RegisterMaliciousWithPoK。已完成。
+新增 ExtractedWitness action/fact。已完成。
+simulator 只能使用 ExtractedWitness。已完成。
+证明 registered malicious key has witness。已 verified。
+证明 malicious deniability diff。当前 300 秒 TIMEOUT，尚未完成。
 ```
 
 成功标准：
 
 ```text
 没有 PoK/extractor 时 malicious equivalence 失败或无法证明。
-有 PoK/extractor 时 equivalence 成立。
+有 PoK/extractor 时 witness 相关 trace lemmas 成立。
+malicious observational equivalence 需要继续拆分或优化 proof search。
 ```
 
 ### Phase D：定义 Big Brother `OD`
@@ -864,6 +854,8 @@ Our ProVerif model separates KIND-style secrecy from exact agreement.
 Our Tamarin models verify receiver-state consumption, compromise ordering,
 batch-slot origin, receiver-side exception classification, batch abort,
 and selected lifecycle properties of a bounded dynamic batch skeleton.
+We additionally give an initial symbolic observational-equivalence model
+for the public core transcript, with a negative sanity check.
 ```
 
 当前不建议表述：
@@ -874,7 +866,7 @@ We prove 1-out-of-2 deniability in the Big Brother model.
 We prove full computational security of K-Waay.
 ```
 
-等补完 diff 模型后，可以升级为：
+当前可谨慎升级为：
 
 ```text
 We additionally give a symbolic observational-equivalence model for

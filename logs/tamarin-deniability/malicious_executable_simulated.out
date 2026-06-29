@@ -1,0 +1,327 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+diffLemma
+[Theory Kwaay_Deniability_Malicious_PoK_Diff] Theory loaded
+[Theory Kwaay_Deniability_Malicious_PoK_Diff] Theory translated
+[Theory Kwaay_Deniability_Malicious_PoK_Diff] Derivation checks started
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+[Theory Kwaay_Deniability_Malicious_PoK_Diff] Derivation checks ended
+[Theory Kwaay_Deniability_Malicious_PoK_Diff] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+[Saturating Sources] Done
+theory Kwaay_Deniability_Malicious_PoK_Diff
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: ekem_ct/2, ekpk/1, fst/1, h/1, kpk/1, lkem_ct/2, pair/2, pk/2,
+           pok/1, receiver_payload/2, receiver_prekey/3, sender_payload/1,
+           sender_prekey/2, sid_of/7, sign/2, skem_component/3, skem_rpk/1,
+           skem_spk/1, snd/1, spk/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+rule (modulo E) RegisterHonestSender:
+   [ Fr( ~sigSkA ), Fr( ~kemSkA ), Fr( ~senderSkA ) ]
+  --[
+  HonestSenderRegistered( $A, pk(spk(~sigSkA), kpk(~kemSkA)),
+                          sender_prekey(skem_spk(~senderSkA),
+                                        sign(~sigSkA, sender_payload(skem_spk(~senderSkA))))
+  )
+  ]->
+   [
+   !HonestSender( $A, pk(spk(~sigSkA), kpk(~kemSkA)),
+                  sender_prekey(skem_spk(~senderSkA),
+                                sign(~sigSkA, sender_payload(skem_spk(~senderSkA))))
+   ),
+   Out( pk(spk(~sigSkA), kpk(~kemSkA)) ),
+   Out( sender_prekey(skem_spk(~senderSkA),
+                      sign(~sigSkA, sender_payload(skem_spk(~senderSkA))))
+   )
+   ]
+
+rule (modulo E) RegisterMaliciousReceiverWithPoK:
+   [
+   Fr( ~sigSkB ), Fr( ~kemSkB ), Fr( ~receiverEskB ),
+   In( <$B, receiverSkB, pok(receiverSkB)> )
+   ]
+  --[
+  MaliciousReceiverRegistered( $B, pk(spk(~sigSkB), kpk(~kemSkB)),
+                               receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                               sign(~sigSkB,
+                                                    receiver_payload(skem_rpk(receiverSkB),
+                                                                     ekpk(~receiverEskB))))
+  ),
+  ExtractedWitness( $B,
+                    receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                    sign(~sigSkB,
+                                         receiver_payload(skem_rpk(receiverSkB), ekpk(~receiverEskB)))),
+                    receiverSkB
+  )
+  ]->
+   [
+   !MaliciousReceiver( $B, pk(spk(~sigSkB), kpk(~kemSkB)), kpk(~kemSkB),
+                       ekpk(~receiverEskB),
+                       receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                       sign(~sigSkB,
+                                            receiver_payload(skem_rpk(receiverSkB), ekpk(~receiverEskB))))
+   ),
+   !ExtractedReceiverSk( $B,
+                         receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                         sign(~sigSkB,
+                                              receiver_payload(skem_rpk(receiverSkB), ekpk(~receiverEskB)))),
+                         receiverSkB
+   ),
+   Out( pk(spk(~sigSkB), kpk(~kemSkB)) ),
+   Out( receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                        sign(~sigSkB,
+                             receiver_payload(skem_rpk(receiverSkB), ekpk(~receiverEskB))))
+   )
+   ]
+
+rule (modulo E) MaliciousPoKTranscript_Diff:
+   [
+   !HonestSender( $A, pkA, senderPrekeyA ),
+   !MaliciousReceiver( $B, pkB, kemPkB, receiverEpkB, receiverPrekeyB ),
+   !ExtractedReceiverSk( $B, receiverPrekeyB, receiverSkB ), Fr( ~rhoL ),
+   Fr( ~rhoK ), Fr( ~rhoS )
+   ]
+  --[
+  MaliciousPoKRealTranscript( $A, $B,
+                              <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, 
+                               <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>, 
+                               sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                                      <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                       skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+                              >,
+                              sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                                     <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                      skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+  ),
+  MaliciousPoKSimulatedTranscript( $A, $B,
+                                   <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, 
+                                    <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                     skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>, 
+                                    sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                                           <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                            skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+                                   >,
+                                   sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                                          <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                                           skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+  ),
+  SimulatorUsesExtractedWitness( $B, receiverPrekeyB, receiverSkB ),
+  JudgeViewReceiverOpen( $A, $B )
+  ]->
+   [
+   Out( diff(<$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, 
+              <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+               skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>, 
+              sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                     <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                      skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+             >, <$A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB, 
+                 <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                  skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>, 
+                 sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                        <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                         skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>)
+                >)
+   ),
+   Out( diff(sid_of($A, $B, pkA, pkB, senderPrekeyA, receiverPrekeyB,
+                    <lkem_ct(kemPkB, ~rhoL), ekem_ct(receiverEpkB, ~rhoK), 
+                     skem_component(senderPrekeyA, receiverPrekeyB, ~rhoS)>), sid_of($A, $B,
+                                                                                     pkA, pkB, senderPrekeyA,
+                                                                                     receiverPrekeyB,
+                                                                                     <lkem_ct(kemPkB, ~rhoL), 
+                                                                                      ekem_ct(receiverEpkB,
+                                                                                              ~rhoK), 
+                                                                                      skem_component(senderPrekeyA,
+                                                                                                     receiverPrekeyB,
+                                                                                                     ~rhoS)
+                                                                                     >))
+   )
+   ]
+
+lemma executable_malicious_pok_real_transcript [right]:
+  exists-trace
+  "∃ A B tr sidv #i. MaliciousPoKRealTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (MaliciousPoKRealTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+lemma executable_malicious_pok_real_transcript [left]:
+  exists-trace
+  "∃ A B tr sidv #i. MaliciousPoKRealTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i. (MaliciousPoKRealTranscript( A, B, tr, sidv ) @ #i)"
+*/
+by sorry
+
+lemma executable_malicious_pok_simulated_transcript [right]:
+  exists-trace
+  "∃ A B tr sidv #i.
+    MaliciousPoKSimulatedTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i.
+  (MaliciousPoKSimulatedTranscript( A, B, tr, sidv ) @ #i)"
+*/
+simplify
+solve( !HonestSender( $A, pkA, senderPrekeyA ) ▶₀ #i )
+  case RegisterHonestSender
+  solve( !MaliciousReceiver( $B, pkB, kemPkB, receiverEpkB, receiverPrekeyB
+         ) ▶₁ #i )
+    case RegisterMaliciousReceiverWithPoK
+    solve( !ExtractedReceiverSk( $B,
+                                 receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                                 sign(~sigSkB,
+                                                      receiver_payload(skem_rpk(receiverSkB),
+                                                                       ekpk(~receiverEskB)))),
+                                 receiverSkB.1
+           ) ▶₂ #i )
+      case RegisterMaliciousReceiverWithPoK
+      solve( !KU( pok(receiverSkB) ) @ #vk.4 )
+        case c_pok
+        SOLVED // trace found
+      qed
+    qed
+  qed
+qed
+
+lemma executable_malicious_pok_simulated_transcript [left]:
+  exists-trace
+  "∃ A B tr sidv #i.
+    MaliciousPoKSimulatedTranscript( A, B, tr, sidv ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B tr sidv #i.
+  (MaliciousPoKSimulatedTranscript( A, B, tr, sidv ) @ #i)"
+*/
+simplify
+solve( !HonestSender( $A, pkA, senderPrekeyA ) ▶₀ #i )
+  case RegisterHonestSender
+  solve( !MaliciousReceiver( $B, pkB, kemPkB, receiverEpkB, receiverPrekeyB
+         ) ▶₁ #i )
+    case RegisterMaliciousReceiverWithPoK
+    solve( !ExtractedReceiverSk( $B,
+                                 receiver_prekey(skem_rpk(receiverSkB), ekpk(~receiverEskB),
+                                                 sign(~sigSkB,
+                                                      receiver_payload(skem_rpk(receiverSkB),
+                                                                       ekpk(~receiverEskB)))),
+                                 receiverSkB.1
+           ) ▶₂ #i )
+      case RegisterMaliciousReceiverWithPoK
+      solve( !KU( pok(receiverSkB) ) @ #vk.4 )
+        case c_pok
+        SOLVED // trace found
+      qed
+    qed
+  qed
+qed
+
+lemma registered_malicious_receiver_has_extracted_witness [right]:
+  all-traces
+  "∀ B pkB rpre #i.
+    (MaliciousReceiverRegistered( B, pkB, rpre ) @ #i) ⇒
+    (∃ receiverSk #j.
+      (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j = #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B pkB rpre #i.
+  (MaliciousReceiverRegistered( B, pkB, rpre ) @ #i)
+ ∧
+  ∀ receiverSk #j.
+   (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j = #i) ⇒ ⊥"
+*/
+by sorry
+
+lemma registered_malicious_receiver_has_extracted_witness [left]:
+  all-traces
+  "∀ B pkB rpre #i.
+    (MaliciousReceiverRegistered( B, pkB, rpre ) @ #i) ⇒
+    (∃ receiverSk #j.
+      (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j = #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B pkB rpre #i.
+  (MaliciousReceiverRegistered( B, pkB, rpre ) @ #i)
+ ∧
+  ∀ receiverSk #j.
+   (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j = #i) ⇒ ⊥"
+*/
+by sorry
+
+lemma simulator_uses_extracted_witness [right]:
+  all-traces
+  "∀ B rpre receiverSk #i.
+    (SimulatorUsesExtractedWitness( B, rpre, receiverSk ) @ #i) ⇒
+    (∃ #j. (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B rpre receiverSk #i.
+  (SimulatorUsesExtractedWitness( B, rpre, receiverSk ) @ #i)
+ ∧
+  ∀ #j. (ExtractedWitness( B, rpre, receiverSk ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma simulator_uses_extracted_witness [left]:
+  all-traces
+  "∀ B rpre receiverSk #i.
+    (SimulatorUsesExtractedWitness( B, rpre, receiverSk ) @ #i) ⇒
+    (∃ #j. (ExtractedWitness( B, rpre, receiverSk ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B rpre receiverSk #i.
+  (SimulatorUsesExtractedWitness( B, rpre, receiverSk ) @ #i)
+ ∧
+  ∀ #j. (ExtractedWitness( B, rpre, receiverSk ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+diffLemma Observational_equivalence:
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: tamarin/kwaay_deniability_malicious_pok_diff.spthy
+
+  processing time: 2.26s
+  
+  RHS :  executable_malicious_pok_real_transcript (exists-trace): analysis incomplete (1 steps)
+  LHS :  executable_malicious_pok_real_transcript (exists-trace): analysis incomplete (1 steps)
+  RHS :  executable_malicious_pok_simulated_transcript (exists-trace): verified (6 steps)
+  LHS :  executable_malicious_pok_simulated_transcript (exists-trace): verified (6 steps)
+  RHS :  registered_malicious_receiver_has_extracted_witness (all-traces): analysis incomplete (1 steps)
+  LHS :  registered_malicious_receiver_has_extracted_witness (all-traces): analysis incomplete (1 steps)
+  RHS :  simulator_uses_extracted_witness (all-traces): analysis incomplete (1 steps)
+  LHS :  simulator_uses_extracted_witness (all-traces): analysis incomplete (1 steps)
+  DiffLemma:  Observational_equivalence : analysis incomplete (1 steps)
+
+==============================================================================
