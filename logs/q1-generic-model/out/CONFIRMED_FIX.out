@@ -1,0 +1,521 @@
+Process 0 (that is, the initial process):
+{1}new idSkA: id_sk;
+{2}new idSkB: id_sk;
+{3}new recvSkB: receiver_sk;
+{4}new originSkA: origin_sk;
+{5}!
+{6}let idSkA_1: id_sk = idSkA in
+{7}let idSkB_1: id_sk = idSkB in
+{8}let recvSkB_1: receiver_sk = recvSkB in
+{9}let originSkA_1: origin_sk = originSkA in
+{10}let idPkA: id_pk = idpk(idSkA_1) in
+{11}let idPkB: id_pk = idpk(idSkB_1) in
+{12}out(c, idPkA);
+{13}out(c, idPkB);
+{14}let senderStableCtx: stable_context = stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault) in
+{15}event SenderIdentityContext(A,B,A,B);
+{16}event SenderRoleContext(A,B,senderRole,receiverRole);
+{17}event SenderSuiteContext(A,B,suiteDefault);
+{18}event SenderApplicationContext(A,B,appDefault);
+{19}event SenderStableContext(A,B,senderStableCtx);
+{20}let receiverPkB: receiver_pk = receiver_pk_of(recvSkB_1) in
+{21}let receiverCredB: receiver_credential = receiver_cred(receiverPkB,sign_receiver(idSkB_1,receiverPkB)) in
+{22}out(c, receiverCredB);
+{23}let originPkA: origin_pk = origin_pk_of(originSkA_1) in
+{24}let originCredA: origin_credential = origin_cred(originPkA,sign_origin(idSkA_1,originPkA)) in
+{25}out(c, originCredA);
+{26}in(c, receiverCredForSend: receiver_credential);
+{27}let receiverPkForSend: receiver_pk = get_receiver_pk(receiverCredForSend) in
+{28}let receiverSigForSend: signature = get_receiver_sig(receiverCredForSend) in
+{29}let =true = verify_receiver(idPkB,receiverPkForSend,receiverSigForSend) in
+{30}event ReceiverCredentialVerified(A,B,receiverCredForSend);
+{31}new rMutable: randomness;
+{32}new rOrigin: randomness;
+{33}let mutableCt: mutable_ct = mutable_enc(receiverPkForSend,rMutable) in
+{34}let mutableSecret: component_secret = mutable_secret(receiverPkForSend,rMutable) in
+{35}let originCt: origin_ct = origin_enc(originSkA_1,receiverPkForSend,rOrigin) in
+{36}let originSecret: component_secret = origin_secret(originSkA_1,receiverPkForSend,rOrigin) in
+{37}event OriginComponentSent(A,B,originCt,originSecret);
+{38}let outboundPacket: transcript = packet(mutableCt,originCt) in
+{39}let senderFullCtx: full_context = full_ctx(senderStableCtx,originCredA,receiverCredForSend,outboundPacket) in
+{40}event SenderFullContext(A,B,senderFullCtx);
+{41}let sidAB: sid_t = sid_of(A,B,idPkA,idPkB,originCredA,receiverCredForSend,outboundPacket) in
+{42}let kSend: session_key = key_mixed(mutableSecret,originSecret,sidAB) in
+{43}event SenderKey(A,B,sidAB,kSend);
+{44}event SendDone(A,B,sidAB,kSend);
+{45}out(c, confirmed(outboundPacket,confirm_tag(kSend,sidAB)));
+{46}in(c, originCredFromNet: origin_credential);
+{47}let originPkFromNet: origin_pk = get_origin_pk(originCredFromNet) in
+{48}let originSigFromNet: signature = get_origin_sig(originCredFromNet) in
+{49}let =true = verify_origin(idPkA,originPkFromNet,originSigFromNet) in
+{50}event OriginCredentialVerified(B,A,originCredFromNet);
+{51}in(c, confirmedFromNet: confirmed_transcript);
+{52}let packetFromNet: transcript = get_confirmed_packet(confirmedFromNet) in
+{53}let tagFromNet: confirmation_tag = get_confirmed_tag(confirmedFromNet) in
+{54}let mutableCtFromNet: mutable_ct = get_mutable_ct(packetFromNet) in
+{55}let originCtFromNet: origin_ct = get_origin_ct(packetFromNet) in
+{56}let mutableSecretRecv: component_secret = mutable_dec(recvSkB_1,mutableCtFromNet) in
+{57}let originSecretRecv: component_secret = origin_dec(recvSkB_1,originPkFromNet,originCtFromNet) in
+{58}let receiverIdentityPeer: agent = A in
+{59}let receiverSenderRole: role_tag = senderRole in
+{60}let receiverReceiverRole: role_tag = receiverRole in
+{61}let receiverSuite: suite_id = suiteDefault in
+{62}let receiverApp: app_context = appDefault in
+{63}let receiverStableCtx: stable_context = stable_ctx(receiverIdentityPeer,B,receiverSenderRole,receiverReceiverRole,receiverSuite,receiverApp) in
+{64}let receiverFullCtx: full_context = full_ctx(receiverStableCtx,originCredFromNet,receiverCredB,packetFromNet) in
+{65}let sidBA: sid_t = sid_of(A,B,idPkA,idPkB,originCredFromNet,receiverCredB,packetFromNet) in
+{66}let kRecv: session_key = key_mixed(mutableSecretRecv,originSecretRecv,sidBA) in
+{67}let =confirm_tag(kRecv,sidBA) = tagFromNet in
+{68}event Confirmed(B,A,sidBA,kRecv);
+{69}event OriginComponentAccepted(B,A,originCtFromNet,originSecretRecv);
+{70}event ReceiverIdentityContext(B,A,receiverIdentityPeer,B);
+{71}event ReceiverRoleContext(B,A,receiverSenderRole,receiverReceiverRole);
+{72}event ReceiverSuiteContext(B,A,receiverSuite);
+{73}event ReceiverApplicationContext(B,A,receiverApp);
+{74}event ReceiverStableContext(B,A,receiverStableCtx);
+{75}event ReceiverFullContext(B,A,receiverFullCtx);
+{76}event ReceiverKey(B,A,sidBA,kRecv);
+{77}event ProtectedData(B,A,sidBA,protectedPayload);
+{78}out(c, senc(kRecv,protectedPayload));
+{79}event RecvDone(B,A,sidBA,kRecv);
+{80}event HonestRun(kRecv)
+
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 166, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 166, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 169, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 169, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 171, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 171, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 174, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 174, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 177, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 177, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 180, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 180, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 183, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 183, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 186, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 186, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 192, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 192, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 195, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 195, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 197, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 197, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 199, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\CONFIRMED_FIX.pv", line 199, character 17:
+Warning: identifier B rebound.
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}new idSkA: id_sk;
+{2}new idSkB: id_sk;
+{3}new recvSkB: receiver_sk;
+{4}new originSkA: origin_sk;
+{5}!
+{6}let idSkA_1: id_sk = idSkA in
+{10}let idPkA: id_pk = idpk(idSkA_1) in
+{12}out(c, idPkA);
+{7}let idSkB_1: id_sk = idSkB in
+{11}let idPkB: id_pk = idpk(idSkB_1) in
+{13}out(c, idPkB);
+{15}event SenderIdentityContext(A,B,A,B);
+{16}event SenderRoleContext(A,B,senderRole,receiverRole);
+{17}event SenderSuiteContext(A,B,suiteDefault);
+{18}event SenderApplicationContext(A,B,appDefault);
+{14}let senderStableCtx: stable_context = stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault) in
+{19}event SenderStableContext(A,B,senderStableCtx);
+{8}let recvSkB_1: receiver_sk = recvSkB in
+{20}let receiverPkB: receiver_pk = receiver_pk_of(recvSkB_1) in
+{21}let receiverCredB: receiver_credential = receiver_cred(receiverPkB,sign_receiver(idSkB_1,receiverPkB)) in
+{22}out(c, receiverCredB);
+{9}let originSkA_1: origin_sk = originSkA in
+{23}let originPkA: origin_pk = origin_pk_of(originSkA_1) in
+{24}let originCredA: origin_credential = origin_cred(originPkA,sign_origin(idSkA_1,originPkA)) in
+{25}out(c, originCredA);
+{26}in(c, receiverCredForSend: receiver_credential);
+{27}let receiverPkForSend: receiver_pk = get_receiver_pk(receiverCredForSend) in
+{28}let receiverSigForSend: signature = get_receiver_sig(receiverCredForSend) in
+{29}let =true = verify_receiver(idPkB,receiverPkForSend,receiverSigForSend) in
+{30}event ReceiverCredentialVerified(A,B,receiverCredForSend);
+{31}new rMutable: randomness;
+{32}new rOrigin: randomness;
+{36}let originSecret: component_secret = origin_secret(originSkA_1,receiverPkForSend,rOrigin) in
+{35}let originCt: origin_ct = origin_enc(originSkA_1,receiverPkForSend,rOrigin) in
+{37}event OriginComponentSent(A,B,originCt,originSecret);
+{33}let mutableCt: mutable_ct = mutable_enc(receiverPkForSend,rMutable) in
+{38}let outboundPacket: transcript = packet(mutableCt,originCt) in
+{39}let senderFullCtx: full_context = full_ctx(senderStableCtx,originCredA,receiverCredForSend,outboundPacket) in
+{40}event SenderFullContext(A,B,senderFullCtx);
+{41}let sidAB: sid_t = sid_of(A,B,idPkA,idPkB,originCredA,receiverCredForSend,outboundPacket) in
+{34}let mutableSecret: component_secret = mutable_secret(receiverPkForSend,rMutable) in
+{42}let kSend: session_key = key_mixed(mutableSecret,originSecret,sidAB) in
+{43}event SenderKey(A,B,sidAB,kSend);
+{44}event SendDone(A,B,sidAB,kSend);
+{45}out(c, confirmed(outboundPacket,confirm_tag(kSend,sidAB)));
+{46}in(c, originCredFromNet: origin_credential);
+{47}let originPkFromNet: origin_pk = get_origin_pk(originCredFromNet) in
+{48}let originSigFromNet: signature = get_origin_sig(originCredFromNet) in
+{49}let =true = verify_origin(idPkA,originPkFromNet,originSigFromNet) in
+{50}event OriginCredentialVerified(B,A,originCredFromNet);
+{51}in(c, confirmedFromNet: confirmed_transcript);
+{52}let packetFromNet: transcript = get_confirmed_packet(confirmedFromNet) in
+{53}let tagFromNet: confirmation_tag = get_confirmed_tag(confirmedFromNet) in
+{54}let mutableCtFromNet: mutable_ct = get_mutable_ct(packetFromNet) in
+{55}let originCtFromNet: origin_ct = get_origin_ct(packetFromNet) in
+{56}let mutableSecretRecv: component_secret = mutable_dec(recvSkB_1,mutableCtFromNet) in
+{57}let originSecretRecv: component_secret = origin_dec(recvSkB_1,originPkFromNet,originCtFromNet) in
+{65}let sidBA: sid_t = sid_of(A,B,idPkA,idPkB,originCredFromNet,receiverCredB,packetFromNet) in
+{66}let kRecv: session_key = key_mixed(mutableSecretRecv,originSecretRecv,sidBA) in
+{67}let =confirm_tag(kRecv,sidBA) = tagFromNet in
+{68}event Confirmed(B,A,sidBA,kRecv);
+{69}event OriginComponentAccepted(B,A,originCtFromNet,originSecretRecv);
+{58}let receiverIdentityPeer: agent = A in
+{70}event ReceiverIdentityContext(B,A,receiverIdentityPeer,B);
+{60}let receiverReceiverRole: role_tag = receiverRole in
+{59}let receiverSenderRole: role_tag = senderRole in
+{71}event ReceiverRoleContext(B,A,receiverSenderRole,receiverReceiverRole);
+{61}let receiverSuite: suite_id = suiteDefault in
+{72}event ReceiverSuiteContext(B,A,receiverSuite);
+{62}let receiverApp: app_context = appDefault in
+{73}event ReceiverApplicationContext(B,A,receiverApp);
+{63}let receiverStableCtx: stable_context = stable_ctx(receiverIdentityPeer,B,receiverSenderRole,receiverReceiverRole,receiverSuite,receiverApp) in
+{74}event ReceiverStableContext(B,A,receiverStableCtx);
+{64}let receiverFullCtx: full_context = full_ctx(receiverStableCtx,originCredFromNet,receiverCredB,packetFromNet) in
+{75}event ReceiverFullContext(B,A,receiverFullCtx);
+{76}event ReceiverKey(B,A,sidBA,kRecv);
+{77}event ProtectedData(B,A,sidBA,protectedPayload);
+{78}out(c, senc(kRecv,protectedPayload));
+{79}event RecvDone(B,A,sidBA,kRecv);
+{80}event HonestRun(kRecv)
+
+-- Query not event(HonestRun(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not event(HonestRun(k))
+goal reachable: event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+Derivation:
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. The message origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))) may be sent to the attacker at output {25}.
+attacker(origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[])))).
+
+3. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+So the message confirmed(packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) may be sent to the attacker at output {45}.
+attacker(confirmed(packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))).
+
+4. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The message origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))) that the attacker may have by 2 may be received at input {46}.
+The message confirmed(packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) that the attacker may have by 3 may be received at input {51}.
+So event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) may be executed at {80}.
+event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))).
+
+5. By 4, event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))).
+The goal is reached, represented in the following fact:
+event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+out(c, ~M_8) with ~M_8 = idpk(idSkA_2) at {12} in copy a_2
+
+out(c, ~M_9) with ~M_9 = idpk(idSkB_2) at {13} in copy a_2
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_2
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_2
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_2
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_2
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_2
+
+out(c, ~M_10) with ~M_10 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_2
+
+out(c, ~M_11) with ~M_11 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_2
+
+out(c, ~M_12) with ~M_12 = idpk(idSkA_2) at {12} in copy a_3
+
+out(c, ~M_13) with ~M_13 = idpk(idSkB_2) at {13} in copy a_3
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_3
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_3
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_3
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_3
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_3
+
+out(c, ~M_14) with ~M_14 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_3
+
+out(c, ~M_15) with ~M_15 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_3
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a_3
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a_3
+
+new rMutable: randomness creating rMutable_2 at {31} in copy a_3
+
+new rOrigin: randomness creating rOrigin_2 at {32} in copy a_3
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {37} in copy a_3
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {40} in copy a_3
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {43} in copy a_3
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {44} in copy a_3
+
+out(c, ~M_16) with ~M_16 = confirmed(packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {45} in copy a_3
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_3 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_3 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_3),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_3),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3))))) at {44} in copy a
+
+out(c, ~M_17) with ~M_17 = confirmed(packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_3),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3)))),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_3),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_3))))) at {45} in copy a
+
+in(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {46} in copy a
+
+event OriginCredentialVerified(B,A,origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2)))) at {50} in copy a
+
+in(c, ~M_16) with ~M_16 = confirmed(packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)),confirm_tag(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {51} in copy a
+
+event Confirmed(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {68} in copy a
+
+event OriginComponentAccepted(B,A,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {69} in copy a
+
+event ReceiverIdentityContext(B,A,A,B) at {70} in copy a
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {71} in copy a
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {72} in copy a
+
+event ReceiverApplicationContext(B,A,appDefault) at {73} in copy a
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {74} in copy a
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {75} in copy a
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {76} in copy a
+
+event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),protectedPayload) at {77} in copy a
+
+out(c, ~M_18) with ~M_18 = senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))),protectedPayload) at {78} in copy a
+
+event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {79} in copy a
+
+event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {80} in copy a (goal)
+
+The event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) is executed at {80} in copy a.
+A trace has been found.
+RESULT not event(HonestRun(k)) is false.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 142 rules (62 with conclusion selected). Queue: 10 rules.
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k))
+goal reachable: b-event(SendDone(A[],B[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+-- Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k))
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+-- Query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 141 rules (62 with conclusion selected). Queue: 10 rules.
+Starting query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so))
+goal reachable: b-event(OriginComponentSent(A[],B[],origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))) -> event(OriginComponentAccepted(B[],A[],origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))
+Abbreviations:
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+-- Query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local))
+goal reachable: b-event(SenderIdentityContext(A[],B[],A[],B[])) -> event(ReceiverIdentityContext(B[],A[],A[],B[]))
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+-- Query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr))
+goal reachable: b-event(SenderRoleContext(A[],B[],senderRole,receiverRole)) -> event(ReceiverRoleContext(B[],A[],senderRole,receiverRole))
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+-- Query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite))
+goal reachable: b-event(SenderSuiteContext(A[],B[],suiteDefault)) -> event(ReceiverSuiteContext(B[],A[],suiteDefault))
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+-- Query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app))
+goal reachable: b-event(SenderApplicationContext(A[],B[],appDefault)) -> event(ReceiverApplicationContext(B[],A[],appDefault))
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+-- Query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc))
+goal reachable: b-event(SenderStableContext(A[],B[],stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault))) -> event(ReceiverStableContext(B[],A[],stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault)))
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+-- Query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 142 rules (62 with conclusion selected). Queue: 10 rules.
+Starting query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc))
+goal reachable: b-event(SenderFullContext(A[],B[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) -> event(ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is true.
+-- Query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d))
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(Confirmed(B_1,A_1,s,k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(Confirmed(B_1,A_1,s,k))
+goal reachable: b-event(Confirmed(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(Confirmed(B_1,A_1,s,k)) is true.
+-- Query event(Confirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 142 rules (62 with conclusion selected). Queue: 10 rules.
+Starting query event(Confirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k))
+goal reachable: b-event(SendDone(A[],B[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))) -> event(Confirmed(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+RESULT event(Confirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query not event(HonestRun(k)) is false.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+
+Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+
+Query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+
+Query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+
+Query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+
+Query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+
+Query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+
+Query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+
+Query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is true.
+
+Query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(Confirmed(B_1,A_1,s,k)) is true.
+
+Query event(Confirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+
+--------------------------------------------------------------
+

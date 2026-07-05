@@ -1,0 +1,161 @@
+Generic Q1 triage ProVerif summary
+model: /mnt/d/kwaay-formal/q1-generic-model/q1_generic_triage.cpp.pv
+proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
+generated: 2026-06-30T05:40:46Z
+
+TARGET: AUTH_SECRET_Q1_GAP
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/AUTH_SECRET_Q1_GAP.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/AUTH_SECRET_Q1_GAP.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: PUBLIC_ONLY_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/PUBLIC_ONLY_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/PUBLIC_ONLY_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is false.
+
+TARGET: NO_ORIGIN_AUTH_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/NO_ORIGIN_AUTH_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/NO_ORIGIN_AUTH_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is false.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is false.
+
+TARGET: IDENTITY_CONTEXT_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/IDENTITY_CONTEXT_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/IDENTITY_CONTEXT_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is false.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is false.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: ROLE_CONTEXT_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/ROLE_CONTEXT_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/ROLE_CONTEXT_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is false.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is false.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: SUITE_CONTEXT_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/SUITE_CONTEXT_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/SUITE_CONTEXT_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is false.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is false.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: APP_CONTEXT_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/APP_CONTEXT_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/APP_CONTEXT_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is false.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is false.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+
+TARGET: SIDE_EFFECT_BAD
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/SIDE_EFFECT_BAD.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/SIDE_EFFECT_BAD.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+RESULT event(AuthorizedAction(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+
+TARGET: CONFIRMED_FIX
+STATUS: OK
+OUTPUT: /mnt/d/kwaay-formal/logs/q1-generic-model/out/CONFIRMED_FIX.out
+GENERATED: /mnt/d/kwaay-formal/logs/q1-generic-model/generated/CONFIRMED_FIX.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is true.
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is true.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(Confirmed(B_1,A_1,s,k)) is true.
+RESULT event(Confirmed(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+

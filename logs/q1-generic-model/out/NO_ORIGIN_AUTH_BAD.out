@@ -1,0 +1,1444 @@
+Process 0 (that is, the initial process):
+{1}new idSkA: id_sk;
+{2}new idSkB: id_sk;
+{3}new recvSkB: receiver_sk;
+{4}new originSkA: origin_sk;
+{5}!
+{6}let idSkA_1: id_sk = idSkA in
+{7}let idSkB_1: id_sk = idSkB in
+{8}let recvSkB_1: receiver_sk = recvSkB in
+{9}let originSkA_1: origin_sk = originSkA in
+{10}let idPkA: id_pk = idpk(idSkA_1) in
+{11}let idPkB: id_pk = idpk(idSkB_1) in
+{12}out(c, idPkA);
+{13}out(c, idPkB);
+{14}let senderStableCtx: stable_context = stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault) in
+{15}event SenderIdentityContext(A,B,A,B);
+{16}event SenderRoleContext(A,B,senderRole,receiverRole);
+{17}event SenderSuiteContext(A,B,suiteDefault);
+{18}event SenderApplicationContext(A,B,appDefault);
+{19}event SenderStableContext(A,B,senderStableCtx);
+{20}let receiverPkB: receiver_pk = receiver_pk_of(recvSkB_1) in
+{21}let receiverCredB: receiver_credential = receiver_cred(receiverPkB,sign_receiver(idSkB_1,receiverPkB)) in
+{22}out(c, receiverCredB);
+{23}let originPkA: origin_pk = origin_pk_of(originSkA_1) in
+{24}let originCredA: origin_credential = origin_cred(originPkA,sign_origin(idSkA_1,originPkA)) in
+{25}out(c, originCredA);
+{26}in(c, receiverCredForSend: receiver_credential);
+{27}let receiverPkForSend: receiver_pk = get_receiver_pk(receiverCredForSend) in
+{28}let receiverSigForSend: signature = get_receiver_sig(receiverCredForSend) in
+{29}let =true = verify_receiver(idPkB,receiverPkForSend,receiverSigForSend) in
+{30}event ReceiverCredentialVerified(A,B,receiverCredForSend);
+{31}new rMutable: randomness;
+{32}new rOrigin: randomness;
+{33}let mutableCt: mutable_ct = mutable_enc(receiverPkForSend,rMutable) in
+{34}let mutableSecret: component_secret = mutable_secret(receiverPkForSend,rMutable) in
+{35}let originCt: origin_ct = origin_enc(originSkA_1,receiverPkForSend,rOrigin) in
+{36}let originSecret: component_secret = origin_secret(originSkA_1,receiverPkForSend,rOrigin) in
+{37}event OriginComponentSent(A,B,originCt,originSecret);
+{38}let outboundPacket: transcript = packet(mutableCt,originCt) in
+{39}let senderFullCtx: full_context = full_ctx(senderStableCtx,originCredA,receiverCredForSend,outboundPacket) in
+{40}event SenderFullContext(A,B,senderFullCtx);
+{41}let sidAB: sid_t = sid_of(A,B,idPkA,idPkB,originCredA,receiverCredForSend,outboundPacket) in
+{42}let kSend: session_key = key_mixed(mutableSecret,originSecret,sidAB) in
+{43}event SenderKey(A,B,sidAB,kSend);
+{44}event SendDone(A,B,sidAB,kSend);
+{45}out(c, outboundPacket);
+{46}in(c, originCredFromNet: origin_credential);
+{47}let originPkFromNet: origin_pk = get_origin_pk(originCredFromNet) in
+{48}let originSigFromNet: signature = get_origin_sig(originCredFromNet) in
+{49}event OriginCredentialAcceptedWithoutVerification(B,A,originCredFromNet);
+{50}in(c, packetFromNet: transcript);
+{51}let mutableCtFromNet: mutable_ct = get_mutable_ct(packetFromNet) in
+{52}let originCtFromNet: origin_ct = get_origin_ct(packetFromNet) in
+{53}let mutableSecretRecv: component_secret = mutable_dec(recvSkB_1,mutableCtFromNet) in
+{54}let originSecretRecv: component_secret = origin_dec(recvSkB_1,originPkFromNet,originCtFromNet) in
+{55}let receiverIdentityPeer: agent = A in
+{56}let receiverSenderRole: role_tag = senderRole in
+{57}let receiverReceiverRole: role_tag = receiverRole in
+{58}let receiverSuite: suite_id = suiteDefault in
+{59}let receiverApp: app_context = appDefault in
+{60}let receiverStableCtx: stable_context = stable_ctx(receiverIdentityPeer,B,receiverSenderRole,receiverReceiverRole,receiverSuite,receiverApp) in
+{61}let receiverFullCtx: full_context = full_ctx(receiverStableCtx,originCredFromNet,receiverCredB,packetFromNet) in
+{62}let sidBA: sid_t = sid_of(A,B,idPkA,idPkB,originCredFromNet,receiverCredB,packetFromNet) in
+{63}let kRecv: session_key = key_mixed(mutableSecretRecv,originSecretRecv,sidBA) in
+{64}event OriginComponentAccepted(B,A,originCtFromNet,originSecretRecv);
+{65}event ReceiverIdentityContext(B,A,receiverIdentityPeer,B);
+{66}event ReceiverRoleContext(B,A,receiverSenderRole,receiverReceiverRole);
+{67}event ReceiverSuiteContext(B,A,receiverSuite);
+{68}event ReceiverApplicationContext(B,A,receiverApp);
+{69}event ReceiverStableContext(B,A,receiverStableCtx);
+{70}event ReceiverFullContext(B,A,receiverFullCtx);
+{71}event ReceiverKey(B,A,sidBA,kRecv);
+{72}event ProtectedData(B,A,sidBA,protectedPayload);
+{73}out(c, senc(kRecv,protectedPayload));
+{74}event RecvDone(B,A,sidBA,kRecv);
+{75}event HonestRun(kRecv)
+
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 166, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 166, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 169, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 169, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 171, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 171, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 174, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 174, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 177, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 177, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 180, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 180, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 183, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 183, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 186, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 186, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 192, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 192, character 17:
+Warning: identifier B rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 195, character 7:
+Warning: identifier A rebound.
+File "D:\kwaay-formal\logs\q1-generic-model\generated\NO_ORIGIN_AUTH_BAD.pv", line 195, character 17:
+Warning: identifier B rebound.
+--  Process 1 (that is, process 0, with let moved downwards):
+{1}new idSkA: id_sk;
+{2}new idSkB: id_sk;
+{3}new recvSkB: receiver_sk;
+{4}new originSkA: origin_sk;
+{5}!
+{6}let idSkA_1: id_sk = idSkA in
+{10}let idPkA: id_pk = idpk(idSkA_1) in
+{12}out(c, idPkA);
+{7}let idSkB_1: id_sk = idSkB in
+{11}let idPkB: id_pk = idpk(idSkB_1) in
+{13}out(c, idPkB);
+{15}event SenderIdentityContext(A,B,A,B);
+{16}event SenderRoleContext(A,B,senderRole,receiverRole);
+{17}event SenderSuiteContext(A,B,suiteDefault);
+{18}event SenderApplicationContext(A,B,appDefault);
+{14}let senderStableCtx: stable_context = stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault) in
+{19}event SenderStableContext(A,B,senderStableCtx);
+{8}let recvSkB_1: receiver_sk = recvSkB in
+{20}let receiverPkB: receiver_pk = receiver_pk_of(recvSkB_1) in
+{21}let receiverCredB: receiver_credential = receiver_cred(receiverPkB,sign_receiver(idSkB_1,receiverPkB)) in
+{22}out(c, receiverCredB);
+{9}let originSkA_1: origin_sk = originSkA in
+{23}let originPkA: origin_pk = origin_pk_of(originSkA_1) in
+{24}let originCredA: origin_credential = origin_cred(originPkA,sign_origin(idSkA_1,originPkA)) in
+{25}out(c, originCredA);
+{26}in(c, receiverCredForSend: receiver_credential);
+{27}let receiverPkForSend: receiver_pk = get_receiver_pk(receiverCredForSend) in
+{28}let receiverSigForSend: signature = get_receiver_sig(receiverCredForSend) in
+{29}let =true = verify_receiver(idPkB,receiverPkForSend,receiverSigForSend) in
+{30}event ReceiverCredentialVerified(A,B,receiverCredForSend);
+{31}new rMutable: randomness;
+{32}new rOrigin: randomness;
+{36}let originSecret: component_secret = origin_secret(originSkA_1,receiverPkForSend,rOrigin) in
+{35}let originCt: origin_ct = origin_enc(originSkA_1,receiverPkForSend,rOrigin) in
+{37}event OriginComponentSent(A,B,originCt,originSecret);
+{33}let mutableCt: mutable_ct = mutable_enc(receiverPkForSend,rMutable) in
+{38}let outboundPacket: transcript = packet(mutableCt,originCt) in
+{39}let senderFullCtx: full_context = full_ctx(senderStableCtx,originCredA,receiverCredForSend,outboundPacket) in
+{40}event SenderFullContext(A,B,senderFullCtx);
+{41}let sidAB: sid_t = sid_of(A,B,idPkA,idPkB,originCredA,receiverCredForSend,outboundPacket) in
+{34}let mutableSecret: component_secret = mutable_secret(receiverPkForSend,rMutable) in
+{42}let kSend: session_key = key_mixed(mutableSecret,originSecret,sidAB) in
+{43}event SenderKey(A,B,sidAB,kSend);
+{44}event SendDone(A,B,sidAB,kSend);
+{45}out(c, outboundPacket);
+{46}in(c, originCredFromNet: origin_credential);
+{47}let originPkFromNet: origin_pk = get_origin_pk(originCredFromNet) in
+{48}let originSigFromNet: signature = get_origin_sig(originCredFromNet) in
+{49}event OriginCredentialAcceptedWithoutVerification(B,A,originCredFromNet);
+{50}in(c, packetFromNet: transcript);
+{51}let mutableCtFromNet: mutable_ct = get_mutable_ct(packetFromNet) in
+{52}let originCtFromNet: origin_ct = get_origin_ct(packetFromNet) in
+{53}let mutableSecretRecv: component_secret = mutable_dec(recvSkB_1,mutableCtFromNet) in
+{54}let originSecretRecv: component_secret = origin_dec(recvSkB_1,originPkFromNet,originCtFromNet) in
+{64}event OriginComponentAccepted(B,A,originCtFromNet,originSecretRecv);
+{55}let receiverIdentityPeer: agent = A in
+{65}event ReceiverIdentityContext(B,A,receiverIdentityPeer,B);
+{57}let receiverReceiverRole: role_tag = receiverRole in
+{56}let receiverSenderRole: role_tag = senderRole in
+{66}event ReceiverRoleContext(B,A,receiverSenderRole,receiverReceiverRole);
+{58}let receiverSuite: suite_id = suiteDefault in
+{67}event ReceiverSuiteContext(B,A,receiverSuite);
+{59}let receiverApp: app_context = appDefault in
+{68}event ReceiverApplicationContext(B,A,receiverApp);
+{60}let receiverStableCtx: stable_context = stable_ctx(receiverIdentityPeer,B,receiverSenderRole,receiverReceiverRole,receiverSuite,receiverApp) in
+{69}event ReceiverStableContext(B,A,receiverStableCtx);
+{61}let receiverFullCtx: full_context = full_ctx(receiverStableCtx,originCredFromNet,receiverCredB,packetFromNet) in
+{70}event ReceiverFullContext(B,A,receiverFullCtx);
+{62}let sidBA: sid_t = sid_of(A,B,idPkA,idPkB,originCredFromNet,receiverCredB,packetFromNet) in
+{63}let kRecv: session_key = key_mixed(mutableSecretRecv,originSecretRecv,sidBA) in
+{71}event ReceiverKey(B,A,sidBA,kRecv);
+{72}event ProtectedData(B,A,sidBA,protectedPayload);
+{73}out(c, senc(kRecv,protectedPayload));
+{74}event RecvDone(B,A,sidBA,kRecv);
+{75}event HonestRun(kRecv)
+
+-- Query not event(HonestRun(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 145 rules (74 with conclusion selected). Queue: 10 rules.
+Starting query not event(HonestRun(k))
+goal reachable: attacker(r) && attacker(r_1) && attacker(osk) && attacker(originSigFromNet_1) -> event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(osk),originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),origin_enc(osk,receiver_pk_of(recvSkB[]),r_1))))))
+
+Derivation:
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. We assume as hypothesis that
+attacker(originSigFromNet_1).
+
+3. We assume as hypothesis that
+attacker(osk).
+
+4. By 3, the attacker may know osk.
+Using the function origin_pk_of the attacker may obtain origin_pk_of(osk).
+attacker(origin_pk_of(osk)).
+
+5. By 4, the attacker may know origin_pk_of(osk).
+By 2, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(origin_pk_of(osk),originSigFromNet_1).
+attacker(origin_cred(origin_pk_of(osk),originSigFromNet_1)).
+
+6. We assume as hypothesis that
+attacker(r).
+
+7. By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+8. By 3, the attacker may know osk.
+By 7, the attacker may know receiver_pk_of(recvSkB[]).
+By 6, the attacker may know r.
+Using the function origin_enc the attacker may obtain origin_enc(osk,receiver_pk_of(recvSkB[]),r).
+attacker(origin_enc(osk,receiver_pk_of(recvSkB[]),r)).
+
+9. We assume as hypothesis that
+attacker(r_1).
+
+10. By 7, the attacker may know receiver_pk_of(recvSkB[]).
+By 9, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+11. By 10, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 8, the attacker may know origin_enc(osk,receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r))).
+
+12. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The message origin_cred(origin_pk_of(osk),originSigFromNet_1) that the attacker may have by 5 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)) that the attacker may have by 11 may be received at input {50}.
+So event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),origin_secret(osk,receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(osk),originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r))))) may be executed at {75}.
+event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),origin_secret(osk,receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(osk),originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)))))).
+
+13. By 12, event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),origin_secret(osk,receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(osk),originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)))))).
+The goal is reached, represented in the following fact:
+event(HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),origin_secret(osk,receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(osk),originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_1 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_1 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {44} in copy a
+
+out(c, ~M_8) with ~M_8 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {45} in copy a
+
+in(c, origin_cred(origin_pk_of(a_2),a_3)) at {46} in copy a
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(origin_pk_of(a_2),a_3)) at {49} in copy a
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_4),origin_enc(a_2,get_receiver_pk(~M_2),a_5))) with packet(mutable_enc(get_receiver_pk(~M_2),a_4),origin_enc(a_2,get_receiver_pk(~M_2),a_5)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5)) at {50} in copy a
+
+event OriginComponentAccepted(B,A,origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5)) at {64} in copy a
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5)))) at {70} in copy a
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_4),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))))) at {71} in copy a
+
+event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))),protectedPayload) at {72} in copy a
+
+out(c, ~M_9) with ~M_9 = senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_4),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5)))),protectedPayload) at {73} in copy a
+
+event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_4),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))))) at {74} in copy a
+
+event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_4),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))))) at {75} in copy a (goal)
+
+The event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_4),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(a_2),a_3),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5))))) is executed at {75} in copy a.
+A trace has been found.
+RESULT not event(HonestRun(k)) is false.
+-- Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 155 rules (73 with conclusion selected). Queue: 16 rules.
+Starting query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k))
+goal reachable: attacker(r) && attacker(r_1) && attacker(originSigFromNet_1) && b-event(SendDone(A[],B[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))))) -> event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r),fake_origin_secret(receiver_pk_of(recvSkB[]),r_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1))))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+Derivation:
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. We assume as hypothesis that
+attacker(originSigFromNet_1).
+
+3. Using the function fakeOriginPk the attacker may obtain fakeOriginPk.
+attacker(fakeOriginPk).
+
+4. By 3, the attacker may know fakeOriginPk.
+By 2, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(fakeOriginPk,originSigFromNet_1).
+attacker(origin_cred(fakeOriginPk,originSigFromNet_1)).
+
+5. We assume as hypothesis that
+attacker(r).
+
+6. By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+7. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r.
+Using the function fake_origin_enc the attacker may obtain fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+
+8. We assume as hypothesis that
+attacker(r_1).
+
+9. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 8, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+10. By 9, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 7, the attacker may know fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+
+11. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The event SendDone(A[],B[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),rMutable_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) may be executed at {44}.
+The message origin_cred(fakeOriginPk,originSigFromNet_1) that the attacker may have by 4 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)) that the attacker may have by 10 may be received at input {50}.
+So event RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))) may be executed at {74}.
+event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))).
+
+12. By 11, event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))).
+The goal is reached, represented in the following fact:
+event(RecvDone(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_2 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_2 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {44} in copy a
+
+out(c, ~M_8) with ~M_8 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {45} in copy a
+
+in(c, origin_cred(fakeOriginPk,a_2)) at {46} in copy a
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(fakeOriginPk,a_2)) at {49} in copy a
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_3),fake_origin_enc(get_receiver_pk(~M_2),a_4))) with packet(mutable_enc(get_receiver_pk(~M_2),a_3),fake_origin_enc(get_receiver_pk(~M_2),a_4)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)) at {50} in copy a
+
+event OriginComponentAccepted(B,A,fake_origin_enc(receiver_pk_of(recvSkB_2),a_4),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4)) at {64} in copy a
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)))) at {70} in copy a
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_3),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))))) at {71} in copy a
+
+event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))),protectedPayload) at {72} in copy a
+
+out(c, ~M_9) with ~M_9 = senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_3),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)))),protectedPayload) at {73} in copy a
+
+event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_3),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))))) at {74} in copy a (goal)
+
+The event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_3),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4))))) is executed at {74} in copy a.
+A trace has been found.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+-- Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 145 rules (74 with conclusion selected). Queue: 10 rules.
+Starting query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k))
+goal reachable: attacker(originSigFromNet_1) && attacker(r) && attacker(r_1) -> event(ReceiverKey(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r),fake_origin_secret(receiver_pk_of(recvSkB[]),r_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1)))))) && attacker(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r),fake_origin_secret(receiver_pk_of(recvSkB[]),r_1),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1)))))
+
+Derivation:
+
+1. We assume as hypothesis that
+attacker(r).
+
+2. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+3. By 2, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+4. By 3, the attacker may know receiver_pk_of(recvSkB[]).
+By 1, the attacker may know r.
+Using the function fake_origin_enc the attacker may obtain fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+
+5. We assume as hypothesis that
+attacker(r_1).
+
+6. By 3, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+7. By 6, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 4, the attacker may know fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+
+8. We assume as hypothesis that
+attacker(originSigFromNet_1).
+
+9. Using the function fakeOriginPk the attacker may obtain fakeOriginPk.
+attacker(fakeOriginPk).
+
+10. By 9, the attacker may know fakeOriginPk.
+By 8, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(fakeOriginPk,originSigFromNet_1).
+attacker(origin_cred(fakeOriginPk,originSigFromNet_1)).
+
+11. The message idpk(idSkB[]) may be sent to the attacker at output {13}.
+attacker(idpk(idSkB[])).
+
+12. The message idpk(idSkA[]) may be sent to the attacker at output {12}.
+attacker(idpk(idSkA[])).
+
+13. The attacker initially knows B[].
+attacker(B[]).
+
+14. The attacker initially knows A[].
+attacker(A[]).
+
+15. By 14, the attacker may know A[].
+By 13, the attacker may know B[].
+By 12, the attacker may know idpk(idSkA[]).
+By 11, the attacker may know idpk(idSkB[]).
+By 10, the attacker may know origin_cred(fakeOriginPk,originSigFromNet_1).
+By 2, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+By 7, the attacker may know packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+Using the function sid_of the attacker may obtain sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+attacker(sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))).
+
+16. By 3, the attacker may know receiver_pk_of(recvSkB[]).
+By 1, the attacker may know r.
+Using the function fake_origin_secret the attacker may obtain fake_origin_secret(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_secret(receiver_pk_of(recvSkB[]),r)).
+
+17. By 3, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r_1.
+Using the function mutable_secret the attacker may obtain mutable_secret(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_secret(receiver_pk_of(recvSkB[]),r_1)).
+
+18. By 17, the attacker may know mutable_secret(receiver_pk_of(recvSkB[]),r_1).
+By 16, the attacker may know fake_origin_secret(receiver_pk_of(recvSkB[]),r).
+By 15, the attacker may know sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+Using the function key_mixed the attacker may obtain key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))).
+attacker(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+
+19. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 2 may be received at input {26}.
+The message origin_cred(fakeOriginPk,originSigFromNet_1) that the attacker may have by 10 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)) that the attacker may have by 7 may be received at input {50}.
+So event ReceiverKey(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))) may be executed at {71}.
+event(ReceiverKey(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))).
+
+20. By 19, event(ReceiverKey(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))).
+By 18, attacker(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+The goals are reached, combined in the following fact:
+event(ReceiverKey(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))),key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))))) && attacker(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+out(c, ~M_8) with ~M_8 = idpk(idSkA_2) at {12} in copy a_2
+
+out(c, ~M_9) with ~M_9 = idpk(idSkB_2) at {13} in copy a_2
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_2
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_2
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_2
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_2
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_2
+
+out(c, ~M_10) with ~M_10 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_2
+
+out(c, ~M_11) with ~M_11 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_2
+
+out(c, ~M_12) with ~M_12 = idpk(idSkA_2) at {12} in copy a_3
+
+out(c, ~M_13) with ~M_13 = idpk(idSkB_2) at {13} in copy a_3
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_3
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_3
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_3
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_3
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_3
+
+out(c, ~M_14) with ~M_14 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_3
+
+out(c, ~M_15) with ~M_15 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_3
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a_3
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a_3
+
+new rMutable: randomness creating rMutable_1 at {31} in copy a_3
+
+new rOrigin: randomness creating rOrigin_1 at {32} in copy a_3
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {37} in copy a_3
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)))) at {40} in copy a_3
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {43} in copy a_3
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {44} in copy a_3
+
+out(c, ~M_16) with ~M_16 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {45} in copy a_3
+
+in(c, origin_cred(fakeOriginPk,a_4)) at {46} in copy a_3
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(fakeOriginPk,a_4)) at {49} in copy a_3
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_5),fake_origin_enc(get_receiver_pk(~M_2),a_6))) with packet(mutable_enc(get_receiver_pk(~M_2),a_5),fake_origin_enc(get_receiver_pk(~M_2),a_6)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6)) at {50} in copy a_3
+
+event OriginComponentAccepted(B,A,fake_origin_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_secret(receiver_pk_of(recvSkB_2),a_6)) at {64} in copy a_3
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a_3
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a_3
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a_3
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a_3
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a_3
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6)))) at {70} in copy a_3
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_5),fake_origin_secret(receiver_pk_of(recvSkB_2),a_6),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6))))) at {71} in copy a_3 (goal)
+
+The event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_5),fake_origin_secret(receiver_pk_of(recvSkB_2),a_6),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6))))) is executed at {71} in copy a_3.
+The attacker has the message key_mixed(mutable_secret(get_receiver_pk(~M_2),a_5),fake_origin_secret(get_receiver_pk(~M_2),a_6),sid_of(A,B,~M,~M_1,origin_cred(fakeOriginPk,a_4),~M_2,packet(mutable_enc(get_receiver_pk(~M_2),a_5),fake_origin_enc(get_receiver_pk(~M_2),a_6)))) = key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_5),fake_origin_secret(receiver_pk_of(recvSkB_2),a_6),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_4),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_5),fake_origin_enc(receiver_pk_of(recvSkB_2),a_6)))).
+A trace has been found.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+-- Query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 161 rules (71 with conclusion selected). Queue: 10 rules.
+Starting query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so))
+goal reachable: attacker(r) && attacker(osk) && b-event(OriginComponentSent(A[],B[],origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))) -> event(OriginComponentAccepted(B[],A[],origin_enc(osk,receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r)))
+Abbreviations:
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+Derivation:
+Abbreviations:
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. The attacker has some term originSigFromNet_1.
+attacker(originSigFromNet_1).
+
+3. We assume as hypothesis that
+attacker(osk).
+
+4. By 3, the attacker may know osk.
+Using the function origin_pk_of the attacker may obtain origin_pk_of(osk).
+attacker(origin_pk_of(osk)).
+
+5. By 4, the attacker may know origin_pk_of(osk).
+By 2, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(origin_pk_of(osk),originSigFromNet_1).
+attacker(origin_cred(origin_pk_of(osk),originSigFromNet_1)).
+
+6. We assume as hypothesis that
+attacker(r).
+
+7. By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+8. By 3, the attacker may know osk.
+By 7, the attacker may know receiver_pk_of(recvSkB[]).
+By 6, the attacker may know r.
+Using the function origin_enc the attacker may obtain origin_enc(osk,receiver_pk_of(recvSkB[]),r).
+attacker(origin_enc(osk,receiver_pk_of(recvSkB[]),r)).
+
+9. The attacker has some term r_1.
+attacker(r_1).
+
+10. By 7, the attacker may know receiver_pk_of(recvSkB[]).
+By 9, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+11. By 10, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 8, the attacker may know origin_enc(osk,receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r))).
+
+12. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The event OriginComponentSent(A[],B[],origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1),origin_secret(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)) may be executed at {37}.
+The message origin_cred(origin_pk_of(osk),originSigFromNet_1) that the attacker may have by 5 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),origin_enc(osk,receiver_pk_of(recvSkB[]),r)) that the attacker may have by 11 may be received at input {50}.
+So event OriginComponentAccepted(B[],A[],origin_enc(osk,receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r)) may be executed at {64}.
+event(OriginComponentAccepted(B[],A[],origin_enc(osk,receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r))).
+
+13. By 12, event(OriginComponentAccepted(B[],A[],origin_enc(osk,receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r))).
+The goal is reached, represented in the following fact:
+event(OriginComponentAccepted(B[],A[],origin_enc(osk,receiver_pk_of(recvSkB[]),r),origin_secret(osk,receiver_pk_of(recvSkB[]),r))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_1 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_2 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {44} in copy a
+
+out(c, ~M_8) with ~M_8 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {45} in copy a
+
+in(c, origin_cred(origin_pk_of(a_2),a_3)) at {46} in copy a
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(origin_pk_of(a_2),a_3)) at {49} in copy a
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_4),origin_enc(a_2,get_receiver_pk(~M_2),a_5))) with packet(mutable_enc(get_receiver_pk(~M_2),a_4),origin_enc(a_2,get_receiver_pk(~M_2),a_5)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_4),origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5)) at {50} in copy a
+
+event OriginComponentAccepted(B,A,origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5)) at {64} in copy a (goal)
+
+The event OriginComponentAccepted(B,A,origin_enc(a_2,receiver_pk_of(recvSkB_2),a_5),origin_secret(a_2,receiver_pk_of(recvSkB_2),a_5)) is executed at {64} in copy a.
+A trace has been found.
+RESULT event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is false.
+-- Query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 150 rules (67 with conclusion selected). Queue: 4 rules.
+Starting query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local))
+goal reachable: b-event(SenderIdentityContext(A[],B[],A[],B[])) -> event(ReceiverIdentityContext(B[],A[],A[],B[]))
+RESULT event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+-- Query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 150 rules (67 with conclusion selected). Queue: 4 rules.
+Starting query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr))
+goal reachable: b-event(SenderRoleContext(A[],B[],senderRole,receiverRole)) -> event(ReceiverRoleContext(B[],A[],senderRole,receiverRole))
+RESULT event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+-- Query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 150 rules (67 with conclusion selected). Queue: 4 rules.
+Starting query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite))
+goal reachable: b-event(SenderSuiteContext(A[],B[],suiteDefault)) -> event(ReceiverSuiteContext(B[],A[],suiteDefault))
+RESULT event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+-- Query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 150 rules (67 with conclusion selected). Queue: 4 rules.
+Starting query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app))
+goal reachable: b-event(SenderApplicationContext(A[],B[],appDefault)) -> event(ReceiverApplicationContext(B[],A[],appDefault))
+RESULT event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+-- Query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 150 rules (67 with conclusion selected). Queue: 4 rules.
+Starting query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc))
+goal reachable: b-event(SenderStableContext(A[],B[],stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault))) -> event(ReceiverStableContext(B[],A[],stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault)))
+RESULT event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+-- Query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 155 rules (73 with conclusion selected). Queue: 15 rules.
+Starting query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc))
+goal reachable: attacker(r) && attacker(r_1) && attacker(originSigFromNet_1) && b-event(SenderFullContext(A[],B[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1))))) -> event(ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1)))))
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+Derivation:
+Abbreviations:
+rMutable_1 = rMutable[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+rOrigin_1 = rOrigin[receiverCredForSend = receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),!1 = @sid]
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. We assume as hypothesis that
+attacker(originSigFromNet_1).
+
+3. Using the function fakeOriginPk the attacker may obtain fakeOriginPk.
+attacker(fakeOriginPk).
+
+4. By 3, the attacker may know fakeOriginPk.
+By 2, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(fakeOriginPk,originSigFromNet_1).
+attacker(origin_cred(fakeOriginPk,originSigFromNet_1)).
+
+5. We assume as hypothesis that
+attacker(r).
+
+6. By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+7. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r.
+Using the function fake_origin_enc the attacker may obtain fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+
+8. We assume as hypothesis that
+attacker(r_1).
+
+9. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 8, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+10. By 9, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 7, the attacker may know fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+
+11. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The event SenderFullContext(A[],B[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA[]),sign_origin(idSkA[],origin_pk_of(originSkA[]))),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),rMutable_1),origin_enc(originSkA[],receiver_pk_of(recvSkB[]),rOrigin_1)))) may be executed at {40}.
+The message origin_cred(fakeOriginPk,originSigFromNet_1) that the attacker may have by 4 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)) that the attacker may have by 10 may be received at input {50}.
+So event ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))) may be executed at {70}.
+event(ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+
+12. By 11, event(ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+The goal is reached, represented in the following fact:
+event(ReceiverFullContext(B[],A[],full_ctx(stable_ctx(A[],B[],senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_2 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_2 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {44} in copy a
+
+out(c, ~M_8) with ~M_8 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {45} in copy a
+
+in(c, origin_cred(fakeOriginPk,a_2)) at {46} in copy a
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(fakeOriginPk,a_2)) at {49} in copy a
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_3),fake_origin_enc(get_receiver_pk(~M_2),a_4))) with packet(mutable_enc(get_receiver_pk(~M_2),a_3),fake_origin_enc(get_receiver_pk(~M_2),a_4)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)) at {50} in copy a
+
+event OriginComponentAccepted(B,A,fake_origin_enc(receiver_pk_of(recvSkB_2),a_4),fake_origin_secret(receiver_pk_of(recvSkB_2),a_4)) at {64} in copy a
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)))) at {70} in copy a (goal)
+
+The event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_2),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_3),fake_origin_enc(receiver_pk_of(recvSkB_2),a_4)))) is executed at {70} in copy a.
+A trace has been found.
+RESULT event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+-- Query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) in process 1.
+Translating the process into Horn clauses...
+Completing...
+200 rules inserted. Base: 145 rules (74 with conclusion selected). Queue: 10 rules.
+Starting query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d))
+goal reachable: attacker(r) && attacker(r_1) && attacker(originSigFromNet_1) -> event(ProtectedData(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r),fake_origin_enc(receiver_pk_of(recvSkB[]),r_1))),protectedPayload[])) && attacker(protectedPayload[])
+
+Derivation:
+
+1. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) may be sent to the attacker at output {22}.
+attacker(receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[])))).
+
+2. The attacker has some term originSigFromNet_1.
+attacker(originSigFromNet_1).
+
+3. Using the function fakeOriginPk the attacker may obtain fakeOriginPk.
+attacker(fakeOriginPk).
+
+4. By 3, the attacker may know fakeOriginPk.
+By 2, the attacker may know originSigFromNet_1.
+Using the function origin_cred the attacker may obtain origin_cred(fakeOriginPk,originSigFromNet_1).
+attacker(origin_cred(fakeOriginPk,originSigFromNet_1)).
+
+5. The attacker has some term r.
+attacker(r).
+
+6. By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+Using the function get_receiver_pk the attacker may obtain receiver_pk_of(recvSkB[]).
+attacker(receiver_pk_of(recvSkB[])).
+
+7. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r.
+Using the function fake_origin_enc the attacker may obtain fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+
+8. The attacker has some term r_1.
+attacker(r_1).
+
+9. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 8, the attacker may know r_1.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_1)).
+
+10. By 9, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_1).
+By 7, the attacker may know fake_origin_enc(receiver_pk_of(recvSkB[]),r).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+
+11. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The message origin_cred(fakeOriginPk,originSigFromNet_1) that the attacker may have by 4 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)) that the attacker may have by 10 may be received at input {50}.
+So the message senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))),protectedPayload[]) may be sent to the attacker at output {73}.
+attacker(senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))),protectedPayload[])).
+
+12. The message idpk(idSkB[]) may be sent to the attacker at output {13}.
+attacker(idpk(idSkB[])).
+
+13. The message idpk(idSkA[]) may be sent to the attacker at output {12}.
+attacker(idpk(idSkA[])).
+
+14. The attacker initially knows B[].
+attacker(B[]).
+
+15. The attacker initially knows A[].
+attacker(A[]).
+
+16. By 15, the attacker may know A[].
+By 14, the attacker may know B[].
+By 13, the attacker may know idpk(idSkA[]).
+By 12, the attacker may know idpk(idSkB[]).
+By 4, the attacker may know origin_cred(fakeOriginPk,originSigFromNet_1).
+By 1, the attacker may know receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))).
+By 10, the attacker may know packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)).
+Using the function sid_of the attacker may obtain sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+attacker(sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))).
+
+17. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 5, the attacker may know r.
+Using the function fake_origin_secret the attacker may obtain fake_origin_secret(receiver_pk_of(recvSkB[]),r).
+attacker(fake_origin_secret(receiver_pk_of(recvSkB[]),r)).
+
+18. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 8, the attacker may know r_1.
+Using the function mutable_secret the attacker may obtain mutable_secret(receiver_pk_of(recvSkB[]),r_1).
+attacker(mutable_secret(receiver_pk_of(recvSkB[]),r_1)).
+
+19. By 18, the attacker may know mutable_secret(receiver_pk_of(recvSkB[]),r_1).
+By 17, the attacker may know fake_origin_secret(receiver_pk_of(recvSkB[]),r).
+By 16, the attacker may know sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))).
+Using the function key_mixed the attacker may obtain key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))).
+attacker(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r))))).
+
+20. By 19, the attacker may know key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))).
+By 11, the attacker may know senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB[]),r_1),fake_origin_secret(receiver_pk_of(recvSkB[]),r),sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_1),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_1),fake_origin_enc(receiver_pk_of(recvSkB[]),r)))),protectedPayload[]).
+Using the function sdec the attacker may obtain protectedPayload[].
+attacker(protectedPayload[]).
+
+21. We assume as hypothesis that
+attacker(originSigFromNet_2).
+
+22. By 3, the attacker may know fakeOriginPk.
+By 21, the attacker may know originSigFromNet_2.
+Using the function origin_cred the attacker may obtain origin_cred(fakeOriginPk,originSigFromNet_2).
+attacker(origin_cred(fakeOriginPk,originSigFromNet_2)).
+
+23. We assume as hypothesis that
+attacker(r_2).
+
+24. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 23, the attacker may know r_2.
+Using the function fake_origin_enc the attacker may obtain fake_origin_enc(receiver_pk_of(recvSkB[]),r_2).
+attacker(fake_origin_enc(receiver_pk_of(recvSkB[]),r_2)).
+
+25. We assume as hypothesis that
+attacker(r_3).
+
+26. By 6, the attacker may know receiver_pk_of(recvSkB[]).
+By 25, the attacker may know r_3.
+Using the function mutable_enc the attacker may obtain mutable_enc(receiver_pk_of(recvSkB[]),r_3).
+attacker(mutable_enc(receiver_pk_of(recvSkB[]),r_3)).
+
+27. By 26, the attacker may know mutable_enc(receiver_pk_of(recvSkB[]),r_3).
+By 24, the attacker may know fake_origin_enc(receiver_pk_of(recvSkB[]),r_2).
+Using the function packet the attacker may obtain packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2)).
+attacker(packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2))).
+
+28. The message receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))) that the attacker may have by 1 may be received at input {26}.
+The message origin_cred(fakeOriginPk,originSigFromNet_2) that the attacker may have by 22 may be received at input {46}.
+The message packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2)) that the attacker may have by 27 may be received at input {50}.
+So event ProtectedData(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_2),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2))),protectedPayload[]) may be executed at {72}.
+event(ProtectedData(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_2),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2))),protectedPayload[])).
+
+29. By 28, event(ProtectedData(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_2),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2))),protectedPayload[])).
+By 20, attacker(protectedPayload[]).
+The goals are reached, combined in the following fact:
+event(ProtectedData(B[],A[],sid_of(A[],B[],idpk(idSkA[]),idpk(idSkB[]),origin_cred(fakeOriginPk,originSigFromNet_2),receiver_cred(receiver_pk_of(recvSkB[]),sign_receiver(idSkB[],receiver_pk_of(recvSkB[]))),packet(mutable_enc(receiver_pk_of(recvSkB[]),r_3),fake_origin_enc(receiver_pk_of(recvSkB[]),r_2))),protectedPayload[])) && attacker(protectedPayload[]).
+
+
+A more detailed output of the traces is available with
+  set traceDisplay = long.
+
+new idSkA: id_sk creating idSkA_2 at {1}
+
+new idSkB: id_sk creating idSkB_2 at {2}
+
+new recvSkB: receiver_sk creating recvSkB_2 at {3}
+
+new originSkA: origin_sk creating originSkA_2 at {4}
+
+out(c, ~M) with ~M = idpk(idSkA_2) at {12} in copy a
+
+out(c, ~M_1) with ~M_1 = idpk(idSkB_2) at {13} in copy a
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a
+
+out(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a
+
+out(c, ~M_3) with ~M_3 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a
+
+out(c, ~M_4) with ~M_4 = idpk(idSkA_2) at {12} in copy a_1
+
+out(c, ~M_5) with ~M_5 = idpk(idSkB_2) at {13} in copy a_1
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_1
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_1
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_1
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_1
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_1
+
+out(c, ~M_6) with ~M_6 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_1
+
+out(c, ~M_7) with ~M_7 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_1
+
+out(c, ~M_8) with ~M_8 = idpk(idSkA_2) at {12} in copy a_2
+
+out(c, ~M_9) with ~M_9 = idpk(idSkB_2) at {13} in copy a_2
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_2
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_2
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_2
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_2
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_2
+
+out(c, ~M_10) with ~M_10 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_2
+
+out(c, ~M_11) with ~M_11 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_2
+
+out(c, ~M_12) with ~M_12 = idpk(idSkA_2) at {12} in copy a_3
+
+out(c, ~M_13) with ~M_13 = idpk(idSkB_2) at {13} in copy a_3
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_3
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_3
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_3
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_3
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_3
+
+out(c, ~M_14) with ~M_14 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_3
+
+out(c, ~M_15) with ~M_15 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_3
+
+out(c, ~M_16) with ~M_16 = idpk(idSkA_2) at {12} in copy a_4
+
+out(c, ~M_17) with ~M_17 = idpk(idSkB_2) at {13} in copy a_4
+
+event SenderIdentityContext(A,B,A,B) at {15} in copy a_4
+
+event SenderRoleContext(A,B,senderRole,receiverRole) at {16} in copy a_4
+
+event SenderSuiteContext(A,B,suiteDefault) at {17} in copy a_4
+
+event SenderApplicationContext(A,B,appDefault) at {18} in copy a_4
+
+event SenderStableContext(A,B,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {19} in copy a_4
+
+out(c, ~M_18) with ~M_18 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {22} in copy a_4
+
+out(c, ~M_19) with ~M_19 = origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))) at {25} in copy a_4
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a_4
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a_4
+
+new rMutable: randomness creating rMutable_1 at {31} in copy a_4
+
+new rOrigin: randomness creating rOrigin_1 at {32} in copy a_4
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {37} in copy a_4
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)))) at {40} in copy a_4
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {43} in copy a_4
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_1),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1))))) at {44} in copy a_4
+
+out(c, ~M_20) with ~M_20 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_1),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_1)) at {45} in copy a_4
+
+in(c, origin_cred(fakeOriginPk,a_5)) at {46} in copy a_4
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(fakeOriginPk,a_5)) at {49} in copy a_4
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_6),fake_origin_enc(get_receiver_pk(~M_2),a_7))) with packet(mutable_enc(get_receiver_pk(~M_2),a_6),fake_origin_enc(get_receiver_pk(~M_2),a_7)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7)) at {50} in copy a_4
+
+event OriginComponentAccepted(B,A,fake_origin_enc(receiver_pk_of(recvSkB_2),a_7),fake_origin_secret(receiver_pk_of(recvSkB_2),a_7)) at {64} in copy a_4
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a_4
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a_4
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a_4
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a_4
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a_4
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7)))) at {70} in copy a_4
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_6),fake_origin_secret(receiver_pk_of(recvSkB_2),a_7),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))))) at {71} in copy a_4
+
+event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))),protectedPayload) at {72} in copy a_4 (goal)
+
+out(c, ~M_21) with ~M_21 = senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_6),fake_origin_secret(receiver_pk_of(recvSkB_2),a_7),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7)))),protectedPayload) at {73} in copy a_4
+
+event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_6),fake_origin_secret(receiver_pk_of(recvSkB_2),a_7),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))))) at {74} in copy a_4
+
+event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_6),fake_origin_secret(receiver_pk_of(recvSkB_2),a_7),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))))) at {75} in copy a_4
+
+in(c, ~M_2) with ~M_2 = receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))) at {26} in copy a
+
+event ReceiverCredentialVerified(A,B,receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2)))) at {30} in copy a
+
+new rMutable: randomness creating rMutable_2 at {31} in copy a
+
+new rOrigin: randomness creating rOrigin_2 at {32} in copy a
+
+event OriginComponentSent(A,B,origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {37} in copy a
+
+event SenderFullContext(A,B,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)))) at {40} in copy a
+
+event SenderKey(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {43} in copy a
+
+event SendDone(A,B,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),rMutable_2),origin_secret(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(origin_pk_of(originSkA_2),sign_origin(idSkA_2,origin_pk_of(originSkA_2))),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2))))) at {44} in copy a
+
+out(c, ~M_22) with ~M_22 = packet(mutable_enc(receiver_pk_of(recvSkB_2),rMutable_2),origin_enc(originSkA_2,receiver_pk_of(recvSkB_2),rOrigin_2)) at {45} in copy a
+
+in(c, origin_cred(fakeOriginPk,a_8)) at {46} in copy a
+
+event OriginCredentialAcceptedWithoutVerification(B,A,origin_cred(fakeOriginPk,a_8)) at {49} in copy a
+
+in(c, packet(mutable_enc(get_receiver_pk(~M_2),a_9),fake_origin_enc(get_receiver_pk(~M_2),a_10))) with packet(mutable_enc(get_receiver_pk(~M_2),a_9),fake_origin_enc(get_receiver_pk(~M_2),a_10)) = packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10)) at {50} in copy a
+
+event OriginComponentAccepted(B,A,fake_origin_enc(receiver_pk_of(recvSkB_2),a_10),fake_origin_secret(receiver_pk_of(recvSkB_2),a_10)) at {64} in copy a
+
+event ReceiverIdentityContext(B,A,A,B) at {65} in copy a
+
+event ReceiverRoleContext(B,A,senderRole,receiverRole) at {66} in copy a
+
+event ReceiverSuiteContext(B,A,suiteDefault) at {67} in copy a
+
+event ReceiverApplicationContext(B,A,appDefault) at {68} in copy a
+
+event ReceiverStableContext(B,A,stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault)) at {69} in copy a
+
+event ReceiverFullContext(B,A,full_ctx(stable_ctx(A,B,senderRole,receiverRole,suiteDefault,appDefault),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10)))) at {70} in copy a
+
+event ReceiverKey(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_9),fake_origin_secret(receiver_pk_of(recvSkB_2),a_10),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))))) at {71} in copy a
+
+event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))),protectedPayload) at {72} in copy a
+
+out(c, ~M_23) with ~M_23 = senc(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_9),fake_origin_secret(receiver_pk_of(recvSkB_2),a_10),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10)))),protectedPayload) at {73} in copy a
+
+event RecvDone(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))),key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_9),fake_origin_secret(receiver_pk_of(recvSkB_2),a_10),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))))) at {74} in copy a
+
+event HonestRun(key_mixed(mutable_secret(receiver_pk_of(recvSkB_2),a_9),fake_origin_secret(receiver_pk_of(recvSkB_2),a_10),sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_8),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_9),fake_origin_enc(receiver_pk_of(recvSkB_2),a_10))))) at {75} in copy a
+
+The event ProtectedData(B,A,sid_of(A,B,idpk(idSkA_2),idpk(idSkB_2),origin_cred(fakeOriginPk,a_5),receiver_cred(receiver_pk_of(recvSkB_2),sign_receiver(idSkB_2,receiver_pk_of(recvSkB_2))),packet(mutable_enc(receiver_pk_of(recvSkB_2),a_6),fake_origin_enc(receiver_pk_of(recvSkB_2),a_7))),protectedPayload) is executed at {72} in copy a_4.
+The attacker has the message sdec(key_mixed(mutable_secret(get_receiver_pk(~M_2),a_9),fake_origin_secret(get_receiver_pk(~M_2),a_10),sid_of(A,B,~M,~M_1,origin_cred(fakeOriginPk,a_8),~M_2,packet(mutable_enc(get_receiver_pk(~M_2),a_9),fake_origin_enc(get_receiver_pk(~M_2),a_10)))),~M_23) = protectedPayload.
+A trace has been found.
+RESULT not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is false.
+
+--------------------------------------------------------------
+Verification summary:
+
+Query not event(HonestRun(k)) is false.
+
+Query event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is false.
+
+Query not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is false.
+
+Query event(OriginComponentAccepted(B_1,A_1,co,so)) ==> event(OriginComponentSent(A_1,B_1,co,so)) is false.
+
+Query event(ReceiverIdentityContext(B_1,A_1,peer,local)) ==> event(SenderIdentityContext(A_1,B_1,peer,local)) is true.
+
+Query event(ReceiverRoleContext(B_1,A_1,sr,rr)) ==> event(SenderRoleContext(A_1,B_1,sr,rr)) is true.
+
+Query event(ReceiverSuiteContext(B_1,A_1,suite)) ==> event(SenderSuiteContext(A_1,B_1,suite)) is true.
+
+Query event(ReceiverApplicationContext(B_1,A_1,app)) ==> event(SenderApplicationContext(A_1,B_1,app)) is true.
+
+Query event(ReceiverStableContext(B_1,A_1,sc)) ==> event(SenderStableContext(A_1,B_1,sc)) is true.
+
+Query event(ReceiverFullContext(B_1,A_1,fc)) ==> event(SenderFullContext(A_1,B_1,fc)) is false.
+
+Query not (event(ProtectedData(B_1,A_1,s,d)) && attacker(d)) is false.
+
+--------------------------------------------------------------
+

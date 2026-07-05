@@ -1,0 +1,313 @@
+(* Generic Q1 triage model for receiver-to-sender exact-agreement gaps.
+   Purpose:
+     This is a protocol-family template, not a model of one concrete protocol.
+     Adapt the abstract components below to a real protocol, then use the
+     queries to classify whether a Q1 gap exists and whether it is harmless.
+   Q1 detector:
+     RecvDone(B,A,s,k) ==> SendDone(A,B,s,k)
+   Damage checks:
+     - Does the attacker learn a receiver-accepted key?
+     - Does data protected under that key leak?
+     - Does the accepted origin-authenticated component really come from A?
+     - Do the stable identity, role, suite, and application contexts match?
+     - Does the full transcript match, or is there only a recombination gap?
+     - Does receiver acceptance trigger a sender-authorized side effect?
+   Targets:
+     AUTH_SECRET_Q1_GAP A K-Waay-like class: Q1 false, but key/data safe.
+     PUBLIC_ONLY_BAD Q1 false and the receiver key is attacker-known.
+     NO_ORIGIN_AUTH_BAD Q1 false because origin credentials are not checked.
+     IDENTITY_CONTEXT_BAD Q1 false because the receiver records the wrong peer.
+     ROLE_CONTEXT_BAD Q1 false because sender/receiver roles are confused.
+     SUITE_CONTEXT_BAD Q1 false because algorithm-suite context is changed.
+     1 Q1 false because application context is changed.
+     SIDE_EFFECT_BAD Q1 false; key safe, but receiver triggers authority.
+     CONFIRMED_FIX A sid/key-bound confirmation restores Q1.
+*)
+type agent.
+type id_sk.
+type id_pk.
+type receiver_sk.
+type receiver_pk.
+type origin_sk.
+type origin_pk.
+type signature.
+type receiver_credential.
+type origin_credential.
+type mutable_ct.
+type origin_ct.
+type component_secret.
+type role_tag.
+type suite_id.
+type app_context.
+type stable_context.
+type full_context.
+type transcript.
+type confirmed_transcript.
+type sid_t.
+type session_key.
+type confirmation_tag.
+type randomness.
+type app_secret.
+type app_cipher.
+free A: agent.
+free B: agent.
+free C: agent.
+free c: channel.
+(* Public attacker-controlled origin credential material. This is only accepted
+   in NO_ORIGIN_AUTH_BAD, where the receiver skips the A-origin check. *)
+fun fakeOriginPk(): origin_pk.
+free fakeSig: signature.
+(* Receiver-side data used to test whether a Q1 gap becomes a confidentiality
+   break for application data protected by the accepted receiver key. *)
+free protectedPayload: app_secret [private].
+fun idpk(id_sk): id_pk.
+fun sign_origin(id_sk, origin_pk): signature.
+fun sign_receiver(id_sk, receiver_pk): signature.
+reduc forall sk: id_sk, p: origin_pk;
+  verify_origin(idpk(sk), p, sign_origin(sk, p)) = true.
+reduc forall sk: id_sk, p: receiver_pk;
+  verify_receiver(idpk(sk), p, sign_receiver(sk, p)) = true.
+fun receiver_pk_of(receiver_sk): receiver_pk.
+fun origin_pk_of(origin_sk): origin_pk.
+fun senderRole(): role_tag.
+fun receiverRole(): role_tag.
+fun swappedSenderRole(): role_tag.
+fun swappedReceiverRole(): role_tag.
+fun suiteDefault(): suite_id.
+fun suiteDowngraded(): suite_id.
+fun appDefault(): app_context.
+fun appAltered(): app_context.
+fun stable_ctx(agent, agent, role_tag, role_tag, suite_id, app_context): stable_context.
+fun full_ctx(stable_context, origin_credential,
+             receiver_credential, transcript): full_context.
+fun receiver_cred(receiver_pk, signature): receiver_credential.
+fun origin_cred(origin_pk, signature): origin_credential.
+reduc forall p: receiver_pk, sig: signature;
+  get_receiver_pk(receiver_cred(p, sig)) = p.
+reduc forall p: receiver_pk, sig: signature;
+  get_receiver_sig(receiver_cred(p, sig)) = sig.
+reduc forall p: origin_pk, sig: signature;
+  get_origin_pk(origin_cred(p, sig)) = p.
+reduc forall p: origin_pk, sig: signature;
+  get_origin_sig(origin_cred(p, sig)) = sig.
+(* A mutable unauthenticated contribution. Attackers can create such a
+   contribution under a public receiver key and know its corresponding secret.
+   This captures public-key encapsulations, DH shares, nonces, and other
+   transcript pieces that can be chosen or replayed by the network attacker. *)
+fun mutable_enc(receiver_pk, randomness): mutable_ct.
+fun mutable_secret(receiver_pk, randomness): component_secret.
+reduc forall sk: receiver_sk, r: randomness;
+  mutable_dec(sk, mutable_enc(receiver_pk_of(sk), r))
+  = mutable_secret(receiver_pk_of(sk), r).
+(* An origin-authenticated contribution. A receiver can open it using the
+   origin public key for A, but an attacker cannot compute the honest origin
+   secret unless the protocol accepts an attacker-origin credential as A. *)
+fun origin_enc(origin_sk, receiver_pk, randomness): origin_ct.
+fun origin_secret(origin_sk, receiver_pk, randomness): component_secret.
+fun fake_origin_enc(receiver_pk, randomness): origin_ct.
+fun fake_origin_secret(receiver_pk, randomness): component_secret.
+reduc forall osk: origin_sk, rsk: receiver_sk, r: randomness;
+  origin_dec(rsk,
+             origin_pk_of(osk),
+             origin_enc(osk, receiver_pk_of(rsk), r))
+  = origin_secret(osk, receiver_pk_of(rsk), r);
+  forall rsk: receiver_sk, r: randomness;
+  origin_dec(rsk, fakeOriginPk(), fake_origin_enc(receiver_pk_of(rsk), r))
+  = fake_origin_secret(receiver_pk_of(rsk), r).
+(* Fake-origin opening rule used to model protocols that do not authenticate the
+   sender-origin credential. It is harmless in authenticated targets because the
+   receiver never accepts fakeOriginPk as the origin key for A there. *)
+fun packet(mutable_ct, origin_ct): transcript.
+reduc forall cm: mutable_ct, co: origin_ct;
+  get_mutable_ct(packet(cm, co)) = cm.
+reduc forall cm: mutable_ct, co: origin_ct;
+  get_origin_ct(packet(cm, co)) = co.
+fun confirmed(transcript, confirmation_tag): confirmed_transcript.
+reduc forall m: transcript, t: confirmation_tag;
+  get_confirmed_packet(confirmed(m, t)) = m.
+reduc forall m: transcript, t: confirmation_tag;
+  get_confirmed_tag(confirmed(m, t)) = t.
+fun sid_of(agent, agent, id_pk, id_pk, origin_credential,
+           receiver_credential, transcript): sid_t.
+fun key_mixed(component_secret, component_secret, sid_t): session_key.
+fun key_public_only(component_secret, sid_t): session_key.
+fun confirm_tag(session_key, sid_t): confirmation_tag.
+fun senc(session_key, app_secret): app_cipher.
+reduc forall k: session_key, x: app_secret;
+  sdec(k, senc(k, x)) = x.
+event HonestRun(session_key).
+event ReceiverCredentialVerified(agent, agent, receiver_credential).
+event OriginCredentialVerified(agent, agent, origin_credential).
+event OriginCredentialAcceptedWithoutVerification(agent, agent, origin_credential).
+event OriginComponentSent(agent, agent, origin_ct, component_secret).
+event OriginComponentAccepted(agent, agent, origin_ct, component_secret).
+event SenderIdentityContext(agent, agent, agent, agent).
+event ReceiverIdentityContext(agent, agent, agent, agent).
+event SenderRoleContext(agent, agent, role_tag, role_tag).
+event ReceiverRoleContext(agent, agent, role_tag, role_tag).
+event SenderSuiteContext(agent, agent, suite_id).
+event ReceiverSuiteContext(agent, agent, suite_id).
+event SenderApplicationContext(agent, agent, app_context).
+event ReceiverApplicationContext(agent, agent, app_context).
+event SenderStableContext(agent, agent, stable_context).
+event ReceiverStableContext(agent, agent, stable_context).
+event SenderFullContext(agent, agent, full_context).
+event ReceiverFullContext(agent, agent, full_context).
+event SenderKey(agent, agent, sid_t, session_key).
+event ReceiverKey(agent, agent, sid_t, session_key).
+event SendDone(agent, agent, sid_t, session_key).
+event RecvDone(agent, agent, sid_t, session_key).
+event Confirmed(agent, agent, sid_t, session_key).
+event ProtectedData(agent, agent, sid_t, app_secret).
+event AuthorizedAction(agent, agent, sid_t, session_key).
+query k: session_key; event(HonestRun(k)).
+(* Q1. False means the receiver can complete without a matching sender
+   completion for the same peer identities, sid, and key. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  event(RecvDone(B,A,s,k)) ==> event(SendDone(A,B,s,k)).
+(* If Q1 is false, these classify whether the gap is harmless or damaging. *)
+query A: agent, B: agent, s: sid_t, k: session_key;
+  attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false.
+query A: agent, B: agent, co: origin_ct, so: component_secret;
+  event(OriginComponentAccepted(B,A,co,so))
+  ==> event(OriginComponentSent(A,B,co,so)).
+query A: agent, B: agent, peer: agent, local: agent;
+  event(ReceiverIdentityContext(B,A,peer,local))
+  ==> event(SenderIdentityContext(A,B,peer,local)).
+query A: agent, B: agent, sr: role_tag, rr: role_tag;
+  event(ReceiverRoleContext(B,A,sr,rr))
+  ==> event(SenderRoleContext(A,B,sr,rr)).
+query A: agent, B: agent, suite: suite_id;
+  event(ReceiverSuiteContext(B,A,suite))
+  ==> event(SenderSuiteContext(A,B,suite)).
+query A: agent, B: agent, app: app_context;
+  event(ReceiverApplicationContext(B,A,app))
+  ==> event(SenderApplicationContext(A,B,app)).
+query A: agent, B: agent, sc: stable_context;
+  event(ReceiverStableContext(B,A,sc))
+  ==> event(SenderStableContext(A,B,sc)).
+(* This full-context query is intentionally stronger than harmlessness. A
+   K-Waay-like recombination gap should fail it, while the stable-context
+   queries above can still hold. *)
+query A: agent, B: agent, fc: full_context;
+  event(ReceiverFullContext(B,A,fc))
+  ==> event(SenderFullContext(A,B,fc)).
+query A: agent, B: agent, s: sid_t, d: app_secret;
+  attacker(d) && event(ProtectedData(B,A,s,d)) ==> false.
+let GenericProtocolRun(
+    idSkA: id_sk,
+    idSkB: id_sk,
+    recvSkB: receiver_sk,
+    originSkA: origin_sk
+  ) =
+  let idPkA = idpk(idSkA) in
+  let idPkB = idpk(idSkB) in
+  out(c, idPkA);
+  out(c, idPkB);
+  let senderStableCtx = stable_ctx(
+    A,
+    B,
+    senderRole(),
+    receiverRole(),
+    suiteDefault(),
+    appDefault()
+  ) in
+  event SenderIdentityContext(A, B, A, B);
+  event SenderRoleContext(A, B, senderRole(), receiverRole());
+  event SenderSuiteContext(A, B, suiteDefault());
+  event SenderApplicationContext(A, B, appDefault());
+  event SenderStableContext(A, B, senderStableCtx);
+  let receiverPkB = receiver_pk_of(recvSkB) in
+  let receiverCredB = receiver_cred(
+    receiverPkB,
+    sign_receiver(idSkB, receiverPkB)
+  ) in
+  out(c, receiverCredB);
+  let originPkA = origin_pk_of(originSkA) in
+  let originCredA = origin_cred(
+    originPkA,
+    sign_origin(idSkA, originPkA)
+  ) in
+  out(c, originCredA);
+  (* Sender side: A verifies the receiver credential for B, then sends a transcript. *)
+  in(c, receiverCredForSend: receiver_credential);
+  let receiverPkForSend = get_receiver_pk(receiverCredForSend) in
+  let receiverSigForSend = get_receiver_sig(receiverCredForSend) in
+  let (=true) = verify_receiver(idPkB, receiverPkForSend, receiverSigForSend) in
+  event ReceiverCredentialVerified(A, B, receiverCredForSend);
+  new rMutable: randomness;
+  new rOrigin: randomness;
+  let mutableCt = mutable_enc(receiverPkForSend, rMutable) in
+  let mutableSecret = mutable_secret(receiverPkForSend, rMutable) in
+  let originCt = origin_enc(originSkA, receiverPkForSend, rOrigin) in
+  let originSecret = origin_secret(originSkA, receiverPkForSend, rOrigin) in
+  event OriginComponentSent(A, B, originCt, originSecret);
+  let outboundPacket = packet(mutableCt, originCt) in
+  let senderFullCtx = full_ctx(
+    senderStableCtx,
+    originCredA,
+    receiverCredForSend,
+    outboundPacket
+  ) in
+  event SenderFullContext(A, B, senderFullCtx);
+  let sidAB = sid_of(A, B, idPkA, idPkB,
+                     originCredA, receiverCredForSend, outboundPacket) in
+  let kSend = key_mixed(mutableSecret, originSecret, sidAB) in
+  event SenderKey(A, B, sidAB, kSend);
+  event SendDone(A, B, sidAB, kSend);
+  out(c, outboundPacket);
+  (* Receiver side: B accepts an origin credential, parses a transcript, and
+     computes the receiver-side key. The attacker controls all network inputs. *)
+  in(c, originCredFromNet: origin_credential);
+  let originPkFromNet = get_origin_pk(originCredFromNet) in
+  let originSigFromNet = get_origin_sig(originCredFromNet) in
+  let (=true) = verify_origin(idPkA, originPkFromNet, originSigFromNet) in
+  event OriginCredentialVerified(B, A, originCredFromNet);
+  in(c, packetFromNet: transcript);
+  let mutableCtFromNet = get_mutable_ct(packetFromNet) in
+  let originCtFromNet = get_origin_ct(packetFromNet) in
+  let mutableSecretRecv = mutable_dec(recvSkB, mutableCtFromNet) in
+  let originSecretRecv = origin_dec(recvSkB, originPkFromNet, originCtFromNet) in
+  (* Receiver-side stable context. Each BAD target changes exactly one stable
+     dimension, so the failing query identifies the harmful mismatch class. *)
+  let receiverIdentityPeer = A in
+  let receiverSenderRole = senderRole() in
+  let receiverReceiverRole = receiverRole() in
+  let receiverSuite = suiteDefault() in
+  let receiverApp = appAltered() in
+  let receiverStableCtx = stable_ctx(
+    receiverIdentityPeer,
+    B,
+    receiverSenderRole,
+    receiverReceiverRole,
+    receiverSuite,
+    receiverApp
+  ) in
+  let receiverFullCtx = full_ctx(
+    receiverStableCtx,
+    originCredFromNet,
+    receiverCredB,
+    packetFromNet
+  ) in
+  let sidBA = sid_of(A, B, idPkA, idPkB,
+                     originCredFromNet, receiverCredB, packetFromNet) in
+  let kRecv = key_mixed(mutableSecretRecv, originSecretRecv, sidBA) in
+  event OriginComponentAccepted(B, A, originCtFromNet, originSecretRecv);
+  event ReceiverIdentityContext(B, A, receiverIdentityPeer, B);
+  event ReceiverRoleContext(B, A, receiverSenderRole, receiverReceiverRole);
+  event ReceiverSuiteContext(B, A, receiverSuite);
+  event ReceiverApplicationContext(B, A, receiverApp);
+  event ReceiverStableContext(B, A, receiverStableCtx);
+  event ReceiverFullContext(B, A, receiverFullCtx);
+  event ReceiverKey(B, A, sidBA, kRecv);
+  event ProtectedData(B, A, sidBA, protectedPayload);
+  out(c, senc(kRecv, protectedPayload));
+  event RecvDone(B, A, sidBA, kRecv);
+  event HonestRun(kRecv);
+  0.
+process
+  new idSkA: id_sk;
+  new idSkB: id_sk;
+  new recvSkB: receiver_sk;
+  new originSkA: origin_sk;
+  ! GenericProtocolRun(idSkA, idSkB, recvSkB, originSkA)
