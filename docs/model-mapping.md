@@ -96,9 +96,13 @@ P1 与 P2 使用不同 event vocabulary。ProVerif 的
 message 和 receiver-side occurrence context。二者不能自动视为等价事件。
 
 Replay original 的参数级 matching 还依赖 `full_message_unique_send` 将完整
-sender tuple 唯一化为一个 sender occurrence。未来 positive occurrence
-injectivity artifact 必须证明相应 tuple 唯一性，或在事件中使用明确的 sender
-occurrence/session identifier；这不是要求当前 M1 修改事件。
+sender tuple 唯一化为一个 sender occurrence。若未来 artifact 继续采用当前
+直接按 tuple matching 的方式，则需要对 sender occurrence 做消歧，例如证明
+tuple 唯一性，或加入明确的 occurrence/session identifier。其他显式
+occurrence-level injective matching 编码同样可以接受，但必须写清 matching
+relation、sender witnesses 和 injectivity 依据，不能无条件把 tuple equality
+当作 occurrence equality。这不是要求当前 M1 修改事件；M1 可以继承当前方式，
+也可以采用其他明确且正确的 occurrence-level encoding。
 
 只有在同一 artifact instantiation、相同事件语义和相同参数元组下，才允许
 写 `P2 => P1`。

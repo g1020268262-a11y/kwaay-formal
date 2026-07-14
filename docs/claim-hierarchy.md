@@ -412,12 +412,10 @@ the ProVerif and V6/V7 log directories.
 ### 4.7 Assumptions
 
 - fixed two-slot symbolic batch;
-- at least one matching honest `SenderSession` and later `ReceiverAccept` are
-  reachable; `normal_single_accept` does not exclude other accepts;
-- the complete tuple identifies one sender occurrence in this artifact because
-  `full_message_unique_send` is verified;
 - matching coordinates `(A,B,m,sid,k)`;
-- same receiver-side `B,bid,rst`, with distinct fresh slot indices `idx1,idx2`;
+- receiver-side occurrence context `(bid,idx,rst)`;
+- the attack witness uses the same `B,bid,rst` and distinct fresh slot indices
+  `idx1,idx2`;
 - the witness reaches normal `BatchComplete`;
 - no `CompromiseReceiverState` or `CompromiseSenderState` anywhere in the witness;
 - successful decapsulation is abstracted by a persistent `HonestSession` relation;
@@ -453,15 +451,22 @@ states; a same-batch positive result must not be relabeled as global P2. M3
 owns the batch-local atomic dedup model, M4 owns the combined HMAC+dedup model
 and lifecycle/P0 regressions, and M5 must save raw reproducible evidence.
 
-Any future artifact claiming positive occurrence injectivity must also either:
+When a future artifact uses the current direct tuple-based matching style, it
+must disambiguate sender occurrences. Two possible approaches are:
 
 1. prove that its complete sender matching tuple uniquely determines one sender
-   occurrence, as `full_message_unique_send` does here; or
+   occurrence, as `full_message_unique_send` does here;
 2. carry an explicit sender occurrence/session identifier in the sender and
    receiver events and establish injective matching on that identifier.
 
+These are not the only valid encodings. An alternative occurrence-level
+injective-correspondence formulation is acceptable if its matching relation,
+sender witnesses, and injectivity argument are stated explicitly and it does
+not identify tuple equality with occurrence equality without justification.
+
 This is a future model-design constraint, not a requirement for M1 to add or
-rename an event.
+rename an event. M1 may inherit the current tuple-based matching style or use a
+different explicit and justified occurrence-level encoding.
 
 ## 5. P3 under C_install: unique session installation
 
