@@ -269,30 +269,60 @@ the final evidence.
 
 ### 4.1 Exact definition
 
-For one fixed artifact, event vocabulary, and complete matching tuple `T`, P2
-is the conjunction of two safety conditions.
+For one fixed artifact and event vocabulary, define the matching relation over
+the two events with their actual, different parameter lists:
+
+```text
+Match(
+  SenderSession(A,B,m,sid,k) @ s,
+  ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ r
+)
+```
+
+The common protocol matching coordinates are:
+
+```text
+(A,B,m,sid,k)
+```
+
+The receiver-side occurrence context is:
+
+```text
+(bid,idx,rst)
+```
+
+`Match` compares the common protocol coordinates, including the reversed role
+order in the receiver event. It does not pretend that sender and receiver
+events have one identical event tuple. P2 is the conjunction of two safety
+conditions over this relation.
 
 First, matching existence and order:
 
 ```text
-ReceiverAccept(T) @ r
-implies there exists SenderSession(T) @ s with s < r.
+for every ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ r,
+there exists SenderSession(A,B,m,sid,k) @ s such that
+Match(SenderSession @ s, ReceiverAccept @ r) and s < r.
 ```
 
 Second, occurrence injectivity:
 
 ```text
-SenderSession(T) @ s
-ReceiverAccept(T) @ r1
-ReceiverAccept(T) @ r2
-implies r1 = r2.
+for every sender occurrence S @ s and receiver occurrences R1 @ r1, R2 @ r2,
+Match(S @ s, R1 @ r1) and Match(S @ s, R2 @ r2)
+imply r1 = r2.
 ```
 
-For the replay artifact, `T` expands to the exact modeled coordinates
-`(A,B,m,sid,k)` on `SenderSession` and
-`(B,A,bid,idx,rst,m,sid,k)` on `ReceiverAccept`, with the lemma matching the
-shared message/session coordinates while treating `bid`, `idx`, and `rst` as
-receiver-side occurrence context.
+The current replay lemma `injective_receiver_accept` is narrower than this
+global occurrence-injectivity schema. It directly quantifies one shared `bid`,
+one shared `rst`, and two potentially different `idx1,idx2`. Its exact scope is
+therefore same-batch/same-receiver-state occurrence injectivity.
+
+The falsified same-batch/same-state lemma is nevertheless sufficient to
+falsify the stronger global one-send-one-accept property: the trace contains
+two different receiver occurrences in a subset of the global property's
+quantification domain. The converse does not hold. A future positive
+same-batch/same-state lemma alone would not establish injectivity across
+arbitrary batches or receiver states.
 
 Normal-path executability/non-vacuity is required evidence before either
 condition is reported as a meaningful result; it is not a conjunct of the P2
@@ -326,7 +356,7 @@ No HMAC-only replay, fixed, or combined model currently exists.
 | Evidence role | Query / lemma | Actual result |
 |---|---|---|
 | matching existence/order | `receiver_accept_has_sender` | `verified` |
-| occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
+| same-batch/same-receiver-state occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
 | normal-path executability | `normal_single_accept` | `verified` |
 | lifecycle sanity | `normal_batch_complete` | `verified` |
 | attack witness | `one_send_two_accepts_exists` | `verified` |
@@ -352,9 +382,10 @@ Evidence:
 - `tamarin/replay/README.md`
 - model lemmas in `tamarin/replay/kwaay_replay_original.spthy`
 
-Thus P2 is `falsified` because occurrence injectivity fails. Matching
-existence/order and normal-path executability both hold in the replay
-abstraction; they are not the failure point.
+Thus global P2 is `falsified` because occurrence injectivity already fails in
+the same-batch/same-receiver-state subdomain. Matching existence/order and
+normal-path executability both hold in the replay abstraction; they are not the
+failure point. No positive global injectivity theorem is present.
 
 The repository currently lacks a committed raw replay `.out`/summary file; the
 documented command and result table are therefore weaker artifact evidence than
@@ -364,7 +395,8 @@ the ProVerif and V6/V7 log directories.
 
 - fixed two-slot symbolic batch;
 - one matching honest `SenderSession` event;
-- same `B,bid,rst,A,m,sid,k`, with distinct fresh slot indices;
+- matching coordinates `(A,B,m,sid,k)`;
+- same receiver-side `B,bid,rst`, with distinct fresh slot indices `idx1,idx2`;
 - the witness reaches normal `BatchComplete`;
 - no `CompromiseReceiverState` or `CompromiseSenderState` anywhere in the witness;
 - successful decapsulation is abstracted by a persistent `HonestSession` relation;
@@ -375,7 +407,9 @@ the ProVerif and V6/V7 log directories.
 > In the bounded original BatchReceive model, one complete honest message can
 > be accepted in two distinct slots of the same batch and receiver state, with
 > no sender or receiver state compromise and with normal batch completion.
-> Thus one-send-one-accept injectivity is falsified in this abstraction.
+> This same-batch/same-state counterexample is sufficient to falsify the
+> stronger global one-send-one-accept property, without claiming that the
+> model supplies a positive theorem over arbitrary batches or states.
 
 ### 4.9 Prohibited overstatements
 
@@ -391,10 +425,12 @@ Do not write:
 
 ### 4.10 Completion milestone
 
-M1 must test P2 in the HMAC-only replay bridge. M3 must establish positive P2
-for the batch-local atomic dedup model. M4 must establish positive P2 for the
-combined HMAC+dedup model and run lifecycle/P0 regressions. M5 must save raw,
-reproducible evidence.
+M1 must test the same-batch/same-receiver-state P2 condition in the HMAC-only
+replay bridge. M3 and M4 must state whether their positive injectivity lemmas
+remain batch/state scoped or explicitly quantify across batches and receiver
+states; a same-batch positive result must not be relabeled as global P2. M3
+owns the batch-local atomic dedup model, M4 owns the combined HMAC+dedup model
+and lifecycle/P0 regressions, and M5 must save raw reproducible evidence.
 
 ## 5. P3 under C_install: unique session installation
 

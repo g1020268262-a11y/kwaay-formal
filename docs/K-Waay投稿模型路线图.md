@@ -43,11 +43,11 @@ HMAC confirmation + batch-local duplicate rejection
 
 | 阶段 | 任务 | 状态 | 当前证据 / 缺口 | 之后怎么做 | 完成判据 | 投稿作用 |
 |---|---|---:|---|---|---|---|
-| 0 | 冻结论文主问题 | ✅ | `docs/claim-hierarchy.md` 已冻结性质图、P2 证据角色与 P3 under `C_install` | 后续只在实际 artifact/result 变化时同步 | 不存在全局线性强度链；每个 claim 指向唯一 artifact/query/lemma | 防止继续无限补模型 |
+| 0 | 冻结论文主问题 | ✅ | `docs/claim-hierarchy.md` 已冻结性质图、P2 matching relation、same-batch/same-state 反例范围与 P3 under `C_install` | 后续只在实际 artifact/result 变化时同步 | 不存在全局线性强度链；每个 claim 指向唯一 artifact/query/lemma；局部 negative 与 global negative 的关系明确 | 防止继续无限补模型 |
 | 0 | 通用 Q1 模型作为主贡献 | ⛔ | 已有通用模板，但参数依赖协议映射，不能宣称适用所有协议 | 只保留为内部诊断器 / artifact 辅助材料 | 正文最多一段说明，不再扩展协议族 | 避免稀释论文贡献 |
 | 1 | ProVerif final core | ✅ | `proverif/kwaay_core_final.cpp.pv` 已运行；baseline secrecy true、component authenticity true、`RecvDone ==> SendDone` false | 不再新增功能，只做回归与文档同步 | 固定 commit、版本、命令和结果表 | 论文 baseline |
 | 1 | Tamarin receiver/batch lifecycle | ✅ | V6/V7 已覆盖 compromise、slot、abort、state consumption、fixed 4-slot terminal lifecycle | 将 V6 与 V7 的职责写清，不再追求任意长度 batch | 所有选定 lemma 一键复现，论文不夸称 arbitrary-length | 状态语义支撑 |
-| 1 | Paper ↔ model mapping | 🟡 | `docs/model-mapping.md` 已存在，但仍写着 deniability 未建模，且未纳入 replay/HMAC 新分支 | 更新协议对象、事件、查询、假设、结果、文件路径 | 每个论文 claim 都能指向唯一模型和 lemma/query | 审稿可信度 |
+| 1 | Paper ↔ model mapping | ✅ | 已纳入 ProVerif final core、HMAC confirmation、Tamarin V6/V7、replay original 和 preliminary deniability diff artifacts；已区分 V6/V7 与 replay 的完整 message、`sid`、session-key 和事件语义 | 后续只随新增 artifact/result 同步 | 每个 claim 指向唯一模型和 lemma/query；不同 Tamarin artifact 不共用错误的对象映射 | 审稿可信度 |
 | 1 | Threat / compromise matrix | ✅ | material 与 timing 已拆为正交维度；实验 ledger 记录 exact target、方向和 baseline | 后续里程碑只更新实际新增的 artifact/result | 每个 theorem 有明确前提；experiment 不被推广为 theorem | 防止过度声称 |
 | 1 | 清理 model drift | 🟡 | `LEAK_SIGSK` 当前实际结果已按 `LEAK_SIGSK_AB` alias 记录；根 README 仍描述为早期 no-batch 模型 | M0 文档以 committed summary 为准；README 同步另行确认 | M0 无未解释结果漂移；README 更新仍为独立文档任务 | artifact 基线质量 |
 | 2 | K-Waay 专用 Q1 诊断 | ✅ | `KWAAY_LIKE / ATTACKER_KEY_BAD / AUTHZ_BAD / CONFIRMED_FIX` 已运行 | 仅作为理解和回归材料；主论文使用 final core/HMAC 的真实查询 | 不再依赖模板结果支撑 K-Waay 主 claim | 辅助解释危害边界 |
@@ -97,6 +97,11 @@ P3 under C_install: impact/composition layer，当前 not modeled
 正常路径 executability/non-vacuity 是 P2 的证据要求，不是 P2 安全公式本身。
 只有相同 artifact instantiation、事件语义与参数元组下才允许写 `P2 => P1`。
 
+当前 `injective_receiver_accept` 量化同一 `bid`、同一 `rst` 和可能不同的
+`idx1/idx2`。它是 same-batch/same-receiver-state lemma；该子范围反例足以
+否定更强 global one-send-one-accept，但未来同范围的 positive lemma 不能自动
+提升为 arbitrary-batch/arbitrary-state injectivity。
+
 M0.1 文档冻结完成后才允许进入 M1。
 
 ### M1：建立 HMAC-only replay bridge
@@ -108,8 +113,8 @@ M0.1 文档冻结完成后才允许进入 M1。
 ```text
 HMAC-only:
   correspondence = true
-  one-send-two-accepts = reachable
-  injective agreement = false
+  same-batch/same-state one-send-two-accepts = reachable
+  same-batch/same-state injective agreement = false
 ```
 
 这是把旧工作与新重复接受结果连接成一篇论文的关键步骤。
@@ -147,6 +152,9 @@ BatchReceive 在产生任何输出前检查输入完整消息（或其 sid）两
 
 优先选择 pre-scan，而不是“处理到第二个重复项才失败”，因为后者可能已经输出第一个 key，形成 partial-output 语义。
 
+M3 的 positive lemma 必须明确是 batch-local/same-state，还是显式量化不同
+batch/state。只证明 batch-local dedup 时，不得把结果改写成 global P2。
+
 ### M4：完成 combined fix 与统一回归
 
 用同一组性质比较：
@@ -163,6 +171,8 @@ BatchReceive 在产生任何输出前检查输入完整消息（或其 sid）两
 | batch lifecycle / atomic close | actual selected lifecycle lemmas: true | replay bridge not modeled | expected/not modeled: true | expected/not modeled: true |
 
 实际模型结果如与“预期”不同，先解释原因，不能直接改查询去迎合表格。
+M4 对 P2 的 positive 结果也必须报告实际量化范围；same-batch/same-state
+positive lemma 不能自动作为 global injectivity theorem。
 
 ### M5：Artifact freeze
 

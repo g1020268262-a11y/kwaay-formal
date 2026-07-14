@@ -37,32 +37,35 @@ Tamarin:
 
 ## 协议对象映射
 
-| K-Waay 对象 | ProVerif 抽象 | Tamarin 抽象 | 状态 |
-|---|---|---|---|
-| sender identity `A` | symbolic name / process parameter | agent variable `$A` | 已建模 |
-| receiver identity `B` | symbolic name / process parameter | agent variable `$B` | 已建模 |
-| long-term KEM ciphertext `ct_l` | abstract KEM ciphertext term | V6 中未完整显式建模 | ProVerif 中部分建模 |
-| ephemeral KEM ciphertext `ct_k` | abstract KEM ciphertext term | V6 中未完整显式建模 | ProVerif 中部分建模 |
-| split-KEM component `ct_s` | abstract component / ciphertext | opaque `cts` / `ComponentKey` relation | 抽象建模 |
-| long-term KEM secret `K_l` | symbolic shared secret | V6 中未显式建模 | ProVerif 中建模 |
-| ephemeral KEM secret `K_k` | symbolic shared secret | V6 中未显式建模 | ProVerif 中建模 |
-| split-KEM secret `K_s` | symbolic shared secret | `Ks` in `ComponentKey(A,B,rst,cts,Ks)` | 抽象建模 |
-| session id `sid` | symbolic transcript/session identifier | 由 `bid` / `idx` / `rst` 间接表达 | 部分建模 |
-| session key `k` | `KDF(K_l,K_k,K_s,sid)` abstraction | `rkey(B,A,rst,cts,Ks)` abstraction | 抽象建模 |
-| sender split-KEM state | symbolic sender state | `SenderState(A,sst)` | 抽象建模 |
-| receiver split-KEM state | symbolic receiver state | `ReceiverState(B,rst)` | 已建模 |
-| receiver public prekey/state | public input to sender | `!ReceiverPublicState(B,rst)` | 已建模 |
-| BatchReceive | no-batch approximation | dynamic batch skeleton | 部分建模 |
-| batch identifier | 未显式建模 | `bid` | Tamarin 中建模 |
-| batch slot | 未显式建模 | `idx`, `PendingSlot`, `BatchSlotAccept` | Tamarin 中建模 |
-| batch fail | 未显式建模 | `BatchFail`, `BatchSlotFail` | 抽象建模 |
-| batch complete | 未显式建模 | `BatchComplete` | 抽象建模 |
-| state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 已建模 |
-| HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立变体 | HMAC-only replay bridge 尚未建立 | ProVerif baseline 已建模；batch bridge 缺失 |
-| duplicate input / replay | no batch slot，不能表达 | `tamarin/replay/kwaay_replay_original.spthy` | original 反例已建模 |
-| session installation | 未建模 | 无 `InstallSession` / local handle event | P3 under `C_install` 未建模；`C_install` 只是 M2 命名假设 |
-| deniability | 未建模 | core/malicious/negative `--diff` 独立模型 | preliminary symbolic evidence；非完整 deniability |
-| computational KIND | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
+| K-Waay 对象 | ProVerif 抽象 | Tamarin V6/V7 | Tamarin replay original | 状态 |
+|---|---|---|---|---|
+| sender identity `A` | symbolic name / process parameter | agent variable `$A` | agent variable `$A` | 已建模 |
+| receiver identity `B` | symbolic name / process parameter | agent variable `$B` | agent variable `$B` | 已建模 |
+| long-term KEM ciphertext `ct_l` | abstract KEM ciphertext term | 未显式建模 | private constructor `ct_l(A,B,rst,r_l)` | replay 显式符号建模 |
+| ephemeral KEM ciphertext `ct_k` | abstract KEM ciphertext term | 未显式建模 | private constructor `ct_k(A,B,rst,r_k)` | replay 显式符号建模 |
+| split-KEM component `ct_s` | abstract component / ciphertext | opaque `cts` / `ComponentKey` relation | private constructor `ct_s(A,B,sst,rst,r_s)` | 两类 Tamarin 抽象不同 |
+| long-term KEM secret `K_l` | symbolic shared secret | 未显式建模 | `secret_l(A,B,rst,r_l)` | replay 显式符号建模 |
+| ephemeral KEM secret `K_k` | symbolic shared secret | 未显式建模 | `secret_k(A,B,rst,r_k)` | replay 显式符号建模 |
+| split-KEM secret `K_s` | symbolic shared secret | `Ks` in `ComponentKey(A,B,rst,cts,Ks)` | `secret_s(A,B,sst,rst,r_s)` | 抽象建模 |
+| complete message `m` | tuple `(ct_l,ct_k,ct_s)` | 没有完整三 ciphertext message | `m=<ct_l,ct_k,ct_s>` in `SenderCreatesMessage` | replay 显式构造 |
+| session id `sid` | symbolic transcript/session identifier | 没有完整 transcript-based `sid`；`bid/idx/rst` 是 lifecycle/occurrence context，不是 `sid` | `session_id(A,B,pkA,pkB,prekeyA,prekeyB,m)` | replay 显式构造 |
+| session key `k` | `KDF(K_l,K_k,K_s,sid)` abstraction | V6: `rkey(B,A,rst,cts,Ks)`；V7: component/lifecycle abstraction，无 replay-style full key | `session_key(K_l,K_k,K_s,sid)` | 各 artifact 分别解释 |
+| sender protocol event | `SendDone(A,B,sid,k)` | `SenderComponent(A,B,rst,cts,Ks)` 等 component/lifecycle event | `SenderSession(A,B,m,sid,k)` | 事件不自动等价 |
+| receiver protocol event | `RecvDone(B,A,sid,k)` | `BatchSlotAccept` / `ReceiverKey` 等 slot/component event | `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` | 事件不自动等价 |
+| sender split-KEM state | symbolic sender state | `SenderState(A,sst)` | `SenderState(A,sst)` | 抽象建模 |
+| receiver split-KEM state | symbolic receiver state | `ReceiverState(B,rst)` | `ReceiverState(B,rst)` | 已建模 |
+| receiver public prekey/state | public input to sender | `!ReceiverPublicState(B,rst)` | `!ReceiverPublicState(B,rst)` | 已建模 |
+| BatchReceive | no-batch approximation | V6: bounded dynamic lifecycle skeleton；V7: fixed four-slot terminal lifecycle | fixed two-slot duplicate-input abstraction | 分别限定范围 |
+| batch identifier | 未显式建模 | `bid` | `bid` | Tamarin 中建模 |
+| batch slot | 未显式建模 | `idx`, `PendingSlot`, `BatchSlotAccept` | `idx`, fixed `AddedSlot1/2`, `ReceiverAccept` | Tamarin 中建模 |
+| batch fail | 未显式建模 | `BatchFail`, `BatchSlotFail` | `BatchFail`, fixed-slot failure rules | 抽象建模 |
+| batch complete | 未显式建模 | `BatchComplete` | `BatchComplete` after two processed slots | 抽象建模 |
+| state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 同名 compromise events；P2 witness 排除二者全程出现 | 已建模但 theorem 范围不同 |
+| HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立变体 | 未建模 | 未建模；HMAC-only replay bridge 尚未建立 | ProVerif baseline 已建模；M1 bridge 缺失 |
+| duplicate input / replay | no batch slot，不能表达 | 不是 V6/V7 的专门攻击目标 | same message 被加入 fixed two-slot batch；`one_send_two_accepts_exists` | original 反例已建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | 无 `InstallSession` / local handle event | P3 under `C_install` 未建模；M2 负责 |
+| deniability | 未建模 | 不在 V6/V7；由 core/malicious/negative `--diff` 独立 artifacts 建模 | 未建模 | preliminary symbolic evidence；非完整 deniability |
+| computational KIND | 未建模 | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
 ## 安全目标映射
 
@@ -73,17 +76,17 @@ Tamarin:
 | P0-O split-KEM component origin | ProVerif final core — original Figure-7 no-batch abstraction | `SplitKemAccepted ==> SenderSplitKemComponent` | accepted split-KEM component 有 sender origin | component-level only；仅有 cross-target non-vacuity support |
 | P1 original full-parameter non-injective correspondence | ProVerif final core — original Figure-7 no-batch abstraction | `RecvDone ==> SendDone` | exact `(A,B,sid,k)` receiver completion 必须存在 sender completion | core baseline 为 false；无 slot/occurrence 语义 |
 | P1 HMAC full-parameter non-injective correspondence | ProVerif HMAC confirmation — no-batch abstraction | `RecvDone ==> SendDone` | HMAC check 后的 exact `(A,B,sid,k)` correspondence | HMAC baseline 为 true；仅 A sig-key leak target 为 false |
-| receiver-side exception | Tamarin | `slot_key_known_requires_exception` | attacker-known receiver key 必须有 unpartnered / early compromise 解释 | 抽象模型 |
-| batch slot origin | Tamarin | `slot_origin_without_early_compromise` | 无 early compromise 时 accepted slot 有 sender origin | symbolic abstraction |
-| batch abort | Tamarin | `batch_fail_complete_exclusive` | 同一 batch 不能同时 fail 和 complete | abstract fail model |
-| batch-level state consumption | Tamarin | `batch_complete_consumes_state`, `batch_fail_consumes_state` | receiver state 在 batch close 时消费 | symbolic lifecycle |
-| dynamic batch lifecycle | Tamarin | `process_requires_slot_added`, `process_requires_seal` | processed slot 必须先 add，且 batch 必须先 seal | 不证明 all pending slots done |
+| receiver-side exception | Tamarin V6 | `slot_key_known_requires_exception` | attacker-known receiver key 必须有 unpartnered / early compromise 解释 | universal classification verified；各 exception branch reachability 未独立检查 |
+| batch slot origin | Tamarin V6 | `slot_origin_without_early_compromise` | 无 early compromise 时 accepted slot 有 sender origin | bounded dynamic abstraction |
+| batch abort | Tamarin V6/V7 | `batch_fail_complete_exclusive` | 同一 batch 不能同时 fail 和 complete | abstract fail model |
+| batch-level state consumption | Tamarin V6/V7 | `batch_complete_consumes_state`, `batch_fail_consumes_state` | receiver state 在 batch close 时消费 | symbolic lifecycle |
+| dynamic batch lifecycle | Tamarin V6 | `process_requires_slot_added`, `process_requires_seal` | processed slot 必须先 add，且 batch 必须先 seal | bounded skeleton；不证明 arbitrary-length batch |
 | fixed four-slot terminal lifecycle | Tamarin V7 | `complete_requires_all_slots_done`, `no_slot_accept_after_close` | 建模的四个 slot 全部完成后才能 complete，close 后无 accept | fixed four-slot only |
-| P2 matching existence/order | Tamarin replay original — fixed two-slot replay abstraction | `receiver_accept_has_sender` | 每个 `ReceiverAccept` 有更早的 matching `SenderSession` | verified |
-| P2 occurrence injectivity | Tamarin replay original — fixed two-slot replay abstraction | `injective_receiver_accept` | 同一 sender occurrence 不能匹配两个不同 accept occurrences | falsified；P2 整体失败点 |
+| P2 matching existence/order | Tamarin replay original — fixed two-slot replay abstraction | `receiver_accept_has_sender` | 每个 `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` 有更早、在 `(A,B,m,sid,k)` 上 matching 的 `SenderSession` | verified |
+| P2 occurrence injectivity | Tamarin replay original — fixed two-slot replay abstraction | `injective_receiver_accept` | 同一 `bid`、同一 `rst`、可能不同 `idx1/idx2` 下，一个 sender occurrence 不能匹配两个 accept occurrences | falsified；same-batch/same-state 子范围反例足以否定 global P2，但不是 positive global theorem |
 | P2 normal-path executability | Tamarin replay original — fixed two-slot replay abstraction | `normal_single_accept` | 正常 one-send-one-accept 路径可达 | verified exists-trace；不是 universal theorem |
 | P2 lifecycle sanity | Tamarin replay original — fixed two-slot replay abstraction | `normal_batch_complete` | 正常 accept 路径可到 batch complete | verified exists-trace；不是 universal theorem |
-| P2 attack witness | Tamarin replay original — fixed two-slot replay abstraction | `one_send_two_accepts_exists` | 无 compromise 时 one send 可产生两个 accepts | verified exists-trace |
+| P2 attack witness | Tamarin replay original — fixed two-slot replay abstraction | `one_send_two_accepts_exists` | 无 compromise 时，同一 `bid/rst` 中 one send 可产生两个不同 slot accepts | verified exists-trace；不是 universal theorem |
 | P3 under `C_install` unique session installation | 尚无 impact/composition model | 尚无 `InstallSession` / `unique_install` | 命名组合假设下 receiver output 到 fresh local handle 的条件化性质 | not modeled；M2 负责实现 |
 
 P1 与 P2 使用不同 event vocabulary。ProVerif 的
@@ -128,11 +131,11 @@ deniability
 
 ## Tamarin 模型边界
 
-当前 Tamarin 模型分为三类职责：V6/V7 关注 state 与 batch lifecycle；
-`tamarin/replay/` 关注 original duplicate-input / injectivity；独立 `--diff`
-模型提供 preliminary symbolic deniability evidence。
+当前 Tamarin artifact 必须按职责分别解释。
 
-它建模：
+### V6/V7 lifecycle artifacts
+
+V6/V7 建模：
 
 ```text
 receiver state lifecycle
@@ -141,20 +144,41 @@ receiver-side exception classification
 batch slot
 batch abort
 batch-level state consumption
-dynamic AddSlot / SealBatch / ProcessSlot skeleton
-Strict Completion Semantics
-fixed four-slot terminal lifecycle
-fixed two-slot original duplicate-input trace
-public-core transcript observational equivalence abstraction
+V6 bounded dynamic AddSlot / SealBatch / ProcessSlot skeleton
+V7 fixed four-slot terminal lifecycle
 ```
 
-它不建模：
+V6/V7 不显式建模完整 `ct_l`、`ct_k`、三 ciphertext message、完整
+transcript-based `sid`，也不使用 replay 的
+`session_key(K_l,K_k,K_s,sid)` 构造。V6 的 `rkey(B,A,rst,cts,Ks)` 只是在
+其 component/lifecycle abstraction 中使用的 receiver-key term。
+
+### Replay original artifact
+
+`tamarin/replay/kwaay_replay_original.spthy` 显式建模：
 
 ```text
-full LKEM / EKEM / split-KEM composition
-full KDF over K_l, K_k, K_s, sid
-real vector traversal
-real decapsulation failure condition
+private ct_l/4, ct_k/4, ct_s/5 constructors
+m = <ct_l,ct_k,ct_s>
+session_id(A,B,pkA,pkB,prekeyA,prekeyB,m)
+session_key(K_l,K_k,K_s,sid)
+SenderSession(A,B,m,sid,k)
+ReceiverAccept(B,A,bid,idx,rst,m,sid,k)
+fixed two-slot same-batch duplicate-input trace
+```
+
+这些仍是 free symbolic constructors，不是 concrete KEM/KDF security。Replay
+original 不建模真实 vector traversal、真实 decapsulation failure、HMAC、去重
+修复或 session installation。
+
+### Independent deniability artifacts
+
+独立 core/malicious/negative `--diff` 模型提供 preliminary symbolic
+deniability evidence；它们不属于 V6/V7 lifecycle 或 replay original。
+
+整个 Tamarin 分支当前仍不建模：
+
+```text
 HMAC-only replay bridge
 batch-local duplicate rejection / repaired injectivity
 receiver output -> upper-layer session installation
@@ -170,7 +194,8 @@ complete malicious / Big Brother / computational deniability
 K-Waay Figure 7 core 可以满足 symbolic secrecy-style properties，
 但不满足 `(A,B,sid,k)` full-parameter non-injective correspondence；
 HMAC confirmation 在 no-compromise baseline 中恢复该 correspondence；
-original BatchReceive replay abstraction 不满足 injective one-send-one-accept；
+original BatchReceive replay abstraction 在 same-batch/same-receiver-state
+子范围内产生 injectivity 反例，该反例足以否定 global one-send-one-accept；
 P3 under C_install 的上层 unique session installation 尚未建模。
 ```
 
