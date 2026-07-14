@@ -293,8 +293,17 @@ The receiver-side occurrence context is:
 
 `Match` compares the common protocol coordinates, including the reversed role
 order in the receiver event. It does not pretend that sender and receiver
-events have one identical event tuple. P2 is the conjunction of two safety
-conditions over this relation.
+events have one identical event tuple.
+
+In the current replay artifact, interpreting the common tuple
+`(A,B,m,sid,k)` as identifying one sender occurrence relies on the verified
+lemma `full_message_unique_send`: two `SenderSession` events carrying the same
+complete sender tuple must have the same timepoint. Thus, only in this artifact
+and together with that lemma, same complete sender tuple identifies the same
+`SenderSession` occurrence. `full_message_unique_send` is matching
+disambiguation, not P2 injectivity and not replay prevention.
+
+P2 is the conjunction of two safety conditions over the `Match` relation.
 
 First, matching existence and order:
 
@@ -324,10 +333,14 @@ quantification domain. The converse does not hold. A future positive
 same-batch/same-state lemma alone would not establish injectivity across
 arbitrary batches or receiver states.
 
-Normal-path executability/non-vacuity is required evidence before either
+Matching-accept executability/non-vacuity is required evidence before either
 condition is reported as a meaningful result; it is not a conjunct of the P2
-safety formula. Within the same instantiation, P2 implies P1. No such
-implication is inferred across the ProVerif and replay event vocabularies.
+safety formula. The current `normal_single_accept` exists-trace establishes
+only that at least one honest `SenderSession` and one later matching
+`ReceiverAccept` are reachable. It does not exclude additional
+`ReceiverAccept` events in the same trace. Within the same instantiation, P2
+implies P1. No such implication is inferred across the ProVerif and replay
+event vocabularies.
 
 ### 4.2 Current status
 
@@ -356,13 +369,14 @@ No HMAC-only replay, fixed, or combined model currently exists.
 | Evidence role | Query / lemma | Actual result |
 |---|---|---|
 | matching existence/order | `receiver_accept_has_sender` | `verified` |
+| sender-occurrence uniqueness / matching disambiguation | `full_message_unique_send` | `verified` |
 | same-batch/same-receiver-state occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
-| normal-path executability | `normal_single_accept` | `verified` |
+| matching-accept executability / non-vacuity | `normal_single_accept` | `verified` |
 | lifecycle sanity | `normal_batch_complete` | `verified` |
 | attack witness | `one_send_two_accepts_exists` | `verified` |
 
-Supporting replay lemmas are `same_message_accepted_at_most_once`,
-`full_message_unique_send`, and `slot_indices_distinct`.
+Supporting replay lemmas are `same_message_accepted_at_most_once` and
+`slot_indices_distinct`.
 
 ### 4.6 Actual results
 
@@ -384,8 +398,12 @@ Evidence:
 
 Thus global P2 is `falsified` because occurrence injectivity already fails in
 the same-batch/same-receiver-state subdomain. Matching existence/order and
-normal-path executability both hold in the replay abstraction; they are not the
-failure point. No positive global injectivity theorem is present.
+matching-accept executability both hold in the replay abstraction; they are not
+the failure point. `full_message_unique_send` additionally disambiguates the
+sender occurrence matched by the complete tuple. It is not P2 injectivity.
+`normal_single_accept` proves that a matching accept path is non-vacuous, not
+that the trace contains exactly one accept. No positive global injectivity
+theorem is present.
 
 The repository currently lacks a committed raw replay `.out`/summary file; the
 documented command and result table are therefore weaker artifact evidence than
@@ -394,7 +412,10 @@ the ProVerif and V6/V7 log directories.
 ### 4.7 Assumptions
 
 - fixed two-slot symbolic batch;
-- one matching honest `SenderSession` event;
+- at least one matching honest `SenderSession` and later `ReceiverAccept` are
+  reachable; `normal_single_accept` does not exclude other accepts;
+- the complete tuple identifies one sender occurrence in this artifact because
+  `full_message_unique_send` is verified;
 - matching coordinates `(A,B,m,sid,k)`;
 - same receiver-side `B,bid,rst`, with distinct fresh slot indices `idx1,idx2`;
 - the witness reaches normal `BatchComplete`;
@@ -431,6 +452,16 @@ remain batch/state scoped or explicitly quantify across batches and receiver
 states; a same-batch positive result must not be relabeled as global P2. M3
 owns the batch-local atomic dedup model, M4 owns the combined HMAC+dedup model
 and lifecycle/P0 regressions, and M5 must save raw reproducible evidence.
+
+Any future artifact claiming positive occurrence injectivity must also either:
+
+1. prove that its complete sender matching tuple uniquely determines one sender
+   occurrence, as `full_message_unique_send` does here; or
+2. carry an explicit sender occurrence/session identifier in the sender and
+   receiver events and establish injective matching on that identifier.
+
+This is a future model-design constraint, not a requirement for M1 to add or
+rename an event.
 
 ## 5. P3 under C_install: unique session installation
 

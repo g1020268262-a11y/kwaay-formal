@@ -83,8 +83,9 @@ Tamarin:
 | dynamic batch lifecycle | Tamarin V6 | `process_requires_slot_added`, `process_requires_seal` | processed slot 必须先 add，且 batch 必须先 seal | bounded skeleton；不证明 arbitrary-length batch |
 | fixed four-slot terminal lifecycle | Tamarin V7 | `complete_requires_all_slots_done`, `no_slot_accept_after_close` | 建模的四个 slot 全部完成后才能 complete，close 后无 accept | fixed four-slot only |
 | P2 matching existence/order | Tamarin replay original — fixed two-slot replay abstraction | `receiver_accept_has_sender` | 每个 `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` 有更早、在 `(A,B,m,sid,k)` 上 matching 的 `SenderSession` | verified |
+| P2 sender-occurrence uniqueness / matching disambiguation | Tamarin replay original — fixed two-slot replay abstraction | `full_message_unique_send` | 完整 sender tuple `(A,B,m,sid,k)` 在当前 artifact 中唯一确定一个 `SenderSession` occurrence | verified；不是 P2 injectivity，也不是 replay prevention |
 | P2 occurrence injectivity | Tamarin replay original — fixed two-slot replay abstraction | `injective_receiver_accept` | 同一 `bid`、同一 `rst`、可能不同 `idx1/idx2` 下，一个 sender occurrence 不能匹配两个 accept occurrences | falsified；same-batch/same-state 子范围反例足以否定 global P2，但不是 positive global theorem |
-| P2 normal-path executability | Tamarin replay original — fixed two-slot replay abstraction | `normal_single_accept` | 正常 one-send-one-accept 路径可达 | verified exists-trace；不是 universal theorem |
+| P2 matching-accept executability / non-vacuity | Tamarin replay original — fixed two-slot replay abstraction | `normal_single_accept` | 至少一个 honest `SenderSession` 及其更晚 matching `ReceiverAccept` 的路径可达 | verified exists-trace；does not exclude additional `ReceiverAccept` events；不是 universal theorem |
 | P2 lifecycle sanity | Tamarin replay original — fixed two-slot replay abstraction | `normal_batch_complete` | 正常 accept 路径可到 batch complete | verified exists-trace；不是 universal theorem |
 | P2 attack witness | Tamarin replay original — fixed two-slot replay abstraction | `one_send_two_accepts_exists` | 无 compromise 时，同一 `bid/rst` 中 one send 可产生两个不同 slot accepts | verified exists-trace；不是 universal theorem |
 | P3 under `C_install` unique session installation | 尚无 impact/composition model | 尚无 `InstallSession` / `unique_install` | 命名组合假设下 receiver output 到 fresh local handle 的条件化性质 | not modeled；M2 负责实现 |
@@ -93,6 +94,11 @@ P1 与 P2 使用不同 event vocabulary。ProVerif 的
 `SendDone(A,B,sid,k)`/`RecvDone(B,A,sid,k)` 不包含 occurrence、slot、batch
 或 receiver state；replay 的 `SenderSession`/`ReceiverAccept` 显式包含完整
 message 和 receiver-side occurrence context。二者不能自动视为等价事件。
+
+Replay original 的参数级 matching 还依赖 `full_message_unique_send` 将完整
+sender tuple 唯一化为一个 sender occurrence。未来 positive occurrence
+injectivity artifact 必须证明相应 tuple 唯一性，或在事件中使用明确的 sender
+occurrence/session identifier；这不是要求当前 M1 修改事件。
 
 只有在同一 artifact instantiation、相同事件语义和相同参数元组下，才允许
 写 `P2 => P1`。
