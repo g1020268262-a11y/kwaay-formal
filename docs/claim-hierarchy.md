@@ -16,18 +16,32 @@ Status terms in this document have the following meanings:
   assumptions, or interfaces needed for the complete claim are not connected.
 - `not modeled`: the required event, interface, or protocol variant does not exist.
 
-The hierarchy is ordered by strictly increasing strength:
+These claims form a property and dependency structure, not a global security
+ladder:
 
 ```text
-P0 secrecy / component origin
-  < P1 full-parameter non-injective correspondence
-  < P2 injective one-send-one-accept
-  < P3 unique session installation under an explicit composition interface
+P0-S  symbolic session-key secrecy                  independent property
+P0-O  split-KEM component origin                    independent property
+P1    non-injective correspondence                  artifact/event-tuple scoped
+P2    matching existence/order + occurrence         artifact/event-tuple scoped
+      injectivity
+P3 under C_install                                  impact/composition property
 ```
 
-An established lower layer does not imply any higher layer.
+The only positive implication frozen at M0 is:
 
-## 2. P0: symbolic secrecy / component origin
+```text
+P2 => P1
+```
+
+This implication is valid only within the same artifact instantiation, event
+semantics, and parameter tuple. In particular, it does not identify ProVerif's
+`SendDone`/`RecvDone` with Tamarin replay's
+`SenderSession`/`ReceiverAccept`. P0-S and P0-O are independent of P1/P2, and
+P3 under `C_install` is a conditional impact claim rather than a stronger
+authentication level.
+
+## 2. P0-S and P0-O: symbolic secrecy and component origin
 
 ### 2.1 Exact definition
 
@@ -63,10 +77,15 @@ full-message agreement, replay prevention, or injective authentication.
 
 ### 2.2 Current status
 
-`established`, restricted to the assumptions below.
+- P0-S: `established` for the named ProVerif and HMAC no-compromise baselines.
+- P0-O: `established` for the named ProVerif/HMAC component targets and the
+  stated V6/V7 abstractions.
 
-Compromise targets are classification experiments and are not part of this
-unqualified established baseline.
+The ProVerif component targets currently have cross-target non-vacuity support:
+the shared protocol process is reachable through the corresponding baseline
+`HonestRun`, but the component-only target has no target-local reachability
+query. Compromise targets are classification experiments and are not part of
+either unqualified established baseline.
 
 ### 2.3 Protocol variants
 
@@ -250,19 +269,35 @@ the final evidence.
 
 ### 4.1 Exact definition
 
-Every matching receiver acceptance must correspond injectively to a unique
-sender occurrence. Equivalently, one sender occurrence for the exact
-`(A,B,m,sid,k)` coordinates must not justify two distinct receiver acceptances:
+For one fixed artifact, event vocabulary, and complete matching tuple `T`, P2
+is the conjunction of two safety conditions.
+
+First, matching existence and order:
 
 ```text
-SenderSession(A,B,m,sid,k) @ s
-ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ r1
-ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ r2
+ReceiverAccept(T) @ r
+implies there exists SenderSession(T) @ s with s < r.
+```
+
+Second, occurrence injectivity:
+
+```text
+SenderSession(T) @ s
+ReceiverAccept(T) @ r1
+ReceiverAccept(T) @ r2
 implies r1 = r2.
 ```
 
-P2 is stronger than P1. A message can be authentic and satisfy a non-injective
-correspondence while still being replayed into two batch slots.
+For the replay artifact, `T` expands to the exact modeled coordinates
+`(A,B,m,sid,k)` on `SenderSession` and
+`(B,A,bid,idx,rst,m,sid,k)` on `ReceiverAccept`, with the lemma matching the
+shared message/session coordinates while treating `bid`, `idx`, and `rst` as
+receiver-side occurrence context.
+
+Normal-path executability/non-vacuity is required evidence before either
+condition is reported as a meaningful result; it is not a conjunct of the P2
+safety formula. Within the same instantiation, P2 implies P1. No such
+implication is inferred across the ProVerif and replay event vocabularies.
 
 ### 4.2 Current status
 
@@ -283,16 +318,21 @@ Positive P2 for dedup-only or HMAC+dedup is `not modeled`.
 
 No HMAC-only replay, fixed, or combined model currently exists.
 
-### 4.5 Events and lemmas
+### 4.5 Events and evidence roles
 
 - `SenderSession(A,B,m,sid,k)`
 - `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)`
-- `one_send_two_accepts_exists`
-- `same_message_accepted_at_most_once`
-- `full_message_unique_send`
-- `receiver_accept_has_sender`
-- `injective_receiver_accept`
-- `slot_indices_distinct`
+
+| Evidence role | Query / lemma | Actual result |
+|---|---|---|
+| matching existence/order | `receiver_accept_has_sender` | `verified` |
+| occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
+| normal-path executability | `normal_single_accept` | `verified` |
+| lifecycle sanity | `normal_batch_complete` | `verified` |
+| attack witness | `one_send_two_accepts_exists` | `verified` |
+
+Supporting replay lemmas are `same_message_accepted_at_most_once`,
+`full_message_unique_send`, and `slot_indices_distinct`.
 
 ### 4.6 Actual results
 
@@ -302,6 +342,8 @@ No HMAC-only replay, fixed, or combined model currently exists.
 - `receiver_accept_has_sender`: `verified`.
 - `injective_receiver_accept`: `falsified - found trace`.
 - `slot_indices_distinct`: `verified`.
+- `normal_single_accept`: `verified`.
+- `normal_batch_complete`: `verified`.
 - all selected lifecycle/state-consumption lemmas in the same model terminate
   with the results recorded in `tamarin/replay/README.md`.
 
@@ -309,6 +351,10 @@ Evidence:
 
 - `tamarin/replay/README.md`
 - model lemmas in `tamarin/replay/kwaay_replay_original.spthy`
+
+Thus P2 is `falsified` because occurrence injectivity fails. Matching
+existence/order and normal-path executability both hold in the replay
+abstraction; they are not the failure point.
 
 The repository currently lacks a committed raw replay `.out`/summary file; the
 documented command and result table are therefore weaker artifact evidence than
@@ -340,7 +386,8 @@ Do not write:
 - “The attack is cross-batch replay, rollback, or state reuse after close.”
 - “HMAC has been proved replayable.” The HMAC-only bridge does not exist.
 - “A fixed model proves injectivity.” No fixed model exists yet.
-- “Duplicate receiver outputs prove duplicate installed sessions.” That is P3.
+- “Duplicate receiver outputs prove duplicate installed sessions.” That would be
+  P3 under `C_install`, which is not modeled.
 
 ### 4.10 Completion milestone
 
@@ -349,21 +396,34 @@ for the batch-local atomic dedup model. M4 must establish positive P2 for the
 combined HMAC+dedup model and run lifecycle/P0 regressions. M5 must save raw,
 reproducible evidence.
 
-## 5. P3: unique session installation under an explicit composition interface
+## 5. P3 under C_install: unique session installation
 
-### 5.1 Exact definition
+### 5.1 Exact definition and named composition assumption
 
-P3 is a conditional composition claim. It first requires an explicit upper-layer
-interface such as:
+P3 under `C_install` is a conditional composition claim. `C_install` names the
+future M2 receiver-output-to-installation interface and freezes all of the
+following assumptions:
+
+1. Every `InstallSession(B,h,A,sid,k)` has an earlier
+   `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` with the complete matching tuple.
+2. Every `ReceiverAccept` occurrence triggers exactly one later
+   `InstallSession` occurrence through the designated composition interface.
+3. Every installation generates a fresh local handle `h`; distinct installation
+   occurrences therefore have distinct handles.
+4. `InstallSession` can be produced only by that named interface; there is no
+   out-of-interface or ex nihilo installation rule.
+5. A normal one-accept-one-install trace is reachable.
+
+The intended future interface has the shape:
 
 ```text
 ReceiverAccept(B,A,bid,idx,rst,m,sid,k)
   -> InstallSession(B,handle,A,sid,k)
 ```
 
-with a fresh local `handle` for every installation. Under that interface, unique
-session installation requires that one sender occurrence cannot lead to two
-installation events with the same peer, `sid`, and key but distinct local handles:
+Under `C_install`, unique session installation requires that one sender
+occurrence cannot lead to two installation events with the same peer, `sid`,
+and key but distinct local handles:
 
 ```text
 InstallSession(B,h1,A,sid,k)
@@ -372,8 +432,9 @@ same matching SenderSession
 implies h1 = h2.
 ```
 
-This is not a protocol-only claim. It is conditional on the modeled composition
-rule that consumes receiver outputs.
+This is not a protocol-only claim or an authentication rank. It is conditional
+on all of `C_install`. The assumptions are frozen now for naming only; their
+events, rules, executability, and result are future M2 work.
 
 ### 5.2 Current status
 
@@ -400,26 +461,25 @@ The only reusable lower-layer event is
 
 ### 5.6 Actual results
 
-None. The P3 event and lemma names in the roadmap are expected future names,
-not observed tool results.
+None. P3 under `C_install` is `not modeled`. Its event and lemma names in the
+roadmap are expected future names, not observed tool results.
 
 ### 5.7 Assumptions required before the claim can be evaluated
 
-- an explicit, documented receiver-output-to-installation interface;
-- a fresh local handle for each installation;
-- a stated policy for whether every successful slot output is installed;
-- a clear distinction between protocol `sid` and local implementation handle;
-- an explicit statement of whether the interface models K-Waay's specification,
-  a real integration, or only a conditional consumer;
-- selected compromise and state-reuse assumptions for the upper layer.
+- every clause of `C_install` must be represented and checked in M2;
+- protocol `sid` must remain distinct from the fresh local handle;
+- the document must state whether the interface represents K-Waay's
+  specification, a real integration, or only a conditional consumer;
+- selected compromise and state-reuse assumptions for the upper layer must be
+  explicit.
 
 ### 5.8 Allowed paper statement
 
 Current allowed statement:
 
 > The protocol-level replay model produces two equal `(sid,k)` receiver outputs.
-> The effect on session installation is not yet modeled and remains conditional
-> on an explicit upper-layer interface.
+> P3 under `C_install` is not modeled; any installation impact remains
+> conditional on the explicitly named future composition interface.
 
 After M2, a stronger statement is allowed only in conditional form unless the
 interface is justified from a specification or implementation.
@@ -431,17 +491,17 @@ Do not write:
 - “K-Waay installs two sessions from one send.”
 - “A session-cloning attack has been proved.”
 - “Double Ratchet state is duplicated.”
-- “Unique installation is falsified or established.”
+- “P3 under `C_install` is falsified or established.”
 - “The protocol itself mandates one installation per receiver accept,” unless
   supported by an external specification or implementation mapping.
 
 ### 5.10 Completion milestone
 
-M2 must define the interface and evaluate the original duplicate-install trace.
+M2 must implement `C_install` and evaluate the original duplicate-install trace.
 M3 must connect the dedup repair to the same interface. M4 must establish the
 combined result. M5 must freeze the interface assumptions and result logs.
 
-## 6. Cross-layer rules
+## 6. Property and dependency rules
 
 The following implications are explicitly forbidden:
 
@@ -456,6 +516,13 @@ protocol-level P2 failure     does not by itself prove implementation impact
 roadmap expected result       is not an actual model result
 ```
 
+The only frozen positive dependency is:
+
+```text
+P2 => P1, only for the same artifact instantiation, event semantics,
+          and matching parameter tuple.
+```
+
 The main-line evidence state at M0 is therefore:
 
 ```text
@@ -463,7 +530,7 @@ P0 baseline: established
 P1 original: falsified
 P1 HMAC baseline: established
 P1 HMAC under A signing-key compromise: falsified
-P2 original: falsified
+P2 Tamarin replay original: falsified
 P2 HMAC-only/fixed/combined: not modeled
-P3: not modeled
+P3 under C_install: not modeled
 ```

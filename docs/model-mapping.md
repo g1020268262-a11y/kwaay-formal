@@ -60,27 +60,39 @@ Tamarin:
 | state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 已建模 |
 | HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立变体 | HMAC-only replay bridge 尚未建立 | ProVerif baseline 已建模；batch bridge 缺失 |
 | duplicate input / replay | no batch slot，不能表达 | `tamarin/replay/kwaay_replay_original.spthy` | original 反例已建模 |
-| session installation | 未建模 | 无 `InstallSession` / local handle event | P3 未建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | P3 under `C_install` 未建模；`C_install` 只是 M2 命名假设 |
 | deniability | 未建模 | core/malicious/negative `--diff` 独立模型 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
 ## 安全目标映射
 
-| 目标 / 性质 | 工具 | query / lemma | 含义 | 限制 |
+| 目标 / 性质 | 唯一 artifact | query / lemma | 含义 | 限制 |
 |---|---|---|---|---|
-| sender-side secrecy | ProVerif | `not attacker(k)` with `SenderKey` | baseline 下攻击者不能推出 sender-side key | symbolic only |
-| receiver-side secrecy | ProVerif | `not attacker(k)` with `ReceiverKey` | baseline 下攻击者不能推出 receiver-side key | symbolic only |
-| P1 original full-parameter non-injective correspondence | ProVerif | `RecvDone ==> SendDone` | exact `(A,B,sid,k)` receiver accept 必须存在 sender partner | core baseline 为 false |
-| P1 HMAC full-parameter non-injective correspondence | ProVerif HMAC | `RecvDone ==> SendDone` | HMAC check 后的 exact `(A,B,sid,k)` correspondence | HMAC baseline 为 true；A sig-key leak 为 false |
-| split-KEM component authenticity | ProVerif | `SplitKemAccepted ==> SenderSplitKemComponent` | accepted split-KEM component 有 sender origin | component-level only |
+| P0-S sender-side secrecy | ProVerif final core — original Figure-7 no-batch abstraction | `not attacker(k)` with `SenderKey` | baseline 下攻击者不能推出 sender-side key | symbolic only |
+| P0-S receiver-side secrecy | ProVerif final core — original Figure-7 no-batch abstraction | `not attacker(k)` with `ReceiverKey` | baseline 下攻击者不能推出 receiver-side key | symbolic only |
+| P0-O split-KEM component origin | ProVerif final core — original Figure-7 no-batch abstraction | `SplitKemAccepted ==> SenderSplitKemComponent` | accepted split-KEM component 有 sender origin | component-level only；仅有 cross-target non-vacuity support |
+| P1 original full-parameter non-injective correspondence | ProVerif final core — original Figure-7 no-batch abstraction | `RecvDone ==> SendDone` | exact `(A,B,sid,k)` receiver completion 必须存在 sender completion | core baseline 为 false；无 slot/occurrence 语义 |
+| P1 HMAC full-parameter non-injective correspondence | ProVerif HMAC confirmation — no-batch abstraction | `RecvDone ==> SendDone` | HMAC check 后的 exact `(A,B,sid,k)` correspondence | HMAC baseline 为 true；仅 A sig-key leak target 为 false |
 | receiver-side exception | Tamarin | `slot_key_known_requires_exception` | attacker-known receiver key 必须有 unpartnered / early compromise 解释 | 抽象模型 |
 | batch slot origin | Tamarin | `slot_origin_without_early_compromise` | 无 early compromise 时 accepted slot 有 sender origin | symbolic abstraction |
 | batch abort | Tamarin | `batch_fail_complete_exclusive` | 同一 batch 不能同时 fail 和 complete | abstract fail model |
 | batch-level state consumption | Tamarin | `batch_complete_consumes_state`, `batch_fail_consumes_state` | receiver state 在 batch close 时消费 | symbolic lifecycle |
 | dynamic batch lifecycle | Tamarin | `process_requires_slot_added`, `process_requires_seal` | processed slot 必须先 add，且 batch 必须先 seal | 不证明 all pending slots done |
 | fixed four-slot terminal lifecycle | Tamarin V7 | `complete_requires_all_slots_done`, `no_slot_accept_after_close` | 建模的四个 slot 全部完成后才能 complete，close 后无 accept | fixed four-slot only |
-| P2 original injective one-send-one-accept | Tamarin replay | `same_message_accepted_at_most_once`, `injective_receiver_accept` | 一个 send 不能对应两个相同消息的 receiver accept | 两个 lemma 均 falsified；反例无 compromise |
-| P3 unique session installation | 尚无模型 | 尚无 `InstallSession` / `unique_install` | receiver output 到上层 local handle 的条件化组合性质 | not modeled |
+| P2 matching existence/order | Tamarin replay original — fixed two-slot replay abstraction | `receiver_accept_has_sender` | 每个 `ReceiverAccept` 有更早的 matching `SenderSession` | verified |
+| P2 occurrence injectivity | Tamarin replay original — fixed two-slot replay abstraction | `injective_receiver_accept` | 同一 sender occurrence 不能匹配两个不同 accept occurrences | falsified；P2 整体失败点 |
+| P2 normal-path executability | Tamarin replay original — fixed two-slot replay abstraction | `normal_single_accept` | 正常 one-send-one-accept 路径可达 | verified exists-trace；不是 universal theorem |
+| P2 lifecycle sanity | Tamarin replay original — fixed two-slot replay abstraction | `normal_batch_complete` | 正常 accept 路径可到 batch complete | verified exists-trace；不是 universal theorem |
+| P2 attack witness | Tamarin replay original — fixed two-slot replay abstraction | `one_send_two_accepts_exists` | 无 compromise 时 one send 可产生两个 accepts | verified exists-trace |
+| P3 under `C_install` unique session installation | 尚无 impact/composition model | 尚无 `InstallSession` / `unique_install` | 命名组合假设下 receiver output 到 fresh local handle 的条件化性质 | not modeled；M2 负责实现 |
+
+P1 与 P2 使用不同 event vocabulary。ProVerif 的
+`SendDone(A,B,sid,k)`/`RecvDone(B,A,sid,k)` 不包含 occurrence、slot、batch
+或 receiver state；replay 的 `SenderSession`/`ReceiverAccept` 显式包含完整
+message 和 receiver-side occurrence context。二者不能自动视为等价事件。
+
+只有在同一 artifact instantiation、相同事件语义和相同参数元组下，才允许
+写 `P2 => P1`。
 
 ## ProVerif 模型边界
 
@@ -159,7 +171,7 @@ K-Waay Figure 7 core 可以满足 symbolic secrecy-style properties，
 但不满足 `(A,B,sid,k)` full-parameter non-injective correspondence；
 HMAC confirmation 在 no-compromise baseline 中恢复该 correspondence；
 original BatchReceive replay abstraction 不满足 injective one-send-one-accept；
-上层 unique session installation 尚未建模。
+P3 under C_install 的上层 unique session installation 尚未建模。
 ```
 
 `RecvDone ==> SendDone` 为 false 不应解释成 key-recovery attack。
@@ -190,12 +202,12 @@ full deniability
 full BatchReceive vector correctness
 real KEM decapsulation failure behavior
 HMAC 已阻止 duplicate acceptance
-unique session installation / concrete session cloning impact
+P3 under C_install / concrete session cloning impact
 ```
 
 ## M0 claim 与后续里程碑
 
-P0--P3 的规范定义、状态、证据与非主张见：
+P0-S、P0-O、P1、P2 与 P3 under `C_install` 的性质图、状态、证据与非主张见：
 
 ```text
 docs/claim-hierarchy.md
@@ -216,7 +228,7 @@ tamarin/replay/kwaay_replay_original.spthy
 
 ```text
 M1: HMAC-only replay bridge
-M2: explicit impact/composition interface
+M2: implement the named C_install impact/composition interface
 M3: fixed batch-local atomic dedup
 M4: HMAC + dedup combined regression
 M5: artifact/result freeze
@@ -232,8 +244,9 @@ deniability 分支。为避免在未确认信息架构前大幅重写，本轮�
    而不是单一早期 no-batch ProVerif 模型。
 2. 列出真实入口：ProVerif final core、HMAC variant、Tamarin V6/V7、replay
    original，以及 preliminary deniability diff models。
-3. 用 P0--P3 链接到 `docs/claim-hierarchy.md` 和
-   `docs/threat-compromise-matrix.md`，并标明 P3 尚未建模。
+3. 用 P0-S/P0-O/P1/P2/P3 under `C_install` 的性质图链接到
+   `docs/claim-hierarchy.md` 和 `docs/threat-compromise-matrix.md`，并标明
+   P3 under `C_install` 尚未建模。
 4. 明确 symbolic/computational 边界、已知 timeout，以及 replay original
    尚缺 committed raw result log 的 artifact 限制。
 

@@ -1,12 +1,12 @@
 # K-Waay Threat and Compromise Matrix
 
-## 1. Purpose
+## 1. Purpose and status vocabulary
 
-This document records which threat/compromise cells are supported by an actual
-model result. It prevents no-compromise theorems, isolated leak experiments,
-and roadmap expectations from being generalized into stronger claims.
+This document freezes the repository's current threat/compromise evidence
+without turning isolated experiments into general compromise theorems. A row
+always names one exact artifact and one exact property.
 
-Every status cell in the matrices uses exactly one of these terms:
+Every matrix status cell uses exactly one of:
 
 - `proved`
 - `falsified`
@@ -15,197 +15,221 @@ Every status cell in the matrices uses exactly one of these terms:
 - `not applicable`
 - `unknown`
 
-Interpretation:
+`proved` requires a completed universal query/lemma for the exact cell.
+`falsified` requires a completed counterexample or verified attack witness.
+`experimentally checked` records a concrete target whose direction is given
+separately in the experiment ledger. `unknown` means related structure exists
+but no result decides the exact cell. “No attack found” is not `proved`.
 
-- `proved`: a completed universal query/lemma establishes the row property in
-  that column's stated scope.
-- `falsified`: a completed run gives a counterexample to the row property in
-  that scope.
-- `experimentally checked`: one or more concrete leak targets were run, but the
-  result is not a complete theorem for the whole compromise class.
-- `not modeled`: the necessary compromise dimension, event, or protocol variant
-  is absent.
-- `not applicable`: the compromise dimension does not apply to the stated row
-  property or its explicit premise.
-- `unknown`: related model structure exists, but no query/lemma decides the
-  exact cell.
+## 2. Orthogonal compromise dimensions
 
-“No attack found” is never promoted to `proved`. A cell is `proved` only when a
-named universal query/lemma completed positively.
+### 2.1 Material
 
-## 2. Compromise dimensions
-
-| Dimension | Meaning in this repository |
+| Material | Repository representation |
 |---|---|
-| no compromise | No ProVerif leak process and no relevant Tamarin compromise event before the target event. |
-| sender long-term authentication key compromise | Exposure of A's signature key, represented by `LEAK_SIGSK_A` or `HMAC_LEAK_SIGSK_A`. This is distinct from sender split-KEM state compromise. |
-| receiver long-term key compromise | Exposure of B long-term authentication/KEM material. Existing experiments split `LEAK_SIGSK_B` and `LEAK_KEMSK`; they do not form one universal theorem. |
-| ephemeral/session material compromise | Exposure of receiver ephemeral KEM state or sender/receiver split-KEM state, represented by selected `LEAK_EKEMSK`, `LEAK_SSKEMSK`, and `LEAK_RSKEMSK` targets. |
-| early compromise | Tamarin compromise event strictly before the acceptance/key event. ProVerif leak targets are not ordering-sensitive. |
-| late compromise | Tamarin compromise event after the target event, where the lemma permits it. ProVerif leak targets do not distinguish it. |
-| receiver state compromise | Exposure of the receiver split-KEM/batch state, distinct from a generic receiver long-term-key label. |
+| sender authentication key | A's signature key; core `LEAK_SIGSK_A`, HMAC `HMAC_LEAK_SIGSK_A` |
+| receiver authentication key | B's signature key; core `LEAK_SIGSK_B` |
+| receiver long-term KEM key | B's long-term KEM secret; core `LEAK_KEMSK` |
+| receiver ephemeral KEM state | B's ephemeral KEM secret/state; core `LEAK_EKEMSK` |
+| sender split-KEM state | sender split-KEM state; core `LEAK_SSKEMSK`, Tamarin `CompromiseSenderState` |
+| receiver split-KEM state | receiver split-KEM/batch state; core `LEAK_RSKEMSK`, Tamarin `CompromiseReceiverState` |
 
-## 3. Main matrix
+Combined targets such as `LEAK_SIGSK_AB`,
+`LEAK_KEMSK_EKEMSK`, and `LEAK_ALL_RECEIVER_SECRETS` are recorded as
+their exact combinations in the experiment ledger. They are not promoted to a
+theorem for any individual material class.
 
-The property column is part of the row identity. A status never combines
-sender secrecy, receiver secrecy, authenticity, and agreement in one cell.
+### 2.2 Timing
 
-| Protocol variant / artifact | Property | no compromise | sender long-term authentication key compromise | receiver long-term key compromise | ephemeral/session material compromise | early compromise | late compromise | receiver state compromise |
-|---|---|---|---|---|---|---|---|---|
-| original core | P1 non-injective correspondence | falsified | falsified | falsified | falsified | not modeled | not modeled | falsified |
-| original core | P2 injective one-send-one-accept | falsified | not modeled | not modeled | not modeled | not modeled | not modeled | unknown |
-| ProVerif final core | P0 sender-key secrecy | proved | experimentally checked | experimentally checked | experimentally checked | not modeled | not modeled | experimentally checked |
-| ProVerif final core | P0 receiver-key secrecy | proved | falsified | experimentally checked | experimentally checked | not modeled | not modeled | falsified |
-| ProVerif final core | P0 component origin | proved | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| ProVerif final core | P1 non-injective correspondence | falsified | falsified | falsified | falsified | not modeled | not modeled | falsified |
-| HMAC confirmation | P0 sender-key secrecy | proved | experimentally checked | unknown | unknown | not modeled | not modeled | unknown |
-| HMAC confirmation | P0 receiver-key secrecy | proved | falsified | unknown | unknown | not modeled | not modeled | unknown |
-| HMAC confirmation | P0 component origin | proved | unknown | unknown | unknown | not modeled | not modeled | unknown |
-| HMAC confirmation | P1 non-injective correspondence | proved | falsified | unknown | unknown | not modeled | not modeled | unknown |
-| HMAC confirmation | P2 injective one-send-one-accept | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| Tamarin receiver/batch lifecycle V6 | P0 slot component origin | proved | not modeled | not modeled | not modeled | not applicable | proved | not applicable |
-| Tamarin receiver/batch lifecycle V6 | partnered receiver-slot key secrecy | proved | not modeled | not modeled | not modeled | not applicable | proved | not applicable |
-| Tamarin receiver/batch lifecycle V6 | attacker-known key exception classification | proved | not modeled | not modeled | not modeled | proved | unknown | proved |
-| Tamarin receiver/batch lifecycle V7 | P0 slot component origin in V7 abstraction | proved | not modeled | not modeled | not modeled | unknown | unknown | unknown |
-| Tamarin receiver/batch lifecycle V7 | terminal batch lifecycle | proved | not applicable | not applicable | not applicable | unknown | unknown | unknown |
-| replay original | P2 injective one-send-one-accept | falsified | not modeled | not modeled | not modeled | unknown | unknown | unknown |
-| replay original | no accept after close / single batch end | proved | not applicable | not applicable | not applicable | unknown | unknown | unknown |
-| HMAC-only replay bridge | P1 non-injective correspondence | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| HMAC-only replay bridge | P2 injective one-send-one-accept | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| impact/composition model | P3 unique session installation | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| fixed dedup model | P2 injective one-send-one-accept | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| fixed dedup impact model | P3 unique session installation | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| HMAC+dedup combined model | P0 regression | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| HMAC+dedup combined model | P1 non-injective correspondence | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| HMAC+dedup combined model | P2 injective one-send-one-accept | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| HMAC+dedup combined impact model | P3 unique session installation | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Timing class | Meaning |
+|---|---|
+| no compromise anywhere | The target/model excludes every relevant compromise event throughout the witness, or contains no leak/compromise process at all. |
+| no early compromise, later compromise permitted | The formula excludes compromise only before the target event. It does not require a later compromise to occur. |
+| compromise before target event | A relevant compromise occurrence is ordered strictly before the target event. |
+| compromise after target event | A relevant compromise occurrence is ordered strictly after the target event. |
+| timing not represented | The model exposes material without an event-order claim. This is the case for the concurrent ProVerif leak processes. |
 
-## 4. Evidence for `proved` and `falsified` cells
+“No compromise before the target” must never be described as “no compromise
+anywhere.” A theorem that syntactically permits later compromise is not a
+dedicated late-compromise reachability result.
 
-### 4.1 ProVerif final core
+## 3. Material coverage matrix
+
+The direction of every `experimentally checked` cell appears in section 5.
+
+| Exact artifact | Exact property | sender authentication key | receiver authentication key | receiver long-term KEM key | receiver ephemeral KEM state | sender split-KEM state | receiver split-KEM state |
+|---|---|---|---|---|---|---|---|
+| ProVerif final core — original Figure-7 no-batch abstraction | P0-S sender-key secrecy | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked |
+| ProVerif final core — original Figure-7 no-batch abstraction | P0-S receiver-key secrecy | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked |
+| ProVerif final core — original Figure-7 no-batch abstraction | P0-O component origin | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| ProVerif final core — original Figure-7 no-batch abstraction | P1 `RecvDone ==> SendDone` | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked | experimentally checked |
+| ProVerif HMAC confirmation — no-batch abstraction | P0-S sender-key secrecy | experimentally checked | not modeled | not modeled | not modeled | not modeled | not modeled |
+| ProVerif HMAC confirmation — no-batch abstraction | P0-S receiver-key secrecy | experimentally checked | not modeled | not modeled | not modeled | not modeled | not modeled |
+| ProVerif HMAC confirmation — no-batch abstraction | P0-O component origin | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| ProVerif HMAC confirmation — no-batch abstraction | P1 `RecvDone ==> SendDone` | experimentally checked | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin receiver/batch lifecycle V6 | P0-O `slot_origin_without_early_compromise` | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
+| Tamarin receiver/batch lifecycle V6 | partnered key secrecy `partnered_slot_key_not_attacker_known_without_early_compromise` | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
+| Tamarin receiver/batch lifecycle V6 | `slot_key_known_requires_exception` branch reachability | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
+| Tamarin receiver/batch lifecycle V7 | P0-O `slot_origin` | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
+| Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
+| HMAC-only replay bridge | P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC+dedup combined impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+
+The V6 universal exception classification is verified as a whole:
+attacker-known receiver keys require an unpartnered slot or an early
+sender/receiver state-compromise explanation. The material cells remain
+`unknown` because neither individual compromise disjunct has an independently
+checked reachability trace.
+
+## 4. Timing coverage matrix
+
+| Exact artifact | Exact property | no compromise anywhere | no early compromise, later compromise permitted | compromise before target event | compromise after target event | timing not represented |
+|---|---|---|---|---|---|---|
+| ProVerif final core — original Figure-7 no-batch abstraction | P0-S baseline secrecy | proved | not modeled | not modeled | not modeled | experimentally checked |
+| ProVerif final core — original Figure-7 no-batch abstraction | P0-O component origin | proved | not modeled | not modeled | not modeled | not modeled |
+| ProVerif final core — original Figure-7 no-batch abstraction | P1 `RecvDone ==> SendDone` | falsified | not modeled | not modeled | not modeled | experimentally checked |
+| ProVerif HMAC confirmation — no-batch abstraction | P0-S baseline secrecy | proved | not modeled | not modeled | not modeled | experimentally checked |
+| ProVerif HMAC confirmation — no-batch abstraction | P0-O component origin | proved | not modeled | not modeled | not modeled | not modeled |
+| ProVerif HMAC confirmation — no-batch abstraction | P1 `RecvDone ==> SendDone` | proved | not modeled | not modeled | not modeled | experimentally checked |
+| Tamarin receiver/batch lifecycle V6 | P0-O `slot_origin_without_early_compromise` | proved | proved | not applicable | unknown | not applicable |
+| Tamarin receiver/batch lifecycle V6 | partnered key secrecy `partnered_slot_key_not_attacker_known_without_early_compromise` | proved | proved | not applicable | unknown | not applicable |
+| Tamarin receiver/batch lifecycle V6 | `slot_key_known_requires_exception` branch reachability | unknown | unknown | unknown | unknown | not applicable |
+| Tamarin receiver/batch lifecycle V7 | P0-O `slot_origin` | proved | unknown | unknown | unknown | not applicable |
+| Tamarin receiver/batch lifecycle V7 | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
+| Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | falsified | falsified | unknown | unknown | not applicable |
+| Tamarin replay original — fixed two-slot replay abstraction | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
+| HMAC-only replay bridge | P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
+| impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
+| fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
+| fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC+dedup combined impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
+
+For the two V6 “without early compromise” lemmas, `proved` in the second
+timing column means only “exclude early compromise and permit later compromise
+syntactically.” The `unknown` after-target cells record that no dedicated
+late-compromise exists-trace was checked.
+
+The replay P2 counterexample excludes both
+`CompromiseReceiverState` and `CompromiseSenderState` everywhere. It
+therefore falsifies P2 in the no-compromise subset as well as the broader class
+that merely permits later compromise; it does not show a trace in which later
+compromise actually occurs.
+
+## 5. Experiment-direction ledger
+
+The core leak processes run concurrently with protocol sessions. Their timing
+capability is therefore always `timing not represented`.
+
+| Exact artifact and target | Exact property/query | Material | Timing capability | Direction | Baseline status | Is compromise required for the counterexample? | Evidence |
+|---|---|---|---|---|---|---|---|
+| ProVerif final core — `RECEIVER_EXCEPTION_CLASSIFICATION` | P0-S sender and receiver secrecy | sender + receiver split-KEM state classification target | timing not represented | mixed: sender held; receiver failed | both held | receiver failure: not established; baseline held | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `EXCEPTION_CHOICE` | P0-S sender/receiver secrecy; P1; sender exception query | receiver long-term KEM + receiver ephemeral KEM + receiver split-KEM state | timing not represented | mixed: both secrecy queries failed; P1 failed; exception query held | secrecy held; P1 falsified | P1: no; secrecy failures: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_SIGSK_A` | P0-S sender/receiver secrecy; P1 | sender authentication key | timing not represented | mixed: sender held; receiver failed; P1 failed | secrecy held; P1 falsified | P1: no; receiver secrecy: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_SIGSK_B` | P0-S sender/receiver secrecy; P1 | receiver authentication key | timing not represented | mixed: both secrecy queries held; P1 failed | secrecy held; P1 falsified | P1: no; no secrecy counterexample | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_SIGSK_AB` | P0-S sender/receiver secrecy; P1 | sender + receiver authentication keys | timing not represented | mixed: sender held; receiver failed; P1 failed | secrecy held; P1 falsified | P1: no; receiver secrecy: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_SIGSK` | same queries as `LEAK_SIGSK_AB` | sender + receiver authentication keys; backward-compatible alias | timing not represented | mixed: sender held; receiver failed; P1 failed | secrecy held; P1 falsified | P1: no; receiver secrecy: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_KEMSK` | P0-S sender/receiver secrecy; P1 | receiver long-term KEM key | timing not represented | mixed: both secrecy queries held; P1 failed | secrecy held; P1 falsified | P1: no; no secrecy counterexample | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_EKEMSK` | P0-S sender/receiver secrecy; P1 | receiver ephemeral KEM state | timing not represented | mixed: both secrecy queries held; P1 failed | secrecy held; P1 falsified | P1: no; no secrecy counterexample | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_RSKEMSK` | P0-S sender/receiver secrecy; P1 | receiver split-KEM state | timing not represented | mixed: sender held; receiver failed; P1 failed | secrecy held; P1 falsified | P1: no; receiver secrecy: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_SSKEMSK` | P0-S sender/receiver secrecy; P1 | sender split-KEM state | timing not represented | mixed: sender held; receiver failed; P1 failed | secrecy held; P1 falsified | P1: no; receiver secrecy: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_KEMSK_EKEMSK` | P0-S sender/receiver secrecy; P1 | receiver long-term + ephemeral KEM material | timing not represented | mixed: both secrecy queries held; P1 failed | secrecy held; P1 falsified | P1: no; no secrecy counterexample | `logs/final/proverif/summary.txt` |
+| ProVerif final core — `LEAK_ALL_RECEIVER_SECRETS` | P0-S sender/receiver secrecy; P1 | receiver long-term KEM + ephemeral KEM + split-KEM state | timing not represented | failed: both secrecy queries and P1 failed | secrecy held; P1 falsified | P1: no; secrecy failures: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
+| ProVerif HMAC confirmation — `HMAC_LEAK_SIGSK_A` | P0-S sender/receiver secrecy; P1 | sender authentication key | timing not represented | mixed: sender held; receiver failed; P1 failed | all three held | not established as a complete compromise theorem; only this target was checked | `logs/variants/hmac-confirmation/proverif/summary.txt` |
+| Tamarin replay original — `one_send_two_accepts_exists`, `injective_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | baseline falsified | no; compromise explicitly excluded everywhere | `tamarin/replay/README.md` |
+
+For every core leak row, P1 is
+`baseline-falsified; compromise not required`. For replay P2, the same
+classification applies. HMAC P1 differs: its baseline held and the single
+`HMAC_LEAK_SIGSK_A` target failed, but this one experiment must not be
+generalized to the complete sender-authentication-key compromise class.
+
+## 6. Named evidence and non-vacuity
+
+### 6.1 ProVerif final core — original Figure-7 no-batch abstraction
 
 Model: `proverif/kwaay_core_final.cpp.pv`
 
-Actual log: `logs/final/proverif/summary.txt`
+Log: `logs/final/proverif/summary.txt`
 
-Named results:
+- P0-S: sender and receiver secrecy queries are `true` in `BASELINE`.
+- P0-O: `SplitKemAccepted ==> SenderSplitKemComponent` is `true` in
+  `COMPONENT`.
+- P1: `RecvDone ==> SendDone` is `false` in `BASELINE`.
+- `HonestRun` is reachable in `BASELINE`.
+- P0-O currently has cross-target non-vacuity support only: `COMPONENT`
+  has no target-local reachability query.
 
-- P0 sender secrecy: `attacker(k) && event(SenderKey(A,B,s,k)) ==> false`,
-  `true` in `BASELINE`.
-- P0 receiver secrecy: `attacker(k) && event(ReceiverKey(B,A,s,k)) ==> false`,
-  `true` in `BASELINE`.
-- P0 component origin:
-  `SplitKemAccepted(B,A,cts,Ks) ==> SenderSplitKemComponent(A,B,cts,Ks)`,
-  `true` in `COMPONENT`.
-- P1: `RecvDone(B,A,s,k) ==> SendDone(A,B,s,k)`, `false` in
-  `BASELINE` and all currently recorded core leak targets.
-- sender signing-key compromise: `LEAK_SIGSK_A` falsifies receiver secrecy;
-  `LEAK_SIGSK_B` does not. The backward-compatible `LEAK_SIGSK` target is the
-  AB alias and also falsifies receiver secrecy.
-- receiver state compromise: `LEAK_RSKEMSK` falsifies receiver secrecy.
-
-The leak cells marked `experimentally checked` remain experiments. For example,
-`LEAK_KEMSK` being `true` does not prove security under every receiver
-long-term-key compromise, and the mixed `LEAK_EKEMSK`/`LEAK_SSKEMSK`/
-`LEAK_RSKEMSK` outcomes do not form one ephemeral-compromise theorem.
-
-### 4.2 HMAC confirmation
+### 6.2 ProVerif HMAC confirmation — no-batch abstraction
 
 Model: `proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv`
 
-Actual log: `logs/variants/hmac-confirmation/proverif/summary.txt`
+Log: `logs/variants/hmac-confirmation/proverif/summary.txt`
 
-Named results:
+- `HMAC_BASELINE`: P0-S and P1 held; `HonestRun` is reachable.
+- `HMAC_COMPONENT`: P0-O held, with cross-target rather than target-local
+  non-vacuity support.
+- `HMAC_LEAK_SIGSK_A`: P1 and receiver secrecy failed; sender secrecy held.
+- No other HMAC compromise material has an actual target or result.
 
-- `HMAC_BASELINE`: sender secrecy `true`, receiver secrecy `true`, and
-  `RecvDone ==> SendDone` `true`.
-- `HMAC_COMPONENT`: `SplitKemAccepted ==> SenderSplitKemComponent` `true`.
-- `HMAC_LEAK_SIGSK_A`: sender secrecy `true`, receiver secrecy `false`, and
-  `RecvDone ==> SendDone` `false`.
-
-No other HMAC compromise case has an actual result.
-
-### 4.3 Tamarin V6 receiver/batch lifecycle
+### 6.3 Tamarin receiver/batch lifecycle V6
 
 Model: `tamarin/kwaay_splitkem_batch_dynamic_v6.spthy`
 
-Actual log: `logs/tamarin-v6/summary.txt`
-
-Named lemmas:
+Log: `logs/tamarin-v6/summary.txt`
 
 - `slot_origin_without_early_compromise`: `VERIFIED`.
-- `partnered_slot_key_not_attacker_known_without_early_compromise`: `VERIFIED`.
+- `partnered_slot_key_not_attacker_known_without_early_compromise`:
+  `VERIFIED`.
 - `slot_key_known_requires_exception`: `VERIFIED`.
-- `batch_complete_consumes_state`, `batch_fail_consumes_state`,
-  `batch_end_token_single_use`, and `batch_fail_complete_exclusive`: `VERIFIED`.
+- `executable_add_slot`, `executable_seal_batch`,
+  `executable_process_slot`, `executable_batch_complete`, and
+  `executable_batch_fail`: `VERIFIED`.
 
-The first two lemmas exclude early sender/receiver state compromise but permit
-later compromise. Their early-compromise cells are `not applicable` because the
-claim itself is conditional on its absence. `slot_key_known_requires_exception`
-is the separate theorem that classifies early compromise and unpartnered slots.
+The executability lemmas establish generic lifecycle reachability. They do not
+independently establish either exception disjunct or a target-before-late-
+compromise witness. Those branch-specific reachability questions remain
+`unknown` / not independently checked.
 
-### 4.4 Tamarin V7 lifecycle
+### 6.4 Tamarin receiver/batch lifecycle V7
 
 Model: `tamarin/kwaay_splitkem_batch_dynamic_v7.spthy`
 
-Actual log: `logs/tamarin-v7/summary.txt`
+Log: `logs/tamarin-v7/summary.txt`
 
-Named lemmas include:
+`slot_origin` and the selected terminal-lifecycle lemmas are `VERIFIED`;
+the five existing executability lemmas are also `VERIFIED`. V7 has
+compromise events but no dedicated compromise-conditioned result supporting a
+compromise claim. Its compromise coverage therefore remains `unknown` or
+`not modeled`.
 
-- `slot_origin`
-- `complete_requires_all_slots_done`
-- `complete_requires_all_added_slots_processed`
-- `no_slot_accept_after_complete`
-- `no_slot_accept_after_fail`
-- `no_slot_accept_after_close`
-- `receiver_state_single_batch_end`
-
-All are `VERIFIED`. V7 is a fixed four-slot terminal-lifecycle model and does
-not replace V6's compromise/exception analysis. Therefore V7 compromise cells
-without a dedicated lemma remain `unknown` or `not modeled`.
-
-### 4.5 Replay original
+### 6.5 Tamarin replay original — fixed two-slot replay abstraction
 
 Model: `tamarin/replay/kwaay_replay_original.spthy`
 
 Recorded results: `tamarin/replay/README.md`
 
-Named results:
+- matching existence/order: `receiver_accept_has_sender`, `verified`;
+- occurrence injectivity: `injective_receiver_accept`, `falsified`;
+- normal-path executability: `normal_single_accept`, `verified`;
+- lifecycle sanity: `normal_batch_complete`, `verified`;
+- attack witness: `one_send_two_accepts_exists`, `verified`.
 
-- `one_send_two_accepts_exists`: `verified`.
-- `same_message_accepted_at_most_once`: `falsified - found trace`.
-- `full_message_unique_send`: `verified`.
-- `receiver_accept_has_sender`: `verified`.
-- `injective_receiver_accept`: `falsified - found trace`.
-- `no_accept_after_close`, `receiver_state_single_batch`, and
-  `receiver_state_single_batch_end`: `verified`.
+The exists-trace lemmas establish reachability, not universal security.
 
-The strengthened existence witness excludes every sender/receiver state
-compromise event. It therefore proves a no-compromise P2 counterexample. It does
-not decide a trace in which compromise actually occurs, so those cells are not
-promoted beyond `unknown`.
+## 7. Milestone ownership
 
-## 5. Threat-boundary rules
-
-The matrix enforces the following rules:
-
-1. `BASELINE` and `COMPONENT` are no-compromise theorem targets.
-2. `LEAK_*` and `HMAC_LEAK_SIGSK_A` are isolated experiments unless the query
-   itself states and proves a complete exception theorem.
-3. ProVerif leak targets do not distinguish early from late compromise.
-4. V6 state-compromise theorems do not model signature-key or KEM-key compromise.
-5. Replay original falsifies P2 without compromise but does not model the HMAC
-   bridge, duplicate rejection, or composition impact.
-6. Every HMAC-only replay, impact, fixed, and combined cell remains
-   `not modeled` until a model exists and the tool actually completes.
-7. Roadmap entries labeled “expected” or “must be true” do not change any cell.
-
-## 6. Milestone ownership
-
-| Milestone | Matrix cells it must change |
+| Milestone | Evidence it may add |
 |---|---|
-| M1 | HMAC-only replay P1/P2 no-compromise cells, plus only the explicitly selected compromise cases. |
-| M2 | Original impact/composition P3 no-compromise cell and its explicit interface assumptions. |
-| M3 | Fixed dedup P2 and fixed-impact P3 cells. |
-| M4 | Combined P0 regression, P1, P2, P3, and the selected compromise cells. |
-| M5 | Reproducible logs and final expected-versus-actual matrix freeze. |
+| M1 | HMAC-only replay bridge P1/P2 results and only explicitly selected compromise targets. |
+| M2 | The first P3 under `C_install` composition model and its interface assumptions. |
+| M3 | Fixed dedup P2 and fixed-impact P3 under `C_install`. |
+| M4 | Combined P0-S/P0-O regressions, P1/P2, P3 under `C_install`, and selected compromise targets. |
+| M5 | Reproducible logs and the final expected-versus-actual freeze. |
+
+Until those artifacts and completed results exist, all HMAC replay, impact,
+fixed, and combined cells remain `not modeled`.
