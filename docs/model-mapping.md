@@ -24,14 +24,13 @@
 ```text
 ProVerif:
   Figure 7 core 的 no-batch / single-receive symbolic abstraction
+  HMAC confirmation 的独立 no-batch 变体
 
 Tamarin:
-  split-KEM component
-  receiver state
-  batch slot
-  batch abort
-  batch-level state consumption
-  dynamic batch skeleton
+  V6 split-KEM / receiver state / dynamic batch skeleton
+  V7 fixed four-slot terminal lifecycle
+  replay original 的 fixed two-slot duplicate-input 模型
+  preliminary deniability diff models
 ```
 
 当前不声称完整证明 K-Waay computational security。
@@ -59,8 +58,10 @@ Tamarin:
 | batch fail | 未显式建模 | `BatchFail`, `BatchSlotFail` | 抽象建模 |
 | batch complete | 未显式建模 | `BatchComplete` | 抽象建模 |
 | state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 已建模 |
-| AEAD / key confirmation | separate branch only | 当前 core model 中不建模 | 可选扩展 |
-| deniability | 尚未建模 | 尚未建模 | 后续工作 |
+| HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立变体 | HMAC-only replay bridge 尚未建立 | ProVerif baseline 已建模；batch bridge 缺失 |
+| duplicate input / replay | no batch slot，不能表达 | `tamarin/replay/kwaay_replay_original.spthy` | original 反例已建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | P3 未建模 |
+| deniability | 未建模 | core/malicious/negative `--diff` 独立模型 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
 ## 安全目标映射
@@ -69,17 +70,23 @@ Tamarin:
 |---|---|---|---|---|
 | sender-side secrecy | ProVerif | `not attacker(k)` with `SenderKey` | baseline 下攻击者不能推出 sender-side key | symbolic only |
 | receiver-side secrecy | ProVerif | `not attacker(k)` with `ReceiverKey` | baseline 下攻击者不能推出 receiver-side key | symbolic only |
-| full-message exact agreement | ProVerif | `RecvDone ==> SendDone` | receiver accept 必须存在 exact sender partner | 当前 core 中为 false |
+| P1 original full-parameter non-injective correspondence | ProVerif | `RecvDone ==> SendDone` | exact `(A,B,sid,k)` receiver accept 必须存在 sender partner | core baseline 为 false |
+| P1 HMAC full-parameter non-injective correspondence | ProVerif HMAC | `RecvDone ==> SendDone` | HMAC check 后的 exact `(A,B,sid,k)` correspondence | HMAC baseline 为 true；A sig-key leak 为 false |
 | split-KEM component authenticity | ProVerif | `SplitKemAccepted ==> SenderSplitKemComponent` | accepted split-KEM component 有 sender origin | component-level only |
 | receiver-side exception | Tamarin | `slot_key_known_requires_exception` | attacker-known receiver key 必须有 unpartnered / early compromise 解释 | 抽象模型 |
 | batch slot origin | Tamarin | `slot_origin_without_early_compromise` | 无 early compromise 时 accepted slot 有 sender origin | symbolic abstraction |
 | batch abort | Tamarin | `batch_fail_complete_exclusive` | 同一 batch 不能同时 fail 和 complete | abstract fail model |
 | batch-level state consumption | Tamarin | `batch_complete_consumes_state`, `batch_fail_consumes_state` | receiver state 在 batch close 时消费 | symbolic lifecycle |
 | dynamic batch lifecycle | Tamarin | `process_requires_slot_added`, `process_requires_seal` | processed slot 必须先 add，且 batch 必须先 seal | 不证明 all pending slots done |
+| fixed four-slot terminal lifecycle | Tamarin V7 | `complete_requires_all_slots_done`, `no_slot_accept_after_close` | 建模的四个 slot 全部完成后才能 complete，close 后无 accept | fixed four-slot only |
+| P2 original injective one-send-one-accept | Tamarin replay | `same_message_accepted_at_most_once`, `injective_receiver_accept` | 一个 send 不能对应两个相同消息的 receiver accept | 两个 lemma 均 falsified；反例无 compromise |
+| P3 unique session installation | 尚无模型 | 尚无 `InstallSession` / `unique_install` | receiver output 到上层 local handle 的条件化组合性质 | not modeled |
 
 ## ProVerif 模型边界
 
-当前 ProVerif 模型是 K-Waay Figure 7 core 的 no-batch / single-receive symbolic abstraction。
+当前 ProVerif 主模型是 K-Waay Figure 7 core 的 no-batch / single-receive
+symbolic abstraction；HMAC confirmation 位于独立变体目录，不是原始 Figure 7
+core 的组成部分。
 
 它建模：
 
@@ -102,12 +109,16 @@ real KEM algorithms
 real KDF security
 real signature scheme
 computational KIND game
+batch slot / duplicate acceptance / injectivity
+session installation
 deniability
 ```
 
 ## Tamarin 模型边界
 
-当前 Tamarin 模型主要关注 state 和 batch semantics。
+当前 Tamarin 模型分为三类职责：V6/V7 关注 state 与 batch lifecycle；
+`tamarin/replay/` 关注 original duplicate-input / injectivity；独立 `--diff`
+模型提供 preliminary symbolic deniability evidence。
 
 它建模：
 
@@ -120,6 +131,9 @@ batch abort
 batch-level state consumption
 dynamic AddSlot / SealBatch / ProcessSlot skeleton
 Strict Completion Semantics
+fixed four-slot terminal lifecycle
+fixed two-slot original duplicate-input trace
+public-core transcript observational equivalence abstraction
 ```
 
 它不建模：
@@ -129,8 +143,11 @@ full LKEM / EKEM / split-KEM composition
 full KDF over K_l, K_k, K_s, sid
 real vector traversal
 real decapsulation failure condition
+HMAC-only replay bridge
+batch-local duplicate rejection / repaired injectivity
+receiver output -> upper-layer session installation
 computational security
-deniability
+complete malicious / Big Brother / computational deniability
 ```
 
 ## 当前主要解释
@@ -139,7 +156,10 @@ deniability
 
 ```text
 K-Waay Figure 7 core 可以满足 symbolic secrecy-style properties，
-但不满足 full-message exact receiver agreement。
+但不满足 `(A,B,sid,k)` full-parameter non-injective correspondence；
+HMAC confirmation 在 no-compromise baseline 中恢复该 correspondence；
+original BatchReceive replay abstraction 不满足 injective one-send-one-accept；
+上层 unique session installation 尚未建模。
 ```
 
 `RecvDone ==> SendDone` 为 false 不应解释成 key-recovery attack。
@@ -169,24 +189,53 @@ IND-1BatchCCA
 full deniability
 full BatchReceive vector correctness
 real KEM decapsulation failure behavior
+HMAC 已阻止 duplicate acceptance
+unique session installation / concrete session cloning impact
 ```
 
-## WP1 后续任务
+## M0 claim 与后续里程碑
 
-完成本文件后，下一步需要冻结最终入口模型：
+P0--P3 的规范定义、状态、证据与非主张见：
 
 ```text
-proverif/kwaay_core_final.pv
-tamarin/kwaay_batch_state_final.spthy
+docs/claim-hierarchy.md
+docs/threat-compromise-matrix.md
 ```
 
-这些文件应作为论文和 artifact README 中引用的主模型。
-
-同时保留历史版本：
+当前真实模型入口是：
 
 ```text
-tamarin/versions/
-proverif/experiments/
+proverif/kwaay_core_final.cpp.pv
+proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+tamarin/replay/kwaay_replay_original.spthy
 ```
 
-历史版本用于说明模型演化，但论文正文不应把所有版本都作为主结果。
+后续里程碑不得把预期结果写成实际结果：
+
+```text
+M1: HMAC-only replay bridge
+M2: explicit impact/composition interface
+M3: fixed batch-local atomic dedup
+M4: HMAC + dedup combined regression
+M5: artifact/result freeze
+```
+
+## 根 README 同步建议（本轮未修改）
+
+根 `README.md` 仍把仓库描述为“first symbolic ProVerif model ... without
+batching”，不能反映当前 ProVerif、HMAC、Tamarin lifecycle、replay 和
+deniability 分支。为避免在未确认信息架构前大幅重写，本轮只冻结以下建议：
+
+1. 将仓库定位改为 K-Waay Figure 7 core 的多模型 symbolic formal analysis，
+   而不是单一早期 no-batch ProVerif 模型。
+2. 列出真实入口：ProVerif final core、HMAC variant、Tamarin V6/V7、replay
+   original，以及 preliminary deniability diff models。
+3. 用 P0--P3 链接到 `docs/claim-hierarchy.md` 和
+   `docs/threat-compromise-matrix.md`，并标明 P3 尚未建模。
+4. 明确 symbolic/computational 边界、已知 timeout，以及 replay original
+   尚缺 committed raw result log 的 artifact 限制。
+
+在确认 README 的目标读者、安装说明和统一运行入口之前，不应把上述建议扩写
+成完整 artifact README。
