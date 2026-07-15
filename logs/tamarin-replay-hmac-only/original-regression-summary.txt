@@ -1,0 +1,26 @@
+summary of summaries:
+
+analyzed: tamarin/replay/kwaay_replay_original.spthy
+
+  processing time: 22.95s
+  
+  normal_single_accept (exists-trace): verified (11 steps)
+  normal_batch_complete (exists-trace): verified (16 steps)
+  one_send_two_accepts_exists (exists-trace): verified (15 steps)
+  same_message_accepted_at_most_once (all-traces): falsified - found trace (13 steps)
+  full_message_unique_send (all-traces): verified (2 steps)
+  receiver_accept_has_sender (all-traces): verified (16 steps)
+  injective_receiver_accept (all-traces): falsified - found trace (16 steps)
+  slot_indices_distinct (all-traces): verified (1 steps)
+  process_requires_slot_added (all-traces): verified (12 steps)
+  process_requires_seal (all-traces): verified (8 steps)
+  complete_requires_all_slots_processed (all-traces): verified (18 steps)
+  no_add_after_seal (all-traces): verified (16 steps)
+  no_accept_after_close (all-traces): verified (68 steps)
+  batch_complete_consumes_state (all-traces): verified (2 steps)
+  batch_fail_consumes_state (all-traces): verified (4 steps)
+  batch_end_token_single_use (all-traces): verified (98 steps)
+  receiver_state_single_batch (all-traces): verified (24 steps)
+  receiver_state_single_batch_end (all-traces): verified (218 steps)
+
+==============================================================================

@@ -1,0 +1,19 @@
+K-Waay HMAC confirmation ProVerif variant summary
+model: /tmp/kwaay-m1-hmac-regression-b196fdad/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
+generated: 2026-07-15T06:07:08Z
+TARGETS: HMAC_BASELINE HMAC_COMPONENT HMAC_LEAK_SIGSK_A
+NOTE: this variant is explicit HMAC key confirmation over sid; it is not AEAD.
+
+TARGET: HMAC_BASELINE
+STATUS: OK
+OUTPUT: /tmp/kwaay-m1-hmac-regression-b196fdad/logs/variants/hmac-confirmation/proverif/out/HMAC_BASELINE.out
+GENERATED: /tmp/kwaay-m1-hmac-regression-b196fdad/logs/variants/hmac-confirmation/proverif/generated/HMAC_BASELINE.pv
+RESULTS:
+RESULT not event(HonestRun(k)) is false.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SenderPrekeyVerified(B_1,A_1,sp)) is true.
+RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(ReceiverLocalPrekeyUsed(B_1,A_1,rp)) is true.
+RESULT not (event(SenderKey(A_1,B_1,s,k)) && attacker(k)) is true.
+RESULT not (event(ReceiverKey(B_1,A_1,s,k)) && attacker(k)) is true.
+

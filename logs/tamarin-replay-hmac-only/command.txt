@@ -1,0 +1,7 @@
+working_directory: /mnt/d/kwaay-formal
+parse_command: tamarin-prover --parse-only tamarin/replay/kwaay_replay_hmac_only.spthy
+proof_command: tamarin-prover --prove tamarin/replay/kwaay_replay_hmac_only.spthy
+trace_command: tamarin-prover --prove=one_confirmed_send_two_accepts_exists --output-json=logs/tamarin-replay-hmac-only/attack-trace.json --output-dot=logs/tamarin-replay-hmac-only/attack-trace.dot tamarin/replay/kwaay_replay_hmac_only.spthy
+original_regression_command: tamarin-prover --prove tamarin/replay/kwaay_replay_original.spthy
+hmac_baseline_regression_command: bash proverif/variants/hmac-confirmation/run-hmac-confirmation.sh HMAC_BASELINE
+hmac_baseline_regression_execution_root: /tmp/kwaay-m1-hmac-regression-b196fdad (unchanged runner/model copies; repository logs not overwritten)
