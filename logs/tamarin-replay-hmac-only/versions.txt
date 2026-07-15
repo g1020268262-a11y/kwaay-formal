@@ -1,0 +1,75 @@
+repository: /mnt/d/kwaay-formal
+model: tamarin/replay/kwaay_replay_hmac_only.spthy
+utc: 2026-07-15T06:41:32Z
+git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+git_branch: codex/m1-hmac-only-replay
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+runner_sha256: 2828cc0029adf5c441ce56893f10244cb3488315d3f3e4ec30b770451cf24294
+git_status_short:
+
+pre_run_git_status:
+
+pre_run_git_status_empty: true
+
+tamarin-prover --version
+maude tool: 'maude'
+ checking version: tamarin-prover 1.12.0, (C) David Basin, Cas Cremers, Jannik Dreier, Simon Meier, Ralf Sasse, Benedikt Schmidt, 2010-2023
+
+This program comes with ABSOLUTELY NO WARRANTY. It is free software, and you
+are welcome to redistribute it according to its LICENSE, see
+'https://github.com/tamarin-prover/tamarin-prover/blob/master/LICENSE'.
+
+3.5.1. OK.
+ checking installation: OK.
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+
+maude --version
+3.5.1
+
+proverif -version
+proverif.exe: unknown option '-version'.
+Proverif 2.05. Cryptographic protocol verifier, by Bruno Blanchet, Vincent Cheval, and Marc Sylvestre
+  -test 		display a bit more information for debugging
+  -in <format> 		choose the input format (horn, horntype, spass, pi, pitype)
+  -out <format> 	choose the output format (solve, spass)
+  -o <filename> 	choose the output file name (for spass output)
+  -lib <filename> 	choose the library file (for pitype front-end only)
+  -set <param> <value> 	equivalent to adding set <param> = <value> to the input file
+  -TulaFale <version> 	indicate the version of TulaFale when ProVerif is used inside TulaFale
+  -graph 			create the trace graph from the dot file in the directory specified
+  -commandLineGraph 			Define the command for the creation of the graph trace from the dot file
+  -gc 			display gc statistics
+  -parse-only 		just parse the input file and report errors (if any)
+  -html 			HTML display
+  -help  Display this list of options
+  --help  Display this list of options
+
+post_run_git_status:
+ M logs/tamarin-replay-hmac-only/attack-trace.dot
+ M logs/tamarin-replay-hmac-only/attack-trace.json
+ M logs/tamarin-replay-hmac-only/attack-trace.out
+ M logs/tamarin-replay-hmac-only/command.txt
+ M logs/tamarin-replay-hmac-only/parse.out
+ M logs/tamarin-replay-hmac-only/raw.out
+ M logs/tamarin-replay-hmac-only/summary.txt
+ M logs/tamarin-replay-hmac-only/versions.txt
+
+evidence_sha256:
+26a3d7166ccc2b57c5ddb156a37bf1cd98139f13cc209b1e4ee5f78450546ce1  logs/tamarin-replay-hmac-only/command.txt
+b9cf8778f9b6fd918afcc714554ca7e4ec56967d7dca187a91adc525cfa12fd3  logs/tamarin-replay-hmac-only/parse.out
+764e31b412dd874ff4dc8eac1891fbb41aa71f6f740e7c1f4245e9ea51904e4d  logs/tamarin-replay-hmac-only/raw.out
+0c5eb796cb9b14c969a19ffe30d3ad939b1a08e3e000ab8a502260dce44c5142  logs/tamarin-replay-hmac-only/summary.txt
+250538bf14fa637e1f2d9015e2e55fa6bce04cb643e3ae77a1d06341be8a8443  logs/tamarin-replay-hmac-only/attack-trace.out
+4b562fae93212e8ed9c7d89bec6e203c6c4f440a73c6c6ab7184048cc00d2c86  logs/tamarin-replay-hmac-only/attack-trace.json
+a3c4a6499384548d073db742b1588ae54bf1f1654d76fbc4a7657a27f7eb238b  logs/tamarin-replay-hmac-only/attack-trace.dot
+
+regression_evidence_sha256:
+8c2e2394696c7a74c1fdf7d7249fc8072c3f7152dd58298dfa55443fb2e868ef  logs/tamarin-replay-hmac-only/original-regression.out
+d33d636729ea56f744c2e6ace26609f7a308ff08f11d304285b9a19cdd578e34  logs/tamarin-replay-hmac-only/original-regression-summary.txt
+9406dcf0e4ac53715230d587ba73bdc838f4dfc0c6e133cc9366edb8a5090794  logs/tamarin-replay-hmac-only/hmac-baseline-regression.out
+979bdde706680198ddd97d82dc097e0277fd51d9be78ab166c68ad9cb531f324  logs/tamarin-replay-hmac-only/hmac-baseline-regression-summary.txt
+6a80a4786391ea83e31e2402cfe723afec82b358b4454503a371d5962de5204f  logs/tamarin-replay-hmac-only/hmac-baseline-runner.out

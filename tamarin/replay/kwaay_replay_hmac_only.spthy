@@ -1,0 +1,418 @@
+theory Kwaay_Replay_HMAC_Only
+begin
+
+functions:
+  sender_pk/2 [private],
+  receiver_pk/2 [private],
+  sender_prekey/2 [private],
+  receiver_prekey/2 [private],
+  ct_l/4 [private],
+  ct_k/4 [private],
+  ct_s/5 [private],
+  secret_l/4 [private],
+  secret_k/4 [private],
+  secret_s/5 [private],
+  session_id/7 [private],
+  session_key/4 [private],
+  confirm_key/1,
+  hmac/2
+
+/*
+  HMAC-only replay bridge for the fixed two-slot BatchReceive abstraction.
+
+  This model preserves the original replay artifact's receiver-state and batch
+  lifecycle.  Its only protocol extension is explicit key confirmation:
+
+    m   = <ct_l,ct_k,ct_s>
+    sid = session_id(A,B,pkA,pkB,prekeyA,prekeyB,m)
+    k   = session_key(K_l,K_k,K_s,sid)
+    tag = hmac(confirm_key(k),sid)
+    cm  = <m,tag>
+
+  confirm_key and hmac are public symbolic constructors.  The complete
+  confirmed message cm is public Dolev-Yao network data and may be delivered
+  repeatedly.  The tag does not include bid, idx, rst, a delivery nonce, an
+  accept identifier, or deduplication state.  There is intentionally no replay
+  cache, duplicate rejection, linear confirmation token, or one-time message.
+
+  Successful decapsulation/session reconstruction remains abstracted by the
+  persistent HonestSession relation.  HonestSession is created by the sender
+  rule and required by receiver processing.  Consequently, the
+  matching-existence lemma mainly checks consistency of this abstraction's
+  source and event mapping.  The primary target here is replay and receiver
+  occurrence injectivity.  This bridge does not replace the independent
+  ProVerif HMAC correspondence result and does not model concrete KEM,
+  signature, KDF, or HMAC computational security.
+*/
+
+/* ---------- principal and prekey state ---------- */
+
+rule InitReceiverState:
+  [ Fr(~rst) ]
+  --[ ReceiverStateCreated($B, ~rst) ]->
+  [
+    ReceiverState($B, ~rst),
+    !ReceiverPublicState($B, ~rst),
+    ReceiverCompromiseToken($B, ~rst)
+  ]
+
+rule InitSenderState:
+  [ Fr(~sst) ]
+  --[ SenderStateCreated($A, ~sst) ]->
+  [
+    !SenderState($A, ~sst),
+    SenderCompromiseToken($A, ~sst)
+  ]
+
+/*
+  The three ciphertext coins make the complete sender tuple unique to one
+  sender occurrence in this artifact.  confirmed_message_unique_send proves
+  that tuple-to-occurrence disambiguation separately from receiver injectivity.
+*/
+rule SenderCreatesConfirmedMessage:
+  let pkA   = sender_pk($A,sst)
+      pkB   = receiver_pk($B,rst)
+      prekA = sender_prekey($A,sst)
+      prekB = receiver_prekey($B,rst)
+      ctl    = ct_l($A,$B,rst,~rl)
+      ctk    = ct_k($A,$B,rst,~rk)
+      cts    = ct_s($A,$B,sst,rst,~rs)
+      Kl     = secret_l($A,$B,rst,~rl)
+      Kk     = secret_k($A,$B,rst,~rk)
+      Ks     = secret_s($A,$B,sst,rst,~rs)
+      m      = <ctl,ctk,cts>
+      sid    = session_id($A,$B,pkA,pkB,prekA,prekB,m)
+      k      = session_key(Kl,Kk,Ks,sid)
+      tag    = hmac(confirm_key(k),sid)
+      cm     = <m,tag>
+  in
+  [
+    !SenderState($A, sst),
+    !ReceiverPublicState($B, rst),
+    Fr(~rl),
+    Fr(~rk),
+    Fr(~rs)
+  ]
+  --[ ConfirmedSend($A,$B,m,sid,k,tag) ]->
+  [
+    Out(<$A,$B,cm>),
+    !HonestSession($A,$B,rst,m,sid,k)
+  ]
+
+/* ---------- fixed two-slot BatchReceive lifecycle ---------- */
+
+rule CreateBatch:
+  [
+    ReceiverState($B, rst),
+    Fr(~bid)
+  ]
+  --[ BatchCreated($B, ~bid, rst) ]->
+  [
+    OpenStage0($B, ~bid, rst),
+    BatchEndToken($B, ~bid, rst),
+    BatchCompromiseToken($B, ~bid, rst)
+  ]
+
+rule AddSlot1:
+  [
+    OpenStage0($B,bid,rst),
+    In(<$A,$B,cm>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cm),
+    Slot1Added($B,bid,rst,~idx,$A,cm)
+  ]->
+  [
+    OpenStage1($B,bid,rst),
+    AddedSlot1($B,bid,rst,~idx,$A,cm)
+  ]
+
+rule AddSlot2:
+  [
+    OpenStage1($B,bid,rst),
+    In(<$A,$B,cm>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,cm),
+    Slot2Added($B,bid,rst,~idx,$A,cm)
+  ]->
+  [
+    OpenStage2($B,bid,rst),
+    AddedSlot2($B,bid,rst,~idx,$A,cm)
+  ]
+
+rule SealBatch:
+  [ OpenStage2($B,bid,rst) ]
+  --[ SealBatchEvent($B,bid,rst) ]->
+  [ SealedStage0($B,bid,rst) ]
+
+/*
+  The AddedSlot1 pattern is the HMAC check.  ConfirmedReceiverAccept is emitted
+  only when the public input is exactly <m,hmac(confirm_key(k),sid)> for the
+  session reconstructed by HonestSession.
+*/
+rule ProcessSlot1:
+  let tag = hmac(confirm_key(k),sid)
+      cm  = <m,tag>
+  in
+  [
+    SealedStage0($B,bid,rst),
+    AddedSlot1($B,bid,rst,idx,$A,cm),
+    !HonestSession($A,$B,rst,m,sid,k)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cm),
+    ConfirmedReceiverAccept($B,$A,bid,idx,rst,m,sid,k,tag),
+    SlotProcessed($B,bid,idx,$A,cm),
+    Slot1Done($B,bid,rst)
+  ]->
+  [
+    SealedStage1($B,bid,rst),
+    Slot1DoneFact($B,bid,rst)
+  ]
+
+/* ProcessSlot2 repeats the same public-term HMAC check for the second slot. */
+rule ProcessSlot2:
+  let tag = hmac(confirm_key(k),sid)
+      cm  = <m,tag>
+  in
+  [
+    SealedStage1($B,bid,rst),
+    AddedSlot2($B,bid,rst,idx,$A,cm),
+    !HonestSession($A,$B,rst,m,sid,k)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,cm),
+    ConfirmedReceiverAccept($B,$A,bid,idx,rst,m,sid,k,tag),
+    SlotProcessed($B,bid,idx,$A,cm),
+    Slot2Done($B,bid,rst)
+  ]->
+  [
+    SealedStage2($B,bid,rst),
+    Slot2DoneFact($B,bid,rst)
+  ]
+
+rule CompleteBatch:
+  [
+    SealedStage2($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    Slot1DoneFact($B,bid,rst),
+    Slot2DoneFact($B,bid,rst)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchComplete($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+/* V7-style abstract failure paths are retained for lifecycle regressions. */
+rule FailSlot1:
+  [
+    SealedStage0($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot1($B,bid,rst,idx,$A,cm)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlotFail($B,bid,idx,$A,rst,cm),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot2:
+  [
+    SealedStage1($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    AddedSlot2($B,bid,rst,idx,$A,cm)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlotFail($B,bid,idx,$A,rst,cm),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+/* ---------- no-compromise baseline compatibility ---------- */
+
+rule CompromiseReceiverState:
+  [
+    ReceiverState($B, rst),
+    ReceiverCompromiseToken($B, rst)
+  ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    ReceiverState($B, rst),
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseActiveReceiverState:
+  [ BatchCompromiseToken($B, bid, rst) ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseSenderState:
+  [
+    !SenderState($A, sst),
+    SenderCompromiseToken($A, sst)
+  ]
+  --[ CompromiseSenderState($A, sst) ]->
+  [
+    !CompromisedSenderState($A, sst),
+    Out(sst)
+  ]
+
+/* ---------- executability, matching, and replay lemmas ---------- */
+
+lemma normal_confirmed_single_accept:
+  exists-trace
+  "Ex A B m sid k tag bid idx rst #s #r.
+       ConfirmedSend(A,B,m,sid,k,tag) @ #s
+     & ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #r
+     & #s < #r"
+
+lemma normal_confirmed_batch_complete:
+  exists-trace
+  "Ex A B m sid k tag bid idx rst #s #r #c.
+       ConfirmedSend(A,B,m,sid,k,tag) @ #s
+     & ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #r
+     & BatchComplete(B,bid,rst) @ #c
+     & #s < #r
+     & #r < #c"
+
+lemma confirmed_receiver_accept_has_sender:
+  "All A B m sid k tag bid idx rst #r.
+       ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #r
+     ==> Ex #s.
+         ConfirmedSend(A,B,m,sid,k,tag) @ #s
+       & #s < #r"
+
+/* Tuple equality identifies a sender occurrence only because this is proved. */
+lemma confirmed_message_unique_send:
+  "All A B m sid k tag #s1 #s2.
+       ConfirmedSend(A,B,m,sid,k,tag) @ #s1
+     & ConfirmedSend(A,B,m,sid,k,tag) @ #s2
+     ==> #s1 = #s2"
+
+lemma one_confirmed_send_two_accepts_exists:
+  exists-trace
+  "Ex A B m sid k tag bid idx1 idx2 rst #s #r1 #r2 #c.
+       ConfirmedSend(A,B,m,sid,k,tag) @ #s
+     & ConfirmedReceiverAccept(B,A,bid,idx1,rst,m,sid,k,tag) @ #r1
+     & ConfirmedReceiverAccept(B,A,bid,idx2,rst,m,sid,k,tag) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & not(idx1 = idx2)
+     & not(#r1 = #r2)
+     & #s < #r1
+     & #s < #r2
+     & #r1 < #c
+     & #r2 < #c
+     & (All #s2. ConfirmedSend(A,B,m,sid,k,tag) @ #s2 ==> #s2 = #s)
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+/* Same confirmed message, batch, and receiver state: one receiver occurrence. */
+lemma confirmed_message_accepted_at_most_once:
+  "All A B m sid k tag bid idx1 idx2 rst #r1 #r2.
+       ConfirmedReceiverAccept(B,A,bid,idx1,rst,m,sid,k,tag) @ #r1
+     & ConfirmedReceiverAccept(B,A,bid,idx2,rst,m,sid,k,tag) @ #r2
+     ==> #r1 = #r2"
+
+/* Exact same-batch/same-receiver-state occurrence injectivity formulation. */
+lemma injective_confirmed_receiver_accept:
+  "All A B m sid k tag bid idx1 idx2 rst #s #r1 #r2.
+       ConfirmedSend(A,B,m,sid,k,tag) @ #s
+     & ConfirmedReceiverAccept(B,A,bid,idx1,rst,m,sid,k,tag) @ #r1
+     & ConfirmedReceiverAccept(B,A,bid,idx2,rst,m,sid,k,tag) @ #r2
+     & #s < #r1
+     & #s < #r2
+     ==> #r1 = #r2"
+
+/* ---------- lifecycle and state regression lemmas ---------- */
+
+lemma slot_indices_distinct:
+  "All B bid rst idx1 idx2 A1 A2 cm1 cm2 #i #j.
+       Slot1Added(B,bid,rst,idx1,A1,cm1) @ #i
+     & Slot2Added(B,bid,rst,idx2,A2,cm2) @ #j
+     ==> not(idx1 = idx2)"
+
+lemma process_requires_slot_added:
+  "All B A bid idx rst m sid k tag #i.
+       ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #i
+     ==> Ex #j. SlotAdded(B,bid,idx,A,<m,tag>) @ #j & #j < #i"
+
+lemma process_requires_seal:
+  "All B A bid idx rst m sid k tag #i.
+       ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #i
+     ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma complete_requires_all_slots_processed:
+  "All B bid rst idx A cm #i #j.
+       BatchComplete(B,bid,rst) @ #i
+     & SlotAdded(B,bid,idx,A,cm) @ #j
+     ==> Ex #p.
+         SlotProcessed(B,bid,idx,A,cm) @ #p
+       & #j < #p
+       & #p < #i"
+
+lemma no_add_after_seal:
+  "All B bid rst idx A cm #i #j.
+       SealBatchEvent(B,bid,rst) @ #i
+     & SlotAdded(B,bid,idx,A,cm) @ #j
+     ==> #j < #i"
+
+lemma no_accept_after_close:
+  "All B A bid idx rst m sid k tag #i #j.
+       BatchClosed(B,bid,rst) @ #i
+     & ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag) @ #j
+     ==> #j < #i"
+
+lemma batch_complete_consumes_state:
+  "All B bid rst #i.
+       BatchComplete(B,bid,rst) @ #i
+     ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_fail_consumes_state:
+  "All B bid rst #i.
+       BatchFail(B,bid,rst) @ #i
+     ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_end_token_single_use:
+  "All B bid rst #i #j.
+       UseBatchEndToken(B,bid,rst) @ #i
+     & UseBatchEndToken(B,bid,rst) @ #j
+     ==> #i = #j"
+
+lemma receiver_state_single_batch:
+  "All B bid1 bid2 rst #i #j.
+       BatchCreated(B,bid1,rst) @ #i
+     & BatchCreated(B,bid2,rst) @ #j
+     ==> #i = #j & bid1 = bid2"
+
+lemma receiver_state_single_batch_end:
+  "All B rst #i #j.
+       ConsumeReceiverState(B,rst) @ #i
+     & ConsumeReceiverState(B,rst) @ #j
+     ==> #i = #j"
+
+end

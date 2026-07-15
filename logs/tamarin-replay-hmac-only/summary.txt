@@ -1,0 +1,34 @@
+K-Waay HMAC-only replay bridge Tamarin summary
+model: tamarin/replay/kwaay_replay_hmac_only.spthy
+evidence_git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+parse_exit_status: 0
+exit_status: 0
+attack_trace_exit_status: 0
+
+summary of summaries:
+
+analyzed: tamarin/replay/kwaay_replay_hmac_only.spthy
+
+  processing time: 52.75s
+  
+  normal_confirmed_single_accept (exists-trace): verified (12 steps)
+  normal_confirmed_batch_complete (exists-trace): verified (18 steps)
+  confirmed_receiver_accept_has_sender (all-traces): verified (16 steps)
+  confirmed_message_unique_send (all-traces): verified (2 steps)
+  one_confirmed_send_two_accepts_exists (exists-trace): verified (17 steps)
+  confirmed_message_accepted_at_most_once (all-traces): falsified - found trace (15 steps)
+  injective_confirmed_receiver_accept (all-traces): falsified - found trace (15 steps)
+  slot_indices_distinct (all-traces): verified (1 steps)
+  process_requires_slot_added (all-traces): verified (12 steps)
+  process_requires_seal (all-traces): verified (8 steps)
+  complete_requires_all_slots_processed (all-traces): verified (18 steps)
+  no_add_after_seal (all-traces): verified (16 steps)
+  no_accept_after_close (all-traces): verified (68 steps)
+  batch_complete_consumes_state (all-traces): verified (2 steps)
+  batch_fail_consumes_state (all-traces): verified (4 steps)
+  batch_end_token_single_use (all-traces): verified (98 steps)
+  receiver_state_single_batch (all-traces): verified (24 steps)
+  receiver_state_single_batch_end (all-traces): verified (218 steps)
+
+==============================================================================
