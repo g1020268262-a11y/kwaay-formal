@@ -115,7 +115,7 @@ logs/tamarin-replay-hmac-only/attack-trace.dot
 ## Result interpretation
 
 The complete run on Tamarin 1.12.0 with Maude 3.5.1 parsed successfully and
-finished without a timeout. The full proof run took 62.35 seconds.
+finished without a timeout. The commit-bound proof run took 52.75 seconds.
 
 | Lemma | Result | Steps |
 | --- | --- | ---: |
@@ -144,8 +144,10 @@ Both accepts have the same `(A,B,bid,rst,m,sid,k,tag)` coordinates, both precede
 `CompleteBatch`, and the trace has no receiver-state or sender-state compromise
 event. Its public slot inputs contain the same exact
 `<m,hmac(confirm_key(k),sid)>` term. This is the intended HMAC-only replay
-bridge: matching/origin correspondence holds, while receiver-occurrence
-injectivity does not.
+bridge: matching-existence/order holds within the `HonestSession` abstraction,
+while receiver-occurrence injectivity does not. This matching result is not a
+new split-KEM component-origin theorem and does not replace the ProVerif HMAC
+P1 proof.
 
 The evidence is retained in:
 
@@ -181,11 +183,12 @@ session state.
 
 ## Reproducibility notes
 
-The logs record the exact commands, base commit, branch, dirty-tree snapshot,
-and tool versions. ProVerif 2.05 does not accept `-version`; its diagnostic and
-banner are therefore retained verbatim in `versions.txt`. The repository's
-pre-existing central-roadmap modification was not used by the runner and is not
-part of this bridge.
+The logs record the exact commands, evidence commit, branch, model SHA-256,
+runner SHA-256, pre-run and post-run status, evidence-file hashes, and tool
+versions. The runner refuses to start unless the pre-run worktree is clean;
+post-run changes are the regenerated evidence. ProVerif 2.05 does not accept
+`-version`, so its diagnostic and banner are retained verbatim in
+`versions.txt`.
 
 - An attack witness is evidence only for the exact fixed-two-slot,
   same-batch/same-state formula.

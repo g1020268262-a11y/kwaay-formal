@@ -1,8 +1,13 @@
+K-Waay original replay regression summary
+evidence_git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+exit_status: 0
+
 summary of summaries:
 
 analyzed: tamarin/replay/kwaay_replay_original.spthy
 
-  processing time: 22.95s
+  processing time: 30.32s
   
   normal_single_accept (exists-trace): verified (11 steps)
   normal_batch_complete (exists-trace): verified (16 steps)

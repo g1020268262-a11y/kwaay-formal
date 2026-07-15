@@ -1,5 +1,7 @@
 K-Waay HMAC-only replay bridge Tamarin summary
 model: tamarin/replay/kwaay_replay_hmac_only.spthy
+evidence_git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
 parse_exit_status: 0
 exit_status: 0
 attack_trace_exit_status: 0
@@ -8,7 +10,7 @@ summary of summaries:
 
 analyzed: tamarin/replay/kwaay_replay_hmac_only.spthy
 
-  processing time: 62.35s
+  processing time: 52.75s
   
   normal_confirmed_single_accept (exists-trace): verified (12 steps)
   normal_confirmed_batch_complete (exists-trace): verified (18 steps)

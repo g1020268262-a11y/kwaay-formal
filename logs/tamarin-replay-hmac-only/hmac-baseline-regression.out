@@ -1,3 +1,9 @@
+evidence_git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+command: bash proverif/variants/hmac-confirmation/run-hmac-confirmation.sh HMAC_BASELINE
+execution_root: /tmp/kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181
+exit_status: 0
+
 Process 0 (that is, the initial process):
 {1}new sskA: sig_sk;
 {2}new kskA: kem_sk;
@@ -86,25 +92,25 @@ Process 0 (that is, the initial process):
 {85}event RecvDone(B,A,sidBA,kRecv);
 {86}event HonestRun(kRecv)
 
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 205, character 7:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 205, character 7:
 Warning: identifier A rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 205, character 17:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 205, character 17:
 Warning: identifier B rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 208, character 7:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 208, character 7:
 Warning: identifier A rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 208, character 17:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 208, character 17:
 Warning: identifier B rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 210, character 7:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 210, character 7:
 Warning: identifier A rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 210, character 17:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 210, character 17:
 Warning: identifier B rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 214, character 7:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 214, character 7:
 Warning: identifier A rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 214, character 17:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 214, character 17:
 Warning: identifier B rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 216, character 7:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 216, character 7:
 Warning: identifier A rebound.
-File "\\wsl.localhost\TamarinVerify\tmp\kwaay-m1-hmac-regression-b196fdad\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 216, character 17:
+File "\\wsl.localhost\Ubuntu-24.04\tmp\kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181\logs\variants\hmac-confirmation\proverif\generated\HMAC_BASELINE.pv", line 216, character 17:
 Warning: identifier B rebound.
 --  Process 1 (that is, process 0, with let moved downwards):
 {1}new sskA: sig_sk;

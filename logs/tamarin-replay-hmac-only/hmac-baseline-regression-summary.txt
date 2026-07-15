@@ -1,14 +1,19 @@
+evidence_git_head: aeb66939af5e4b229f14f1444e19b559a4f98181
+model_sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+execution_root: /tmp/kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181
+exit_status: 0
+
 K-Waay HMAC confirmation ProVerif variant summary
-model: /tmp/kwaay-m1-hmac-regression-b196fdad/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+model: /tmp/kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
 proverif: /mnt/d/Proverif/proverif2.05/proverif.exe
-generated: 2026-07-15T06:07:08Z
+generated: 2026-07-15T06:45:51Z
 TARGETS: HMAC_BASELINE HMAC_COMPONENT HMAC_LEAK_SIGSK_A
 NOTE: this variant is explicit HMAC key confirmation over sid; it is not AEAD.
 
 TARGET: HMAC_BASELINE
 STATUS: OK
-OUTPUT: /tmp/kwaay-m1-hmac-regression-b196fdad/logs/variants/hmac-confirmation/proverif/out/HMAC_BASELINE.out
-GENERATED: /tmp/kwaay-m1-hmac-regression-b196fdad/logs/variants/hmac-confirmation/proverif/generated/HMAC_BASELINE.pv
+OUTPUT: /tmp/kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181/logs/variants/hmac-confirmation/proverif/out/HMAC_BASELINE.out
+GENERATED: /tmp/kwaay-m1-hmac-regression-aeb66939af5e4b229f14f1444e19b559a4f98181/logs/variants/hmac-confirmation/proverif/generated/HMAC_BASELINE.pv
 RESULTS:
 RESULT not event(HonestRun(k)) is false.
 RESULT event(RecvDone(B_1,A_1,s,k)) ==> event(SendDone(A_1,B_1,s,k)) is true.

@@ -2678,7 +2678,7 @@ summary of summaries:
 
 analyzed: tamarin/replay/kwaay_replay_hmac_only.spthy
 
-  processing time: 62.35s
+  processing time: 52.75s
   
   normal_confirmed_single_accept (exists-trace): verified (12 steps)
   normal_confirmed_batch_complete (exists-trace): verified (18 steps)

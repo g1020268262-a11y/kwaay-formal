@@ -3,7 +3,7 @@
 set -u
 set -o pipefail
 
-ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)"
+ROOT_DIR="${KWAAY_REPO_ROOT:-$(cd "$(dirname "${BASH_SOURCE[0]}")/../.." && pwd)}"
 MODEL_REL="tamarin/replay/kwaay_replay_hmac_only.spthy"
 MODEL="$ROOT_DIR/$MODEL_REL"
 LOG_DIR="$ROOT_DIR/logs/tamarin-replay-hmac-only"
@@ -22,16 +22,35 @@ else
   GIT_CMD=(git -c "safe.directory=$ROOT_DIR" -C "$ROOT_DIR")
 fi
 
+GIT_HEAD="$("${GIT_CMD[@]}" rev-parse HEAD)"
+GIT_BRANCH="$("${GIT_CMD[@]}" branch --show-current)"
+PRE_RUN_GIT_STATUS="$("${GIT_CMD[@]}" status --short)"
+MODEL_SHA256="$(sha256sum "$MODEL" | awk '{print $1}')"
+RUNNER_SHA256="$(sha256sum "${BASH_SOURCE[0]}" | awk '{print $1}')"
+
+if [ -n "$PRE_RUN_GIT_STATUS" ]; then
+  echo "error: pre-run git status is not clean" >&2
+  printf '%s\n' "$PRE_RUN_GIT_STATUS" >&2
+  exit 2
+fi
+
 mkdir -p "$LOG_DIR"
 
 {
   echo "repository: $ROOT_DIR"
   echo "model: $MODEL_REL"
   echo "utc: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
-  echo "git_head: $("${GIT_CMD[@]}" rev-parse HEAD)"
-  echo "git_branch: $("${GIT_CMD[@]}" branch --show-current)"
+  echo "git_head: $GIT_HEAD"
+  echo "git_branch: $GIT_BRANCH"
+  echo "model_sha256: $MODEL_SHA256"
+  echo "runner_sha256: $RUNNER_SHA256"
   echo "git_status_short:"
-  "${GIT_CMD[@]}" status --short
+  printf '%s' "$PRE_RUN_GIT_STATUS"
+  echo
+  echo "pre_run_git_status:"
+  printf '%s' "$PRE_RUN_GIT_STATUS"
+  echo
+  echo "pre_run_git_status_empty: true"
   echo
   echo "tamarin-prover --version"
   tamarin-prover --version
@@ -53,12 +72,16 @@ mkdir -p "$LOG_DIR"
 
 {
   echo "working_directory: $ROOT_DIR"
+  echo "evidence_git_head: $GIT_HEAD"
+  echo "evidence_git_branch: $GIT_BRANCH"
+  echo "model_sha256: $MODEL_SHA256"
+  echo "runner_sha256: $RUNNER_SHA256"
   echo "parse_command: tamarin-prover --parse-only $MODEL_REL"
   echo "proof_command: tamarin-prover --prove $MODEL_REL"
   echo "trace_command: tamarin-prover --prove=one_confirmed_send_two_accepts_exists --output-json=logs/tamarin-replay-hmac-only/attack-trace.json --output-dot=logs/tamarin-replay-hmac-only/attack-trace.dot $MODEL_REL"
   echo "original_regression_command: tamarin-prover --prove tamarin/replay/kwaay_replay_original.spthy"
   echo "hmac_baseline_regression_command: bash proverif/variants/hmac-confirmation/run-hmac-confirmation.sh HMAC_BASELINE"
-  echo "hmac_baseline_regression_execution_root: /tmp/kwaay-m1-hmac-regression-b196fdad (unchanged runner/model copies; repository logs not overwritten)"
+  echo "hmac_baseline_regression_execution_root: /tmp/kwaay-m1-hmac-regression-$GIT_HEAD (unchanged runner/model copies; repository logs not overwritten)"
 } > "$COMMAND_LOG"
 
 if [ "${1:-}" = "--versions-only" ]; then
@@ -91,12 +114,30 @@ set -e
 {
   echo "K-Waay HMAC-only replay bridge Tamarin summary"
   echo "model: $MODEL_REL"
+  echo "evidence_git_head: $GIT_HEAD"
+  echo "model_sha256: $MODEL_SHA256"
   echo "parse_exit_status: $parse_status"
   echo "exit_status: $status"
   echo "attack_trace_exit_status: $trace_status"
   echo
   sed -n '/^summary of summaries:/,/^==============================================================================$/{p}' "$RAW_LOG"
 } > "$SUMMARY_LOG"
+
+POST_RUN_GIT_STATUS="$("${GIT_CMD[@]}" status --short)"
+{
+  echo
+  echo "post_run_git_status:"
+  printf '%s\n' "$POST_RUN_GIT_STATUS"
+  echo
+  echo "evidence_sha256:"
+  for evidence in \
+    "$COMMAND_LOG" "$PARSE_LOG" "$RAW_LOG" "$SUMMARY_LOG" \
+    "$ATTACK_RAW_LOG" "$ATTACK_JSON_LOG" "$ATTACK_DOT_LOG"; do
+    if [ -f "$evidence" ]; then
+      sha256sum "$evidence"
+    fi
+  done | sed "s#$ROOT_DIR/##"
+} >> "$VERSIONS_LOG"
 
 cat "$SUMMARY_LOG"
 if [ "$status" -ne 0 ]; then
