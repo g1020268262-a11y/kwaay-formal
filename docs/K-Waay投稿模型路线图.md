@@ -18,8 +18,9 @@ impact/composition 层。
   └─ actual Tamarin replay P2 BatchReceive one-send → many-accepts：falsified
 
 HMAC confirmation
-  ├─ actual P1 no-compromise baseline：established
-  └─ expected/not modeled P2：预计仍不能阻止同一已确认消息被多个 slot 重复接受
+  ├─ actual ProVerif P1 no-compromise baseline：established
+  ├─ actual Tamarin matching existence/order：verified，但在 `HonestSession` 下主要是结构性结果
+  └─ actual Tamarin P2：同一 confirmed message 在同一 batch/state 的两个 slot 重复接受可达；occurrence injectivity falsified
 
 P3 under C_install
   └─ expected/not modeled：M2 才实现 ReceiverAccept -> InstallSession 组合接口
@@ -40,8 +41,11 @@ HMAC confirmation + batch-local duplicate rejection
 - ⛔：有意冻结或移出论文主贡献，不再继续扩展。
 
 当前冻结快照（2026-07-15）：M0/M0.1 已合并至 `main`（commit `b196fda`）；
-M1 尚未开始，仓库中仍不存在 HMAC-only replay artifact。路线图中的 M1–M5
-结果均继续标为 expected/not modeled，不能当作实际运行结果引用。
+M1 HMAC-only replay bridge 的 evidence commit 为
+`aeb66939af5e4b229f14f1444e19b559a4f98181`，最终合并后的 `main` 快照为
+`0858252d787b4c61956be583ffdade58e01655f2`。M1 模型、脚本、summary、raw logs、
+attack trace 和两组 regression 均已提交，Chat 最终审查通过。M2–M5 仍是
+expected/not modeled，不能当作实际运行结果引用。
 
 ## 3. 模型总表
 
@@ -57,7 +61,7 @@ M1 尚未开始，仓库中仍不存在 HMAC-only replay artifact。路线图中
 | 2 | K-Waay 专用 Q1 诊断 | ✅ | `KWAAY_LIKE / ATTACKER_KEY_BAD / AUTHZ_BAD / CONFIRMED_FIX` 已运行 | 仅作为理解和回归材料；主论文使用 final core/HMAC 的真实查询 | 不再依赖模板结果支撑 K-Waay 主 claim | 辅助解释危害边界 |
 | 2 | 原始 core 的 non-injective agreement gap | ✅ | final core 中带 A/B/sid/key 的 `RecvDone ==> SendDone` 为 false | 导出并人工解释最小 trace，确认事件位置和会话绑定 | trace 中每个攻击步骤都能对应 Figure 7 对象 | 既有安全边界 |
 | 2 | HMAC confirmation 修复 non-injective correspondence | ✅ | HMAC baseline 中 correspondence、secrecy、component authenticity 为 true | 保留为“confirmation 修复 Q1”，不要称为 replay 修复 | baseline 与至少必要 compromise case 可复现 | 第一层修复 |
-| 2 | HMAC 下的 duplicate acceptance / injectivity | ⬜ | 当前 HMAC 模型没有 batch slot，也没有 one-send-many-accept query | 建一个 `hmac-only` 两 slot Tamarin 变体：同一完整 confirmed message 输入两个 slot；显式表达 sender/accept occurrence matching，并加入 matching-accept executability 与 lifecycle sanity | expected/not actual：matching existence/order 成立；`one_send_two_accepts_exists` verified；same-batch/same-state injectivity falsified | 把现有 HMAC 与 replay 主线接起来 |
+| 2 | HMAC 下的 duplicate acceptance / injectivity | ✅ | `tamarin/replay/kwaay_replay_hmac_only.spthy` 与 `logs/tamarin-replay-hmac-only/` 已提交；`confirmed_receiver_accept_has_sender`、`confirmed_message_unique_send`、正常路径和 lifecycle 均 verified；`one_confirmed_send_two_accepts_exists` verified；`confirmed_message_accepted_at_most_once` 与 `injective_confirmed_receiver_accept` 均 falsified | 冻结 M1；后续不得把 duplicate accept 写成 duplicate installation，也不得把 HMAC confirmation 写成 replay prevention | 完整 proof 终止；非空正常路径存在；同一 batch/state 的 two-accept witness 排除 sender/receiver state compromise；raw logs 与复现脚本齐全 | 把 ProVerif HMAC P1 与 Tamarin replay/occurrence 主线接起来 |
 | 3 | 原始 BatchReceive 重复接受 | ✅ | `tamarin/replay/kwaay_replay_original.spthy` 已证明 same message 在同一 state/batch 的两个不同 slot 被接受；无 compromise；batch 正常 complete | 冻结 original 模型，不在其中加入 impact 或 repair | 攻击存在性、唯一 send、distinct slots、lifecycle sanity 全部自动完成 | 新问题的协议层证据 |
 | 3 | 跨 batch / close 后 replay 边界 | ✅ | 当前模型已证明 receiver state 单 batch、close 后无 accept；反例限定为同一 batch duplicate input | 在论文中明确这不是 rollback、cross-batch replay 或 state reuse | attack scope 一句话可准确复述 | 避免夸大 |
 | 4 | P3 under `C_install` 组合接口定义 | ⬜ | `C_install` 已命名冻结；目前没有 `InstallSession` 模型或结果 | M2 单独建 `impact` 模型并实现五项 `C_install` 假设 | 接口、fresh handle、唯一触发、接口封闭性和正常路径均被显式建模 | 条件化影响证据 |
@@ -119,29 +123,41 @@ P3 under C_install: impact/composition layer，当前 not modeled
 也可以采用其他显式 occurrence-level encoding。不能把 tuple equality 自动当作
 occurrence equality。
 
-M0.1 文档现已冻结，进入 M1 的文档前置条件已经满足；这不代表 M1 已建模或已运行。
+M0.1 文档已冻结；M1 已按实际 artifact 和日志完成。仓库当前仍缺少单独的
+`docs/milestones/M0-completion.md` 历史记录，这一文档缺口不改变 M0 的既有
+artifact 状态，也不阻塞 M1 登记。
 
-### M1：建立 HMAC-only replay bridge
+### M1：建立 HMAC-only replay bridge ✅
 
-目的：证明“key confirmation 修复 Q1，但本身不提供 freshness / replay prevention / injectivity”。
+目的：检查“key confirmation 修复 ProVerif P1，但本身是否提供 replay prevention /
+occurrence injectivity”。以下全部来自实际 lemma 和提交日志，不是路线图预期。
 
-预期结果（当前尚无 HMAC-only replay artifact，不是 actual result）：
+| 检查项 | actual lemma / evidence | 实际结果 |
+|---|---|---|
+| matching existence/order | `confirmed_receiver_accept_has_sender` | `verified` |
+| one-send-two-accepts reachability | `one_confirmed_send_two_accepts_exists` | `verified`，17 steps |
+| same-batch/same-state occurrence injectivity | `injective_confirmed_receiver_accept` | `falsified - found trace`，15 steps |
+| confirmed message at-most-once | `confirmed_message_accepted_at_most_once` | `falsified - found trace`，15 steps |
+| normal-path executability / non-vacuity | `normal_confirmed_single_accept`；`normal_confirmed_batch_complete` | `verified`，12 / 18 steps |
+| sender occurrence 消歧 | `confirmed_message_unique_send` | `verified`；相同完整 confirmed tuple 唯一确定 send timepoint |
+| lifecycle regressions | 11 个 selected lifecycle/state lemmas | 全部 `verified` |
+| compromise scope | attack witness + trace condition | 无 `CompromiseReceiverState` 或 `CompromiseSenderState`；未建立 compromise-conditioned HMAC theorem |
 
-```text
-HMAC-only:
-  matching existence/order = true
-  same-batch/same-state one-send-two-accepts = reachable
-  same-batch/same-state injective agreement = false
-  matching accept path = reachable (non-vacuity only)
-  batch completion path = reachable (lifecycle sanity only)
-```
+事件匹配坐标为 `(A,B,m,sid,k,tag)`，receiver occurrence context 为
+`(bid,idx,rst)`。同一 public confirmed message
+`<m,hmac(confirm_key(k),sid)>` 被放入两个不同 slot。fresh ciphertext
+randomness 与 `confirmed_message_unique_send` 用于消除 sender occurrence 歧义；
+该 lemma 不是 P2 injectivity，也不是 replay prevention。
 
-M1 的 sender/accept matching 必须是 occurrence-aware：若直接复用消息参数元组，
-需要像 `full_message_unique_send` 一样消除 sender occurrence 歧义；也允许采用其他
-显式 occurrence-level encoding。`normal_single_accept` 式 witness 只证明至少一个
-matching accept 可达，不能用来证明 one-send-one-accept。
+`!HonestSession(A,B,rst,m,sid,k)` 是接收规则的持久来源关系，因此 Tamarin
+bridge 中 matching existence/order 主要是结构性结果。这个 bridge 的独立贡献是
+replay/receiver-occurrence 分析，而不是重新证明具体 KEM/KDF/HMAC origin 或
+computational security。HMAC P1 的主要独立正面证据仍是 ProVerif
+`HMAC_BASELINE` 的 `RecvDone ==> SendDone`。
 
-这是把旧工作与新重复接受结果连接成一篇论文的关键步骤。
+M1 结论只到 duplicate `ConfirmedReceiverAccept`。它不包含
+`InstallSession`，不能写成 duplicate installation；P3 under `C_install`
+仍由 M2 调查和建模。
 
 ### M2：实现 P3 under C_install 的 impact/composition 模型
 
@@ -187,12 +203,12 @@ batch/state。只证明 batch-local dedup 时，不得把结果改写成 global 
 
 | 性质 | Original | HMAC only | Dedup only | HMAC + dedup |
 |---|---:|---:|---:|---:|
-| P0-S symbolic secrecy | actual: true | actual ProVerif baseline: true | expected/not modeled: true | expected/not modeled: true |
-| P0-O component origin | actual: true | actual ProVerif component target: true | expected/not modeled: true | expected/not modeled: true |
-| P1 non-injective exact-parameter correspondence | actual: false | actual ProVerif baseline: true；replay bridge not modeled | expected/not modeled: false | expected/not modeled: true |
-| P2 one-send-one-accept / injectivity | actual replay: false | expected/not modeled: false | expected/not modeled: true | expected/not modeled: true |
+| P0-S symbolic secrecy | actual: true | actual ProVerif baseline: true；Tamarin bridge 未建模 secrecy | expected/not modeled: true | expected/not modeled: true |
+| P0-O component origin | actual: true | actual ProVerif component target: true；Tamarin bridge 未独立建模 concrete origin | expected/not modeled: true | expected/not modeled: true |
+| P1 non-injective exact-parameter correspondence | actual: false | actual ProVerif baseline: true；Tamarin matching existence/order verified 但在 `HonestSession` 下主要为结构性结果 | expected/not modeled: false | expected/not modeled: true |
+| P2 one-send-one-accept / injectivity | actual replay: false | actual HMAC-only replay: false（same-batch/same-state） | expected/not modeled: true | expected/not modeled: true |
 | P3 under `C_install` unique installation | not modeled | not modeled | not modeled | not modeled |
-| batch lifecycle / atomic close | actual selected lifecycle lemmas: true | replay bridge not modeled | expected/not modeled: true | expected/not modeled: true |
+| batch lifecycle / atomic close | actual selected lifecycle lemmas: true | actual selected HMAC-bridge lifecycle lemmas: true | expected/not modeled: true | expected/not modeled: true |
 
 实际模型结果如与“预期”不同，先解释原因，不能直接改查询去迎合表格。
 M4 对 P2 的 positive 结果也必须报告实际量化范围；same-batch/same-state
@@ -263,16 +279,21 @@ M0 + M1 + M2 + M3 + M4 + M5
 
 ## 7. 当前唯一下一步
 
-当前不要先写论文正文，也不要继续扩通用 Q1 或 Big Brother 模型。
+当前不要先写论文正文，不要开始 M3 dedup，也不要把 duplicate
+`ConfirmedReceiverAccept` 提前写成 duplicate installation。
 
-M0.1 的性质、证据和 threat/compromise 文档已经在 `main` 的 commit `b196fda`
-冻结。该冻结只授权开始 M1，不包含任何 M1 模型或结果。唯一下一步是 M1：
+M1 已完成并通过审查。当前唯一下一步是 M2：
 
 ```text
-建立 HMAC-only 两 slot replay 模型，验证 confirmation 是否仍允许 one-send-many-accepts。
+调查并建模 C_install impact/composition：
+确认 Figure 7 的 receiver output 如何触发上层 session installation，
+冻结 ReceiverAccept -> InstallSession 接口与五项 C_install 假设，
+然后验证 one send -> two accepts 是否在这些显式假设下导致
+same sid / same key / distinct local handles。
 ```
 
-只有完成 M1，才能确认现有 Q1/HMAC 工作与新 replay 结果是否能组成同一条论文主线。
+如果规范或实际集成无法支持 `C_install`，就把研究判断降级为
+conditional/unknown impact；不得通过改写 M1 的 duplicate-accept 结果来补足影响层。
 
 ## 8. Venue 规格依据
 
