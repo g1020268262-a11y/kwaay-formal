@@ -671,3 +671,7 @@ P2 HMAC-only replay: falsified in the same-batch/same-state subdomain
 P2 fixed/combined: not modeled
 P3 under C_install: not modeled
 ```
+
+Accordingly, the current unique next task is M2: investigate and model the
+`C_install` impact/composition interface. M3 batch-local dedup has not started,
+and duplicate `ReceiverAccept` must not be relabeled as duplicate installation.
