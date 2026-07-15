@@ -30,6 +30,7 @@ Tamarin:
   V6 split-KEM / receiver state / dynamic batch skeleton
   V7 fixed four-slot terminal lifecycle
   replay original 的 fixed two-slot duplicate-input 模型
+  HMAC-only replay bridge 的 fixed two-slot confirmed-message 模型
   preliminary deniability diff models
 ```
 
@@ -37,7 +38,7 @@ Tamarin:
 
 ## 协议对象映射
 
-| K-Waay 对象 | ProVerif 抽象 | Tamarin V6/V7 | Tamarin replay original | 状态 |
+| K-Waay 对象 | ProVerif 抽象 | Tamarin V6/V7 | Tamarin replay artifacts | 状态 |
 |---|---|---|---|---|
 | sender identity `A` | symbolic name / process parameter | agent variable `$A` | agent variable `$A` | 已建模 |
 | receiver identity `B` | symbolic name / process parameter | agent variable `$B` | agent variable `$B` | 已建模 |
@@ -61,8 +62,8 @@ Tamarin:
 | batch fail | 未显式建模 | `BatchFail`, `BatchSlotFail` | `BatchFail`, fixed-slot failure rules | 抽象建模 |
 | batch complete | 未显式建模 | `BatchComplete` | `BatchComplete` after two processed slots | 抽象建模 |
 | state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 同名 compromise events；P2 witness 排除二者全程出现 | 已建模但 theorem 范围不同 |
-| HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立变体 | 未建模 | 未建模；HMAC-only replay bridge 尚未建立 | ProVerif baseline 已建模；M1 bridge 缺失 |
-| duplicate input / replay | no batch slot，不能表达 | 不是 V6/V7 的专门攻击目标 | same message 被加入 fixed two-slot batch；`one_send_two_accepts_exists` | original 反例已建模 |
+| HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立 no-batch 变体 | 未建模 | HMAC-only bridge 中 `tag=hmac(confirm_key(k),sid)`，public confirmed message 为 `<m,tag>` | ProVerif P1 baseline 与 Tamarin M1 replay bridge 均已建模；证据角色不同 |
+| duplicate input / replay | no batch slot，不能表达 | 不是 V6/V7 的专门攻击目标 | original 与 HMAC-only 都把同一完整 message 放入 fixed two-slot batch；相应 one-send-two-accept witness verified | original 与 HMAC-only same-batch/same-state 反例已建模 |
 | session installation | 未建模 | 无 `InstallSession` / local handle event | 无 `InstallSession` / local handle event | P3 under `C_install` 未建模；M2 负责 |
 | deniability | 未建模 | 不在 V6/V7；由 core/malicious/negative `--diff` 独立 artifacts 建模 | 未建模 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
@@ -88,6 +89,12 @@ Tamarin:
 | P2 matching-accept executability / non-vacuity | Tamarin replay original — fixed two-slot replay abstraction | `normal_single_accept` | 至少一个 honest `SenderSession` 及其更晚 matching `ReceiverAccept` 的路径可达 | verified exists-trace；does not exclude additional `ReceiverAccept` events；不是 universal theorem |
 | P2 lifecycle sanity | Tamarin replay original — fixed two-slot replay abstraction | `normal_batch_complete` | 正常 accept 路径可到 batch complete | verified exists-trace；不是 universal theorem |
 | P2 attack witness | Tamarin replay original — fixed two-slot replay abstraction | `one_send_two_accepts_exists` | 无 compromise 时，同一 `bid/rst` 中 one send 可产生两个不同 slot accepts | verified exists-trace；不是 universal theorem |
+| HMAC bridge matching existence/order | Tamarin HMAC-only replay bridge | `confirmed_receiver_accept_has_sender` | 每个 confirmed accept 有更早 matching send | verified；因接收规则依赖 `HonestSession`，主要是结构性来源映射 |
+| HMAC bridge sender occurrence disambiguation | Tamarin HMAC-only replay bridge | `confirmed_message_unique_send` | 相同 `(A,B,m,sid,k,tag)` 只对应一个 send timepoint | verified；不是 injectivity 或 replay prevention |
+| HMAC bridge P2 occurrence injectivity | Tamarin HMAC-only replay bridge | `injective_confirmed_receiver_accept` | same `bid/rst` 下一个 matching send 不应对应两个 accept occurrences | falsified；same-batch/same-state |
+| HMAC bridge normal-path non-vacuity | Tamarin HMAC-only replay bridge | `normal_confirmed_single_accept`, `normal_confirmed_batch_complete` | matching accept 与 normal batch completion 均可达 | verified exists-trace |
+| HMAC bridge attack witness | Tamarin HMAC-only replay bridge | `one_confirmed_send_two_accepts_exists` | 同一 confirmed message 在两个不同 slot 通过同一 HMAC gate | verified；无 sender/receiver state compromise |
+| HMAC bridge lifecycle regressions | Tamarin HMAC-only replay bridge | selected 11 lifecycle/state lemmas | add/seal/process/close/state-consumption 语义未因 bridge 退化 | 全部 verified |
 | P3 under `C_install` unique session installation | 尚无 impact/composition model | 尚无 `InstallSession` / `unique_install` | 命名组合假设下 receiver output 到 fresh local handle 的条件化性质 | not modeled；M2 负责实现 |
 
 P1 与 P2 使用不同 event vocabulary。ProVerif 的
@@ -95,14 +102,14 @@ P1 与 P2 使用不同 event vocabulary。ProVerif 的
 或 receiver state；replay 的 `SenderSession`/`ReceiverAccept` 显式包含完整
 message 和 receiver-side occurrence context。二者不能自动视为等价事件。
 
-Replay original 的参数级 matching 还依赖 `full_message_unique_send` 将完整
-sender tuple 唯一化为一个 sender occurrence。若未来 artifact 继续采用当前
-直接按 tuple matching 的方式，则需要对 sender occurrence 做消歧，例如证明
-tuple 唯一性，或加入明确的 occurrence/session identifier。其他显式
-occurrence-level injective matching 编码同样可以接受，但必须写清 matching
-relation、sender witnesses 和 injectivity 依据，不能无条件把 tuple equality
-当作 occurrence equality。这不是要求当前 M1 修改事件；M1 可以继承当前方式，
-也可以采用其他明确且正确的 occurrence-level encoding。
+Replay original 的参数级 matching 依赖 `full_message_unique_send` 将完整
+sender tuple 唯一化为一个 sender occurrence。M1 HMAC-only bridge 对
+`(A,B,m,sid,k,tag)` 使用 fresh ciphertext randomness 与
+`confirmed_message_unique_send` 完成同样的 occurrence 消歧。两者都不能把
+该 lemma 解释成 injectivity 或 replay prevention。未来 fixed/combined artifact
+若继续按 tuple matching，需要保留等价的消歧证明，或加入明确的
+occurrence/session identifier；不能无条件把 tuple equality 当作 occurrence
+equality。
 
 只有在同一 artifact instantiation、相同事件语义和相同参数元组下，才允许
 写 `P2 => P1`。
@@ -181,6 +188,24 @@ fixed two-slot same-batch duplicate-input trace
 original 不建模真实 vector traversal、真实 decapsulation failure、HMAC、去重
 修复或 session installation。
 
+### HMAC-only replay bridge
+
+`tamarin/replay/kwaay_replay_hmac_only.spthy` 复用 fixed two-slot lifecycle，
+显式加入：
+
+```text
+tag = hmac(confirm_key(k),sid)
+confirmed message = <m,tag>
+ConfirmedSend(A,B,m,sid,k,tag)
+ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag)
+```
+
+它验证 confirmed-message matching、sender occurrence 消歧、正常路径和
+lifecycle，并给出 same-batch/same-state duplicate acceptance 反例。
+`HonestSession` 是接收规则的持久来源关系，因此 matching existence 主要为
+结构性结果；该模型的职责是 replay/occurrence 分析。具体 HMAC P1 的主要独立
+证据仍来自 ProVerif HMAC baseline。
+
 ### Independent deniability artifacts
 
 独立 core/malicious/negative `--diff` 模型提供 preliminary symbolic
@@ -189,7 +214,6 @@ deniability evidence；它们不属于 V6/V7 lifecycle 或 replay original。
 整个 Tamarin 分支当前仍不建模：
 
 ```text
-HMAC-only replay bridge
 batch-local duplicate rejection / repaired injectivity
 receiver output -> upper-layer session installation
 computational security
@@ -203,9 +227,11 @@ complete malicious / Big Brother / computational deniability
 ```text
 K-Waay Figure 7 core 可以满足 symbolic secrecy-style properties，
 但不满足 `(A,B,sid,k)` full-parameter non-injective correspondence；
-HMAC confirmation 在 no-compromise baseline 中恢复该 correspondence；
-original BatchReceive replay abstraction 在 same-batch/same-receiver-state
-子范围内产生 injectivity 反例，该反例足以否定 global one-send-one-accept；
+HMAC confirmation 在 ProVerif no-compromise baseline 中恢复该 correspondence；
+HMAC-only Tamarin bridge 进一步表明 confirmation 本身不提供
+same-batch/same-state replay prevention 或 occurrence injectivity；
+该 bridge 的 matching existence 在 `HonestSession` 下主要是结构性结果；
+original 与 HMAC-only replay 反例都足以否定 global one-send-one-accept；
 P3 under C_install 的上层 unique session installation 尚未建模。
 ```
 
@@ -237,6 +263,7 @@ full deniability
 full BatchReceive vector correctness
 real KEM decapsulation failure behavior
 HMAC 已阻止 duplicate acceptance
+duplicate ReceiverAccept 已等同于 duplicate installation
 P3 under C_install / concrete session cloning impact
 ```
 
@@ -257,14 +284,15 @@ proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
 tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
 tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
 tamarin/replay/kwaay_replay_original.spthy
+tamarin/replay/kwaay_replay_hmac_only.spthy
 ```
 
 后续里程碑不得把预期结果写成实际结果：
 
 ```text
-M1: HMAC-only replay bridge
-M2: implement the named C_install impact/composition interface
-M3: fixed batch-local atomic dedup
+M1: ✅ HMAC-only replay bridge completed with raw evidence
+M2: current unique next — investigate and model the named C_install impact/composition interface
+M3: future fixed batch-local atomic dedup
 M4: HMAC + dedup combined regression
 M5: artifact/result freeze
 ```

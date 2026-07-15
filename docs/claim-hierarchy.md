@@ -190,22 +190,27 @@ batch slot, local session handle, or implementation state.
 `partially modeled` across the paper main line:
 
 - original Figure 7 core: `falsified`;
-- HMAC confirmation, no-compromise baseline: `established`;
+- HMAC confirmation, no-compromise ProVerif baseline: `established`;
 - HMAC under A signing-key compromise: `falsified`;
-- HMAC plus batch-slot replay semantics: `not modeled`.
+- HMAC-only two-slot Tamarin bridge: matching existence/order `established`,
+  while same-batch/same-state occurrence injectivity is `falsified`.
+  Because receiver processing requires persistent `HonestSession`, the bridge's
+  matching-existence result is mainly structural; ProVerif remains the main
+  independent evidence for HMAC P1.
 
 ### 3.3 Protocol variants
 
 - original Figure 7 core;
 - HMAC confirmation;
-- future HMAC-only replay bridge;
+- HMAC-only two-slot replay bridge;
 - future HMAC+dedup combined fix.
 
 ### 3.4 Model files
 
 - `proverif/kwaay_core_final.cpp.pv`
 - `proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv`
-- no HMAC-only replay or combined model currently exists
+- `tamarin/replay/kwaay_replay_hmac_only.spthy`
+- no HMAC+dedup combined model currently exists
 
 ### 3.5 Events and query
 
@@ -226,8 +231,19 @@ Evidence:
 - `logs/final/proverif/summary.txt`
 - `logs/variants/hmac-confirmation/proverif/summary.txt`
 
-The roadmap expectation that HMAC confirmation still permits duplicate slot
-acceptance is not an actual P1/P2 result. It remains an M1 hypothesis.
+The HMAC-only Tamarin bridge now adds actual occurrence evidence:
+
+- `confirmed_receiver_accept_has_sender`: `verified`;
+- `confirmed_message_unique_send`: `verified`;
+- `one_confirmed_send_two_accepts_exists`: `verified`;
+- `injective_confirmed_receiver_accept`: `falsified - found trace`.
+
+These results do not replace the ProVerif HMAC P1 theorem. In the bridge,
+`ConfirmedReceiverAccept` structurally consumes a persistent
+`HonestSession(A,B,rst,m,sid,k)` source relation, so matching existence/order is
+mainly a source-event mapping result. The bridge establishes replay/occurrence
+behavior for a confirmed message, not concrete HMAC-origin or computational
+security.
 
 ### 3.7 Assumptions
 
@@ -260,10 +276,11 @@ Do not write:
 
 ### 3.10 Completion milestone
 
-M1 must connect HMAC confirmation to a two-slot replay model and separate
-non-injective correspondence from injectivity. M4 must establish the combined
-HMAC+dedup P1 result and regress the selected compromise cases. M5 must freeze
-the final evidence.
+M1 is complete: the HMAC-only bridge separates structural matching existence
+from falsified same-batch/same-state occurrence injectivity and preserves the
+ProVerif HMAC baseline as the main independent P1 evidence. M4 must establish
+the combined HMAC+dedup P1 result and regress the selected compromise cases.
+M5 must freeze the final paper artifact.
 
 ## 4. P2: injective one-send-one-accept
 
@@ -344,39 +361,58 @@ event vocabularies.
 
 ### 4.2 Current status
 
-`falsified` for replay original.
+`falsified` for both replay original and the HMAC-only replay bridge in the
+same-batch/same-receiver-state subdomain.
 
 Positive P2 for dedup-only or HMAC+dedup is `not modeled`.
 
 ### 4.3 Protocol variants
 
 - original, unhardened `BatchReceive` replay abstraction;
-- future HMAC-only replay bridge;
+- HMAC-only two-slot replay bridge;
 - future dedup-only fixed model;
 - future HMAC+dedup combined model.
 
 ### 4.4 Model file
 
 - `tamarin/replay/kwaay_replay_original.spthy`
+- `tamarin/replay/kwaay_replay_hmac_only.spthy`
 
-No HMAC-only replay, fixed, or combined model currently exists.
+No fixed or combined model currently exists.
 
 ### 4.5 Events and evidence roles
+
+Original events:
 
 - `SenderSession(A,B,m,sid,k)`
 - `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)`
 
-| Evidence role | Query / lemma | Actual result |
-|---|---|---|
-| matching existence/order | `receiver_accept_has_sender` | `verified` |
-| sender-occurrence uniqueness / matching disambiguation | `full_message_unique_send` | `verified` |
-| same-batch/same-receiver-state occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
-| matching-accept executability / non-vacuity | `normal_single_accept` | `verified` |
-| lifecycle sanity | `normal_batch_complete` | `verified` |
-| attack witness | `one_send_two_accepts_exists` | `verified` |
+HMAC-only bridge events:
 
-Supporting replay lemmas are `same_message_accepted_at_most_once` and
-`slot_indices_distinct`.
+- `ConfirmedSend(A,B,m,sid,k,tag)`
+- `ConfirmedReceiverAccept(B,A,bid,idx,rst,m,sid,k,tag)`
+
+The HMAC matching coordinates are `(A,B,m,sid,k,tag)`; its receiver occurrence
+context is `(bid,idx,rst)`.
+
+| Artifact | Evidence role | Query / lemma | Actual result |
+|---|---|---|---|
+| original | matching existence/order | `receiver_accept_has_sender` | `verified` |
+| original | sender-occurrence disambiguation | `full_message_unique_send` | `verified` |
+| original | same-batch/same-state occurrence injectivity | `injective_receiver_accept` | `falsified - found trace` |
+| original | matching-accept non-vacuity | `normal_single_accept` | `verified` |
+| original | lifecycle sanity | `normal_batch_complete` | `verified` |
+| original | attack witness | `one_send_two_accepts_exists` | `verified` |
+| HMAC-only | matching existence/order | `confirmed_receiver_accept_has_sender` | `verified` |
+| HMAC-only | sender-occurrence disambiguation | `confirmed_message_unique_send` | `verified` |
+| HMAC-only | same-batch/same-state occurrence injectivity | `injective_confirmed_receiver_accept` | `falsified - found trace` |
+| HMAC-only | confirmed message at-most-once | `confirmed_message_accepted_at_most_once` | `falsified - found trace` |
+| HMAC-only | matching-accept non-vacuity | `normal_confirmed_single_accept` | `verified` |
+| HMAC-only | lifecycle sanity | `normal_confirmed_batch_complete` | `verified` |
+| HMAC-only | attack witness | `one_confirmed_send_two_accepts_exists` | `verified` |
+
+Both models also verify `slot_indices_distinct` and their selected lifecycle
+lemmas.
 
 ### 4.6 Actual results
 
@@ -391,44 +427,68 @@ Supporting replay lemmas are `same_message_accepted_at_most_once` and
 - all selected lifecycle/state-consumption lemmas in the same model terminate
   with the results recorded in `tamarin/replay/README.md`.
 
+HMAC-only actual results:
+
+- `normal_confirmed_single_accept`: `verified` (12 steps).
+- `normal_confirmed_batch_complete`: `verified` (18 steps).
+- `confirmed_receiver_accept_has_sender`: `verified` (16 steps).
+- `confirmed_message_unique_send`: `verified` (2 steps).
+- `one_confirmed_send_two_accepts_exists`: `verified` (17 steps).
+- `confirmed_message_accepted_at_most_once`: `falsified - found trace` (15 steps).
+- `injective_confirmed_receiver_accept`: `falsified - found trace` (15 steps).
+- all 11 selected lifecycle/state-consumption lemmas: `verified`.
+
 Evidence:
 
 - `tamarin/replay/README.md`
+- `tamarin/replay/README-hmac-only.md`
 - model lemmas in `tamarin/replay/kwaay_replay_original.spthy`
+- model lemmas in `tamarin/replay/kwaay_replay_hmac_only.spthy`
+- `logs/tamarin-replay-hmac-only/summary.txt`
+- `logs/tamarin-replay-hmac-only/raw.out`
+- `logs/tamarin-replay-hmac-only/attack-trace.out`
+- `logs/tamarin-replay-hmac-only/original-regression-summary.txt`
+- `logs/tamarin-replay-hmac-only/hmac-baseline-regression-summary.txt`
 
 Thus global P2 is `falsified` because occurrence injectivity already fails in
-the same-batch/same-receiver-state subdomain. Matching existence/order and
-matching-accept executability both hold in the replay abstraction; they are not
-the failure point. `full_message_unique_send` additionally disambiguates the
-sender occurrence matched by the complete tuple. It is not P2 injectivity.
-`normal_single_accept` proves that a matching accept path is non-vacuous, not
-that the trace contains exactly one accept. No positive global injectivity
-theorem is present.
+the same-batch/same-receiver-state subdomain in both replay artifacts. Matching
+existence/order and matching-accept executability hold; they are not the failure
+point. The HMAC bridge's `confirmed_message_unique_send` disambiguates the
+sender occurrence but does not provide P2 injectivity or replay prevention.
+No positive global injectivity theorem is present.
 
-The repository currently lacks a committed raw replay `.out`/summary file; the
-documented command and result table are therefore weaker artifact evidence than
-the ProVerif and V6/V7 log directories.
+The M1 evidence bundle contains committed full raw output, a selected attack
+trace in text/JSON/DOT, exact commands and versions, and original/HMAC-baseline
+regressions. The selected-lemma trace run labels unrelated lemmas incomplete
+because only one lemma was requested; the full `raw.out` completed all lemmas
+with no timeout or incomplete result.
 
 ### 4.7 Assumptions
 
-- fixed two-slot symbolic batch;
-- matching coordinates `(A,B,m,sid,k)`;
-- receiver-side occurrence context `(bid,idx,rst)`;
-- the attack witness uses the same `B,bid,rst` and distinct fresh slot indices
+- both replay artifacts use a fixed two-slot symbolic batch;
+- original matching coordinates are `(A,B,m,sid,k)`; HMAC-only coordinates are
+  `(A,B,m,sid,k,tag)`;
+- receiver-side occurrence context is `(bid,idx,rst)`;
+- each witness uses the same `B,bid,rst` and distinct fresh slot indices
   `idx1,idx2`;
-- the witness reaches normal `BatchComplete`;
-- no `CompromiseReceiverState` or `CompromiseSenderState` anywhere in the witness;
-- successful decapsulation is abstracted by a persistent `HonestSession` relation;
-- no HMAC, duplicate cache, `SeenSid`, session installation, or application state.
+- each witness reaches normal `BatchComplete`;
+- no `CompromiseReceiverState` or `CompromiseSenderState` anywhere in either witness;
+- successful decapsulation/session reconstruction is abstracted by persistent
+  `HonestSession`; in the HMAC bridge this also makes matching existence largely structural;
+- the HMAC bridge models symbolic `tag=hmac(confirm_key(k),sid)` and exact
+  confirmed-message equality, but not a computational HMAC game;
+- no duplicate cache, `SeenSid`, session installation, or application state.
 
 ### 4.8 Allowed paper statement
 
-> In the bounded original BatchReceive model, one complete honest message can
-> be accepted in two distinct slots of the same batch and receiver state, with
-> no sender or receiver state compromise and with normal batch completion.
-> This same-batch/same-state counterexample is sufficient to falsify the
-> stronger global one-send-one-accept property, without claiming that the
-> model supplies a positive theorem over arbitrary batches or states.
+> In the bounded original and HMAC-only BatchReceive replay models, one complete
+> honest message can be accepted in two distinct slots of the same batch and
+> receiver state, with no sender or receiver state compromise and with normal
+> batch completion. In the HMAC-only bridge, both accepts pass the same symbolic
+> confirmation gate over `<m,hmac(confirm_key(k),sid)>`. These same-batch/
+> same-state counterexamples are sufficient to falsify the stronger global
+> one-send-one-accept property, without claiming a positive theorem over
+> arbitrary batches or states.
 
 ### 4.9 Prohibited overstatements
 
@@ -437,19 +497,21 @@ Do not write:
 - “The message is forged.” The witness reuses one authentic message.
 - “Component authenticity prevents duplicate acceptance.”
 - “The attack is cross-batch replay, rollback, or state reuse after close.”
-- “HMAC has been proved replayable.” The HMAC-only bridge does not exist.
+- “HMAC is forged or computationally broken.” The witness reuses one honestly
+  constructed confirmed message; it establishes duplicate acceptance, not forgery.
 - “A fixed model proves injectivity.” No fixed model exists yet.
 - “Duplicate receiver outputs prove duplicate installed sessions.” That would be
   P3 under `C_install`, which is not modeled.
 
 ### 4.10 Completion milestone
 
-M1 must test the same-batch/same-receiver-state P2 condition in the HMAC-only
-replay bridge. M3 and M4 must state whether their positive injectivity lemmas
-remain batch/state scoped or explicitly quantify across batches and receiver
-states; a same-batch positive result must not be relabeled as global P2. M3
-owns the batch-local atomic dedup model, M4 owns the combined HMAC+dedup model
-and lifecycle/P0 regressions, and M5 must save raw reproducible evidence.
+M1 has tested and falsified the same-batch/same-receiver-state P2 condition in
+the HMAC-only replay bridge with committed raw evidence. M3 and M4 must state
+whether their future positive injectivity lemmas remain batch/state scoped or
+explicitly quantify across batches and receiver states; a same-batch positive
+result must not be relabeled as global P2. M2 first owns P3 under `C_install`;
+M3 owns the batch-local atomic dedup model, M4 the combined HMAC+dedup model and
+regressions, and M5 the final artifact freeze.
 
 When a future artifact uses the current direct tuple-based matching style, it
 must disambiguate sender occurrences. Two possible approaches are:
@@ -464,9 +526,10 @@ injective-correspondence formulation is acceptable if its matching relation,
 sender witnesses, and injectivity argument are stated explicitly and it does
 not identify tuple equality with occurrence equality without justification.
 
-This is a future model-design constraint, not a requirement for M1 to add or
-rename an event. M1 may inherit the current tuple-based matching style or use a
-different explicit and justified occurrence-level encoding.
+M1 satisfied this constraint with the full tuple
+`(A,B,m,sid,k,tag)`, fresh sender ciphertext randomness, and the verified
+`confirmed_message_unique_send` lemma. Future fixed/combined artifacts must
+retain an equally explicit occurrence-disambiguation argument.
 
 ## 5. P3 under C_install: unique session installation
 
@@ -595,14 +658,16 @@ P2 => P1, only for the same artifact instantiation, event semantics,
           and matching parameter tuple.
 ```
 
-The main-line evidence state at M0 is therefore:
+The main-line evidence state after M1 is therefore:
 
 ```text
 P0 baseline: established
 P1 original: falsified
-P1 HMAC baseline: established
+P1 HMAC ProVerif baseline: established
 P1 HMAC under A signing-key compromise: falsified
+HMAC-only Tamarin matching existence/order: established but structurally mediated by HonestSession
 P2 Tamarin replay original: falsified
-P2 HMAC-only/fixed/combined: not modeled
+P2 HMAC-only replay: falsified in the same-batch/same-state subdomain
+P2 fixed/combined: not modeled
 P3 under C_install: not modeled
 ```

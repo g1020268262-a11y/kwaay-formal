@@ -72,7 +72,7 @@ The direction of every `experimentally checked` cell appears in section 5.
 | Tamarin receiver/batch lifecycle V6 | `slot_key_known_requires_exception` branch reachability | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | Tamarin receiver/batch lifecycle V7 | P0-O `slot_origin` | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
-| HMAC-only replay bridge | P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC-only replay bridge | P2 occurrence injectivity | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
@@ -102,7 +102,9 @@ checked reachability trace.
 | Tamarin receiver/batch lifecycle V7 | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
 | Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | falsified | falsified | unknown | unknown | not applicable |
 | Tamarin replay original — fixed two-slot replay abstraction | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
-| HMAC-only replay bridge | P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
+| HMAC-only replay bridge | matching existence/order | proved | proved | unknown | unknown | not applicable |
+| HMAC-only replay bridge | P2 occurrence injectivity | falsified | falsified | unknown | unknown | not applicable |
+| HMAC-only replay bridge | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
 | impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
@@ -114,11 +116,12 @@ timing column means only “exclude early compromise and permit later compromise
 syntactically.” The `unknown` after-target cells record that no dedicated
 late-compromise exists-trace was checked.
 
-The replay P2 counterexample excludes both
-`CompromiseReceiverState` and `CompromiseSenderState` everywhere. It
-therefore falsifies P2 in the no-compromise subset as well as the broader class
-that merely permits later compromise; it does not show a trace in which later
-compromise actually occurs.
+The original and HMAC-only replay P2 counterexamples both exclude
+`CompromiseReceiverState` and `CompromiseSenderState` everywhere. They
+therefore falsify P2 in the no-compromise subset as well as the broader class
+that merely permits later compromise; neither shows a trace in which later
+compromise actually occurs. The HMAC bridge has no independent result for
+authentication-key, KEM-material, or computational HMAC compromise.
 
 ## 5. Experiment-direction ledger
 
@@ -141,6 +144,7 @@ capability is therefore always `timing not represented`.
 | ProVerif final core — `LEAK_ALL_RECEIVER_SECRETS` | P0-S sender/receiver secrecy; P1 | receiver long-term KEM + ephemeral KEM + split-KEM state | timing not represented | failed: both secrecy queries and P1 failed | secrecy held; P1 falsified | P1: no; secrecy failures: not established from baseline comparison alone | `logs/final/proverif/summary.txt` |
 | ProVerif HMAC confirmation — `HMAC_LEAK_SIGSK_A` | P0-S sender/receiver secrecy; P1 | sender authentication key | timing not represented | mixed: sender held; receiver failed; P1 failed | all three held | not established as a complete compromise theorem; only this target was checked | `logs/variants/hmac-confirmation/proverif/summary.txt` |
 | Tamarin replay original — `one_send_two_accepts_exists`, `injective_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | baseline falsified | no; compromise explicitly excluded everywhere | `tamarin/replay/README.md` |
+| HMAC-only replay bridge — `one_confirmed_send_two_accepts_exists`, `injective_confirmed_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | matching existence and normal path held | no; compromise explicitly excluded everywhere | `logs/tamarin-replay-hmac-only/summary.txt`, `attack-trace.out` |
 
 For every core leak row, P1 is
 `baseline-falsified; compromise not required`. For replay P2, the same
@@ -221,15 +225,42 @@ Recorded results: `tamarin/replay/README.md`
 
 The exists-trace lemmas establish reachability, not universal security.
 
+### 6.6 HMAC-only replay bridge — fixed two-slot confirmed-message abstraction
+
+Model: `tamarin/replay/kwaay_replay_hmac_only.spthy`
+
+README: `tamarin/replay/README-hmac-only.md`
+
+Raw evidence: `logs/tamarin-replay-hmac-only/`
+
+- matching existence/order: `confirmed_receiver_accept_has_sender`, `verified`;
+- sender occurrence disambiguation: `confirmed_message_unique_send`, `verified`;
+- normal-path non-vacuity: `normal_confirmed_single_accept`, `verified`;
+- normal batch completion: `normal_confirmed_batch_complete`, `verified`;
+- attack witness: `one_confirmed_send_two_accepts_exists`, `verified`;
+- at-most-once acceptance: `confirmed_message_accepted_at_most_once`, `falsified`;
+- occurrence injectivity: `injective_confirmed_receiver_accept`, `falsified`;
+- all selected lifecycle/state-consumption lemmas: `verified`.
+
+The witness uses one matching `ConfirmedSend`, two distinct accept timepoints
+and slot indices, the same `A,B,bid,rst,m,sid,k,tag`, and the same public
+`<m,hmac(confirm_key(k),sid)>`, with both accepts before `BatchComplete`.
+No sender/receiver state compromise occurs. `HonestSession` makes the matching
+existence theorem largely structural, so this artifact is a replay/occurrence
+bridge rather than independent HMAC P1 or computational-security evidence.
+
 ## 7. Milestone ownership
 
 | Milestone | Evidence it may add |
 |---|---|
-| M1 | HMAC-only replay bridge P1/P2 results and only explicitly selected compromise targets. |
+| M1 | ✅ HMAC-only replay bridge matching/P2, non-vacuity, lifecycle, no-compromise witness, regressions, and raw logs. |
 | M2 | The first P3 under `C_install` composition model and its interface assumptions. |
 | M3 | Fixed dedup P2 and fixed-impact P3 under `C_install`. |
 | M4 | Combined P0-S/P0-O regressions, P1/P2, P3 under `C_install`, and selected compromise targets. |
 | M5 | Reproducible logs and the final expected-versus-actual freeze. |
 
-Until those artifacts and completed results exist, all HMAC replay, impact,
-fixed, and combined cells remain `not modeled`.
+M1 HMAC replay cells now record completed actual results. They establish
+duplicate receiver acceptance, not duplicate installation. Impact/P3, fixed
+dedup, and combined cells remain `not modeled` until their own artifacts and
+completed runs exist. The current unique next task is M2 `C_install`
+impact/composition investigation and modeling; M3 dedup has not started.
