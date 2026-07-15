@@ -259,6 +259,8 @@ bridge rather than independent HMAC P1 or computational-security evidence.
 | M4 | Combined P0-S/P0-O regressions, P1/P2, P3 under `C_install`, and selected compromise targets. |
 | M5 | Reproducible logs and the final expected-versus-actual freeze. |
 
-M1 HMAC replay cells now record completed actual results. Impact/P3, fixed
+M1 HMAC replay cells now record completed actual results. They establish
+duplicate receiver acceptance, not duplicate installation. Impact/P3, fixed
 dedup, and combined cells remain `not modeled` until their own artifacts and
-completed runs exist.
+completed runs exist. The current unique next task is M2 `C_install`
+impact/composition investigation and modeling; M3 dedup has not started.
