@@ -1,6 +1,6 @@
 # K-Waay：从当前仓库到可投稿模型的路线图
 
-更新时间：2026-07-13
+更新时间：2026-07-15
 
 ## 1. 总判断
 
@@ -39,11 +39,15 @@ HMAC confirmation + batch-local duplicate rejection
 - ⬜：尚未完成，是后续任务。
 - ⛔：有意冻结或移出论文主贡献，不再继续扩展。
 
+当前冻结快照（2026-07-15）：M0/M0.1 已合并至 `main`（commit `b196fda`）；
+M1 尚未开始，仓库中仍不存在 HMAC-only replay artifact。路线图中的 M1–M5
+结果均继续标为 expected/not modeled，不能当作实际运行结果引用。
+
 ## 3. 模型总表
 
 | 阶段 | 任务 | 状态 | 当前证据 / 缺口 | 之后怎么做 | 完成判据 | 投稿作用 |
 |---|---|---:|---|---|---|---|
-| 0 | 冻结论文主问题 | ✅ | `docs/claim-hierarchy.md` 已冻结性质图、P2 matching relation、same-batch/same-state 反例范围与 P3 under `C_install` | 后续只在实际 artifact/result 变化时同步 | 不存在全局线性强度链；每个 claim 指向唯一 artifact/query/lemma；局部 negative 与 global negative 的关系明确 | 防止继续无限补模型 |
+| 0 | 冻结论文主问题 | ✅ | `docs/claim-hierarchy.md` 已冻结性质图、P2 matching relation、same-batch/same-state 反例范围与 P3 under `C_install`；`full_message_unique_send` 和 `normal_single_accept` 的证据角色已校准 | 后续只在实际 artifact/result 变化时同步 | 不存在全局线性强度链；每个 claim 指向唯一 artifact/query/lemma；sender-occurrence disambiguation、injectivity 与 non-vacuity 不混写；局部 negative 与 global negative 的关系明确 | 防止继续无限补模型 |
 | 0 | 通用 Q1 模型作为主贡献 | ⛔ | 已有通用模板，但参数依赖协议映射，不能宣称适用所有协议 | 只保留为内部诊断器 / artifact 辅助材料 | 正文最多一段说明，不再扩展协议族 | 避免稀释论文贡献 |
 | 1 | ProVerif final core | ✅ | `proverif/kwaay_core_final.cpp.pv` 已运行；baseline secrecy true、component authenticity true、`RecvDone ==> SendDone` false | 不再新增功能，只做回归与文档同步 | 固定 commit、版本、命令和结果表 | 论文 baseline |
 | 1 | Tamarin receiver/batch lifecycle | ✅ | V6/V7 已覆盖 compromise、slot、abort、state consumption、fixed 4-slot terminal lifecycle | 将 V6 与 V7 的职责写清，不再追求任意长度 batch | 所有选定 lemma 一键复现，论文不夸称 arbitrary-length | 状态语义支撑 |
@@ -53,7 +57,7 @@ HMAC confirmation + batch-local duplicate rejection
 | 2 | K-Waay 专用 Q1 诊断 | ✅ | `KWAAY_LIKE / ATTACKER_KEY_BAD / AUTHZ_BAD / CONFIRMED_FIX` 已运行 | 仅作为理解和回归材料；主论文使用 final core/HMAC 的真实查询 | 不再依赖模板结果支撑 K-Waay 主 claim | 辅助解释危害边界 |
 | 2 | 原始 core 的 non-injective agreement gap | ✅ | final core 中带 A/B/sid/key 的 `RecvDone ==> SendDone` 为 false | 导出并人工解释最小 trace，确认事件位置和会话绑定 | trace 中每个攻击步骤都能对应 Figure 7 对象 | 既有安全边界 |
 | 2 | HMAC confirmation 修复 non-injective correspondence | ✅ | HMAC baseline 中 correspondence、secrecy、component authenticity 为 true | 保留为“confirmation 修复 Q1”，不要称为 replay 修复 | baseline 与至少必要 compromise case 可复现 | 第一层修复 |
-| 2 | HMAC 下的 duplicate acceptance / injectivity | ⬜ | 当前 HMAC 模型没有 batch slot，也没有 one-send-many-accept query | 建一个 `hmac-only` 两 slot Tamarin 变体：同一完整 confirmed message 输入两个 slot | expected: `one_send_two_accepts_exists` verified；non-injective correspondence 成立；injective agreement falsified | 把现有 HMAC 与 replay 主线接起来 |
+| 2 | HMAC 下的 duplicate acceptance / injectivity | ⬜ | 当前 HMAC 模型没有 batch slot，也没有 one-send-many-accept query | 建一个 `hmac-only` 两 slot Tamarin 变体：同一完整 confirmed message 输入两个 slot；显式表达 sender/accept occurrence matching，并加入 matching-accept executability 与 lifecycle sanity | expected/not actual：matching existence/order 成立；`one_send_two_accepts_exists` verified；same-batch/same-state injectivity falsified | 把现有 HMAC 与 replay 主线接起来 |
 | 3 | 原始 BatchReceive 重复接受 | ✅ | `tamarin/replay/kwaay_replay_original.spthy` 已证明 same message 在同一 state/batch 的两个不同 slot 被接受；无 compromise；batch 正常 complete | 冻结 original 模型，不在其中加入 impact 或 repair | 攻击存在性、唯一 send、distinct slots、lifecycle sanity 全部自动完成 | 新问题的协议层证据 |
 | 3 | 跨 batch / close 后 replay 边界 | ✅ | 当前模型已证明 receiver state 单 batch、close 后无 accept；反例限定为同一 batch duplicate input | 在论文中明确这不是 rollback、cross-batch replay 或 state reuse | attack scope 一句话可准确复述 | 避免夸大 |
 | 4 | P3 under `C_install` 组合接口定义 | ⬜ | `C_install` 已命名冻结；目前没有 `InstallSession` 模型或结果 | M2 单独建 `impact` 模型并实现五项 `C_install` 假设 | 接口、fresh handle、唯一触发、接口封闭性和正常路径均被显式建模 | 条件化影响证据 |
@@ -102,7 +106,20 @@ P3 under C_install: impact/composition layer，当前 not modeled
 否定更强 global one-send-one-accept，但未来同范围的 positive lemma 不能自动
 提升为 arbitrary-batch/arbitrary-state injectivity。
 
-M0.1 文档冻结完成后才允许进入 M1。
+当前 replay evidence bundle 的角色冻结如下：
+
+- `receiver_accept_has_sender`：matching existence/order；
+- `injective_receiver_accept`：same-batch/same-receiver-state occurrence injectivity，当前 falsified；
+- `normal_single_accept`：至少一条 matching accept 路径可达，不排除同一 trace 中还有额外 accept；
+- `normal_batch_complete`：lifecycle sanity；
+- `full_message_unique_send`：在 tuple-based matching 中消除 sender occurrence 歧义，不是 P2 injectivity，也不是 replay prevention；
+- `one_send_two_accepts_exists`：现有 P2 negative result 的攻击存在性 witness。
+
+未来正向 P2 模型若沿用 tuple-based matching，必须保持 sender occurrence 可消歧；
+也可以采用其他显式 occurrence-level encoding。不能把 tuple equality 自动当作
+occurrence equality。
+
+M0.1 文档现已冻结，进入 M1 的文档前置条件已经满足；这不代表 M1 已建模或已运行。
 
 ### M1：建立 HMAC-only replay bridge
 
@@ -112,10 +129,17 @@ M0.1 文档冻结完成后才允许进入 M1。
 
 ```text
 HMAC-only:
-  correspondence = true
+  matching existence/order = true
   same-batch/same-state one-send-two-accepts = reachable
   same-batch/same-state injective agreement = false
+  matching accept path = reachable (non-vacuity only)
+  batch completion path = reachable (lifecycle sanity only)
 ```
+
+M1 的 sender/accept matching 必须是 occurrence-aware：若直接复用消息参数元组，
+需要像 `full_message_unique_send` 一样消除 sender occurrence 歧义；也允许采用其他
+显式 occurrence-level encoding。`normal_single_accept` 式 witness 只证明至少一个
+matching accept 可达，不能用来证明 one-send-one-accept。
 
 这是把旧工作与新重复接受结果连接成一篇论文的关键步骤。
 
@@ -241,7 +265,8 @@ M0 + M1 + M2 + M3 + M4 + M5
 
 当前不要先写论文正文，也不要继续扩通用 Q1 或 Big Brother 模型。
 
-M0.1 的性质、证据和 threat/compromise 文档已经冻结。唯一下一步是 M1：
+M0.1 的性质、证据和 threat/compromise 文档已经在 `main` 的 commit `b196fda`
+冻结。该冻结只授权开始 M1，不包含任何 M1 模型或结果。唯一下一步是 M1：
 
 ```text
 建立 HMAC-only 两 slot replay 模型，验证 confirmation 是否仍允许 one-send-many-accepts。
