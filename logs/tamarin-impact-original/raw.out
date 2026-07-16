@@ -1,0 +1,7 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory Kwaay_Impact_Original] Theory loaded
+[Theory Kwaay_Impact_Original] Theory translated
+[Theory Kwaay_Impact_Original] Theory closed
+tamarin-prover: <<loop>>

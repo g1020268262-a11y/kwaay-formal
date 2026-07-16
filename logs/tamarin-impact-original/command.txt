@@ -1,0 +1,8 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/impact/run-impact-original.sh
+working_directory: /mnt/d/kwaay-formal
+parse_command: tamarin-prover --parse-only tamarin/impact/kwaay_impact_original.spthy
+proof_command: tamarin-prover --derivcheck-timeout=0 --prove tamarin/impact/kwaay_impact_original.spthy
+positive_witness_command: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists --output-json=logs/tamarin-impact-original/attack-trace.json --output-dot=logs/tamarin-impact-original/attack-trace.dot tamarin/impact/kwaay_impact_original.spthy
+negative_property_command: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer --output-json=logs/tamarin-impact-original/unique-install-trace.json --output-dot=logs/tamarin-impact-original/unique-install-trace.dot tamarin/impact/kwaay_impact_original.spthy
+original_regression_command: tamarin-prover --derivcheck-timeout=0 --prove tamarin/replay/kwaay_replay_original.spthy

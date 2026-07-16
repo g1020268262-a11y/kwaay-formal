@@ -1,0 +1,78 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/impact/run-impact-original.sh
+utc_start: 2026-07-16T02:07:53Z
+git_branch: codex/m2-impact-original
+git_head: a4605774c04d6c7f04e422d8754cd3ccad585e94
+git_tree: cc262f041df0103109f00565006e67eab465d08f
+clean_pre_run_status: true
+pre_run_git_status:
+
+model_git_blob_oid: c5cdc0d7233f3a415839b8f289182c0986d911a8
+model_worktree_sha256: 0c20e36137c27bd138101a91ef5ce1e16109fccf696f942eb98c3d855a11fa41
+model_eol: CRLF
+runner_git_blob_oid: 4a8ecdf16dc729c3c8b1575f05cd937d95c1b7c3
+runner_worktree_sha256: 81f9a7de41a05e1510c98044d87a42bb9c20eccea717cabdbbe41a6199d63ca6
+runner_eol: LF
+original_model_git_blob_oid: e3699da2f827a683ded2feaaa7db2d51ad74c023
+original_model_worktree_sha256: 064ec603bdfac917246a12762774701bc624c40ccb11eb6a88adf94befb4322e
+original_model_eol: LF
+git_check_attr_output:
+tamarin/impact/kwaay_impact_original.spthy: text: unspecified
+tamarin/impact/kwaay_impact_original.spthy: eol: unspecified
+tamarin/impact/run-impact-original.sh: text: set
+tamarin/impact/run-impact-original.sh: eol: lf
+tamarin/replay/kwaay_replay_original.spthy: text: unspecified
+tamarin/replay/kwaay_replay_original.spthy: eol: unspecified
+
+tamarin-prover --version:
+maude tool: 'maude'
+ checking version: tamarin-prover 1.12.0, (C) David Basin, Cas Cremers, Jannik Dreier, Simon Meier, Ralf Sasse, Benedikt Schmidt, 2010-2023
+
+This program comes with ABSOLUTELY NO WARRANTY. It is free software, and you
+are welcome to redistribute it according to its LICENSE, see
+'https://github.com/tamarin-prover/tamarin-prover/blob/master/LICENSE'.
+
+3.5.1. OK.
+ checking installation: OK.
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+
+maude --version:
+3.5.1
+
+utc_end: 2026-07-16T02:10:01Z
+parse_exit_status: 0
+proof_exit_status: 1
+positive_witness_exit_status: 0
+negative_property_exit_status: 0
+original_regression_exit_status: 0
+impact_wellformedness_status: 1
+positive_trace_wellformedness_status: 0
+negative_trace_wellformedness_status: 0
+original_wellformedness_status: 0
+impact_result_validation_status: 1
+original_result_validation_status: 0
+positive_trace_artifact_validation_status: 0
+negative_trace_artifact_validation_status: 0
+frozen_formula_comparison_status: 0
+lower_layer_result_comparison_status: 1
+post_run_git_status:
+?? logs/tamarin-impact-original/attack-trace.dot
+?? logs/tamarin-impact-original/attack-trace.json
+?? logs/tamarin-impact-original/attack-trace.out
+?? logs/tamarin-impact-original/command.txt
+?? logs/tamarin-impact-original/frozen-formula-comparison.txt
+?? logs/tamarin-impact-original/lower-layer-result-comparison.txt
+?? logs/tamarin-impact-original/original-regression-summary.txt
+?? logs/tamarin-impact-original/original-regression.out
+?? logs/tamarin-impact-original/parse.out
+?? logs/tamarin-impact-original/raw.out
+?? logs/tamarin-impact-original/summary.txt
+?? logs/tamarin-impact-original/unique-install-trace.dot
+?? logs/tamarin-impact-original/unique-install-trace.json
+?? logs/tamarin-impact-original/unique-install-trace.out
+?? logs/tamarin-impact-original/versions.txt
+post_run_unexpected_status_empty: true

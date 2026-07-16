@@ -1,0 +1,110 @@
+K-Waay M2 original impact/composition Tamarin summary
+model: tamarin/impact/kwaay_impact_original.spthy
+execution_git_head: a4605774c04d6c7f04e422d8754cd3ccad585e94
+execution_git_tree: cc262f041df0103109f00565006e67eab465d08f
+model_git_blob_oid: c5cdc0d7233f3a415839b8f289182c0986d911a8
+runner_git_blob_oid: 4a8ecdf16dc729c3c8b1575f05cd937d95c1b7c3
+parse_exit_status: 0
+proof_exit_status: 1
+positive_witness_exit_status: 0
+negative_property_exit_status: 0
+original_regression_exit_status: 0
+
+mechanically extracted full proof result table:
+lemma	status	steps	raw_result
+
+full proof summary:
+
+positive witness export summary:
+summary of summaries:
+
+analyzed: tamarin/impact/kwaay_impact_original.spthy
+
+  processing time: 54.88s
+  
+  accept_output_has_same_time_accept (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_output (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_unique_output (all-traces): analysis incomplete (1 steps)
+  accept_id_unique (all-traces): analysis incomplete (1 steps)
+  install_has_prior_accept (all-traces): analysis incomplete (1 steps)
+  install_session_has_interface_origin (all-traces): analysis incomplete (1 steps)
+  install_from_accept_has_session (all-traces): analysis incomplete (1 steps)
+  install_event_has_single_source (all-traces): analysis incomplete (1 steps)
+  install_handle_unique (all-traces): analysis incomplete (1 steps)
+  accept_output_installed_at_most_once (all-traces): analysis incomplete (1 steps)
+  distinct_accept_sources_have_distinct_handles (all-traces): analysis incomplete (1 steps)
+  install_requires_batch_complete (all-traces): analysis incomplete (1 steps)
+  consumer_complete_requires_all_outputs_installed (all-traces): analysis incomplete (1 steps)
+  consumer_complete_single_use (all-traces): analysis incomplete (1 steps)
+  no_install_after_consumer_close (all-traces): analysis incomplete (1 steps)
+  normal_one_accept_one_install (exists-trace): analysis incomplete (1 steps)
+  normal_consumer_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_two_installs_exists (exists-trace): verified (28 steps)
+  unique_install_within_completed_consumer (all-traces): analysis incomplete (1 steps)
+  normal_single_accept (exists-trace): analysis incomplete (1 steps)
+  normal_batch_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_exists (exists-trace): analysis incomplete (1 steps)
+  same_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  full_message_unique_send (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_sender (all-traces): analysis incomplete (1 steps)
+  injective_receiver_accept (all-traces): analysis incomplete (1 steps)
+  slot_indices_distinct (all-traces): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_all_slots_processed (all-traces): analysis incomplete (1 steps)
+  no_add_after_seal (all-traces): analysis incomplete (1 steps)
+  no_accept_after_close (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch_end (all-traces): analysis incomplete (1 steps)
+
+==============================================================================
+
+negative property export summary:
+summary of summaries:
+
+analyzed: tamarin/impact/kwaay_impact_original.spthy
+
+  processing time: 47.41s
+  
+  accept_output_has_same_time_accept (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_output (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_unique_output (all-traces): analysis incomplete (1 steps)
+  accept_id_unique (all-traces): analysis incomplete (1 steps)
+  install_has_prior_accept (all-traces): analysis incomplete (1 steps)
+  install_session_has_interface_origin (all-traces): analysis incomplete (1 steps)
+  install_from_accept_has_session (all-traces): analysis incomplete (1 steps)
+  install_event_has_single_source (all-traces): analysis incomplete (1 steps)
+  install_handle_unique (all-traces): analysis incomplete (1 steps)
+  accept_output_installed_at_most_once (all-traces): analysis incomplete (1 steps)
+  distinct_accept_sources_have_distinct_handles (all-traces): analysis incomplete (1 steps)
+  install_requires_batch_complete (all-traces): analysis incomplete (1 steps)
+  consumer_complete_requires_all_outputs_installed (all-traces): analysis incomplete (1 steps)
+  consumer_complete_single_use (all-traces): analysis incomplete (1 steps)
+  no_install_after_consumer_close (all-traces): analysis incomplete (1 steps)
+  normal_one_accept_one_install (exists-trace): analysis incomplete (1 steps)
+  normal_consumer_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_two_installs_exists (exists-trace): analysis incomplete (1 steps)
+  unique_install_within_completed_consumer (all-traces): falsified - found trace (28 steps)
+  normal_single_accept (exists-trace): analysis incomplete (1 steps)
+  normal_batch_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_exists (exists-trace): analysis incomplete (1 steps)
+  same_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  full_message_unique_send (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_sender (all-traces): analysis incomplete (1 steps)
+  injective_receiver_accept (all-traces): analysis incomplete (1 steps)
+  slot_indices_distinct (all-traces): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_all_slots_processed (all-traces): analysis incomplete (1 steps)
+  no_add_after_seal (all-traces): analysis incomplete (1 steps)
+  no_accept_after_close (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch_end (all-traces): analysis incomplete (1 steps)
+
+==============================================================================
