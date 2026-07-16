@@ -1,0 +1,44 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/impact/run-impact-original.sh
+working_directory: /mnt/d/kwaay-formal
+parse_command: tamarin-prover --parse-only tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[accept_output_has_same_time_accept]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_has_same_time_accept tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[receiver_accept_has_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_output tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[receiver_accept_has_unique_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_unique_output tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[accept_id_unique]: tamarin-prover --derivcheck-timeout=0 --prove=accept_id_unique tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_has_prior_accept]: tamarin-prover --derivcheck-timeout=0 --prove=install_has_prior_accept tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_session_has_interface_origin]: tamarin-prover --derivcheck-timeout=0 --prove=install_session_has_interface_origin tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_from_accept_has_session]: tamarin-prover --derivcheck-timeout=0 --prove=install_from_accept_has_session tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_event_has_single_source]: tamarin-prover --derivcheck-timeout=0 --prove=install_event_has_single_source tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_handle_unique]: tamarin-prover --derivcheck-timeout=0 --prove=install_handle_unique tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[accept_output_installed_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_installed_at_most_once tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[distinct_accept_sources_have_distinct_handles]: tamarin-prover --derivcheck-timeout=0 --prove=distinct_accept_sources_have_distinct_handles tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[install_requires_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=install_requires_batch_complete tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[consumer_complete_requires_all_outputs_installed]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_requires_all_outputs_installed tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[consumer_complete_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_single_use tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[no_install_after_consumer_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_install_after_consumer_close tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[normal_one_accept_one_install]: tamarin-prover --derivcheck-timeout=0 --prove=normal_one_accept_one_install tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[normal_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_consumer_complete tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[one_send_two_accepts_two_installs_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[unique_install_within_completed_consumer]: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/impact/kwaay_impact_original.spthy
+selected_proof_command[receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/impact/kwaay_impact_original.spthy
+positive_witness_command: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists --output-json=logs/tamarin-impact-original/attack-trace.json --output-dot=logs/tamarin-impact-original/attack-trace.dot tamarin/impact/kwaay_impact_original.spthy
+negative_property_command: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer --output-json=logs/tamarin-impact-original/unique-install-trace.json --output-dot=logs/tamarin-impact-original/unique-install-trace.dot tamarin/impact/kwaay_impact_original.spthy
+original_regression_command: tamarin-prover --derivcheck-timeout=0 --prove tamarin/replay/kwaay_replay_original.spthy
