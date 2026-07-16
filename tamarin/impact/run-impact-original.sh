@@ -23,7 +23,8 @@ LOG_DIR="$ROOT_DIR/$LOG_REL"
 COMMAND_LOG="$LOG_DIR/command.txt"
 VERSIONS_LOG="$LOG_DIR/versions.txt"
 PARSE_LOG="$LOG_DIR/parse.out"
-RAW_LOG="$LOG_DIR/raw.out"
+PROOF_DIR="$LOG_DIR/proofs"
+AGGREGATE_LOG="$LOG_DIR/aggregate-results.tsv"
 SUMMARY_LOG="$LOG_DIR/summary.txt"
 ATTACK_RAW_LOG="$LOG_DIR/attack-trace.out"
 ATTACK_JSON_LOG="$LOG_DIR/attack-trace.json"
@@ -140,7 +141,6 @@ ORIGINAL_EOL="$(detect_eol "$ORIGINAL_MODEL")"
 GIT_ATTR_OUTPUT="$("${GIT_CMD[@]}" check-attr text eol -- "$MODEL_REL" "$RUNNER_REL" "$ORIGINAL_REL")"
 
 PARSE_CMD=(tamarin-prover --parse-only "$MODEL_REL")
-PROOF_CMD=(tamarin-prover --derivcheck-timeout=0 --prove "$MODEL_REL")
 ATTACK_CMD=(
   tamarin-prover
   --derivcheck-timeout=0
@@ -341,6 +341,33 @@ validate_exact_results() {
   return "$errors"
 }
 
+validate_aggregate_layout() {
+  local rows_file="$1"
+  local expected_names_var="$2"
+  local label="$3"
+  local -n expected_names_ref="$expected_names_var"
+  local errors=0
+  local index
+  local -a actual_names=()
+
+  mapfile -t actual_names < <(awk -F '\t' 'NF { print $1 }' "$rows_file")
+  if [[ "${#actual_names[@]}" -ne "${#expected_names_ref[@]}" ]]; then
+    echo "error: $label row count mismatch: actual=${#actual_names[@]} expected=${#expected_names_ref[@]}" >&2
+    errors=1
+  fi
+  for index in "${!expected_names_ref[@]}"; do
+    if [[ "${actual_names[$index]-MISSING}" != "${expected_names_ref[$index]}" ]]; then
+      echo "error: $label order/name mismatch at row $((index + 1)): actual=${actual_names[$index]-MISSING} expected=${expected_names_ref[$index]}" >&2
+      errors=1
+    fi
+  done
+  if [[ "$(printf '%s\n' "${actual_names[@]}" | LC_ALL=C sort | uniq -d | wc -l)" -ne 0 ]]; then
+    echo "error: $label contains duplicate lemma names" >&2
+    errors=1
+  fi
+  return "$errors"
+}
+
 extract_lemma_formula_block() {
   local source="$1"
   local lemma_name="$2"
@@ -463,6 +490,79 @@ check_wellformedness_success() {
   return "$errors"
 }
 
+analyze_selected_proof_output() {
+  local lemma_name="$1"
+  local exit_status="$2"
+  local raw_file="$3"
+  local source_file="$4"
+  local rows_file="$TMP_DIR/selected-$lemma_name.tsv"
+  local errors=0
+  local wellformedness="failure"
+  local loop_marker="false"
+  local status="missing"
+  local steps="-"
+  local raw_result="MISSING"
+  local gsubbed_raw_result
+  local target_count=0
+  local other_terminal_count=0
+
+  : > "$rows_file"
+  if [[ ! -s "$raw_file" ]]; then
+    echo "error: selected proof output is missing or empty for $lemma_name: $raw_file" >&2
+    errors=1
+  else
+    extract_result_rows "$raw_file" > "$rows_file"
+    target_count="$(awk -F '\t' -v target="$lemma_name" '$1 == target { count++ } END { print count+0 }' "$rows_file")"
+    other_terminal_count="$(awk -F '\t' -v target="$lemma_name" \
+      '$1 != target && ($2 == "verified" || $2 == "falsified") { count++ } END { print count+0 }' \
+      "$rows_file")"
+
+    if [[ "$target_count" -eq 1 ]]; then
+      IFS=$'\t' read -r _ status steps raw_result < <(
+        awk -F '\t' -v target="$lemma_name" '$1 == target { print; exit }' "$rows_file"
+      )
+    elif [[ "$target_count" -eq 0 ]]; then
+      echo "error: selected proof output is missing its target summary row: $lemma_name" >&2
+      errors=1
+    else
+      status="duplicate"
+      raw_result="target-summary-count=$target_count"
+      echo "error: selected proof output contains $target_count target summary rows: $lemma_name" >&2
+      errors=1
+    fi
+
+    if check_wellformedness_success "$raw_file" "selected proof $lemma_name"; then
+      wellformedness="success"
+    else
+      errors=1
+    fi
+    if grep -Fq '<<loop>>' "$raw_file"; then
+      loop_marker="true"
+      echo "error: selected proof output contains <<loop>>: $lemma_name" >&2
+      errors=1
+    fi
+  fi
+
+  if [[ "$exit_status" != "0" ]]; then
+    echo "error: selected proof invocation failed: $lemma_name exit_status=$exit_status" >&2
+    errors=1
+  fi
+  if [[ "$status" != "verified" && "$status" != "falsified" ]]; then
+    echo "error: selected proof target is nonterminal: $lemma_name status=$status" >&2
+    errors=1
+  fi
+  if [[ "$other_terminal_count" -ne 0 ]]; then
+    echo "error: selected proof output contains $other_terminal_count non-target terminal lemmas: $lemma_name" >&2
+    errors=1
+  fi
+
+  gsubbed_raw_result="${raw_result//$'\t'/ }"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' \
+    "$lemma_name" "$status" "$steps" "$exit_status" "$wellformedness" \
+    "$loop_marker" "$source_file" "$gsubbed_raw_result" >> "$AGGREGATE_LOG"
+  return "$errors"
+}
+
 check_trace_artifacts() {
   local label="$1"
   local lemma_name="$2"
@@ -472,7 +572,7 @@ check_trace_artifacts() {
   local dot_file="$6"
   local rows_file="$7"
   local errors=0
-  local actual_status terminal_count
+  local actual_status terminal_count target_count
 
   for artifact in "$raw_file" "$json_file" "$dot_file"; do
     if [[ ! -s "$artifact" ]]; then
@@ -487,12 +587,21 @@ check_trace_artifacts() {
   extract_result_rows "$raw_file" > "$rows_file"
   actual_status="$(lookup_status "$rows_file" "$lemma_name" 2>/dev/null || printf 'MISSING')"
   terminal_count="$(awk -F '\t' '$2 == "verified" || $2 == "falsified" { count++ } END { print count+0 }' "$rows_file")"
+  target_count="$(awk -F '\t' -v target="$lemma_name" '$1 == target { count++ } END { print count+0 }' "$rows_file")"
   if [[ "$actual_status" != "$expected_status" ]]; then
     echo "error: $label target status mismatch: $lemma_name actual=$actual_status expected=$expected_status" >&2
     errors=1
   fi
   if [[ "$terminal_count" -ne 1 ]]; then
     echo "error: $label trace output has $terminal_count terminal lemmas; expected exactly the selected lemma" >&2
+    errors=1
+  fi
+  if [[ "$target_count" -ne 1 ]]; then
+    echo "error: $label trace output has $target_count summary rows for $lemma_name; expected exactly one" >&2
+    errors=1
+  fi
+  if grep -Fq '<<loop>>' "$raw_file"; then
+    echo "error: $label trace output contains <<loop>>" >&2
     errors=1
   fi
   for artifact in "$raw_file" "$json_file" "$dot_file"; do
@@ -514,7 +623,7 @@ check_trace_artifacts() {
   return "$errors"
 }
 
-mkdir -p "$LOG_DIR"
+mkdir -p "$PROOF_DIR"
 TMP_DIR="$(mktemp -d)"
 trap 'rm -rf "$TMP_DIR"' EXIT
 
@@ -523,7 +632,10 @@ trap 'rm -rf "$TMP_DIR"' EXIT
   echo "actual_runner_path: $RUNNER_PATH"
   echo "working_directory: $ROOT_DIR"
   print_command parse_command "${PARSE_CMD[@]}"
-  print_command proof_command "${PROOF_CMD[@]}"
+  for lemma in "${IMPACT_LEMMAS[@]}"; do
+    SELECTED_CMD=(tamarin-prover --derivcheck-timeout=0 "--prove=$lemma" "$MODEL_REL")
+    print_command "selected_proof_command[$lemma]" "${SELECTED_CMD[@]}"
+  done
   print_command positive_witness_command "${ATTACK_CMD[@]}"
   print_command negative_property_command "${UNIQUE_CMD[@]}"
   print_command original_regression_command "${ORIGINAL_CMD[@]}"
@@ -536,6 +648,7 @@ trap 'rm -rf "$TMP_DIR"' EXIT
   echo "git_branch: $GIT_BRANCH"
   echo "git_head: $GIT_HEAD"
   echo "git_tree: $GIT_TREE"
+  echo "execution_mode: sequential_per_lemma"
   echo "clean_pre_run_status: true"
   echo "pre_run_git_status:"
   printf '%s' "$PRE_RUN_GIT_STATUS"
@@ -567,10 +680,12 @@ fi
 cd "$ROOT_DIR"
 
 parse_status=not_run
-proof_status=not_run
 attack_status=not_run
 unique_status=not_run
 original_status=not_run
+per_lemma_proof_execution_status=0
+selected_output_validation_status=0
+declare -A IMPACT_PROOF_EXIT_STATUS=()
 
 if run_logged "$PARSE_LOG" "${PARSE_CMD[@]}"; then
   parse_status=0
@@ -578,33 +693,86 @@ else
   parse_status=$?
 fi
 
-if [[ "$parse_status" -eq 0 ]]; then
-  if run_logged "$RAW_LOG" "${PROOF_CMD[@]}"; then
-    proof_status=0
-  else
-    proof_status=$?
+for lemma in "${IMPACT_LEMMAS[@]}"; do
+  SELECTED_CMD=(tamarin-prover --derivcheck-timeout=0 "--prove=$lemma" "$MODEL_REL")
+  selected_output="$PROOF_DIR/$lemma.out"
+  set +e
+  "${SELECTED_CMD[@]}" > "$selected_output" 2>&1
+  selected_status=$?
+  set -e
+  IMPACT_PROOF_EXIT_STATUS["$lemma"]="$selected_status"
+  if [[ "$selected_status" -ne 0 ]]; then
+    per_lemma_proof_execution_status=1
   fi
-  if run_logged "$ATTACK_RAW_LOG" "${ATTACK_CMD[@]}"; then
-    attack_status=0
-  else
-    attack_status=$?
-  fi
-  if run_logged "$UNIQUE_RAW_LOG" "${UNIQUE_CMD[@]}"; then
-    unique_status=0
-  else
-    unique_status=$?
-  fi
-fi
+  printf 'selected proof complete: %s exit_status=%s\n' "$lemma" "$selected_status"
+done
 
+if run_logged "$ATTACK_RAW_LOG" "${ATTACK_CMD[@]}"; then
+  attack_status=0
+else
+  attack_status=$?
+fi
+if run_logged "$UNIQUE_RAW_LOG" "${UNIQUE_CMD[@]}"; then
+  unique_status=0
+else
+  unique_status=$?
+fi
 if run_logged "$ORIGINAL_RAW_LOG" "${ORIGINAL_CMD[@]}"; then
   original_status=0
 else
   original_status=$?
 fi
 
-impact_wellformedness_status=0
-if ! check_wellformedness_success "$RAW_LOG" "impact full proof"; then
-  impact_wellformedness_status=1
+printf 'lemma\tstatus\tsteps\texit_status\twellformedness\tloop_marker\tsource_file\traw_result\n' > "$AGGREGATE_LOG"
+for lemma in "${IMPACT_LEMMAS[@]}"; do
+  if ! analyze_selected_proof_output \
+      "$lemma" \
+      "${IMPACT_PROOF_EXIT_STATUS[$lemma]}" \
+      "$PROOF_DIR/$lemma.out" \
+      "proofs/$lemma.out"; then
+    selected_output_validation_status=1
+  fi
+done
+
+IMPACT_ROWS="$TMP_DIR/impact-results.tsv"
+ORIGINAL_ROWS="$TMP_DIR/original-results.tsv"
+ATTACK_ROWS="$TMP_DIR/attack-results.tsv"
+UNIQUE_ROWS="$TMP_DIR/unique-results.tsv"
+tail -n +2 "$AGGREGATE_LOG" > "$IMPACT_ROWS"
+: > "$ORIGINAL_ROWS"
+[[ -s "$ORIGINAL_RAW_LOG" ]] && extract_result_rows "$ORIGINAL_RAW_LOG" > "$ORIGINAL_ROWS"
+
+expected_lemma_count="${#IMPACT_LEMMAS[@]}"
+actual_lemma_count="$(awk -F '\t' 'NR > 1 && NF { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+verified_count="$(awk -F '\t' 'NR > 1 && $2 == "verified" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+falsified_count="$(awk -F '\t' 'NR > 1 && $2 == "falsified" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+nonterminal_count="$(awk -F '\t' 'NR > 1 && $2 != "verified" && $2 != "falsified" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+failed_invocation_count="$(awk -F '\t' 'NR > 1 && $4 != "0" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+wellformedness_failure_count="$(awk -F '\t' 'NR > 1 && $5 != "success" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+loop_count="$(awk -F '\t' 'NR > 1 && $6 != "false" { count++ } END { print count+0 }' "$AGGREGATE_LOG")"
+
+per_lemma_wellformedness_status=0
+if [[ "$wellformedness_failure_count" -ne 0 ]]; then
+  per_lemma_wellformedness_status=1
+fi
+
+impact_result_validation_status=0
+if [[ "$selected_output_validation_status" -ne 0 ]]; then
+  impact_result_validation_status=1
+fi
+if ! validate_aggregate_layout "$IMPACT_ROWS" IMPACT_LEMMAS "impact aggregate"; then
+  impact_result_validation_status=1
+fi
+if ! validate_exact_results "$IMPACT_ROWS" IMPACT_LEMMAS IMPACT_EXPECTED_STATUS "impact aggregate"; then
+  impact_result_validation_status=1
+fi
+
+original_result_validation_status=0
+if [[ "$original_status" != "0" ]]; then
+  original_result_validation_status=1
+fi
+if ! validate_exact_results "$ORIGINAL_ROWS" FROZEN_LEMMAS ORIGINAL_EXPECTED_STATUS "frozen original proof"; then
+  original_result_validation_status=1
 fi
 
 positive_trace_wellformedness_status=0
@@ -622,44 +790,27 @@ if ! check_wellformedness_success "$ORIGINAL_RAW_LOG" "frozen original proof"; t
   original_wellformedness_status=1
 fi
 
-IMPACT_ROWS="$TMP_DIR/impact-results.tsv"
-ORIGINAL_ROWS="$TMP_DIR/original-results.tsv"
-ATTACK_ROWS="$TMP_DIR/attack-results.tsv"
-UNIQUE_ROWS="$TMP_DIR/unique-results.tsv"
-: > "$IMPACT_ROWS"
-: > "$ORIGINAL_ROWS"
-[[ -s "$RAW_LOG" ]] && extract_result_rows "$RAW_LOG" > "$IMPACT_ROWS"
-[[ -s "$ORIGINAL_RAW_LOG" ]] && extract_result_rows "$ORIGINAL_RAW_LOG" > "$ORIGINAL_ROWS"
-
-impact_result_validation_status=0
-if [[ "$proof_status" != "0" ]] \
-    || ! validate_exact_results "$IMPACT_ROWS" IMPACT_LEMMAS IMPACT_EXPECTED_STATUS "impact full proof"; then
-  impact_result_validation_status=1
-fi
-
-original_result_validation_status=0
-if [[ "$original_status" != "0" ]] \
-    || ! validate_exact_results "$ORIGINAL_ROWS" FROZEN_LEMMAS ORIGINAL_EXPECTED_STATUS "frozen original proof"; then
-  original_result_validation_status=1
-fi
-
 attack_artifact_validation_status=0
-if [[ "$attack_status" != "0" ]] \
-    || ! check_trace_artifacts \
-      "positive witness" \
-      one_send_two_accepts_two_installs_exists \
-      verified \
-      "$ATTACK_RAW_LOG" "$ATTACK_JSON_LOG" "$ATTACK_DOT_LOG" "$ATTACK_ROWS"; then
+if [[ "$attack_status" != "0" ]]; then
+  attack_artifact_validation_status=1
+fi
+if ! check_trace_artifacts \
+    "positive witness" \
+    one_send_two_accepts_two_installs_exists \
+    verified \
+    "$ATTACK_RAW_LOG" "$ATTACK_JSON_LOG" "$ATTACK_DOT_LOG" "$ATTACK_ROWS"; then
   attack_artifact_validation_status=1
 fi
 
 unique_artifact_validation_status=0
-if [[ "$unique_status" != "0" ]] \
-    || ! check_trace_artifacts \
-      "negative property" \
-      unique_install_within_completed_consumer \
-      falsified \
-      "$UNIQUE_RAW_LOG" "$UNIQUE_JSON_LOG" "$UNIQUE_DOT_LOG" "$UNIQUE_ROWS"; then
+if [[ "$unique_status" != "0" ]]; then
+  unique_artifact_validation_status=1
+fi
+if ! check_trace_artifacts \
+    "negative property" \
+    unique_install_within_completed_consumer \
+    falsified \
+    "$UNIQUE_RAW_LOG" "$UNIQUE_JSON_LOG" "$UNIQUE_DOT_LOG" "$UNIQUE_ROWS"; then
   unique_artifact_validation_status=1
 fi
 
@@ -675,18 +826,24 @@ fi
   echo "execution_git_tree: $GIT_TREE"
   echo "model_git_blob_oid: $MODEL_BLOB_OID"
   echo "runner_git_blob_oid: $RUNNER_BLOB_OID"
+  echo "execution_mode: sequential_per_lemma"
+  echo "expected_lemma_count: $expected_lemma_count"
+  echo "actual_lemma_count: $actual_lemma_count"
+  echo "verified_count: $verified_count"
+  echo "falsified_count: $falsified_count"
+  echo "nonterminal_count: $nonterminal_count"
+  echo "failed_invocation_count: $failed_invocation_count"
+  echo "loop_count: $loop_count"
   echo "parse_exit_status: $parse_status"
-  echo "proof_exit_status: $proof_status"
+  echo "per_lemma_proof_execution_status: $per_lemma_proof_execution_status"
+  echo "per_lemma_wellformedness_status: $per_lemma_wellformedness_status"
+  echo "impact_result_validation_status: $impact_result_validation_status"
   echo "positive_witness_exit_status: $attack_status"
   echo "negative_property_exit_status: $unique_status"
   echo "original_regression_exit_status: $original_status"
   echo
-  echo "mechanically extracted full proof result table:"
-  printf 'lemma\tstatus\tsteps\traw_result\n'
-  cat "$IMPACT_ROWS"
-  echo
-  echo "full proof summary:"
-  extract_summary "$RAW_LOG"
+  echo "aggregate result table:"
+  cat "$AGGREGATE_LOG"
   echo
   echo "positive witness export summary:"
   extract_summary "$ATTACK_RAW_LOG"
@@ -710,25 +867,35 @@ fi
 
 POST_RUN_GIT_STATUS="$("${GIT_CMD[@]}" status --porcelain=v1 --untracked-files=all)"
 UNEXPECTED_STATUS="$(printf '%s\n' "$POST_RUN_GIT_STATUS" | awk -v prefix="?? $LOG_REL/" 'NF && index($0,prefix) != 1 {print}')"
+MANIFEST_INPUT_FILE_COUNT="$(find "$LOG_DIR" -type f ! -name 'SHA256SUMS.txt' | wc -l)"
 
 {
   echo
   echo "utc_end: $(date -u '+%Y-%m-%dT%H:%M:%SZ')"
   echo "parse_exit_status: $parse_status"
-  echo "proof_exit_status: $proof_status"
+  echo "per_lemma_proof_execution_status: $per_lemma_proof_execution_status"
+  echo "per_lemma_wellformedness_status: $per_lemma_wellformedness_status"
+  echo "impact_result_validation_status: $impact_result_validation_status"
+  echo "expected_lemma_count: $expected_lemma_count"
+  echo "actual_lemma_count: $actual_lemma_count"
+  echo "verified_count: $verified_count"
+  echo "falsified_count: $falsified_count"
+  echo "nonterminal_count: $nonterminal_count"
+  echo "failed_invocation_count: $failed_invocation_count"
+  echo "wellformedness_failure_count: $wellformedness_failure_count"
+  echo "loop_count: $loop_count"
   echo "positive_witness_exit_status: $attack_status"
   echo "negative_property_exit_status: $unique_status"
   echo "original_regression_exit_status: $original_status"
-  echo "impact_wellformedness_status: $impact_wellformedness_status"
   echo "positive_trace_wellformedness_status: $positive_trace_wellformedness_status"
   echo "negative_trace_wellformedness_status: $negative_trace_wellformedness_status"
   echo "original_wellformedness_status: $original_wellformedness_status"
-  echo "impact_result_validation_status: $impact_result_validation_status"
   echo "original_result_validation_status: $original_result_validation_status"
   echo "positive_trace_artifact_validation_status: $attack_artifact_validation_status"
   echo "negative_trace_artifact_validation_status: $unique_artifact_validation_status"
   echo "frozen_formula_comparison_status: $formula_comparison_status"
   echo "lower_layer_result_comparison_status: $lower_result_comparison_status"
+  echo "manifest_recursive_file_count: $MANIFEST_INPUT_FILE_COUNT"
   echo "post_run_git_status:"
   printf '%s\n' "$POST_RUN_GIT_STATUS"
   echo "post_run_unexpected_status_empty: $([[ -z "$UNEXPECTED_STATUS" ]] && echo true || echo false)"
@@ -736,9 +903,9 @@ UNEXPECTED_STATUS="$(printf '%s\n' "$POST_RUN_GIT_STATUS" | awk -v prefix="?? $L
 
 (
   cd "$LOG_DIR"
-  find . -maxdepth 1 -type f ! -name 'SHA256SUMS.txt' -printf '%f\n' \
-    | LC_ALL=C sort \
-    | xargs sha256sum
+  find . -type f ! -name 'SHA256SUMS.txt' -printf '%P\0' \
+    | LC_ALL=C sort -z \
+    | xargs -0 sha256sum
 ) > "$MANIFEST_LOG"
 
 cat "$SUMMARY_LOG"
@@ -746,15 +913,15 @@ cat "$SUMMARY_LOG"
 final_status=0
 for status in \
   "$parse_status" \
-  "$proof_status" \
+  "$per_lemma_proof_execution_status" \
+  "$per_lemma_wellformedness_status" \
+  "$impact_result_validation_status" \
   "$attack_status" \
   "$unique_status" \
   "$original_status" \
-  "$impact_wellformedness_status" \
   "$positive_trace_wellformedness_status" \
   "$negative_trace_wellformedness_status" \
   "$original_wellformedness_status" \
-  "$impact_result_validation_status" \
   "$original_result_validation_status" \
   "$attack_artifact_validation_status" \
   "$unique_artifact_validation_status" \

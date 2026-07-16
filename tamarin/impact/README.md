@@ -161,10 +161,28 @@ evidence directory, verifies that model and runner are tracked by `HEAD`, and
 records Git blob OIDs, working-tree SHA-256 values, EOL detection, tool
 versions, exact commands, command exit statuses, and post-run status.
 
+The formal runner proves the 37 impact lemmas in their frozen order using 37
+sequential, independent selected-proof invocations.  Each invocation passes
+`--prove=<exact-lemma-name>` and writes its unmodified output to
+`logs/tamarin-impact-original/proofs/<lemma>.out`.  The runner validates only
+the selected target in each output, rejects a target that is missing,
+duplicated, nonterminal, or accompanied by any other terminal lemma, and
+mechanically builds `aggregate-results.tsv` from those 37 outputs.  A failed
+invocation does not prevent the remaining selected proofs from running, but it
+does make the final runner status nonzero.
+
+This execution layout avoids depending on the single multi-lemma proof
+invocation behavior observed for this model with the validated Tamarin 1.12.0
+toolchain.  It does not change the model, any lemma, the expected result vector,
+or the proof standard, and it is not a claim about Tamarin behavior in general.
+The positive-witness and negative-property JSON/DOT exports remain separate
+formal invocations from the corresponding selected proofs in `proofs/`.
+
 Tamarin 1.12.0 on the validated local toolchain advertises `--output-json` and
 `--output-dot`.  The runner checks those options again before execution and
 fails rather than fabricating unsupported trace formats.  `SHA256SUMS.txt` is
-generated last and excludes itself; the later evidence Git tree binds the
+generated last, recursively includes the `proofs/` outputs and every other
+evidence file, and excludes itself; the later evidence Git tree binds the
 manifest file itself.
 
 The impact theory exceeds Tamarin's default derivation-check time budget on
