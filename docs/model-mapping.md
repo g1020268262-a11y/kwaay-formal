@@ -31,6 +31,7 @@ Tamarin:
   V7 fixed four-slot terminal lifecycle
   replay original 的 fixed two-slot duplicate-input 模型
   HMAC-only replay bridge 的 fixed two-slot confirmed-message 模型
+  M2 original impact/composition fixed two-slot C_install-v2 consumer
   preliminary deniability diff models
 ```
 
@@ -38,7 +39,7 @@ Tamarin:
 
 ## 协议对象映射
 
-| K-Waay 对象 | ProVerif 抽象 | Tamarin V6/V7 | Tamarin replay artifacts | 状态 |
+| K-Waay 对象 | ProVerif 抽象 | Tamarin V6/V7 | Tamarin replay / impact artifacts | 状态 |
 |---|---|---|---|---|
 | sender identity `A` | symbolic name / process parameter | agent variable `$A` | agent variable `$A` | 已建模 |
 | receiver identity `B` | symbolic name / process parameter | agent variable `$B` | agent variable `$B` | 已建模 |
@@ -64,7 +65,10 @@ Tamarin:
 | state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 同名 compromise events；P2 witness 排除二者全程出现 | 已建模但 theorem 范围不同 |
 | HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立 no-batch 变体 | 未建模 | HMAC-only bridge 中 `tag=hmac(confirm_key(k),sid)`，public confirmed message 为 `<m,tag>` | ProVerif P1 baseline 与 Tamarin M1 replay bridge 均已建模；证据角色不同 |
 | duplicate input / replay | no batch slot，不能表达 | 不是 V6/V7 的专门攻击目标 | original 与 HMAC-only 都把同一完整 message 放入 fixed two-slot batch；相应 one-send-two-accept witness verified | original 与 HMAC-only same-batch/same-state 反例已建模 |
-| session installation | 未建模 | 无 `InstallSession` / local handle event | 无 `InstallSession` / local handle event | P3 under `C_install` 未建模；M2 负责 |
+| accepted output occurrence | 未建模 | 未建模 | impact artifact 中 `aid` / `AcceptOutputCreated` / linear `AcceptedOutput`；replay original/HMAC-only 不含该层 | 仅 M2 impact model 建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | impact artifact 中 `InstallFromAccept` + `InstallSession`；其他 replay artifacts 不含该层 | 已在 M2 impact artifact 条件化建模；不代表 deployed implementation |
+| local installation handle | 未建模 | 未建模 | impact artifact 中 fresh `h` | 仅 M2 symbolic composition object |
+| upper-layer consumer | 未建模 | 未建模 | impact artifact 中 `ConsumerStage0/1/2`, `ConsumerComplete`, `ClosedConsumer` | fixed two-output conditional abstraction |
 | deniability | 未建模 | 不在 V6/V7；由 core/malicious/negative `--diff` 独立 artifacts 建模 | 未建模 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
@@ -95,7 +99,7 @@ Tamarin:
 | HMAC bridge normal-path non-vacuity | Tamarin HMAC-only replay bridge | `normal_confirmed_single_accept`, `normal_confirmed_batch_complete` | matching accept 与 normal batch completion 均可达 | verified exists-trace |
 | HMAC bridge attack witness | Tamarin HMAC-only replay bridge | `one_confirmed_send_two_accepts_exists` | 同一 confirmed message 在两个不同 slot 通过同一 HMAC gate | verified；无 sender/receiver state compromise |
 | HMAC bridge lifecycle regressions | Tamarin HMAC-only replay bridge | selected 11 lifecycle/state lemmas | add/seal/process/close/state-consumption 语义未因 bridge 退化 | 全部 verified |
-| P3 under `C_install` unique session installation | 尚无 impact/composition model | 尚无 `InstallSession` / `unique_install` | 命名组合假设下 receiver output 到 fresh local handle 的条件化性质 | not modeled；M2 负责实现 |
+| P3 under `C_install-v2` unique session installation | `tamarin/impact/kwaay_impact_original.spthy` | `one_send_two_accepts_two_installs_exists`; `unique_install_within_completed_consumer`; `install_session_has_interface_origin`; `install_from_accept_has_session`; `accept_output_installed_at_most_once`; `consumer_complete_requires_all_outputs_installed`; `distinct_accept_sources_have_distinct_handles` | fixed two-slot conditional consumer 中，original duplicate acceptance 是否传播为相同 peer/sid/key、不同 symbolic local handles | conditional witness verified；unique installation falsified；不声称 real implementation/session/Double Ratchet |
 
 P1 与 P2 使用不同 event vocabulary。ProVerif 的
 `SendDone(A,B,sid,k)`/`RecvDone(B,A,sid,k)` 不包含 occurrence、slot、batch
@@ -206,6 +210,53 @@ lifecycle，并给出 same-batch/same-state duplicate acceptance 反例。
 结构性结果；该模型的职责是 replay/occurrence 分析。具体 HMAC P1 的主要独立
 证据仍来自 ProVerif HMAC baseline。
 
+### M2 original impact/composition artifact
+
+`tamarin/impact/kwaay_impact_original.spthy` 从 frozen replay original 派生，
+但保持为独立 theory。它保留 lower-layer 事件语义和 18 条 frozen lower-layer
+lemma 的完整公式，并在其上加入 `C_install-v2` 条件化 consumer。
+
+新增对象与事件：
+
+```text
+aid = fresh accepted-output occurrence identifier
+h   = fresh symbolic local installation handle
+AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k)
+InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k)
+InstallSession(B,h,A,sid,k)
+ConsumerStage0 / ConsumerStage1 / ConsumerStage2
+ConsumerComplete(B,bid,rst)
+ClosedConsumer(B,bid,rst)
+```
+
+`aid` 不进入协议 message、`sid` 或 key；`h` 不是协议 session identifier。
+`InstallFromAccept` 保存完整 output provenance，`InstallSession` 是条件化组合
+事件。consumer 只由 successful `BatchComplete` 启动；failure paths 不创建
+consumer。两个 linear accepted-output tokens 可按任意顺序被独立消费，两个
+install 都完成后才产生 `ConsumerComplete`。
+
+C7 假定 consumer 不按 `sid`、message、peer 或 key 合并/去重，而是独立安装
+每个 successful output；C8 明确 C7 只是 composition assumption。仓库没有规范
+或实现证据证明 deployed K-Waay upper layer 遵循该行为。
+
+该 theory 有 19 条 composition lemmas 和 18 条 frozen lower-layer lemmas。
+正式 evidence 为：
+
+```text
+logs/tamarin-impact-original/aggregate-results.tsv
+logs/tamarin-impact-original/proofs/
+logs/tamarin-impact-original/attack-trace.out
+logs/tamarin-impact-original/unique-install-trace.out
+logs/tamarin-impact-original/frozen-formula-comparison.txt
+logs/tamarin-impact-original/lower-layer-result-comparison.txt
+logs/tamarin-impact-original/SHA256SUMS.txt
+```
+
+实际 composition profile 为 18 verified / 1 falsified；总计 37 条终态为
+34 verified / 3 falsified。`one_send_two_accepts_two_installs_exists` verified，
+`unique_install_within_completed_consumer` falsified；两个核心 trace 都是 28
+steps。18/18 frozen formula 和 18/18 lower-layer result comparison 均 MATCH。
+
 ### Independent deniability artifacts
 
 独立 core/malicious/negative `--diff` 模型提供 preliminary symbolic
@@ -215,10 +266,13 @@ deniability evidence；它们不属于 V6/V7 lifecycle 或 replay original。
 
 ```text
 batch-local duplicate rejection / repaired injectivity
-receiver output -> upper-layer session installation
 computational security
 complete malicious / Big Brother / computational deniability
 ```
+
+receiver output → symbolic local installation 已在 M2 impact artifact 中条件化
+建模，但没有真实 session database、Double Ratchet、application action 或 deployed
+implementation mapping。
 
 ## 当前主要解释
 
@@ -232,8 +286,13 @@ HMAC-only Tamarin bridge 进一步表明 confirmation 本身不提供
 same-batch/same-state replay prevention 或 occurrence injectivity；
 该 bridge 的 matching existence 在 `HonestSession` 下主要是结构性结果；
 original 与 HMAC-only replay 反例都足以否定 global one-send-one-accept；
-P3 under C_install 的上层 unique session installation 尚未建模。
+在 C_install-v2 条件化 consumer 下，original duplicate acceptance 可传播为
+两个不同 symbolic local handles，unique installation 被 falsified。
 ```
+
+该 M2 结论不证明 deployed K-Waay session cloning。它依赖 fixed two-output
+consumer 独立消费 outputs 的 C7/C8 边界，不包含真实 session database、Double
+Ratchet 或 application behavior。
 
 `RecvDone ==> SendDone` 为 false 不应解释成 key-recovery attack。
 
@@ -263,8 +322,14 @@ full deniability
 full BatchReceive vector correctness
 real KEM decapsulation failure behavior
 HMAC 已阻止 duplicate acceptance
-duplicate ReceiverAccept 已等同于 duplicate installation
-P3 under C_install / concrete session cloning impact
+duplicate ReceiverAccept 在没有显式 C_install-v2 composition assumptions 时，
+不能自行推出 duplicate installation
+C_install-v2 是 deployed K-Waay 的实际 upper-layer behavior
+真实 session cloning / Double Ratchet duplication
+application exploit
+arbitrary-length impact
+dedup repair
+HMAC impact / combined impact
 ```
 
 ## M0 claim 与后续里程碑
@@ -285,16 +350,17 @@ tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
 tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
 tamarin/replay/kwaay_replay_original.spthy
 tamarin/replay/kwaay_replay_hmac_only.spthy
+tamarin/impact/kwaay_impact_original.spthy
 ```
 
 后续里程碑不得把预期结果写成实际结果：
 
 ```text
 M1: ✅ HMAC-only replay bridge completed with raw evidence
-M2: current unique next — investigate and model the named C_install impact/composition interface
-M3: future fixed batch-local atomic dedup
-M4: HMAC + dedup combined regression
-M5: artifact/result freeze
+M2: ✅ original conditional impact/composition evidence
+M3: current unique next — batch-local atomic dedup
+M4: future HMAC + dedup combined regression
+M5: future artifact/result freeze
 ```
 
 ## 根 README 同步建议（本轮未修改）
@@ -306,12 +372,24 @@ deniability 分支。为避免在未确认信息架构前大幅重写，本轮�
 1. 将仓库定位改为 K-Waay Figure 7 core 的多模型 symbolic formal analysis，
    而不是单一早期 no-batch ProVerif 模型。
 2. 列出真实入口：ProVerif final core、HMAC variant、Tamarin V6/V7、replay
-   original，以及 preliminary deniability diff models。
-3. 用 P0-S/P0-O/P1/P2/P3 under `C_install` 的性质图链接到
+   original、HMAC-only replay bridge、M2 original impact/composition artifact，
+   以及 preliminary deniability diff models；模型索引至少加入：
+
+   ```text
+   tamarin/replay/kwaay_replay_hmac_only.spthy
+   tamarin/impact/kwaay_impact_original.spthy
+   ```
+
+3. 用 P0-S/P0-O/P1/P2/P3 under `C_install-v2` 的性质图链接到
    `docs/claim-hierarchy.md` 和 `docs/threat-compromise-matrix.md`，并标明
-   P3 under `C_install` 尚未建模。
-4. 明确 symbolic/computational 边界、已知 timeout，以及 replay original
-   尚缺 committed raw result log 的 artifact 限制。
+   M2 只有 conditional consumer result，不是 deployed behavior。
+4. 明确 symbolic/computational 边界与已知 timeout；
+   replay original 尚缺独立、专用的 standalone evidence bundle；
+   不过 M2 evidence 已提交完整 original regression raw output：
+
+   ```text
+   logs/tamarin-impact-original/original-regression.out
+   ```
 
 在确认 README 的目标读者、安装说明和统一运行入口之前，不应把上述建议扩写
 成完整 artifact README。

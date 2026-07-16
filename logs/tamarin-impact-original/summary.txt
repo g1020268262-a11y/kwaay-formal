@@ -1,0 +1,155 @@
+K-Waay M2 original impact/composition Tamarin summary
+model: tamarin/impact/kwaay_impact_original.spthy
+execution_git_head: 841feabd908a01bdc68669ad99253a6755820389
+execution_git_tree: 7f68a46e0a19b40d5e94e40e050225b846932716
+model_git_blob_oid: c5cdc0d7233f3a415839b8f289182c0986d911a8
+runner_git_blob_oid: 7dc5be4ac1972b6cbb949301aac90b66e999215b
+execution_mode: sequential_per_lemma
+expected_lemma_count: 37
+actual_lemma_count: 37
+verified_count: 34
+falsified_count: 3
+nonterminal_count: 0
+failed_invocation_count: 0
+loop_count: 0
+parse_exit_status: 0
+per_lemma_proof_execution_status: 0
+per_lemma_wellformedness_status: 0
+impact_result_validation_status: 0
+positive_witness_exit_status: 0
+negative_property_exit_status: 0
+original_regression_exit_status: 0
+
+aggregate result table:
+lemma	status	steps	exit_status	wellformedness	loop_marker	source_file	raw_result
+accept_output_has_same_time_accept	verified	4	0	success	false	proofs/accept_output_has_same_time_accept.out	verified (4 steps)
+receiver_accept_has_output	verified	4	0	success	false	proofs/receiver_accept_has_output.out	verified (4 steps)
+receiver_accept_has_unique_output	verified	20	0	success	false	proofs/receiver_accept_has_unique_output.out	verified (20 steps)
+accept_id_unique	verified	193	0	success	false	proofs/accept_id_unique.out	verified (193 steps)
+install_has_prior_accept	verified	18	0	success	false	proofs/install_has_prior_accept.out	verified (18 steps)
+install_session_has_interface_origin	verified	4	0	success	false	proofs/install_session_has_interface_origin.out	verified (4 steps)
+install_from_accept_has_session	verified	4	0	success	false	proofs/install_from_accept_has_session.out	verified (4 steps)
+install_event_has_single_source	verified	26	0	success	false	proofs/install_event_has_single_source.out	verified (26 steps)
+install_handle_unique	verified	52	0	success	false	proofs/install_handle_unique.out	verified (52 steps)
+accept_output_installed_at_most_once	verified	180	0	success	false	proofs/accept_output_installed_at_most_once.out	verified (180 steps)
+distinct_accept_sources_have_distinct_handles	verified	26	0	success	false	proofs/distinct_accept_sources_have_distinct_handles.out	verified (26 steps)
+install_requires_batch_complete	verified	10	0	success	false	proofs/install_requires_batch_complete.out	verified (10 steps)
+consumer_complete_requires_all_outputs_installed	verified	30	0	success	false	proofs/consumer_complete_requires_all_outputs_installed.out	verified (30 steps)
+consumer_complete_single_use	verified	36	0	success	false	proofs/consumer_complete_single_use.out	verified (36 steps)
+no_install_after_consumer_close	verified	44	0	success	false	proofs/no_install_after_consumer_close.out	verified (44 steps)
+normal_one_accept_one_install	verified	22	0	success	false	proofs/normal_one_accept_one_install.out	verified (22 steps)
+normal_consumer_complete	verified	25	0	success	false	proofs/normal_consumer_complete.out	verified (25 steps)
+one_send_two_accepts_two_installs_exists	verified	28	0	success	false	proofs/one_send_two_accepts_two_installs_exists.out	verified (28 steps)
+unique_install_within_completed_consumer	falsified	28	0	success	false	proofs/unique_install_within_completed_consumer.out	falsified - found trace (28 steps)
+normal_single_accept	verified	11	0	success	false	proofs/normal_single_accept.out	verified (11 steps)
+normal_batch_complete	verified	16	0	success	false	proofs/normal_batch_complete.out	verified (16 steps)
+one_send_two_accepts_exists	verified	15	0	success	false	proofs/one_send_two_accepts_exists.out	verified (15 steps)
+same_message_accepted_at_most_once	falsified	13	0	success	false	proofs/same_message_accepted_at_most_once.out	falsified - found trace (13 steps)
+full_message_unique_send	verified	2	0	success	false	proofs/full_message_unique_send.out	verified (2 steps)
+receiver_accept_has_sender	verified	16	0	success	false	proofs/receiver_accept_has_sender.out	verified (16 steps)
+injective_receiver_accept	falsified	16	0	success	false	proofs/injective_receiver_accept.out	falsified - found trace (16 steps)
+slot_indices_distinct	verified	1	0	success	false	proofs/slot_indices_distinct.out	verified (1 steps)
+process_requires_slot_added	verified	12	0	success	false	proofs/process_requires_slot_added.out	verified (12 steps)
+process_requires_seal	verified	8	0	success	false	proofs/process_requires_seal.out	verified (8 steps)
+complete_requires_all_slots_processed	verified	18	0	success	false	proofs/complete_requires_all_slots_processed.out	verified (18 steps)
+no_add_after_seal	verified	16	0	success	false	proofs/no_add_after_seal.out	verified (16 steps)
+no_accept_after_close	verified	68	0	success	false	proofs/no_accept_after_close.out	verified (68 steps)
+batch_complete_consumes_state	verified	2	0	success	false	proofs/batch_complete_consumes_state.out	verified (2 steps)
+batch_fail_consumes_state	verified	4	0	success	false	proofs/batch_fail_consumes_state.out	verified (4 steps)
+batch_end_token_single_use	verified	98	0	success	false	proofs/batch_end_token_single_use.out	verified (98 steps)
+receiver_state_single_batch	verified	24	0	success	false	proofs/receiver_state_single_batch.out	verified (24 steps)
+receiver_state_single_batch_end	verified	218	0	success	false	proofs/receiver_state_single_batch_end.out	verified (218 steps)
+
+positive witness export summary:
+summary of summaries:
+
+analyzed: tamarin/impact/kwaay_impact_original.spthy
+
+  processing time: 41.27s
+  
+  accept_output_has_same_time_accept (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_output (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_unique_output (all-traces): analysis incomplete (1 steps)
+  accept_id_unique (all-traces): analysis incomplete (1 steps)
+  install_has_prior_accept (all-traces): analysis incomplete (1 steps)
+  install_session_has_interface_origin (all-traces): analysis incomplete (1 steps)
+  install_from_accept_has_session (all-traces): analysis incomplete (1 steps)
+  install_event_has_single_source (all-traces): analysis incomplete (1 steps)
+  install_handle_unique (all-traces): analysis incomplete (1 steps)
+  accept_output_installed_at_most_once (all-traces): analysis incomplete (1 steps)
+  distinct_accept_sources_have_distinct_handles (all-traces): analysis incomplete (1 steps)
+  install_requires_batch_complete (all-traces): analysis incomplete (1 steps)
+  consumer_complete_requires_all_outputs_installed (all-traces): analysis incomplete (1 steps)
+  consumer_complete_single_use (all-traces): analysis incomplete (1 steps)
+  no_install_after_consumer_close (all-traces): analysis incomplete (1 steps)
+  normal_one_accept_one_install (exists-trace): analysis incomplete (1 steps)
+  normal_consumer_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_two_installs_exists (exists-trace): verified (28 steps)
+  unique_install_within_completed_consumer (all-traces): analysis incomplete (1 steps)
+  normal_single_accept (exists-trace): analysis incomplete (1 steps)
+  normal_batch_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_exists (exists-trace): analysis incomplete (1 steps)
+  same_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  full_message_unique_send (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_sender (all-traces): analysis incomplete (1 steps)
+  injective_receiver_accept (all-traces): analysis incomplete (1 steps)
+  slot_indices_distinct (all-traces): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_all_slots_processed (all-traces): analysis incomplete (1 steps)
+  no_add_after_seal (all-traces): analysis incomplete (1 steps)
+  no_accept_after_close (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch_end (all-traces): analysis incomplete (1 steps)
+
+==============================================================================
+
+negative property export summary:
+summary of summaries:
+
+analyzed: tamarin/impact/kwaay_impact_original.spthy
+
+  processing time: 41.76s
+  
+  accept_output_has_same_time_accept (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_output (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_unique_output (all-traces): analysis incomplete (1 steps)
+  accept_id_unique (all-traces): analysis incomplete (1 steps)
+  install_has_prior_accept (all-traces): analysis incomplete (1 steps)
+  install_session_has_interface_origin (all-traces): analysis incomplete (1 steps)
+  install_from_accept_has_session (all-traces): analysis incomplete (1 steps)
+  install_event_has_single_source (all-traces): analysis incomplete (1 steps)
+  install_handle_unique (all-traces): analysis incomplete (1 steps)
+  accept_output_installed_at_most_once (all-traces): analysis incomplete (1 steps)
+  distinct_accept_sources_have_distinct_handles (all-traces): analysis incomplete (1 steps)
+  install_requires_batch_complete (all-traces): analysis incomplete (1 steps)
+  consumer_complete_requires_all_outputs_installed (all-traces): analysis incomplete (1 steps)
+  consumer_complete_single_use (all-traces): analysis incomplete (1 steps)
+  no_install_after_consumer_close (all-traces): analysis incomplete (1 steps)
+  normal_one_accept_one_install (exists-trace): analysis incomplete (1 steps)
+  normal_consumer_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_two_installs_exists (exists-trace): analysis incomplete (1 steps)
+  unique_install_within_completed_consumer (all-traces): falsified - found trace (28 steps)
+  normal_single_accept (exists-trace): analysis incomplete (1 steps)
+  normal_batch_complete (exists-trace): analysis incomplete (1 steps)
+  one_send_two_accepts_exists (exists-trace): analysis incomplete (1 steps)
+  same_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  full_message_unique_send (all-traces): analysis incomplete (1 steps)
+  receiver_accept_has_sender (all-traces): analysis incomplete (1 steps)
+  injective_receiver_accept (all-traces): analysis incomplete (1 steps)
+  slot_indices_distinct (all-traces): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_all_slots_processed (all-traces): analysis incomplete (1 steps)
+  no_add_after_seal (all-traces): analysis incomplete (1 steps)
+  no_accept_after_close (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch_end (all-traces): analysis incomplete (1 steps)
+
+==============================================================================

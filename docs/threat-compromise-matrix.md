@@ -73,7 +73,7 @@ The direction of every `experimentally checked` cell appears in section 5.
 | Tamarin receiver/batch lifecycle V7 | P0-O `slot_origin` | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | HMAC-only replay bridge | P2 occurrence injectivity | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
-| impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin original impact/composition — fixed two-slot `C_install-v2` consumer | P3 unique installation under `C_install-v2` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
@@ -105,7 +105,7 @@ checked reachability trace.
 | HMAC-only replay bridge | matching existence/order | proved | proved | unknown | unknown | not applicable |
 | HMAC-only replay bridge | P2 occurrence injectivity | falsified | falsified | unknown | unknown | not applicable |
 | HMAC-only replay bridge | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
-| impact/composition model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin original impact/composition — fixed two-slot `C_install-v2` consumer | P3 unique installation under `C_install-v2` | falsified | falsified | unknown | unknown | not applicable |
 | fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
 | fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
 | HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
@@ -122,6 +122,14 @@ therefore falsify P2 in the no-compromise subset as well as the broader class
 that merely permits later compromise; neither shows a trace in which later
 compromise actually occurs. The HMAC bridge has no independent result for
 authentication-key, KEM-material, or computational HMAC compromise.
+
+The original impact/composition P3 counterexample likewise explicitly excludes
+`CompromiseReceiverState` and `CompromiseSenderState` everywhere. It therefore
+falsifies unique installation under `C_install-v2` in the no-compromise subset
+and in the broader class that permits later compromise. It does not contain an
+actual compromise occurrence and establishes no sender-authentication-key,
+receiver-authentication-key, KEM-material, or state-compromise-conditioned P3
+theorem. The material cells consequently remain `not modeled`.
 
 ## 5. Experiment-direction ledger
 
@@ -145,6 +153,7 @@ capability is therefore always `timing not represented`.
 | ProVerif HMAC confirmation — `HMAC_LEAK_SIGSK_A` | P0-S sender/receiver secrecy; P1 | sender authentication key | timing not represented | mixed: sender held; receiver failed; P1 failed | all three held | not established as a complete compromise theorem; only this target was checked | `logs/variants/hmac-confirmation/proverif/summary.txt` |
 | Tamarin replay original — `one_send_two_accepts_exists`, `injective_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | baseline falsified | no; compromise explicitly excluded everywhere | `tamarin/replay/README.md` |
 | HMAC-only replay bridge — `one_confirmed_send_two_accepts_exists`, `injective_confirmed_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | matching existence and normal path held | no; compromise explicitly excluded everywhere | `logs/tamarin-replay-hmac-only/summary.txt`, `attack-trace.out` |
+| Tamarin original impact/composition — `one_send_two_accepts_two_installs_exists`, `unique_install_within_completed_consumer` | P3 under `C_install-v2` | no material compromise occurs | no compromise anywhere | conditional duplicate-install witness verified; unique installation falsified | lower-layer duplicate acceptance already falsified; normal composition paths verified | no; witness explicitly excludes sender/receiver state compromise | `logs/tamarin-impact-original/summary.txt`, `logs/tamarin-impact-original/attack-trace.out`, `logs/tamarin-impact-original/unique-install-trace.out` |
 
 For every core leak row, P1 is
 `baseline-falsified; compromise not required`. For replay P2, the same
@@ -249,18 +258,61 @@ No sender/receiver state compromise occurs. `HonestSession` makes the matching
 existence theorem largely structural, so this artifact is a replay/occurrence
 bridge rather than independent HMAC P1 or computational-security evidence.
 
+### 6.7 Tamarin original impact/composition — fixed two-slot C_install-v2 consumer
+
+Model: `tamarin/impact/kwaay_impact_original.spthy`
+
+Runner: `tamarin/impact/run-impact-original.sh`
+
+Boundary description: `tamarin/impact/README.md`
+
+Formal evidence: `logs/tamarin-impact-original/`
+
+`C_install-v2` freezes the following conditional consumer boundary:
+
+- C1: every install has an earlier complete-parameter-matching accept-output
+  source;
+- C2a: each accepted-output source is installed at most once;
+- C2b: `ConsumerComplete` implies every successful consumer output was installed
+  exactly once, by completion-gated totality plus at-most-once rather than a
+  future-install restriction;
+- C2c: a normal accept/install/complete path is reachable;
+- C3: every install uses a fresh local handle;
+- C4: only the named interface rules emit `InstallSession`;
+- C5: a matching accept/install pair is reachable;
+- C6: distinct accept-source occurrences use distinct handles;
+- C7: the fixed consumer independently installs both successful outputs without
+  merging or deduplicating by `sid`, message, peer, or key;
+- C8: C7 is an explicit composition assumption, not deployed-behavior evidence.
+
+The 19 composition lemmas terminate with 18 verified and 1 falsified. The core
+positive witness `one_send_two_accepts_two_installs_exists` is verified in 28
+steps; `unique_install_within_completed_consumer` is falsified by a 28-step
+counterexample. Both use one matching sender, two distinct accept occurrences,
+two fresh accepted-output identifiers and two distinct fresh symbolic local
+handles carrying the same peer, `sid`, and key. Both installations occur after
+`BatchComplete` and before `ConsumerComplete`.
+
+The witness/counterexample excludes sender and receiver state compromise
+anywhere. This is a no-compromise conditional duplicate-install result, not a
+compromise theorem. It also does not establish deployed per-output installation,
+two real sessions, Double Ratchet duplication, or an application exploit.
+
+Regression evidence records 18/18 frozen lower-layer formula blocks MATCH and
+18/18 lower-layer actual statuses MATCH. Those comparisons preserve the selected
+formula/result vector; they are not a full trace-equivalence claim.
+
 ## 7. Milestone ownership
 
 | Milestone | Evidence it may add |
 |---|---|
 | M1 | ✅ HMAC-only replay bridge matching/P2, non-vacuity, lifecycle, no-compromise witness, regressions, and raw logs. |
-| M2 | The first P3 under `C_install` composition model and its interface assumptions. |
+| M2 | ✅ actual original P3 under `C_install-v2`: conditional duplicate-install witness, falsified unique installation, interface assumptions, regressions, traces, and committed evidence. |
 | M3 | Fixed dedup P2 and fixed-impact P3 under `C_install`. |
 | M4 | Combined P0-S/P0-O regressions, P1/P2, P3 under `C_install`, and selected compromise targets. |
 | M5 | Reproducible logs and the final expected-versus-actual freeze. |
 
-M1 HMAC replay cells now record completed actual results. They establish
-duplicate receiver acceptance, not duplicate installation. Impact/P3, fixed
-dedup, and combined cells remain `not modeled` until their own artifacts and
-completed runs exist. The current unique next task is M2 `C_install`
-impact/composition investigation and modeling; M3 dedup has not started.
+M2 impact/P3 cells now contain actual conditional results. The material-specific
+compromise cells, fixed dedup, fixed impact, and combined cells remain
+`not modeled`. The current unique next task is M3 batch-local atomic dedup. M3 has not
+started, and M2 does not establish deployed upper-layer behavior.

@@ -1,0 +1,125 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/impact/run-impact-original.sh
+utc_start: 2026-07-16T04:23:27Z
+git_branch: codex/m2-impact-original-v2
+git_head: 841feabd908a01bdc68669ad99253a6755820389
+git_tree: 7f68a46e0a19b40d5e94e40e050225b846932716
+execution_mode: sequential_per_lemma
+clean_pre_run_status: true
+pre_run_git_status:
+
+model_git_blob_oid: c5cdc0d7233f3a415839b8f289182c0986d911a8
+model_worktree_sha256: 0c20e36137c27bd138101a91ef5ce1e16109fccf696f942eb98c3d855a11fa41
+model_eol: CRLF
+runner_git_blob_oid: 7dc5be4ac1972b6cbb949301aac90b66e999215b
+runner_worktree_sha256: 1db2924b999ac9e68d40d047b3a012afd284f4961463723bb9b9e439226c15a5
+runner_eol: LF
+original_model_git_blob_oid: e3699da2f827a683ded2feaaa7db2d51ad74c023
+original_model_worktree_sha256: 064ec603bdfac917246a12762774701bc624c40ccb11eb6a88adf94befb4322e
+original_model_eol: LF
+git_check_attr_output:
+tamarin/impact/kwaay_impact_original.spthy: text: unspecified
+tamarin/impact/kwaay_impact_original.spthy: eol: unspecified
+tamarin/impact/run-impact-original.sh: text: set
+tamarin/impact/run-impact-original.sh: eol: lf
+tamarin/replay/kwaay_replay_original.spthy: text: unspecified
+tamarin/replay/kwaay_replay_original.spthy: eol: unspecified
+
+tamarin-prover --version:
+maude tool: 'maude'
+ checking version: tamarin-prover 1.12.0, (C) David Basin, Cas Cremers, Jannik Dreier, Simon Meier, Ralf Sasse, Benedikt Schmidt, 2010-2023
+
+This program comes with ABSOLUTELY NO WARRANTY. It is free software, and you
+are welcome to redistribute it according to its LICENSE, see
+'https://github.com/tamarin-prover/tamarin-prover/blob/master/LICENSE'.
+
+3.5.1. OK.
+ checking installation: OK.
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+
+maude --version:
+3.5.1
+
+utc_end: 2026-07-16T04:44:39Z
+parse_exit_status: 0
+per_lemma_proof_execution_status: 0
+per_lemma_wellformedness_status: 0
+impact_result_validation_status: 0
+expected_lemma_count: 37
+actual_lemma_count: 37
+verified_count: 34
+falsified_count: 3
+nonterminal_count: 0
+failed_invocation_count: 0
+wellformedness_failure_count: 0
+loop_count: 0
+positive_witness_exit_status: 0
+negative_property_exit_status: 0
+original_regression_exit_status: 0
+positive_trace_wellformedness_status: 0
+negative_trace_wellformedness_status: 0
+original_wellformedness_status: 0
+original_result_validation_status: 0
+positive_trace_artifact_validation_status: 0
+negative_trace_artifact_validation_status: 0
+frozen_formula_comparison_status: 0
+lower_layer_result_comparison_status: 0
+manifest_recursive_file_count: 52
+post_run_git_status:
+?? logs/tamarin-impact-original/aggregate-results.tsv
+?? logs/tamarin-impact-original/attack-trace.dot
+?? logs/tamarin-impact-original/attack-trace.json
+?? logs/tamarin-impact-original/attack-trace.out
+?? logs/tamarin-impact-original/command.txt
+?? logs/tamarin-impact-original/frozen-formula-comparison.txt
+?? logs/tamarin-impact-original/lower-layer-result-comparison.txt
+?? logs/tamarin-impact-original/original-regression-summary.txt
+?? logs/tamarin-impact-original/original-regression.out
+?? logs/tamarin-impact-original/parse.out
+?? logs/tamarin-impact-original/proofs/accept_id_unique.out
+?? logs/tamarin-impact-original/proofs/accept_output_has_same_time_accept.out
+?? logs/tamarin-impact-original/proofs/accept_output_installed_at_most_once.out
+?? logs/tamarin-impact-original/proofs/batch_complete_consumes_state.out
+?? logs/tamarin-impact-original/proofs/batch_end_token_single_use.out
+?? logs/tamarin-impact-original/proofs/batch_fail_consumes_state.out
+?? logs/tamarin-impact-original/proofs/complete_requires_all_slots_processed.out
+?? logs/tamarin-impact-original/proofs/consumer_complete_requires_all_outputs_installed.out
+?? logs/tamarin-impact-original/proofs/consumer_complete_single_use.out
+?? logs/tamarin-impact-original/proofs/distinct_accept_sources_have_distinct_handles.out
+?? logs/tamarin-impact-original/proofs/full_message_unique_send.out
+?? logs/tamarin-impact-original/proofs/injective_receiver_accept.out
+?? logs/tamarin-impact-original/proofs/install_event_has_single_source.out
+?? logs/tamarin-impact-original/proofs/install_from_accept_has_session.out
+?? logs/tamarin-impact-original/proofs/install_handle_unique.out
+?? logs/tamarin-impact-original/proofs/install_has_prior_accept.out
+?? logs/tamarin-impact-original/proofs/install_requires_batch_complete.out
+?? logs/tamarin-impact-original/proofs/install_session_has_interface_origin.out
+?? logs/tamarin-impact-original/proofs/no_accept_after_close.out
+?? logs/tamarin-impact-original/proofs/no_add_after_seal.out
+?? logs/tamarin-impact-original/proofs/no_install_after_consumer_close.out
+?? logs/tamarin-impact-original/proofs/normal_batch_complete.out
+?? logs/tamarin-impact-original/proofs/normal_consumer_complete.out
+?? logs/tamarin-impact-original/proofs/normal_one_accept_one_install.out
+?? logs/tamarin-impact-original/proofs/normal_single_accept.out
+?? logs/tamarin-impact-original/proofs/one_send_two_accepts_exists.out
+?? logs/tamarin-impact-original/proofs/one_send_two_accepts_two_installs_exists.out
+?? logs/tamarin-impact-original/proofs/process_requires_seal.out
+?? logs/tamarin-impact-original/proofs/process_requires_slot_added.out
+?? logs/tamarin-impact-original/proofs/receiver_accept_has_output.out
+?? logs/tamarin-impact-original/proofs/receiver_accept_has_sender.out
+?? logs/tamarin-impact-original/proofs/receiver_accept_has_unique_output.out
+?? logs/tamarin-impact-original/proofs/receiver_state_single_batch.out
+?? logs/tamarin-impact-original/proofs/receiver_state_single_batch_end.out
+?? logs/tamarin-impact-original/proofs/same_message_accepted_at_most_once.out
+?? logs/tamarin-impact-original/proofs/slot_indices_distinct.out
+?? logs/tamarin-impact-original/proofs/unique_install_within_completed_consumer.out
+?? logs/tamarin-impact-original/summary.txt
+?? logs/tamarin-impact-original/unique-install-trace.dot
+?? logs/tamarin-impact-original/unique-install-trace.json
+?? logs/tamarin-impact-original/unique-install-trace.out
+?? logs/tamarin-impact-original/versions.txt
+post_run_unexpected_status_empty: true
