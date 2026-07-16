@@ -500,8 +500,10 @@ Do not write:
 - “HMAC is forged or computationally broken.” The witness reuses one honestly
   constructed confirmed message; it establishes duplicate acceptance, not forgery.
 - “A fixed model proves injectivity.” No fixed model exists yet.
-- “Duplicate receiver outputs prove duplicate installed sessions.” That would be
-  P3 under `C_install`, which is not modeled.
+- “Duplicate receiver outputs by themselves prove duplicate installed sessions.”
+  M2 establishes that propagation only inside the separate, explicit
+  `C_install-v2` conditional composition model; it is not an inference from P2
+  alone and does not establish deployed behavior.
 
 ### 4.10 Completion milestone
 
@@ -531,34 +533,76 @@ M1 satisfied this constraint with the full tuple
 `confirmed_message_unique_send` lemma. Future fixed/combined artifacts must
 retain an equally explicit occurrence-disambiguation argument.
 
-## 5. P3 under C_install: unique session installation
+## 5. P3 under C_install-v2: unique session installation
 
-### 5.1 Exact definition and named composition assumption
+### 5.1 Exact definition and conditional composition boundary
 
-P3 under `C_install` is a conditional composition claim. `C_install` names the
-future M2 receiver-output-to-installation interface and freezes all of the
-following assumptions:
+P3 under `C_install-v2` is a conditional composition claim evaluated in the
+separate M2 impact theory. It is not a protocol-only claim, authentication rank,
+specification fact, implementation fact, or deployed-behavior fact.
 
-1. Every `InstallSession(B,h,A,sid,k)` has an earlier
-   `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` with the complete matching tuple.
-2. Every `ReceiverAccept` occurrence triggers exactly one later
-   `InstallSession` occurrence through the designated composition interface.
-3. Every installation generates a fresh local handle `h`; distinct installation
-   occurrences therefore have distinct handles.
-4. `InstallSession` can be produced only by that named interface; there is no
-   out-of-interface or ex nihilo installation rule.
-5. A normal one-accept-one-install trace is reachable.
+The actual M2 instantiation is:
 
-The intended future interface has the shape:
+```text
+C1:
+Every installation has an earlier complete-parameter-matching accept-output
+source.
+
+C2a:
+Each accepted-output source is installed at most once.
+
+C2b:
+If ConsumerComplete occurs, every successful output belonging to that consumer
+has been installed exactly once. This combines completion-gated totality with
+at-most-once; no future-install restriction forces the result.
+
+C2c:
+A normal accept → install → ConsumerComplete execution is reachable.
+
+C3:
+Each installation creates a fresh local handle.
+
+C4:
+InstallSession can only be emitted by the designated installation interface
+rules.
+
+C5:
+At least one matching accept/install pair is reachable. This does not imply the
+whole trace contains only one accept or one install.
+
+C6:
+Installations from distinct accept-source occurrences use distinct local
+handles.
+
+C7:
+The fixed two-output consumer independently processes every successful batch
+output and does not merge or deduplicate by sid, message, peer, or key.
+
+C8:
+C7 is an explicit composition assumption, not an established fact about
+deployed K-Waay.
+```
+
+The modeled provenance chain is:
 
 ```text
 ReceiverAccept(B,A,bid,idx,rst,m,sid,k)
-  -> InstallSession(B,handle,A,sid,k)
+AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k)
+InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k)
+InstallSession(B,h,A,sid,k)
+ConsumerComplete(B,bid,rst)
 ```
 
-Under `C_install`, unique session installation requires that one sender
-occurrence cannot lead to two installation events with the same peer, `sid`,
-and key but distinct local handles:
+`sid` is the protocol session identifier, `aid` is a fresh accepted-output
+occurrence identifier, and `h` is a fresh symbolic local installation handle.
+`aid` does not enter the protocol message, `sid`, or key. `InstallFromAccept`
+preserves complete provenance; `InstallSession` is the conditional composition
+event. `ConsumerComplete` is only the terminal event of this bounded consumer,
+not real application completion.
+
+Unique installation asks whether one matching sender occurrence can produce
+two installation events carrying the same peer, `sid`, and key but distinct
+local handles:
 
 ```text
 InstallSession(B,h1,A,sid,k)
@@ -567,74 +611,146 @@ same matching SenderSession
 implies h1 = h2.
 ```
 
-This is not a protocol-only claim or an authentication rank. It is conditional
-on all of `C_install`. The assumptions are frozen now for naming only; their
-events, rules, executability, and result are future M2 work.
-
 ### 5.2 Current status
 
-`not modeled`.
+- conditional duplicate-install witness under `C_install-v2`: `established`;
+- unique installation under `C_install-v2`: `falsified`;
+- deployed K-Waay per-output installation: `unknown` / unsupported by repository
+  specification or implementation evidence.
 
 ### 5.3 Protocol variants
 
-- future impact/composition model over replay original;
-- future fixed impact model;
+- actual original impact/composition model over replay original;
+- future fixed dedup impact model;
 - future HMAC+dedup combined impact model.
 
-### 5.4 Model files
+The M2 result applies only to the first variant. Fixed/dedup and combined P3
+remain `not modeled`.
 
-No impact/composition model exists.
+### 5.4 Model and evidence
 
-### 5.5 Events and lemmas
+Model:
 
-No `InstallSession`, session-handle event, `one_send_two_installs_exists`, or
-`unique_install` lemma exists in the current non-archived models.
+- `tamarin/impact/kwaay_impact_original.spthy`
 
-The only reusable lower-layer event is
-`ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` in
-`tamarin/replay/kwaay_replay_original.spthy`.
+Runner and boundary description:
 
-### 5.6 Actual results
+- `tamarin/impact/run-impact-original.sh`
+- `tamarin/impact/README.md`
 
-None. P3 under `C_install` is `not modeled`. Its event and lemma names in the
-roadmap are expected future names, not observed tool results.
+Committed evidence:
 
-### 5.7 Assumptions required before the claim can be evaluated
+- `logs/tamarin-impact-original/`
+- `docs/milestones/M2-completion.md`
 
-- every clause of `C_install` must be represented and checked in M2;
-- protocol `sid` must remain distinct from the fresh local handle;
-- the document must state whether the interface represents K-Waay's
-  specification, a real integration, or only a conditional consumer;
-- selected compromise and state-reuse assumptions for the upper layer must be
-  explicit.
+### 5.5 Events and 19 composition lemmas
 
-### 5.8 Allowed paper statement
+Key events:
 
-Current allowed statement:
+- `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)`;
+- `AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k)`;
+- `InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k)`;
+- `InstallSession(B,h,A,sid,k)`;
+- `ConsumerComplete(B,bid,rst)`.
 
-> The protocol-level replay model produces two equal `(sid,k)` receiver outputs.
-> P3 under `C_install` is not modeled; any installation impact remains
-> conditional on the explicitly named future composition interface.
+Composition lemmas and actual results:
 
-After M2, a stronger statement is allowed only in conditional form unless the
-interface is justified from a specification or implementation.
+| Lemma | Actual result |
+|---|---|
+| `accept_output_has_same_time_accept` | verified, 4 steps |
+| `receiver_accept_has_output` | verified, 4 steps |
+| `receiver_accept_has_unique_output` | verified, 20 steps |
+| `accept_id_unique` | verified, 193 steps |
+| `install_has_prior_accept` | verified, 18 steps |
+| `install_session_has_interface_origin` | verified, 4 steps |
+| `install_from_accept_has_session` | verified, 4 steps |
+| `install_event_has_single_source` | verified, 26 steps |
+| `install_handle_unique` | verified, 52 steps |
+| `accept_output_installed_at_most_once` | verified, 180 steps |
+| `distinct_accept_sources_have_distinct_handles` | verified, 26 steps |
+| `install_requires_batch_complete` | verified, 10 steps |
+| `consumer_complete_requires_all_outputs_installed` | verified, 30 steps |
+| `consumer_complete_single_use` | verified, 36 steps |
+| `no_install_after_consumer_close` | verified, 44 steps |
+| `normal_one_accept_one_install` | verified, 22 steps |
+| `normal_consumer_complete` | verified, 25 steps |
+| `one_send_two_accepts_two_installs_exists` | verified, 28 steps |
+| `unique_install_within_completed_consumer` | falsified - found trace, 28 steps |
 
-### 5.9 Prohibited overstatements
+The composition profile is 18 verified and 1 falsified. With the frozen 18
+lower-layer lemmas, the full theory has 37 terminal results: 34 verified, 3
+falsified, 0 incomplete, 0 failed invocation, 0 wellformedness failure, and 0
+`<<loop>>` in the final sequential-per-lemma evidence run.
+
+### 5.6 Actual result and witness scope
+
+`one_send_two_accepts_two_installs_exists` verifies a 28-step trace in which one
+unique matching `SenderSession` leads to two distinct `ReceiverAccept`
+occurrences, two fresh `aid`, and two installations. Both `InstallSession`
+events carry the same `A,B,sid,k` but different fresh handles, and the consumer
+then completes.
+
+`unique_install_within_completed_consumer` is falsified by a 28-step
+counterexample. The trace has one matching sender occurrence, the same
+`A,B,m,sid,k,bid,rst`, distinct receiver timepoints and slot indices, distinct
+installation timepoints, distinct `aid` and handles, and both installations
+after `BatchComplete` and before `ConsumerComplete`. It contains no
+`CompromiseReceiverState` or `CompromiseSenderState` occurrence.
+
+The 18 frozen lower-layer formula blocks are 18/18 MATCH, and their actual
+result vector is 18/18 MATCH against the original regression. This is selected
+formula/result preservation, not full trace equivalence.
+
+### 5.7 Allowed paper statement
+
+> Under the explicitly modeled `C_install-v2` consumer assumptions, the bounded
+> original replay witness propagates from two receiver-accept outputs to two
+> distinct symbolic local installation handles carrying the same peer,
+> session identifier, and session key.
+
+It is also permitted to report that installation provenance correspondence is
+verified in both directions, distinct accept sources use distinct handles,
+normal accept/install/complete paths are reachable, lower-layer formula/result
+vectors did not regress, and unique installation under this consumer is
+falsified.
+
+### 5.8 Prohibited overstatements
 
 Do not write:
 
-- “K-Waay installs two sessions from one send.”
-- “A session-cloning attack has been proved.”
+- “Deployed K-Waay necessarily installs two sessions from one send.”
+- “Figure 7 specifies independent installation of every output.”
+- “A real implementation session-cloning exploit has been proved.”
+- “Two `InstallSession` events are two complete real sessions.”
 - “Double Ratchet state is duplicated.”
-- “P3 under `C_install` is falsified or established.”
-- “The protocol itself mandates one installation per receiver accept,” unless
-  supported by an external specification or implementation mapping.
+- “Application, payment, authorization, or another business action repeats.”
+- “Arbitrary-length or cross-batch impact has been proved.”
+- “HMAC-only duplicate acceptance already proves duplicate installation.”
+- “M3 dedup or M4 combined repair is complete.”
+- “Computational security has been proved.”
+
+### 5.9 General inference boundary
+
+The general implications remain forbidden:
+
+```text
+ReceiverAccept does not by itself imply InstallSession
+two ReceiverAccept events do not by themselves imply two installed sessions
+```
+
+Only inside the explicit `C_install-v2` composition model may the conditional
+M2 witness be cited. The conditional result cannot be transferred to a deployed
+upper layer without independent specification or implementation evidence.
 
 ### 5.10 Completion milestone
 
-M2 must implement `C_install` and evaluate the original duplicate-install trace.
-M3 must connect the dedup repair to the same interface. M4 must establish the
-combined result. M5 must freeze the interface assumptions and result logs.
+M2 is complete with model/runner Commit A2, formal evidence Commit B, 19
+composition results, 18 frozen lower-layer regressions, trace artifacts, and a
+verified 52-entry manifest covering 53 evidence files including the manifest.
+
+M3 is the current unique next task: build the batch-local atomic dedup repair
+and evaluate fixed P2/P3 without changing the completed M2 result. M4 remains
+the future combined HMAC+dedup result, and M5 remains the final artifact freeze.
 
 ## 6. Property and dependency rules
 
@@ -658,7 +774,7 @@ P2 => P1, only for the same artifact instantiation, event semantics,
           and matching parameter tuple.
 ```
 
-The main-line evidence state after M1 is therefore:
+The main-line evidence state after M2 is therefore:
 
 ```text
 P0 baseline: established
@@ -669,9 +785,12 @@ HMAC-only Tamarin matching existence/order: established but structurally mediate
 P2 Tamarin replay original: falsified
 P2 HMAC-only replay: falsified in the same-batch/same-state subdomain
 P2 fixed/combined: not modeled
-P3 under C_install: not modeled
+P3 under C_install-v2: conditional duplicate-install witness established;
+                       unique installation falsified
+P3 fixed/dedup and combined: not modeled
 ```
 
-Accordingly, the current unique next task is M2: investigate and model the
-`C_install` impact/composition interface. M3 batch-local dedup has not started,
-and duplicate `ReceiverAccept` must not be relabeled as duplicate installation.
+Accordingly, the current unique next task is M3: build the batch-local atomic
+dedup repair. M3 has not started. The M2 result may be cited only under the
+explicit `C_install-v2` composition assumptions; duplicate `ReceiverAccept`
+outside that model must not be relabeled as duplicate installation.
