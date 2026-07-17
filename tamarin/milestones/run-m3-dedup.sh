@@ -426,10 +426,28 @@ extract_functions_block() {
 }
 
 compare_constructors() {
-  local label="$1" source="$2" target="$3" a="$TMP_DIR/$label-functions-a" b="$TMP_DIR/$label-functions-b" match
-  extract_functions_block "$source" "$a"; extract_functions_block "$target" "$b"
-  if cmp -s "$a" "$b"; then match=MATCH; else match=MISMATCH; fi
-  printf '%s\t%s\t%s\t%s\n' "$label" "$(sha256sum "$a" | awk '{print $1}')" "$(sha256sum "$b" | awk '{print $1}')" "$match" >> "$CONSTRUCTOR_LOG"
+  local label="$1"
+  local source="$2"
+  local target="$3"
+  local a="$TMP_DIR/${label}-functions-a"
+  local b="$TMP_DIR/${label}-functions-b"
+  local match
+
+  extract_functions_block "$source" "$a"
+  extract_functions_block "$target" "$b"
+
+  if cmp -s "$a" "$b"; then
+    match=MATCH
+  else
+    match=MISMATCH
+  fi
+
+  printf '%s\t%s\t%s\t%s\n' \
+    "$label" \
+    "$(sha256sum "$a" | awk '{print $1}')" \
+    "$(sha256sum "$b" | awk '{print $1}')" \
+    "$match" >> "$CONSTRUCTOR_LOG"
+
   [[ "$match" == MATCH ]]
 }
 
@@ -468,9 +486,18 @@ extract_baseline_target_results() {
 }
 
 run_proverif_target() {
-  local suite="$1" target="$2" model_rel="$3" baseline_rel="$4"
-  local dir="$LOG_DIR/regressions/$suite" generated="$dir/generated/$target.pv" raw="$dir/$target.out" cpp_err="$dir/$target.cpp.err"
-  local input status errors=0 actual="$TMP_DIR/$suite-$target-actual" baseline="$TMP_DIR/$suite-$target-baseline" match
+  local suite="$1"
+  local target="$2"
+  local model_rel="$3"
+  local baseline_rel="$4"
+  local dir="$LOG_DIR/regressions/$suite"
+  local generated="$dir/generated/$target.pv"
+  local raw="$dir/$target.out"
+  local cpp_err="$dir/$target.cpp.err"
+  local input status errors=0
+  local actual="$TMP_DIR/$suite-$target-actual"
+  local baseline="$TMP_DIR/$suite-$target-baseline"
+  local match
   mkdir -p "$dir/generated"
   print_command "executed-proverif-cpp[$suite][$target]" cpp -P -D "$target" "$ROOT_DIR/$model_rel" >> "$COMMAND_LOG"
   set +e
@@ -498,8 +525,14 @@ run_proverif_target() {
 }
 
 run_trace() {
-  local label="$1" model_rel="$2" lemma="$3"
-  local dir="$LOG_DIR/traces/$label" raw="$dir/trace.out" json="$dir/trace.json" dot="$dir/trace.dot" status errors=0
+  local label="$1"
+  local model_rel="$2"
+  local lemma="$3"
+  local dir="$LOG_DIR/traces/$label"
+  local raw="$dir/trace.out"
+  local json="$dir/trace.json"
+  local dot="$dir/trace.dot"
+  local status errors=0
   mkdir -p "$dir"
   {
     print_command "executed-trace[$label]" tamarin-prover --derivcheck-timeout=0 "--prove=$lemma" --output-json="$json" --output-dot="$dot" "$model_rel"
