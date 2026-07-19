@@ -197,12 +197,16 @@ batch slot, local session handle, or implementation state.
   Because receiver processing requires persistent `HonestSession`, the bridge's
   matching-existence result is mainly structural; ProVerif remains the main
   independent evidence for HMAC P1.
+- dedup-only fixed replay: does not model or restore the original ProVerif P1
+  event/query; it establishes only its own batch-local P2 result;
+- HMAC+dedup combined P1: `not modeled`.
 
 ### 3.3 Protocol variants
 
 - original Figure 7 core;
 - HMAC confirmation;
 - HMAC-only two-slot replay bridge;
+- dedup-only fixed two-slot replay (P2 only, not a ProVerif P1 repair);
 - future HMAC+dedup combined fix.
 
 ### 3.4 Model files
@@ -280,6 +284,7 @@ M1 is complete: the HMAC-only bridge separates structural matching existence
 from falsified same-batch/same-state occurrence injectivity and preserves the
 ProVerif HMAC baseline as the main independent P1 evidence. M4 must establish
 the combined HMAC+dedup P1 result and regress the selected compromise cases.
+M3 dedup-only completion does not change this P1 status.
 M5 must freeze the final paper artifact.
 
 ## 4. P2: injective one-send-one-accept
@@ -364,21 +369,24 @@ event vocabularies.
 `falsified` for both replay original and the HMAC-only replay bridge in the
 same-batch/same-receiver-state subdomain.
 
-Positive P2 for dedup-only or HMAC+dedup is `not modeled`.
+P2 is `established` for the dedup-only fixed two-slot model, strictly within
+the same `B,bid,rst` and exact complete message `m` scope. HMAC+dedup remains
+`not modeled`.
 
 ### 4.3 Protocol variants
 
 - original, unhardened `BatchReceive` replay abstraction;
 - HMAC-only two-slot replay bridge;
-- future dedup-only fixed model;
+- actual dedup-only fixed two-slot model;
 - future HMAC+dedup combined model.
 
 ### 4.4 Model file
 
 - `tamarin/replay/kwaay_replay_original.spthy`
 - `tamarin/replay/kwaay_replay_hmac_only.spthy`
+- `tamarin/replay/kwaay_replay_fixed.spthy`
 
-No fixed or combined model currently exists.
+No combined HMAC+dedup model currently exists.
 
 ### 4.5 Events and evidence roles
 
@@ -410,9 +418,17 @@ context is `(bid,idx,rst)`.
 | HMAC-only | matching-accept non-vacuity | `normal_confirmed_single_accept` | `verified` |
 | HMAC-only | lifecycle sanity | `normal_confirmed_batch_complete` | `verified` |
 | HMAC-only | attack witness | `one_confirmed_send_two_accepts_exists` | `verified` |
+| dedup-only fixed | matching existence/order | `receiver_accept_has_sender` | `verified` |
+| dedup-only fixed | sender-occurrence disambiguation | `full_message_unique_send` | `verified` |
+| dedup-only fixed | same-`B,bid,rst` exact-message occurrence injectivity | `injective_receiver_accept` | `verified` |
+| dedup-only fixed | exact-message at-most-once | `same_message_accepted_at_most_once` | `verified` |
+| dedup-only fixed | legacy duplicate witness | `one_send_two_accepts_exists` | `falsified` |
+| dedup-only fixed | duplicate failure non-vacuity | `duplicate_batch_fail_exists` | `verified` |
+| dedup-only fixed | duplicate has no accept | `duplicate_batch_has_no_accept` | `verified` |
+| dedup-only fixed | distinct completion non-vacuity | `normal_distinct_batch_complete` | `verified` |
 
-Both models also verify `slot_indices_distinct` and their selected lifecycle
-lemmas.
+All three models also verify `slot_indices_distinct` and their selected
+lifecycle lemmas.
 
 ### 4.6 Actual results
 
@@ -438,6 +454,19 @@ HMAC-only actual results:
 - `injective_confirmed_receiver_accept`: `falsified - found trace` (15 steps).
 - all 11 selected lifecycle/state-consumption lemmas: `verified`.
 
+Dedup-only fixed actual results:
+
+- `one_send_two_accepts_exists`: `falsified`.
+- `same_message_accepted_at_most_once`: `verified`.
+- `injective_receiver_accept`: `verified`.
+- `duplicate_batch_fail_exists`: `verified`.
+- `duplicate_batch_has_no_accept`: `verified`.
+- `normal_distinct_batch_complete`: `verified`.
+- `normal_distinct_fail_slot1_exists`: `verified`.
+- `normal_distinct_fail_slot2_exists`: `verified`.
+- all 30 fixed replay targets have expected terminal results in the transparent
+  composite vector.
+
 Evidence:
 
 - `tamarin/replay/README.md`
@@ -449,13 +478,18 @@ Evidence:
 - `logs/tamarin-replay-hmac-only/attack-trace.out`
 - `logs/tamarin-replay-hmac-only/original-regression-summary.txt`
 - `logs/tamarin-replay-hmac-only/hmac-baseline-regression-summary.txt`
+- `tamarin/replay/README-fixed.md`
+- `logs/tamarin-m3-closeout/`
+- `docs/milestones/M3-completion.md`
 
-Thus global P2 is `falsified` because occurrence injectivity already fails in
-the same-batch/same-receiver-state subdomain in both replay artifacts. Matching
+Thus global P2 is `falsified` for original and HMAC-only because occurrence
+injectivity already fails in their same-batch/same-receiver-state subdomain. Matching
 existence/order and matching-accept executability hold; they are not the failure
 point. The HMAC bridge's `confirmed_message_unique_send` disambiguates the
 sender occurrence but does not provide P2 injectivity or replay prevention.
-No positive global injectivity theorem is present.
+No positive global injectivity theorem is present. The fixed positive result is
+only same-`B,bid,rst`, exact-complete-`m`, fixed-two-slot injectivity; it cannot
+be lifted to cross-batch, rollback, restart, or arbitrary-state replay safety.
 
 The M1 evidence bundle contains committed full raw output, a selected attack
 trace in text/JSON/DOT, exact commands and versions, and original/HMAC-baseline
@@ -465,7 +499,7 @@ with no timeout or incomplete result.
 
 ### 4.7 Assumptions
 
-- both replay artifacts use a fixed two-slot symbolic batch;
+- all three replay artifacts use a fixed two-slot symbolic batch;
 - original matching coordinates are `(A,B,m,sid,k)`; HMAC-only coordinates are
   `(A,B,m,sid,k,tag)`;
 - receiver-side occurrence context is `(bid,idx,rst)`;
@@ -477,7 +511,9 @@ with no timeout or incomplete result.
   `HonestSession`; in the HMAC bridge this also makes matching existence largely structural;
 - the HMAC bridge models symbolic `tag=hmac(confirm_key(k),sid)` and exact
   confirmed-message equality, but not a computational HMAC game;
-- no duplicate cache, `SeenSid`, session installation, or application state.
+- the fixed artifact uses one linear, batch-local decision over exact complete
+  `m`; it is not a global cache and contains no HMAC confirmation;
+- replay artifacts contain no session installation or application state.
 
 ### 4.8 Allowed paper statement
 
@@ -490,6 +526,13 @@ with no timeout or incomplete result.
 > one-send-one-accept property, without claiming a positive theorem over
 > arbitrary batches or states.
 
+For the fixed model it is additionally allowed to state:
+
+> In the fixed two-slot model, an atomic pre-processing decision rejects an
+> exact duplicate complete message before either slot is processed. Within one
+> `B,bid,rst`, the same message cannot produce two receiver accepts, while a
+> distinct-message batch can complete.
+
 ### 4.9 Prohibited overstatements
 
 Do not write:
@@ -499,7 +542,8 @@ Do not write:
 - “The attack is cross-batch replay, rollback, or state reuse after close.”
 - “HMAC is forged or computationally broken.” The witness reuses one honestly
   constructed confirmed message; it establishes duplicate acceptance, not forgery.
-- “A fixed model proves injectivity.” No fixed model exists yet.
+- “The fixed model proves global replay prevention.” Its verified result is
+  limited to fixed two-slot, same `B,bid,rst`, exact complete message `m`.
 - “Duplicate receiver outputs by themselves prove duplicate installed sessions.”
   M2 establishes that propagation only inside the separate, explicit
   `C_install-v2` conditional composition model; it is not an inference from P2
@@ -507,13 +551,11 @@ Do not write:
 
 ### 4.10 Completion milestone
 
-M1 has tested and falsified the same-batch/same-receiver-state P2 condition in
-the HMAC-only replay bridge with committed raw evidence. M3 and M4 must state
-whether their future positive injectivity lemmas remain batch/state scoped or
-explicitly quantify across batches and receiver states; a same-batch positive
-result must not be relabeled as global P2. M2 first owns P3 under `C_install`;
-M3 owns the batch-local atomic dedup model, M4 the combined HMAC+dedup model and
-regressions, and M5 the final artifact freeze.
+M1 falsified the same-batch/same-receiver-state P2 condition in the HMAC-only
+bridge. M3 is complete: the dedup-only fixed model establishes the positive
+condition only for fixed two-slot, same `B,bid,rst`, exact complete `m`, with
+transparent composite evidence. This is not global P2. M4 owns the future
+combined HMAC+dedup model and regressions; M5 owns the final artifact freeze.
 
 When a future artifact uses the current direct tuple-based matching style, it
 must disambiguate sender occurrences. Two possible approaches are:
@@ -530,8 +572,9 @@ not identify tuple equality with occurrence equality without justification.
 
 M1 satisfied this constraint with the full tuple
 `(A,B,m,sid,k,tag)`, fresh sender ciphertext randomness, and the verified
-`confirmed_message_unique_send` lemma. Future fixed/combined artifacts must
-retain an equally explicit occurrence-disambiguation argument.
+`confirmed_message_unique_send` lemma. M3 retained `full_message_unique_send`;
+future combined artifacts must retain an equally explicit occurrence-
+disambiguation argument.
 
 ## 5. P3 under C_install-v2: unique session installation
 
@@ -613,35 +656,43 @@ implies h1 = h2.
 
 ### 5.2 Current status
 
-- conditional duplicate-install witness under `C_install-v2`: `established`;
-- unique installation under `C_install-v2`: `falsified`;
+- original conditional duplicate-install witness under `C_install-v2`:
+  `established`;
+- original unique installation under `C_install-v2`: `falsified`;
+- fixed dedup duplicate-install witness: `falsified`;
+- fixed dedup unique installation under `C_install-v2`: `established`;
+- fixed dedup normal distinct consumer completion: `established`;
 - deployed K-Waay per-output installation: `unknown` / unsupported by repository
   specification or implementation evidence.
 
 ### 5.3 Protocol variants
 
 - actual original impact/composition model over replay original;
-- future fixed dedup impact model;
+- actual fixed dedup impact model;
 - future HMAC+dedup combined impact model.
 
-The M2 result applies only to the first variant. Fixed/dedup and combined P3
-remain `not modeled`.
+The M2 result applies only to the first variant; the M3 result applies only to
+the second. Combined HMAC+dedup P3 remains `not modeled`.
 
 ### 5.4 Model and evidence
 
 Model:
 
 - `tamarin/impact/kwaay_impact_original.spthy`
+- `tamarin/impact/kwaay_impact_fixed.spthy`
 
 Runner and boundary description:
 
 - `tamarin/impact/run-impact-original.sh`
 - `tamarin/impact/README.md`
+- `tamarin/impact/README-fixed.md`
 
 Committed evidence:
 
 - `logs/tamarin-impact-original/`
 - `docs/milestones/M2-completion.md`
+- `logs/tamarin-m3-closeout/`
+- `docs/milestones/M3-completion.md`
 
 ### 5.5 Events and 19 composition lemmas
 
@@ -701,6 +752,25 @@ The 18 frozen lower-layer formula blocks are 18/18 MATCH, and their actual
 result vector is 18/18 MATCH against the original regression. This is selected
 formula/result preservation, not full trace equivalence.
 
+Fixed-impact M3 actual results:
+
+| Lemma | Actual result |
+|---|---|
+| `one_send_two_accepts_two_installs_exists` | falsified |
+| `unique_install_within_completed_consumer` | verified |
+| `normal_consumer_complete` | falsified |
+| `normal_distinct_consumer_complete` | verified |
+| `duplicate_batch_has_no_accept_output` | verified |
+| `duplicate_batch_has_no_install` | verified |
+| `no_consumer_after_failed_batch` | verified |
+
+`normal_consumer_complete` is the frozen legacy same-message two-output target;
+its falsification is expected after duplicate rejection. The distinct-message
+consumer remains non-vacuous through `normal_distinct_consumer_complete`.
+Fixed impact has 53/53 expected terminal targets in the transparent composite
+vector. Consumer rules remain 3/3 byte-for-byte MATCH, so this result still uses
+the same conditional `C_install-v2` interface rather than consumer-side dedup.
+
 ### 5.7 Allowed paper statement
 
 > Under the explicitly modeled `C_install-v2` consumer assumptions, the bounded
@@ -714,6 +784,11 @@ normal accept/install/complete paths are reachable, lower-layer formula/result
 vectors did not regress, and unique installation under this consumer is
 falsified.
 
+For the fixed impact model it is permitted to report that, under the same
+explicit `C_install-v2` assumptions, the batch-local duplicate branch produces
+no accepted output or installation, unique installation is verified, and two
+distinct messages can still complete the consumer.
+
 ### 5.8 Prohibited overstatements
 
 Do not write:
@@ -726,7 +801,7 @@ Do not write:
 - “Application, payment, authorization, or another business action repeats.”
 - “Arbitrary-length or cross-batch impact has been proved.”
 - “HMAC-only duplicate acceptance already proves duplicate installation.”
-- “M3 dedup or M4 combined repair is complete.”
+- “M4 combined repair is complete.” M4 remains not modeled.
 - “Computational security has been proved.”
 
 ### 5.9 General inference boundary
@@ -748,9 +823,10 @@ M2 is complete with model/runner Commit A2, formal evidence Commit B, 19
 composition results, 18 frozen lower-layer regressions, trace artifacts, and a
 verified 52-entry manifest covering 53 evidence files including the manifest.
 
-M3 is the current unique next task: build the batch-local atomic dedup repair
-and evaluate fixed P2/P3 without changing the completed M2 result. M4 remains
-the future combined HMAC+dedup result, and M5 remains the final artifact freeze.
+M3 is complete with frozen A3 models and transparent composite evidence: fixed
+P2 and fixed P3 under `C_install-v2` match their expected vectors without
+changing the completed M2 result. M4 is the current unique next task: the
+combined HMAC+dedup model and regressions. M5 remains the final artifact freeze.
 
 ## 6. Property and dependency rules
 
@@ -774,7 +850,7 @@ P2 => P1, only for the same artifact instantiation, event semantics,
           and matching parameter tuple.
 ```
 
-The main-line evidence state after M2 is therefore:
+The main-line evidence state after M3 is therefore:
 
 ```text
 P0 baseline: established
@@ -784,13 +860,17 @@ P1 HMAC under A signing-key compromise: falsified
 HMAC-only Tamarin matching existence/order: established but structurally mediated by HonestSession
 P2 Tamarin replay original: falsified
 P2 HMAC-only replay: falsified in the same-batch/same-state subdomain
-P2 fixed/combined: not modeled
+P2 fixed: established within fixed two-slot, same B/bid/rst, exact complete m
+P2 combined: not modeled
 P3 under C_install-v2: conditional duplicate-install witness established;
                        unique installation falsified
-P3 fixed/dedup and combined: not modeled
+P3 fixed/dedup under C_install-v2: unique installation established;
+                                      duplicate-install witness falsified
+P3 combined: not modeled
 ```
 
-Accordingly, the current unique next task is M3: build the batch-local atomic
-dedup repair. M3 has not started. The M2 result may be cited only under the
-explicit `C_install-v2` composition assumptions; duplicate `ReceiverAccept`
-outside that model must not be relabeled as duplicate installation.
+Accordingly, the current unique next task is M4: build the combined HMAC +
+batch-local atomic dedup model and regressions. M4 has not started. M2 and M3
+impact results may be cited only under the explicit `C_install-v2` composition
+assumptions; duplicate `ReceiverAccept` outside those impact models must not be
+relabeled as duplicate installation.

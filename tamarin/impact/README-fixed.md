@@ -5,8 +5,9 @@ batch-local pre-scan with the frozen M2 `C_install-v2` composition boundary.
 It is a separate theory; the original impact model and its committed evidence
 remain unchanged.
 
-This README belongs to Commit A. Expected statuses are hypotheses, not formal
-M3 evidence.
+The model is frozen in Commit A3. Actual M3 results are recorded in the
+transparent composite evidence at `logs/tamarin-m3-closeout/` and in
+`docs/milestones/M3-completion.md`.
 
 ## Lower-layer repair
 
@@ -67,7 +68,7 @@ All 19 M2 composition formulas and all 18 frozen lower-layer formulas are
 copied mechanically. They may not be rewritten to match a desired result.
 
 The legacy lemma `normal_consumer_complete` intentionally retains its original
-same-`m,sid,k` two-accept/two-install formula. Its Commit A hypothesis is
+same-`m,sid,k` two-accept/two-install formula. Its actual result is
 `falsified` in the fixed model. That result must not be described as failure of
 normal distinct-message consumption.
 
@@ -82,13 +83,16 @@ two different messages
 -> ConsumerComplete
 ```
 
-Core fixed-impact hypotheses are:
+Core fixed-impact actual results are:
 
 ```text
-one_send_two_accepts_two_installs_exists: verified  -> falsified
-unique_install_within_completed_consumer: falsified -> verified
-normal_consumer_complete:                  verified  -> falsified
-normal_distinct_consumer_complete:         new       -> verified
+one_send_two_accepts_two_installs_exists: falsified
+unique_install_within_completed_consumer: verified
+normal_consumer_complete:                  falsified
+normal_distinct_consumer_complete:         verified
+duplicate_batch_has_no_accept_output:      verified
+duplicate_batch_has_no_install:            verified
+no_consumer_after_failed_batch:            verified
 ```
 
 The old 37-lemma aggregate count may remain 34 verified / 3 falsified even when
@@ -114,3 +118,22 @@ secrecy, component origin, HMAC unforgeability, real session cloning behavior,
 Double Ratchet behavior, application impact, arbitrary-length batches, or
 deployed K-Waay behavior. Existing P0-S/P0-O results require independent
 regression runs.
+
+The fixed impact suite has 53/53 expected terminal results in the composite
+vector. Evidence is transparent composite evidence assembled from two complete,
+manifest-validated A3 runs. Run 1 encountered an intermittent source-saturation
+`<<loop>>` at `install_has_prior_accept`; Run 2 verified that lemma in 18 steps
+but encountered `<<loop>>` at V6 `executable_seal_batch`. Neither run alone
+reached 196/196 terminal, terminal results do not conflict, and the composite
+selection does not treat a loop as verified.
+
+The frozen reproduction entry point remains:
+
+```bash
+./tamarin/milestones/run-m3-dedup.sh
+```
+
+This identifies the A3 runner; it is not a claim that the committed closeout
+evidence came from one clean 196/196 successful invocation. M4 will separately
+model HMAC confirmation combined with the dedup repair and its conditional
+impact.

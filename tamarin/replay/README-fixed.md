@@ -4,8 +4,9 @@
 variant of the frozen two-slot original replay model. It does not modify or
 replace `kwaay_replay_original.spthy`.
 
-This README belongs to Commit A. All result statuses below are hypotheses until
-the reviewed Commit A is run by the formal M3 evidence runner.
+The model is frozen in Commit A3. Actual M3 results are recorded in the
+transparent composite evidence at `logs/tamarin-m3-closeout/` and in
+`docs/milestones/M3-completion.md`.
 
 ## Repair boundary
 
@@ -84,12 +85,12 @@ All 18 formulas from `kwaay_replay_original.spthy` are copied without changes.
 In particular, the attack formula, sender-occurrence disambiguation, time
 ordering, slot coordinates, and compromise exclusions remain intact.
 
-Commit A hypotheses for the three intended changes are:
+Actual results for the three intended changes are:
 
 ```text
-one_send_two_accepts_exists          verified  -> falsified
-same_message_accepted_at_most_once  falsified -> verified
-injective_receiver_accept           falsified -> verified
+one_send_two_accepts_exists          falsified
+same_message_accepted_at_most_once  verified
+injective_receiver_accept           verified
 ```
 
 `no_accept_after_close` is a frozen original lemma and is not duplicated as an
@@ -107,6 +108,33 @@ Universal properties are paired with exists-trace lemmas so a verified result
 cannot be interpreted without duplicate-failure and distinct-success
 non-vacuity.
 
+Core actual results are:
+
+```text
+duplicate_batch_fail_exists          verified
+duplicate_batch_has_no_accept        verified
+normal_distinct_batch_complete       verified
+normal_distinct_fail_slot1_exists    verified
+normal_distinct_fail_slot2_exists    verified
+```
+
+The fixed replay suite has 30/30 expected terminal results in the composite
+vector. Evidence is transparent composite evidence assembled from two complete,
+manifest-validated A3 runs. Each run had one intermittent Tamarin
+source-saturation `<<loop>>` at a different target; neither run alone reached
+196/196 terminal. The two runs have no terminal conflict, and every one of the
+196 selected targets has an expected terminal result in at least one run.
+
+The frozen reproduction entry point remains:
+
+```bash
+./tamarin/milestones/run-m3-dedup.sh
+```
+
+That command identifies the A3 runner; the committed closeout evidence must not
+be described as one clean 196/196 successful invocation. M4 will separately
+model HMAC confirmation combined with this batch-local dedup repair.
+
 ## Modeling boundary
 
 The KEM components, transcript identifier, and key remain free symbolic
@@ -114,4 +142,3 @@ constructors. Successful reconstruction is still represented by persistent
 `HonestSession`. This model has Dolev-Yao network delivery but no direct secrecy
 lemma, concrete decapsulation, split-KEM component-origin proof, computational
 HMAC property, session database, Double Ratchet, or application action.
-
