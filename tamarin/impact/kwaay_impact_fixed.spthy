@@ -1,0 +1,826 @@
+theory Kwaay_Impact_Fixed
+begin
+
+functions:
+  sender_pk/2 [private],
+  receiver_pk/2 [private],
+  sender_prekey/2 [private],
+  receiver_prekey/2 [private],
+  ct_l/4 [private],
+  ct_k/4 [private],
+  ct_s/5 [private],
+  secret_l/4 [private],
+  secret_k/4 [private],
+  secret_s/5 [private],
+  session_id/7 [private],
+  session_key/4 [private]
+
+/* Only the explicit distinct-pass decision may emit Neq. This restriction
+   gives that comparison event its intended disequality semantics; processing
+   is gated separately by linear batch-local state below. */
+restriction Inequality:
+  "All x #i. Neq(x,x) @ #i ==> F"
+
+/*
+  M3 fixed impact/composition model derived from the frozen M2 original impact
+  model. The lower-layer message, sid, key, batch, slot, receiver-state,
+  compromise, and existing action-event semantics are unchanged. A new
+  batch-local linear pre-scan rejects exact duplicate complete messages before
+  either slot can create a receiver output.
+
+  The added bounded consumer is an explicit C_install-v2 composition
+  assumption.  It turns each successful receiver output into one linear source
+  token, waits for successful BatchComplete, and independently installs both
+  tokens.  It does not model deployed K-Waay application behavior, Double
+  Ratchet state, consumer-side deduplication, or an arbitrary-length output
+  list. Deduplication occurs only at the BatchReceive pre-scan boundary.
+*/
+
+/* ---------- principal and prekey state ---------- */
+
+rule InitReceiverState:
+  [ Fr(~rst) ]
+  --[ ReceiverStateCreated($B, ~rst) ]->
+  [
+    ReceiverState($B, ~rst),
+    !ReceiverPublicState($B, ~rst),
+    ReceiverCompromiseToken($B, ~rst)
+  ]
+
+rule InitSenderState:
+  [ Fr(~sst) ]
+  --[ SenderStateCreated($A, ~sst) ]->
+  [
+    !SenderState($A, ~sst),
+    SenderCompromiseToken($A, ~sst)
+  ]
+
+rule SenderCreatesMessage:
+  let pkA   = sender_pk($A,sst)
+      pkB   = receiver_pk($B,rst)
+      prekA = sender_prekey($A,sst)
+      prekB = receiver_prekey($B,rst)
+      ctl    = ct_l($A,$B,rst,~rl)
+      ctk    = ct_k($A,$B,rst,~rk)
+      cts    = ct_s($A,$B,sst,rst,~rs)
+      Kl     = secret_l($A,$B,rst,~rl)
+      Kk     = secret_k($A,$B,rst,~rk)
+      Ks     = secret_s($A,$B,sst,rst,~rs)
+      m      = <ctl,ctk,cts>
+      sid    = session_id($A,$B,pkA,pkB,prekA,prekB,m)
+      k      = session_key(Kl,Kk,Ks,sid)
+  in
+  [
+    !SenderState($A, sst),
+    !ReceiverPublicState($B, rst),
+    Fr(~rl),
+    Fr(~rk),
+    Fr(~rs)
+  ]
+  --[ SenderSession($A,$B,m,sid,k) ]->
+  [
+    Out(<$A,$B,m>),
+    !HonestSession($A,$B,rst,m,sid,k)
+  ]
+
+/* ---------- fixed two-slot BatchReceive lifecycle ---------- */
+
+rule CreateBatch:
+  [
+    ReceiverState($B, rst),
+    Fr(~bid)
+  ]
+  --[ BatchCreated($B, ~bid, rst) ]->
+  [
+    OpenStage0($B, ~bid, rst),
+    BatchEndToken($B, ~bid, rst),
+    BatchCompromiseToken($B, ~bid, rst)
+  ]
+
+rule AddSlot1:
+  [
+    OpenStage0($B,bid,rst),
+    In(<$A,$B,m>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,m),
+    Slot1Added($B,bid,rst,~idx,$A,m)
+  ]->
+  [
+    OpenStage1($B,bid,rst),
+    AddedSlot1($B,bid,rst,~idx,$A,m)
+  ]
+
+rule AddSlot2:
+  [
+    OpenStage1($B,bid,rst),
+    In(<$A,$B,m>),
+    Fr(~idx)
+  ]
+  --[
+    SlotAdded($B,bid,~idx,$A,m),
+    Slot2Added($B,bid,rst,~idx,$A,m)
+  ]->
+  [
+    OpenStage2($B,bid,rst),
+    AddedSlot2($B,bid,rst,~idx,$A,m)
+  ]
+
+rule SealBatch:
+  [
+    OpenStage2($B,bid,rst),
+    AddedSlot1($B,bid,rst,idx1,$A1,m1),
+    AddedSlot2($B,bid,rst,idx2,$A2,m2)
+  ]
+  --[ SealBatchEvent($B,bid,rst) ]->
+  [
+    DedupPending($B,bid,rst,idx1,$A1,m1,idx2,$A2,m2),
+    DedupDecisionToken($B,bid,rst)
+  ]
+
+rule RejectDuplicateBatch:
+  [
+    DedupPending($B,bid,rst,idx1,$A1,m,idx2,$A2,m)[no_precomp],
+    DedupDecisionToken($B,bid,rst),
+    BatchEndToken($B,bid,rst)
+  ]
+  --[
+    DuplicateDetected($B,bid,rst,idx1,$A1,idx2,$A2,m),
+    UseDedupDecisionToken($B,bid,rst),
+    UseBatchEndToken($B,bid,rst),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule PassDistinctBatch:
+  [
+    DedupPending($B,bid,rst,idx1,$A1,m1,idx2,$A2,m2)[no_precomp],
+    DedupDecisionToken($B,bid,rst)
+  ]
+  --[
+    Neq(m1,m2),
+    DedupPassed($B,bid,rst,idx1,$A1,m1,idx2,$A2,m2),
+    UseDedupDecisionToken($B,bid,rst)
+  ]->
+  [
+    CheckedSlot1($B,bid,rst,idx1,$A1,m1),
+    CheckedSlot2($B,bid,rst,idx2,$A2,m2),
+    SealedStage0($B,bid,rst)
+  ]
+
+rule ProcessSlot1:
+  [
+    SealedStage0($B,bid,rst),
+    CheckedSlot1($B,bid,rst,idx,$A,m)[no_precomp],
+    !HonestSession($A,$B,rst,m,sid,k),
+    Fr(~aid)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,m),
+    ReceiverAccept($B,$A,bid,idx,rst,m,sid,k),
+    AcceptOutputCreated(~aid,$B,$A,bid,idx,rst,m,sid,k),
+    SlotProcessed($B,bid,idx,$A,m),
+    Slot1Done($B,bid,rst)
+  ]->
+  [
+    SealedStage1($B,bid,rst),
+    Slot1DoneFact($B,bid,rst),
+    AcceptedOutput(~aid,$B,$A,bid,idx,rst,m,sid,k)
+  ]
+
+rule ProcessSlot2:
+  [
+    SealedStage1($B,bid,rst),
+    CheckedSlot2($B,bid,rst,idx,$A,m)[no_precomp],
+    !HonestSession($A,$B,rst,m,sid,k),
+    Fr(~aid)
+  ]
+  --[
+    BatchSlot($B,bid,idx,$A,m),
+    ReceiverAccept($B,$A,bid,idx,rst,m,sid,k),
+    AcceptOutputCreated(~aid,$B,$A,bid,idx,rst,m,sid,k),
+    SlotProcessed($B,bid,idx,$A,m),
+    Slot2Done($B,bid,rst)
+  ]->
+  [
+    SealedStage2($B,bid,rst),
+    Slot2DoneFact($B,bid,rst),
+    AcceptedOutput(~aid,$B,$A,bid,idx,rst,m,sid,k)
+  ]
+
+rule CompleteBatch:
+  [
+    SealedStage2($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    Slot1DoneFact($B,bid,rst),
+    Slot2DoneFact($B,bid,rst)
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchComplete($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst),
+    ConsumerStarted($B,bid,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst),
+    ConsumerStage0($B,bid,rst)
+  ]
+
+/* Failure paths never create ConsumerStage0. */
+rule FailSlot1:
+  [
+    SealedStage0($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    CheckedSlot1($B,bid,rst,idx,$A,m)[no_precomp]
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlotFail($B,bid,idx,$A,rst,m),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+rule FailSlot2:
+  [
+    SealedStage1($B,bid,rst),
+    BatchEndToken($B,bid,rst),
+    CheckedSlot2($B,bid,rst,idx,$A,m)[no_precomp]
+  ]
+  --[
+    UseBatchEndToken($B,bid,rst),
+    BatchSlotFail($B,bid,idx,$A,rst,m),
+    BatchFail($B,bid,rst),
+    BatchClosed($B,bid,rst),
+    ConsumeReceiverState($B,rst)
+  ]->
+  [
+    ClosedBatch($B,bid,rst),
+    UsedReceiverState($B,rst)
+  ]
+
+/* ---------- bounded C_install-v2 consumer ---------- */
+
+/* Either accepted output may be selected first. */
+rule InstallAcceptedOutputFirst:
+  [
+    ConsumerStage0($B,bid,rst),
+    AcceptedOutput(aid,$B,$A,bid,idx,rst,m,sid,k),
+    Fr(~h)
+  ]
+  --[
+    InstallFromAccept(aid,$B,~h,$A,bid,idx,rst,m,sid,k),
+    InstallSession($B,~h,$A,sid,k)
+  ]->
+  [
+    ConsumerStage1($B,bid,rst,aid,~h),
+    InstalledOutput(aid,$B,~h,$A,bid,idx,rst,m,sid,k)
+  ]
+
+/* The first token is gone, so this consumes the remaining output token. */
+rule InstallAcceptedOutputSecond:
+  [
+    ConsumerStage1($B,bid,rst,aid1,h1),
+    AcceptedOutput(aid2,$B,$A,bid,idx,rst,m,sid,k),
+    Fr(~h2)
+  ]
+  --[
+    InstallFromAccept(aid2,$B,~h2,$A,bid,idx,rst,m,sid,k),
+    InstallSession($B,~h2,$A,sid,k)
+  ]->
+  [
+    ConsumerStage2($B,bid,rst,aid1,h1,aid2,~h2),
+    InstalledOutput(aid2,$B,~h2,$A,bid,idx,rst,m,sid,k)
+  ]
+
+rule CompleteConsumer:
+  [
+    ConsumerStage2($B,bid,rst,aid1,h1,aid2,h2),
+    InstalledOutput(aid1,$B,h1,$A1,bid,idx1,rst,m1,sid1,k1),
+    InstalledOutput(aid2,$B,h2,$A2,bid,idx2,rst,m2,sid2,k2)
+  ]
+  --[ ConsumerComplete($B,bid,rst) ]->
+  [ ClosedConsumer($B,bid,rst) ]
+
+/* ---------- compromise model retained from the original replay ---------- */
+
+rule CompromiseReceiverState:
+  [
+    ReceiverState($B, rst),
+    ReceiverCompromiseToken($B, rst)
+  ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    ReceiverState($B, rst),
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseActiveReceiverState:
+  [ BatchCompromiseToken($B, bid, rst) ]
+  --[ CompromiseReceiverState($B, rst) ]->
+  [
+    !CompromisedReceiverState($B, rst),
+    Out(rst)
+  ]
+
+rule CompromiseSenderState:
+  [
+    !SenderState($A, sst),
+    SenderCompromiseToken($A, sst)
+  ]
+  --[ CompromiseSenderState($A, sst) ]->
+  [
+    !CompromisedSenderState($A, sst),
+    Out(sst)
+  ]
+
+/* ---------- accept-output provenance ---------- */
+
+lemma accept_output_has_same_time_accept:
+  "All aid B A bid idx rst m sid k #r.
+       AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k) @ #r
+     ==> ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r"
+
+lemma receiver_accept_has_output:
+  "All B A bid idx rst m sid k #r.
+       ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     ==> Ex aid.
+         AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k) @ #r"
+
+lemma receiver_accept_has_unique_output:
+  "All aid1 aid2 B A bid idx rst m sid k #r.
+       AcceptOutputCreated(aid1,B,A,bid,idx,rst,m,sid,k) @ #r
+     & AcceptOutputCreated(aid2,B,A,bid,idx,rst,m,sid,k) @ #r
+     ==> aid1 = aid2"
+
+lemma accept_id_unique:
+  "All aid B1 A1 bid1 idx1 rst1 m1 sid1 k1
+           B2 A2 bid2 idx2 rst2 m2 sid2 k2 #r1 #r2.
+       AcceptOutputCreated(aid,B1,A1,bid1,idx1,rst1,m1,sid1,k1) @ #r1
+     & AcceptOutputCreated(aid,B2,A2,bid2,idx2,rst2,m2,sid2,k2) @ #r2
+     ==> #r1 = #r2
+       & B1 = B2
+       & A1 = A2
+       & bid1 = bid2
+       & idx1 = idx2
+       & rst1 = rst2
+       & m1 = m2
+       & sid1 = sid2
+       & k1 = k2"
+
+lemma install_has_prior_accept:
+  "All aid B h A bid idx rst m sid k #i.
+       InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+     ==> Ex #r.
+         AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k) @ #r
+       & ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+       & #r < #i"
+
+lemma install_session_has_interface_origin:
+  "All B h A sid k #i.
+       InstallSession(B,h,A,sid,k) @ #i
+     ==> Ex aid bid idx rst m.
+         InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i"
+
+lemma install_from_accept_has_session:
+  "All aid B h A bid idx rst m sid k #i.
+       InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+     ==> InstallSession(B,h,A,sid,k) @ #i"
+
+/* ---------- installation occurrence and handle injectivity ---------- */
+
+lemma install_event_has_single_source:
+  "All aid1 aid2 B1 B2 h1 h2 A1 A2 bid1 bid2 idx1 idx2
+       rst1 rst2 m1 m2 sid1 sid2 k1 k2 #i.
+       InstallFromAccept(aid1,B1,h1,A1,bid1,idx1,rst1,m1,sid1,k1) @ #i
+     & InstallFromAccept(aid2,B2,h2,A2,bid2,idx2,rst2,m2,sid2,k2) @ #i
+     ==> aid1 = aid2"
+
+lemma install_handle_unique:
+  "All aid1 aid2 B1 B2 h A1 A2 bid1 bid2 idx1 idx2
+       rst1 rst2 m1 m2 sid1 sid2 k1 k2 #i1 #i2.
+       InstallFromAccept(aid1,B1,h,A1,bid1,idx1,rst1,m1,sid1,k1) @ #i1
+     & InstallFromAccept(aid2,B2,h,A2,bid2,idx2,rst2,m2,sid2,k2) @ #i2
+     ==> #i1 = #i2"
+
+lemma accept_output_installed_at_most_once:
+  "All aid B1 B2 h1 h2 A1 A2 bid1 bid2 idx1 idx2
+       rst1 rst2 m1 m2 sid1 sid2 k1 k2 #i1 #i2.
+       InstallFromAccept(aid,B1,h1,A1,bid1,idx1,rst1,m1,sid1,k1) @ #i1
+     & InstallFromAccept(aid,B2,h2,A2,bid2,idx2,rst2,m2,sid2,k2) @ #i2
+     ==> #i1 = #i2"
+
+lemma distinct_accept_sources_have_distinct_handles:
+  "All aid1 aid2 B1 B2 h1 h2 A1 A2 bid1 bid2 idx1 idx2
+       rst1 rst2 m1 m2 sid1 sid2 k1 k2 #i1 #i2.
+       InstallFromAccept(aid1,B1,h1,A1,bid1,idx1,rst1,m1,sid1,k1) @ #i1
+     & InstallFromAccept(aid2,B2,h2,A2,bid2,idx2,rst2,m2,sid2,k2) @ #i2
+     & not(aid1 = aid2)
+     ==> not(h1 = h2)"
+
+/* ---------- consumer lifecycle ---------- */
+
+lemma install_requires_batch_complete:
+  "All aid B h A bid idx rst m sid k #i.
+       InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+     ==> Ex #c. BatchComplete(B,bid,rst) @ #c & #c < #i"
+
+lemma consumer_complete_requires_all_outputs_installed:
+  "All aid B A bid idx rst m sid k #r #cc.
+       AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k) @ #r
+     & ConsumerComplete(B,bid,rst) @ #cc
+     ==> Ex h #i.
+         InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+       & #r < #i & #i < #cc"
+
+lemma consumer_complete_single_use:
+  "All B bid rst #c1 #c2.
+       ConsumerComplete(B,bid,rst) @ #c1
+     & ConsumerComplete(B,bid,rst) @ #c2
+     ==> #c1 = #c2"
+
+lemma no_install_after_consumer_close:
+  "All aid B h A bid idx rst m sid k #i #cc.
+       InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+     & ConsumerComplete(B,bid,rst) @ #cc
+     ==> #i < #cc"
+
+/* ---------- composition executability ---------- */
+
+lemma normal_one_accept_one_install:
+  exists-trace
+  "Ex A B bid idx rst m sid k aid h #s #r #c #i #cc.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     & AcceptOutputCreated(aid,B,A,bid,idx,rst,m,sid,k) @ #r
+     & BatchComplete(B,bid,rst) @ #c
+     & InstallFromAccept(aid,B,h,A,bid,idx,rst,m,sid,k) @ #i
+     & ConsumerComplete(B,bid,rst) @ #cc
+     & #s < #r & #r < #c & #c < #i & #i < #cc"
+
+lemma normal_consumer_complete:
+  exists-trace
+  "Ex A B bid idx1 idx2 rst m sid k aid1 aid2 h1 h2
+      #s #r1 #r2 #c #i1 #i2 #cc.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & AcceptOutputCreated(aid1,B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & AcceptOutputCreated(aid2,B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & InstallFromAccept(aid1,B,h1,A,bid,idx1,rst,m,sid,k) @ #i1
+     & InstallFromAccept(aid2,B,h2,A,bid,idx2,rst,m,sid,k) @ #i2
+     & ConsumerComplete(B,bid,rst) @ #cc
+     & not(aid1 = aid2) & not(h1 = h2) & not(#i1 = #i2)
+     & #s < #r1 & #s < #r2
+     & #r1 < #c & #r2 < #c
+     & #c < #i1 & #c < #i2
+     & #i1 < #cc & #i2 < #cc"
+
+/* ---------- conditional duplicate-install impact ---------- */
+
+lemma one_send_two_accepts_two_installs_exists:
+  exists-trace
+  "Ex A B m sid k bid idx1 idx2 rst aid1 aid2 h1 h2
+      #s #r1 #r2 #c #i1 #i2 #cc.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & AcceptOutputCreated(aid1,B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & AcceptOutputCreated(aid2,B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & InstallFromAccept(aid1,B,h1,A,bid,idx1,rst,m,sid,k) @ #i1
+     & InstallFromAccept(aid2,B,h2,A,bid,idx2,rst,m,sid,k) @ #i2
+     & InstallSession(B,h1,A,sid,k) @ #i1
+     & InstallSession(B,h2,A,sid,k) @ #i2
+     & ConsumerComplete(B,bid,rst) @ #cc
+     & not(#r1 = #r2) & not(idx1 = idx2) & not(aid1 = aid2)
+     & not(#i1 = #i2) & not(h1 = h2)
+     & #s < #r1 & #s < #r2
+     & #r1 < #c & #r2 < #c
+     & #c < #i1 & #c < #i2
+     & #i1 < #cc & #i2 < #cc
+     & (All #s2. SenderSession(A,B,m,sid,k) @ #s2 ==> #s2 = #s)
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+lemma unique_install_within_completed_consumer:
+  "All A B m sid k bid idx1 idx2 rst aid1 aid2 h1 h2
+       #s #r1 #r2 #c #i1 #i2 #cc.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & AcceptOutputCreated(aid1,B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & AcceptOutputCreated(aid2,B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & InstallFromAccept(aid1,B,h1,A,bid,idx1,rst,m,sid,k) @ #i1
+     & InstallFromAccept(aid2,B,h2,A,bid,idx2,rst,m,sid,k) @ #i2
+     & InstallSession(B,h1,A,sid,k) @ #i1
+     & InstallSession(B,h2,A,sid,k) @ #i2
+     & ConsumerComplete(B,bid,rst) @ #cc
+     & #s < #r1 & #s < #r2
+     & #r1 < #c & #r2 < #c
+     & #c < #i1 & #c < #i2
+     & #i1 < #cc & #i2 < #cc
+     & (All #s2. SenderSession(A,B,m,sid,k) @ #s2 ==> #s2 = #s)
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)
+     ==> #i1 = #i2 & h1 = h2 & aid1 = aid2"
+
+/* ---------- frozen original lower-layer regression lemmas ---------- */
+
+lemma normal_single_accept:
+  exists-trace
+  "Ex A B m sid k bid idx rst #s #r.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     & #s < #r"
+
+lemma normal_batch_complete:
+  exists-trace
+  "Ex A B m sid k bid idx rst #s #r #c.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     & BatchComplete(B,bid,rst) @ #c
+     & #s < #r
+     & #r < #c"
+
+lemma one_send_two_accepts_exists:
+  exists-trace
+  "Ex A B m sid k bid idx1 idx2 rst #s #r1 #r2 #c.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & not(idx1 = idx2)
+     & #s < #r1
+     & #s < #r2
+     & #r1 < #c
+     & #r2 < #c
+     & (All #s2. SenderSession(A,B,m,sid,k) @ #s2 ==> #s2 = #s)
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+lemma same_message_accepted_at_most_once:
+  "All A B m sid k bid idx1 idx2 rst #r1 #r2.
+       ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     ==> idx1 = idx2"
+
+lemma full_message_unique_send:
+  "All A B m sid k #s1 #s2.
+       SenderSession(A,B,m,sid,k) @ #s1
+     & SenderSession(A,B,m,sid,k) @ #s2
+     ==> #s1 = #s2"
+
+lemma receiver_accept_has_sender:
+  "All A B m sid k bid idx rst #r.
+       ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     ==> Ex #s.
+         SenderSession(A,B,m,sid,k) @ #s
+       & #s < #r"
+
+lemma injective_receiver_accept:
+  "All A B m sid k bid idx1 idx2 rst #s #r1 #r2.
+       SenderSession(A,B,m,sid,k) @ #s
+     & ReceiverAccept(B,A,bid,idx1,rst,m,sid,k) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m,sid,k) @ #r2
+     ==> #r1 = #r2"
+
+lemma slot_indices_distinct:
+  "All B bid rst idx1 idx2 A1 A2 m1 m2 #i #j.
+       Slot1Added(B,bid,rst,idx1,A1,m1) @ #i
+     & Slot2Added(B,bid,rst,idx2,A2,m2) @ #j
+     ==> not(idx1 = idx2)"
+
+lemma process_requires_slot_added:
+  "All B A bid idx rst m sid k #i.
+       ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #i
+     ==> Ex #j. SlotAdded(B,bid,idx,A,m) @ #j & #j < #i"
+
+lemma process_requires_seal:
+  "All B A bid idx rst m sid k #i.
+       ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #i
+     ==> Ex #j. SealBatchEvent(B,bid,rst) @ #j & #j < #i"
+
+lemma complete_requires_all_slots_processed:
+  "All B bid rst idx A m #i #j.
+       BatchComplete(B,bid,rst) @ #i
+     & SlotAdded(B,bid,idx,A,m) @ #j
+     ==> Ex #p.
+         SlotProcessed(B,bid,idx,A,m) @ #p
+       & #j < #p
+       & #p < #i"
+
+lemma no_add_after_seal:
+  "All B bid rst idx A m #i #j.
+       SealBatchEvent(B,bid,rst) @ #i
+     & SlotAdded(B,bid,idx,A,m) @ #j
+     ==> #j < #i"
+
+lemma no_accept_after_close:
+  "All B A bid idx rst m sid k #i #j.
+       BatchClosed(B,bid,rst) @ #i
+     & ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #j
+     ==> #j < #i"
+
+lemma batch_complete_consumes_state:
+  "All B bid rst #i.
+       BatchComplete(B,bid,rst) @ #i
+     ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_fail_consumes_state:
+  "All B bid rst #i.
+       BatchFail(B,bid,rst) @ #i
+     ==> ConsumeReceiverState(B,rst) @ #i"
+
+lemma batch_end_token_single_use:
+  "All B bid rst #i #j.
+       UseBatchEndToken(B,bid,rst) @ #i
+     & UseBatchEndToken(B,bid,rst) @ #j
+     ==> #i = #j"
+
+lemma receiver_state_single_batch:
+  "All B bid1 bid2 rst #i #j.
+       BatchCreated(B,bid1,rst) @ #i
+     & BatchCreated(B,bid2,rst) @ #j
+     ==> #i = #j & bid1 = bid2"
+
+lemma receiver_state_single_batch_end:
+  "All B rst #i #j.
+       ConsumeReceiverState(B,rst) @ #i
+     & ConsumeReceiverState(B,rst) @ #j
+     ==> #i = #j"
+
+/* ---------- M3 dedup decision, atomicity, and non-vacuity ---------- */
+
+lemma duplicate_batch_fail_exists:
+  exists-trace
+  "Ex A B m sid k bid idx1 idx2 rst #s #a1 #a2 #seal #d.
+       SenderSession(A,B,m,sid,k) @ #s
+     & Slot1Added(B,bid,rst,idx1,A,m) @ #a1
+     & Slot2Added(B,bid,rst,idx2,A,m) @ #a2
+     & SealBatchEvent(B,bid,rst) @ #seal
+     & DuplicateDetected(B,bid,rst,idx1,A,idx2,A,m) @ #d
+     & UseDedupDecisionToken(B,bid,rst) @ #d
+     & BatchFail(B,bid,rst) @ #d
+     & BatchClosed(B,bid,rst) @ #d
+     & ConsumeReceiverState(B,rst) @ #d
+     & not(idx1 = idx2)
+     & #s < #a1 & #a1 < #a2 & #a2 < #seal & #seal < #d
+     & (All #s2. SenderSession(A,B,m,sid,k) @ #s2 ==> #s2 = #s)
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+lemma duplicate_detected_before_any_accept:
+  "All B bid rst idx1 A1 idx2 A2 m #d.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     ==> not (Ex A idx m2 sid k #r.
+         ReceiverAccept(B,A,bid,idx,rst,m2,sid,k) @ #r
+       & #r < #d)"
+
+lemma duplicate_batch_has_no_accept:
+  "All B bid rst idx1 A1 idx2 A2 m #d.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     ==> not (Ex A idx m2 sid k #r.
+         ReceiverAccept(B,A,bid,idx,rst,m2,sid,k) @ #r)"
+
+lemma duplicate_batch_has_no_accept_output:
+  "All B bid rst idx1 A1 idx2 A2 m #d.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     ==> not (Ex aid A idx m2 sid k #r.
+         AcceptOutputCreated(aid,B,A,bid,idx,rst,m2,sid,k) @ #r)"
+
+lemma duplicate_batch_has_no_install:
+  "All B bid rst idx1 A1 idx2 A2 m #d.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     ==> not (Ex aid h A idx m2 sid k #i.
+         InstallFromAccept(aid,B,h,A,bid,idx,rst,m2,sid,k) @ #i
+       & InstallSession(B,h,A,sid,k) @ #i)"
+
+lemma process_requires_dedup_pass:
+  "All B A bid idx rst m sid k #r.
+       ReceiverAccept(B,A,bid,idx,rst,m,sid,k) @ #r
+     ==> Ex idx1 A1 m1 idx2 A2 m2 #p.
+         DedupPassed(B,bid,rst,idx1,A1,m1,idx2,A2,m2) @ #p
+       & #p < #r
+       & ((idx = idx1 & A = A1 & m = m1)
+        | (idx = idx2 & A = A2 & m = m2))"
+
+lemma dedup_pass_messages_distinct:
+  "All B bid rst idx1 A1 m1 idx2 A2 m2 #p.
+       DedupPassed(B,bid,rst,idx1,A1,m1,idx2,A2,m2) @ #p
+     ==> not(m1 = m2)"
+
+lemma dedup_decision_single_use:
+  "All B bid rst #d1 #d2.
+       UseDedupDecisionToken(B,bid,rst) @ #d1
+     & UseDedupDecisionToken(B,bid,rst) @ #d2
+     ==> #d1 = #d2"
+
+lemma dedup_outcomes_exclusive:
+  "All B bid rst idx1 A1 idx2 A2 m pidx1 PA1 pm1 pidx2 PA2 pm2 #d #p.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     & DedupPassed(B,bid,rst,pidx1,PA1,pm1,pidx2,PA2,pm2) @ #p
+     ==> F"
+
+lemma normal_distinct_batch_complete:
+  exists-trace
+  "Ex A B m1 m2 sid1 sid2 k1 k2 bid idx1 idx2 rst
+      #s1 #s2 #p #r1 #r2 #c.
+       SenderSession(A,B,m1,sid1,k1) @ #s1
+     & SenderSession(A,B,m2,sid2,k2) @ #s2
+     & DedupPassed(B,bid,rst,idx1,A,m1,idx2,A,m2) @ #p
+     & ReceiverAccept(B,A,bid,idx1,rst,m1,sid1,k1) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m2,sid2,k2) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & not(m1 = m2) & not(idx1 = idx2) & not(#r1 = #r2)
+     & #s1 < #p & #s2 < #p
+     & #p < #r1 & #p < #r2
+     & #r1 < #c & #r2 < #c
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+lemma normal_distinct_consumer_complete:
+  exists-trace
+  "Ex A B m1 m2 sid1 sid2 k1 k2 bid idx1 idx2 rst aid1 aid2 h1 h2
+      #s1 #s2 #p #r1 #r2 #c #i1 #i2 #cc.
+       SenderSession(A,B,m1,sid1,k1) @ #s1
+     & SenderSession(A,B,m2,sid2,k2) @ #s2
+     & DedupPassed(B,bid,rst,idx1,A,m1,idx2,A,m2) @ #p
+     & ReceiverAccept(B,A,bid,idx1,rst,m1,sid1,k1) @ #r1
+     & AcceptOutputCreated(aid1,B,A,bid,idx1,rst,m1,sid1,k1) @ #r1
+     & ReceiverAccept(B,A,bid,idx2,rst,m2,sid2,k2) @ #r2
+     & AcceptOutputCreated(aid2,B,A,bid,idx2,rst,m2,sid2,k2) @ #r2
+     & BatchComplete(B,bid,rst) @ #c
+     & ConsumerStarted(B,bid,rst) @ #c
+     & InstallFromAccept(aid1,B,h1,A,bid,idx1,rst,m1,sid1,k1) @ #i1
+     & InstallSession(B,h1,A,sid1,k1) @ #i1
+     & InstallFromAccept(aid2,B,h2,A,bid,idx2,rst,m2,sid2,k2) @ #i2
+     & InstallSession(B,h2,A,sid2,k2) @ #i2
+     & ConsumerComplete(B,bid,rst) @ #cc
+     & not(m1 = m2) & not(idx1 = idx2)
+     & not(#r1 = #r2) & not(aid1 = aid2)
+     & not(#i1 = #i2) & not(h1 = h2)
+     & #s1 < #p & #s2 < #p
+     & #p < #r1 & #p < #r2
+     & #r1 < #c & #r2 < #c
+     & #c < #i1 & #c < #i2
+     & #i1 < #cc & #i2 < #cc
+     & not (Ex X st #cr. CompromiseReceiverState(X,st) @ #cr)
+     & not (Ex X st #cs. CompromiseSenderState(X,st) @ #cs)"
+
+lemma normal_distinct_fail_slot1_exists:
+  exists-trace
+  "Ex A B m1 m2 sid1 sid2 k1 k2 bid idx1 idx2 rst #s1 #s2 #p #f.
+       SenderSession(A,B,m1,sid1,k1) @ #s1
+     & SenderSession(A,B,m2,sid2,k2) @ #s2
+     & DedupPassed(B,bid,rst,idx1,A,m1,idx2,A,m2) @ #p
+     & BatchSlotFail(B,bid,idx1,A,rst,m1) @ #f
+     & BatchFail(B,bid,rst) @ #f
+     & not(m1 = m2) & #p < #f"
+
+lemma normal_distinct_fail_slot2_exists:
+  exists-trace
+  "Ex A B m1 m2 sid1 sid2 k1 k2 bid idx1 idx2 rst #s1 #s2 #p #r #f.
+       SenderSession(A,B,m1,sid1,k1) @ #s1
+     & SenderSession(A,B,m2,sid2,k2) @ #s2
+     & DedupPassed(B,bid,rst,idx1,A,m1,idx2,A,m2) @ #p
+     & ReceiverAccept(B,A,bid,idx1,rst,m1,sid1,k1) @ #r
+     & BatchSlotFail(B,bid,idx2,A,rst,m2) @ #f
+     & BatchFail(B,bid,rst) @ #f
+     & not(m1 = m2) & #p < #r & #r < #f"
+
+lemma batch_fail_complete_exclusive:
+  "All B bid rst #f #c.
+       BatchFail(B,bid,rst) @ #f
+     & BatchComplete(B,bid,rst) @ #c
+     ==> F"
+
+lemma state_consumed_on_duplicate_fail:
+  "All B bid rst idx1 A1 idx2 A2 m #d.
+       DuplicateDetected(B,bid,rst,idx1,A1,idx2,A2,m) @ #d
+     ==> BatchFail(B,bid,rst) @ #d
+       & BatchClosed(B,bid,rst) @ #d
+       & ConsumeReceiverState(B,rst) @ #d"
+
+lemma no_consumer_after_failed_batch:
+  "All B bid rst #f #cs.
+       BatchFail(B,bid,rst) @ #f
+     & ConsumerStarted(B,bid,rst) @ #cs
+     ==> F"
+
+end

@@ -1,0 +1,9 @@
+/mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv:326:7: warning: missing terminating ' character
+  326 |      B's receiver prekey is the local state that BatchReceive would unfold
+      |       ^
+/mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv:343:17: warning: missing terminating ' character
+  343 |      A obtains B's claimed receiver prekey from the server / public channel
+      |                 ^
+/mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv:355:15: warning: missing terminating ' character
+  355 |      replace B's local receiver prekey/state. *)
+      |               ^

@@ -1,0 +1,58 @@
+K-Waay M3 transparent composite evidence closeout
+execution_commit_a3: 282532fd922f3a7f7928f3772b3325fe06785730
+execution_tree_a3: 077ba2fa6bb64f49edff9478a45a66f838ea62e8
+evidence_classification: transparent composite evidence assembled from two complete, manifest-validated runs over the same committed models, inputs, tool versions, HEAD and tree.
+single_clean_196_terminal_runner_run: false
+run1_invoked: 196/196
+run1_terminal: 195
+run1_missing: fixed-impact/install_has_prior_accept
+run1_loop_marker: tamarin-prover: <<loop>>
+run1_v6_executable_seal_batch: verified (3 steps)
+run1_manifest_valid: true
+run1_runner_exit: 1
+run2_invoked: 196/196
+run2_terminal: 195
+run2_install_has_prior_accept: verified (18 steps)
+run2_missing: v6/executable_seal_batch
+run2_loop_marker: tamarin-prover: <<loop>>
+run2_fixed_replay_terminal: 30/30
+run2_fixed_impact_terminal: 53/53
+run2_manifest_valid: true
+run2_runner_exit: 1
+composite_targets: 196
+composite_selected_terminal_targets: 196
+composite_expected_vector_mismatches: 0
+composite_terminal_conflicts: 0
+composite_unresolved_targets: 0
+composite_run1_fallback_targets: 1
+composite_run1_fallback: v6/executable_seal_batch
+frozen_formulas: 55/55 MATCH
+constructors: replay/impact MATCH
+consumer_rules: 3/3 MATCH
+original_replay_vector: MATCH
+hmac_only_replay_vector: MATCH
+original_m2_impact_vector: MATCH
+v6_composite_vector: MATCH
+v7_vector: MATCH
+proverif_targets: 4/4 MATCH
+trace_groups: 5/5 valid
+fixed_replay_one_send_two_accepts_exists: falsified
+fixed_replay_same_message_accepted_at_most_once: verified
+fixed_replay_injective_receiver_accept: verified
+fixed_replay_duplicate_batch_fail_exists: verified
+fixed_replay_duplicate_batch_has_no_accept: verified
+fixed_replay_normal_distinct_batch_complete: verified
+fixed_replay_normal_distinct_fail_slot1_exists: verified
+fixed_replay_normal_distinct_fail_slot2_exists: verified
+fixed_impact_one_send_two_accepts_two_installs_exists: falsified
+fixed_impact_unique_install_within_completed_consumer: verified
+fixed_impact_normal_consumer_complete: falsified
+fixed_impact_normal_distinct_consumer_complete: verified
+fixed_impact_duplicate_batch_has_no_accept_output: verified
+fixed_impact_duplicate_batch_has_no_install: verified
+fixed_impact_no_consumer_after_failed_batch: verified
+normal_consumer_complete_note: frozen legacy same-message two-output exists-trace; falsified is expected. Normal distinct consumer non-vacuity is normal_distinct_consumer_complete.
+tool_limit_disclosure: two complete invocations encountered intermittent Tamarin source-saturation <<loop>> on different targets. A loop is not treated as verified, falsified, or a counterexample, and no general Tamarin bug claim is made.
+models_modified_for_closeout: false
+lemmas_modified_for_closeout: false
+expected_vectors_modified_for_closeout: false

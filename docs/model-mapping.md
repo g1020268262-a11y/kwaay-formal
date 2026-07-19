@@ -32,6 +32,8 @@ Tamarin:
   replay original 的 fixed two-slot duplicate-input 模型
   HMAC-only replay bridge 的 fixed two-slot confirmed-message 模型
   M2 original impact/composition fixed two-slot C_install-v2 consumer
+  M3 fixed replay 的 fixed two-slot batch-local atomic dedup 模型
+  M3 fixed impact 的 fixed two-slot dedup + C_install-v2 consumer
   preliminary deniability diff models
 ```
 
@@ -65,10 +67,13 @@ Tamarin:
 | state compromise | explicit compromise event | `CompromiseReceiverState`, `CompromiseSenderState` | 同名 compromise events；P2 witness 排除二者全程出现 | 已建模但 theorem 范围不同 |
 | HMAC key confirmation | `proverif/variants/hmac-confirmation/` 独立 no-batch 变体 | 未建模 | HMAC-only bridge 中 `tag=hmac(confirm_key(k),sid)`，public confirmed message 为 `<m,tag>` | ProVerif P1 baseline 与 Tamarin M1 replay bridge 均已建模；证据角色不同 |
 | duplicate input / replay | no batch slot，不能表达 | 不是 V6/V7 的专门攻击目标 | original 与 HMAC-only 都把同一完整 message 放入 fixed two-slot batch；相应 one-send-two-accept witness verified | original 与 HMAC-only same-batch/same-state 反例已建模 |
-| accepted output occurrence | 未建模 | 未建模 | impact artifact 中 `aid` / `AcceptOutputCreated` / linear `AcceptedOutput`；replay original/HMAC-only 不含该层 | 仅 M2 impact model 建模 |
-| session installation | 未建模 | 无 `InstallSession` / local handle event | impact artifact 中 `InstallFromAccept` + `InstallSession`；其他 replay artifacts 不含该层 | 已在 M2 impact artifact 条件化建模；不代表 deployed implementation |
-| local installation handle | 未建模 | 未建模 | impact artifact 中 fresh `h` | 仅 M2 symbolic composition object |
-| upper-layer consumer | 未建模 | 未建模 | impact artifact 中 `ConsumerStage0/1/2`, `ConsumerComplete`, `ClosedConsumer` | fixed two-output conditional abstraction |
+| batch-local dedup decision | 未建模 | 未建模 | fixed replay/impact 中 `DedupPending` + `DedupDecisionToken` 在线性状态上进行一次决定 | M3 fixed two-slot、同一 `B,bid,rst` |
+| duplicate decision outcome | 未建模 | 未建模 | `DuplicateDetected` 后原子产生 `BatchFail/BatchClosed/ConsumeReceiverState`，不开放 processing | exact complete message `m` identity；不是全局 cache |
+| distinct decision outcome | 未建模 | 未建模 | `DedupPassed` 产生 `CheckedSlot1/2`，之后才允许 `ProcessSlot1/2` | processing 前 pre-scan；distinct 正常/失败路径均保留 |
+| accepted output occurrence | 未建模 | 未建模 | original/fixed impact artifacts 中 `aid` / `AcceptOutputCreated` / linear `AcceptedOutput`；replay-only artifacts 不含该层 | M2 original 与 M3 fixed impact 建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | original/fixed impact 中 `InstallFromAccept` + `InstallSession`；replay-only artifacts 不含该层 | 条件化建模；不代表 deployed implementation |
+| local installation handle | 未建模 | 未建模 | original/fixed impact 中 fresh `h` | 仅 symbolic composition object |
+| upper-layer consumer | 未建模 | 未建模 | original/fixed impact 中 `ConsumerStage0/1/2`, `ConsumerComplete`, `ClosedConsumer` | fixed two-output conditional abstraction |
 | deniability | 未建模 | 不在 V6/V7；由 core/malicious/negative `--diff` 独立 artifacts 建模 | 未建模 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
@@ -100,6 +105,8 @@ Tamarin:
 | HMAC bridge attack witness | Tamarin HMAC-only replay bridge | `one_confirmed_send_two_accepts_exists` | 同一 confirmed message 在两个不同 slot 通过同一 HMAC gate | verified；无 sender/receiver state compromise |
 | HMAC bridge lifecycle regressions | Tamarin HMAC-only replay bridge | selected 11 lifecycle/state lemmas | add/seal/process/close/state-consumption 语义未因 bridge 退化 | 全部 verified |
 | P3 under `C_install-v2` unique session installation | `tamarin/impact/kwaay_impact_original.spthy` | `one_send_two_accepts_two_installs_exists`; `unique_install_within_completed_consumer`; `install_session_has_interface_origin`; `install_from_accept_has_session`; `accept_output_installed_at_most_once`; `consumer_complete_requires_all_outputs_installed`; `distinct_accept_sources_have_distinct_handles` | fixed two-slot conditional consumer 中，original duplicate acceptance 是否传播为相同 peer/sid/key、不同 symbolic local handles | conditional witness verified；unique installation falsified；不声称 real implementation/session/Double Ratchet |
+| M3 fixed replay batch-local P2 | `tamarin/replay/kwaay_replay_fixed.spthy` | `one_send_two_accepts_exists`; `same_message_accepted_at_most_once`; `injective_receiver_accept`; `duplicate_batch_fail_exists`; `duplicate_batch_has_no_accept`; `normal_distinct_batch_complete` | 同一 `B,bid,rst` 中按 exact complete `m` 在任何 `ProcessSlot` 前原子去重 | duplicate witness falsified；at-most-once/injectivity/duplicate failure/distinct completion verified；不是 global replay theorem |
+| M3 fixed impact P3 under `C_install-v2` | `tamarin/impact/kwaay_impact_fixed.spthy` | `one_send_two_accepts_two_installs_exists`; `unique_install_within_completed_consumer`; `normal_consumer_complete`; `normal_distinct_consumer_complete`; `duplicate_batch_has_no_accept_output`; `duplicate_batch_has_no_install` | batch-local duplicate rejection是否阻断 accepted output 与 conditional installation，同时保留 distinct consumer | duplicate-install witness与 frozen legacy same-message normal target falsified；unique installation/no duplicate output or install/distinct consumer verified |
 
 P1 与 P2 使用不同 event vocabulary。ProVerif 的
 `SendDone(A,B,sid,k)`/`RecvDone(B,A,sid,k)` 不包含 occurrence、slot、batch
@@ -257,6 +264,41 @@ logs/tamarin-impact-original/SHA256SUMS.txt
 `unique_install_within_completed_consumer` falsified；两个核心 trace 都是 28
 steps。18/18 frozen formula 和 18/18 lower-layer result comparison 均 MATCH。
 
+### M3 fixed replay and fixed impact artifacts
+
+`tamarin/replay/kwaay_replay_fixed.spthy` 在 original fixed two-slot lifecycle
+中加入线性、单次使用的 dedup decision：
+
+```text
+OpenStage2 + AddedSlot1 + AddedSlot2
+  -> DedupPending + DedupDecisionToken
+
+exact duplicate m:
+  -> DuplicateDetected + BatchFail + BatchClosed + ConsumeReceiverState
+
+distinct m1,m2:
+  -> DedupPassed + CheckedSlot1 + CheckedSlot2
+  -> ProcessSlot1 / ProcessSlot2
+```
+
+scope 是同一 `B,bid,rst`，identity 是 exact complete public message `m`，决定
+发生在两个 slot 收集并 seal 后、任何 `ProcessSlot` 前。duplicate branch 不产生
+`ReceiverAccept`；distinct branch 仍可 complete，且原抽象 FailSlot1/FailSlot2
+路径仍可达。该模型不提供 cross-batch cache、rollback protection 或
+arbitrary-length theorem。
+
+`tamarin/impact/kwaay_impact_fixed.spthy` 保留 M2 `C_install-v2` 的三个 frozen
+consumer rules 和完整 provenance chain。由于 duplicate branch 在 processing 前
+关闭 batch，它不能产生 `AcceptOutputCreated` / linear `AcceptedOutput`，不能产生
+`ConsumerStarted`，因而不能到达 `InstallFromAccept` 或 `InstallSession`。distinct
+messages 仍可产生两个 outputs、两个 installations 和 `ConsumerComplete`。
+
+实际 evidence 位于 `logs/tamarin-m3-closeout/`，是两次同 A3/inputs/tool
+versions 的完整、manifest-valid 运行组成的 transparent composite evidence。
+196/196 composite statuses 匹配 expected vector，0 terminal conflicts，0
+mismatches；两次运行各在不同目标出现一次 intermittent source-saturation
+`<<loop>>`，没有一次单独 invocation 达到 196/196 terminal。
+
 ### Independent deniability artifacts
 
 独立 core/malicious/negative `--diff` 模型提供 preliminary symbolic
@@ -265,14 +307,14 @@ deniability evidence；它们不属于 V6/V7 lifecycle 或 replay original。
 整个 Tamarin 分支当前仍不建模：
 
 ```text
-batch-local duplicate rejection / repaired injectivity
 computational security
 complete malicious / Big Brother / computational deniability
+HMAC confirmation + dedup combined behavior
 ```
 
-receiver output → symbolic local installation 已在 M2 impact artifact 中条件化
-建模，但没有真实 session database、Double Ratchet、application action 或 deployed
-implementation mapping。
+receiver output → symbolic local installation 已在 M2 original 和 M3 fixed impact
+artifacts 中条件化建模，但没有真实 session database、Double Ratchet、application
+action 或 deployed implementation mapping。
 
 ## 当前主要解释
 
@@ -287,12 +329,16 @@ same-batch/same-state replay prevention 或 occurrence injectivity；
 该 bridge 的 matching existence 在 `HonestSession` 下主要是结构性结果；
 original 与 HMAC-only replay 反例都足以否定 global one-send-one-accept；
 在 C_install-v2 条件化 consumer 下，original duplicate acceptance 可传播为
-两个不同 symbolic local handles，unique installation 被 falsified。
+两个不同 symbolic local handles，unique installation 被 falsified；
+M3 fixed two-slot dedup-only 模型在同一 B/bid/rst 中按 exact complete m
+于 processing 前拒绝 duplicate，使 two-accept witness falsified、at-most-once 与
+injectivity verified；fixed impact 在 C_install-v2 下阻断对应 duplicate outputs
+和 installations，同时保留 distinct-message consumer completion。
 ```
 
-该 M2 结论不证明 deployed K-Waay session cloning。它依赖 fixed two-output
-consumer 独立消费 outputs 的 C7/C8 边界，不包含真实 session database、Double
-Ratchet 或 application behavior。
+这些 M2/M3 conditional impact 结论不证明 deployed K-Waay session cloning。
+它们依赖 fixed two-output consumer 独立消费 outputs 的 C7/C8 边界，不包含真实
+session database、Double Ratchet 或 application behavior。
 
 `RecvDone ==> SendDone` 为 false 不应解释成 key-recovery attack。
 
@@ -328,8 +374,8 @@ C_install-v2 是 deployed K-Waay 的实际 upper-layer behavior
 真实 session cloning / Double Ratchet duplication
 application exploit
 arbitrary-length impact
-dedup repair
 HMAC impact / combined impact
+global/cross-batch/rollback replay prevention
 ```
 
 ## M0 claim 与后续里程碑
@@ -351,6 +397,8 @@ tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
 tamarin/replay/kwaay_replay_original.spthy
 tamarin/replay/kwaay_replay_hmac_only.spthy
 tamarin/impact/kwaay_impact_original.spthy
+tamarin/replay/kwaay_replay_fixed.spthy
+tamarin/impact/kwaay_impact_fixed.spthy
 ```
 
 后续里程碑不得把预期结果写成实际结果：
@@ -358,8 +406,8 @@ tamarin/impact/kwaay_impact_original.spthy
 ```text
 M1: ✅ HMAC-only replay bridge completed with raw evidence
 M2: ✅ original conditional impact/composition evidence
-M3: current unique next — batch-local atomic dedup
-M4: future HMAC + dedup combined regression
+M3: ✅ fixed two-slot batch-local atomic dedup with transparent composite evidence
+M4: current unique next — HMAC + dedup combined regression (not started)
 M5: future artifact/result freeze
 ```
 
@@ -372,7 +420,8 @@ deniability 分支。为避免在未确认信息架构前大幅重写，本轮�
 1. 将仓库定位改为 K-Waay Figure 7 core 的多模型 symbolic formal analysis，
    而不是单一早期 no-batch ProVerif 模型。
 2. 列出真实入口：ProVerif final core、HMAC variant、Tamarin V6/V7、replay
-   original、HMAC-only replay bridge、M2 original impact/composition artifact，
+   original、HMAC-only replay bridge、M2 original impact/composition artifact、
+   M3 fixed replay/impact artifacts，
    以及 preliminary deniability diff models；模型索引至少加入：
 
    ```text
@@ -382,7 +431,7 @@ deniability 分支。为避免在未确认信息架构前大幅重写，本轮�
 
 3. 用 P0-S/P0-O/P1/P2/P3 under `C_install-v2` 的性质图链接到
    `docs/claim-hierarchy.md` 和 `docs/threat-compromise-matrix.md`，并标明
-   M2 只有 conditional consumer result，不是 deployed behavior。
+   M2/M3 impact 都只有 conditional consumer result，不是 deployed behavior。
 4. 明确 symbolic/computational 边界与已知 timeout；
    replay original 尚缺独立、专用的 standalone evidence bundle；
    不过 M2 evidence 已提交完整 original regression raw output：

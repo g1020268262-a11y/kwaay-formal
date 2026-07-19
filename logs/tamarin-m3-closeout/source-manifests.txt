@@ -1,0 +1,8 @@
+source-run1_path: D:\kwaay-formal-failed-runs\m3-a3-run1
+source-run1_manifest_sha256: fed18689556bec17d9e5b2f88b980ebdca950d419340dbe5d187ac03b3328437
+source-run1_manifest_entries: 240
+source-run1_manifest_valid: true
+source-run2_path: D:\kwaay-formal-failed-runs\m3-a3-run2
+source-run2_manifest_sha256: a4ff1fcd828ea2c0b001621d26f7aaa125189822e1504253cba9f7c1887c6f40
+source-run2_manifest_entries: 240
+source-run2_manifest_valid: true

@@ -74,8 +74,8 @@ The direction of every `experimentally checked` cell appears in section 5.
 | Tamarin replay original — fixed two-slot replay abstraction | P2 one-send-one-accept | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | HMAC-only replay bridge | P2 occurrence injectivity | not modeled | not modeled | not modeled | not modeled | unknown | unknown |
 | Tamarin original impact/composition — fixed two-slot `C_install-v2` consumer | P3 unique installation under `C_install-v2` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
-| fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin fixed dedup replay — fixed two-slot batch-local repair | P2 within same `B,bid,rst` and exact complete `m` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin fixed dedup impact — fixed two-slot `C_install-v2` consumer | P3 under `C_install-v2` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 | HMAC+dedup combined impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled | not modeled |
 
@@ -106,8 +106,8 @@ checked reachability trace.
 | HMAC-only replay bridge | P2 occurrence injectivity | falsified | falsified | unknown | unknown | not applicable |
 | HMAC-only replay bridge | terminal lifecycle | proved | unknown | unknown | unknown | not applicable |
 | Tamarin original impact/composition — fixed two-slot `C_install-v2` consumer | P3 unique installation under `C_install-v2` | falsified | falsified | unknown | unknown | not applicable |
-| fixed dedup model | P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
-| fixed dedup impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
+| Tamarin fixed dedup replay — fixed two-slot batch-local repair | P2 within same `B,bid,rst` and exact complete `m` | proved | proved | unknown | unknown | not applicable |
+| Tamarin fixed dedup impact — fixed two-slot `C_install-v2` consumer | P3 under `C_install-v2` | proved | proved | unknown | unknown | not applicable |
 | HMAC+dedup combined model | P0-S/P0-O/P1/P2 | not modeled | not modeled | not modeled | not modeled | not modeled |
 | HMAC+dedup combined impact model | P3 under `C_install` | not modeled | not modeled | not modeled | not modeled | not modeled |
 
@@ -130,6 +130,16 @@ and in the broader class that permits later compromise. It does not contain an
 actual compromise occurrence and establishes no sender-authentication-key,
 receiver-authentication-key, KEM-material, or state-compromise-conditioned P3
 theorem. The material cells consequently remain `not modeled`.
+
+The fixed dedup P2 safety formulas and fixed-impact P3 safety formulas do not
+depend on a compromise exception: their universal statements quantify all
+modeled traces. The no-compromise cells are non-vacuous through the duplicate-
+failure and normal-distinct exists traces, and the broader “no early compromise,
+later permitted” class is also covered. The before/after cells remain `unknown`
+because M3 did not establish dedicated target-bearing traces with an actual
+ordered compromise occurrence. M3 has no independent authentication-key,
+long-term/ephemeral KEM-material, or individual sender/receiver-state-
+compromise theorem; every material cell therefore remains `not modeled`.
 
 ## 5. Experiment-direction ledger
 
@@ -154,6 +164,8 @@ capability is therefore always `timing not represented`.
 | Tamarin replay original — `one_send_two_accepts_exists`, `injective_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | baseline falsified | no; compromise explicitly excluded everywhere | `tamarin/replay/README.md` |
 | HMAC-only replay bridge — `one_confirmed_send_two_accepts_exists`, `injective_confirmed_receiver_accept` | P2 occurrence injectivity | no material compromise occurs | no compromise anywhere | failed: attack witness verified; injectivity falsified | matching existence and normal path held | no; compromise explicitly excluded everywhere | `logs/tamarin-replay-hmac-only/summary.txt`, `attack-trace.out` |
 | Tamarin original impact/composition — `one_send_two_accepts_two_installs_exists`, `unique_install_within_completed_consumer` | P3 under `C_install-v2` | no material compromise occurs | no compromise anywhere | conditional duplicate-install witness verified; unique installation falsified | lower-layer duplicate acceptance already falsified; normal composition paths verified | no; witness explicitly excludes sender/receiver state compromise | `logs/tamarin-impact-original/summary.txt`, `logs/tamarin-impact-original/attack-trace.out`, `logs/tamarin-impact-original/unique-install-trace.out` |
+| Tamarin fixed dedup replay — `same_message_accepted_at_most_once`, `injective_receiver_accept`, `duplicate_batch_fail_exists`, `normal_distinct_batch_complete` | P2 within same `B,bid,rst` and exact complete `m` | no material-conditioned theorem | universal safety plus no-compromise non-vacuity | at-most-once and injectivity verified; original duplicate-accept witness falsified; duplicate failure and distinct completion verified | original replay P2 falsified | not applicable as a material-specific conclusion; M3 did not isolate compromise branches | `logs/tamarin-m3-closeout/`, `docs/milestones/M3-completion.md` |
+| Tamarin fixed dedup impact — `unique_install_within_completed_consumer`, `duplicate_batch_has_no_install`, `normal_distinct_consumer_complete` | P3 under `C_install-v2` | no material-conditioned theorem | universal safety plus no-compromise non-vacuity | unique installation and no duplicate install verified; legacy same-message duplicate-install witness falsified; distinct consumer completion verified | original M2 unique installation falsified | not applicable as a material-specific conclusion; M3 did not isolate compromise branches | `logs/tamarin-m3-closeout/`, `docs/milestones/M3-completion.md` |
 
 For every core leak row, P1 is
 `baseline-falsified; compromise not required`. For replay P2, the same
@@ -302,17 +314,42 @@ Regression evidence records 18/18 frozen lower-layer formula blocks MATCH and
 18/18 lower-layer actual statuses MATCH. Those comparisons preserve the selected
 formula/result vector; they are not a full trace-equivalence claim.
 
+### 6.8 Tamarin M3 fixed dedup replay and impact
+
+Models:
+
+- `tamarin/replay/kwaay_replay_fixed.spthy`
+- `tamarin/impact/kwaay_impact_fixed.spthy`
+
+Evidence: `logs/tamarin-m3-closeout/`
+
+The fixed replay model verifies exact-message at-most-once acceptance and
+same-batch/same-state injectivity within one fixed two-slot `B,bid,rst`; the
+original same-message two-accept witness is falsified. Duplicate failure and
+normal distinct completion are both reachable. The fixed impact model verifies
+unique installation and no duplicate accepted output/install under the same
+bounded `C_install-v2` consumer, while normal distinct consumer completion
+remains reachable.
+
+These results are transparent composite evidence from two complete,
+manifest-validated A3 runs. Each run had one intermittent source-saturation
+`<<loop>>` at a different target; the 196-target composite has no status conflict
+or expected-vector mismatch. The results are not material-specific compromise
+theorems and do not establish global, cross-batch, rollback, implementation, or
+computational replay protection.
+
 ## 7. Milestone ownership
 
 | Milestone | Evidence it may add |
 |---|---|
 | M1 | ✅ HMAC-only replay bridge matching/P2, non-vacuity, lifecycle, no-compromise witness, regressions, and raw logs. |
 | M2 | ✅ actual original P3 under `C_install-v2`: conditional duplicate-install witness, falsified unique installation, interface assumptions, regressions, traces, and committed evidence. |
-| M3 | Fixed dedup P2 and fixed-impact P3 under `C_install`. |
+| M3 | ✅ fixed two-slot batch-local dedup P2 and fixed-impact P3 under `C_install-v2`, with transparent composite evidence. |
 | M4 | Combined P0-S/P0-O regressions, P1/P2, P3 under `C_install`, and selected compromise targets. |
 | M5 | Reproducible logs and the final expected-versus-actual freeze. |
 
-M2 impact/P3 cells now contain actual conditional results. The material-specific
-compromise cells, fixed dedup, fixed impact, and combined cells remain
-`not modeled`. The current unique next task is M3 batch-local atomic dedup. M3 has not
-started, and M2 does not establish deployed upper-layer behavior.
+M2 original impact/P3 and M3 fixed dedup/fixed-impact cells now contain actual
+conditional results. M3 material-specific compromise cells and all combined
+HMAC+dedup cells remain `not modeled`. The current unique next task is M4
+combined HMAC+dedup. M4 has not started, and neither M2 nor M3 establishes
+deployed upper-layer behavior.

@@ -1,0 +1,18 @@
+K-Waay M3 batch-local atomic dedup evidence summary
+git_head: 282532fd922f3a7f7928f3772b3325fe06785730
+git_tree: 077ba2fa6bb64f49edff9478a45a66f838ea62e8
+parse_fixed_replay_status: 0
+parse_fixed_impact_status: 0
+fixed_replay_status: 0
+fixed_impact_status: 0
+original_replay_regression_status: 0
+hmac_replay_regression_status: 0
+original_impact_regression_status: 0
+v6_regression_status: 1
+v7_regression_status: 0
+proverif_regression_status: 0
+formula_comparison_status: 0
+constructor_comparison_status: 0
+consumer_rule_comparison_status: 0
+trace_status: 0
+post_run_unexpected_status_empty: true

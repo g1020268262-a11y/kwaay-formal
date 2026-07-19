@@ -1,0 +1,8 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory Kwaay_Impact_Fixed] Theory loaded
+[Theory Kwaay_Impact_Fixed] Theory translated
+[Theory Kwaay_Impact_Fixed] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+tamarin-prover: <<loop>>
