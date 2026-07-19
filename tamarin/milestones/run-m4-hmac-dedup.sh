@@ -43,6 +43,8 @@ PROVERIF_HMAC_BASELINE_REL="logs/variants/hmac-confirmation/proverif/summary.txt
 LOG_REL="logs/tamarin-m4-hmac-dedup"
 LOG_DIR="$ROOT_DIR/$LOG_REL"
 PROOF_TIMEOUT_SECONDS=300
+SOURCE_PROGRESS_CURRENT=0
+SOURCE_PROGRESS_TOTAL=301
 AGGREGATE_HEADER=$'suite\ttarget\tactual_status\texpected_status\texit_status\tloop\traw_output'
 MATRIX_HEADER=$'suite\ttarget\texpected_status'
 
@@ -350,10 +352,10 @@ validate_source_matrix() {
 source_has_nonterminal() { awk -F '\t' 'NR>1 && $3=="nonterminal" {found=1} END{exit(found?0:1)}' "$1"; }
 
 unexpected_git_status() {
-  git_cmd status --porcelain=v1 --untracked-files=all | awk -v log="$LOG_REL" '
+  git_cmd status --porcelain=v1 --untracked-files=all | awk -v log_path="$LOG_REL" '
     {
       path=substr($0,4)
-      if (path==log || index(path,log "/")==1) next
+      if (path==log_path || index(path,log_path "/")==1) next
       print
     }
   '
@@ -495,6 +497,13 @@ tool_input_path() {
 }
 
 print_command() { local label="$1"; shift; printf '%s:' "$label"; printf ' %q' "$@"; printf '\n'; }
+stage_notice() { printf '[stage] %s\n' "$1" >&2; }
+report_source_progress() {
+  local suite="$1" target="$2" status="$3"
+  SOURCE_PROGRESS_CURRENT=$((SOURCE_PROGRESS_CURRENT + 1))
+  printf '[%d/%d] %s / %s -> %s\n' "$SOURCE_PROGRESS_CURRENT" "$SOURCE_PROGRESS_TOTAL" \
+    "$suite" "$target" "$status" >&2
+}
 
 extract_lemmas() { sed -n 's/^lemma[[:space:]]\+\([A-Za-z0-9_]\+\):.*/\1/p' "$1"; }
 
@@ -722,6 +731,7 @@ run_tamarin_suite() {
     loop=false; grep -q '<<loop>>' "$raw" && loop=true
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$status" \
       "${expected_map[$target]}" "$exit_code" "$loop" "proofs/$suite/$target.out" >> "$out/aggregate.tsv"
+    report_source_progress "$suite" "$target" "$status"
   done
 }
 
@@ -764,6 +774,7 @@ run_proverif_target() {
   rm -f "$actual" "$expected"
   printf '%s\t%s\t%s\tMATCH\t%s\tfalse\t%s\n' "$suite" "$target" "$status" "$exit_code" \
     "proverif/$suite/out/$target.out" >> "$out/aggregate.tsv"
+  report_source_progress "$suite" "$target" "$status"
 }
 
 write_provenance() {
@@ -976,6 +987,7 @@ validate_trace_artifacts() {
 run_trace() {
   local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL suite digest
   dir="$out/traces/$label"; raw="$dir/trace.out"; json="$dir/trace.json"; dot="$dir/trace.dot"
+  stage_notice "trace $label / $lemma"
   mkdir -p "$dir"
   print_command "executed-trace[$label]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" \
     --derivcheck-timeout=0 "--prove=$lemma" "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" >> "$out/commands.txt"
@@ -1115,6 +1127,7 @@ source_run() {
   verify_current_binding_state || exit 2
   static_checks
   resolve_formal_tools || exit 2
+  SOURCE_PROGRESS_CURRENT=0
   out="$LOG_DIR/source-run$n"
   [[ ! -e "$out" ]] || { echo "error: source run exists: $out" >&2; exit 2; }
   mkdir -p "$out/parse"
@@ -1137,6 +1150,7 @@ source_run() {
   write_formula_digests "$out" v6 "$ROOT_DIR/$V6_REL" V6_TARGETS
   write_formula_digests "$out" v7 "$ROOT_DIR/$V7_REL" V7_TARGETS
   printf 'model\texit_status\traw_output\n' > "$out/parse-validation.tsv"
+  stage_notice "parse combined-replay and combined-impact"
   for status in combined-replay combined-impact; do
     local model
     if [[ "$status" == combined-replay ]]; then model="$ROOT_DIR/$COMBINED_REPLAY_REL"; else model="$ROOT_DIR/$COMBINED_IMPACT_REL"; fi
@@ -1161,6 +1175,10 @@ source_run() {
   for status in "${PROVERIF_HMAC_TARGETS[@]}"; do
     run_proverif_target "$out" proverif-hmac "$status" "$ROOT_DIR/$PROVERIF_HMAC_REL" "$ROOT_DIR/$PROVERIF_HMAC_BASELINE_REL"
   done
+  if [[ "$SOURCE_PROGRESS_CURRENT" -ne "$SOURCE_PROGRESS_TOTAL" ]]; then
+    echo "error: progress counter ended at $SOURCE_PROGRESS_CURRENT, expected $SOURCE_PROGRESS_TOTAL" >&2
+    structural_errors=$((structural_errors+1))
+  fi
   run_trace "$out" duplicate "$COMBINED_REPLAY_REL" duplicate_same_base_different_tag_fail_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" normal-replay "$COMBINED_REPLAY_REL" normal_two_distinct_valid_confirmed_accepts_complete || trace_errors=$((trace_errors+1))
   run_trace "$out" slot1-mismatch "$COMBINED_REPLAY_REL" hmac_failure_slot1_exists || trace_errors=$((trace_errors+1))
@@ -1175,13 +1193,16 @@ source_run() {
     "$out/aggregate.tsv" > "$out/summary.txt"
   printf 'INVALID\n' > "$out/source-run-status.txt"
   local final_status=INVALID manifest_ok=0
+  stage_notice "source-run$n manifest (diagnostic state)"
   if make_manifest "$out"; then manifest_ok=1; fi
   if [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 && "$manifest_ok" -eq 1 ]]; then
     printf 'VALID\n' > "$out/source-run-status.txt"
+    stage_notice "source-run$n manifest (VALID finalization)"
     if make_manifest "$out" && validate_source_qualification "$out" && validate_manifest "$out"; then
       final_status=VALID
     else
       printf 'INVALID\n' > "$out/source-run-status.txt"
+      stage_notice "source-run$n manifest (INVALID recovery)"
       make_manifest "$out" >/dev/null 2>&1 || true
     fi
   fi
@@ -1230,6 +1251,7 @@ select_composite() {
 
 assemble_composite() {
   local run1="$LOG_DIR/source-run1" run2="$LOG_DIR/source-run2" run2_aggregate=
+  stage_notice "composite validation and selection"
   validate_log_top_level assemble || exit 2
   verify_current_binding_state || exit 2
   static_checks
@@ -1244,6 +1266,7 @@ assemble_composite() {
     "$LOG_DIR/composite-result-vector.tsv" "$LOG_DIR/composite-summary.txt" || {
       echo "error: composite has unresolved, mismatch, or terminal conflict" >&2; exit 1; }
   verify_repo_clean_except_logs || exit 2
+  stage_notice "composite manifest"
   make_manifest "$LOG_DIR"
   echo "composite=PASS"
 }
@@ -1314,6 +1337,8 @@ self_test() {
   [[ -e "$LOG_DIR" ]] && before_log_exists=1
   static_checks >/dev/null || failures=1
   tmp="$(mktemp -d)"; base="$tmp/base.tsv"
+  if ! unexpected_git_status > "$tmp/unexpected-git-status.out"; then failures=1; fi
+  if grep -Fq "$LOG_REL" "$tmp/unexpected-git-status.out"; then failures=1; fi
   write_synthetic_aggregate "$base"
   validate_source_matrix "$base" || failures=1
 
@@ -1413,6 +1438,7 @@ self_test() {
   echo "proverif_order_comparator_tests=PASS"
   echo "json_dot_trace_tests=PASS"
   echo "source_run_qualification_tests=PASS"
+  echo "gawk_unexpected_git_status_test=PASS"
   echo "self_test=PASS"
 }
 
