@@ -69,13 +69,14 @@ if [[ "$(readlink -f "$GIT_ROOT_REPORTED")" != "$ROOT_DIR" ]]; then
   exit 2
 fi
 
-COMMON_REQUIRED_COMMANDS=(awk sed grep sort find xargs sha256sum head tail cut wc tr cmp diff mktemp cp chmod rm mkdir)
+COMMON_REQUIRED_COMMANDS=(awk sed grep sort find xargs sha256sum head tail cut wc tr cmp diff mktemp cp chmod rm mkdir python3)
 for common_command in "${COMMON_REQUIRED_COMMANDS[@]}"; do
   command -v "$common_command" >/dev/null 2>&1 || {
     echo "error: required command not found: $common_command" >&2
     exit 2
   }
 done
+PYTHON_CMD="$(command -v python3)"
 
 REPLAY_HMAC=(
   normal_confirmed_single_accept normal_confirmed_batch_complete
@@ -468,13 +469,14 @@ resolve_proverif() {
 
 resolve_formal_tools() {
   local command_name
-  for command_name in tamarin-prover maude cpp timeout uname; do
+  for command_name in tamarin-prover maude cpp timeout uname python3; do
     command -v "$command_name" >/dev/null 2>&1 || { echo "error: required command not found: $command_name" >&2; return 1; }
   done
   TAMARIN_CMD="$(command -v tamarin-prover)"
   MAUDE_CMD="$(command -v maude)"
   CPP_CMD="$(command -v cpp)"
   TIMEOUT_CMD="$(command -v timeout)"
+  PYTHON_CMD="$(command -v python3)"
   resolve_proverif
   local help
   help="$("$TAMARIN_CMD" --help 2>&1)"
@@ -692,13 +694,16 @@ verify_frozen_inputs() {
 }
 
 parse_tamarin_result() {
-  local target="$1" raw="$2" exit_code="$3" line
-  if [[ ! -s "$raw" || "$exit_code" == 124 || "$exit_code" == 137 ]] || grep -q '<<loop>>' "$raw"; then
+  local target="$1" raw="$2" exit_code="$3" matches count line
+  if [[ "$exit_code" -ne 0 || ! -s "$raw" ]] || grep -q '<<loop>>' "$raw"; then
     printf 'nonterminal'; return
   fi
-  line="$(grep -E "^[[:space:]]*$target \((all-traces|exists-trace)\): (verified|falsified)( |$)" "$raw" | tail -n1 || true)"
-  if [[ "$line" == *": verified"* ]]; then printf 'verified'
-  elif [[ "$line" == *": falsified"* ]]; then printf 'falsified'
+  matches="$(grep -E "^[[:space:]]*$target \((all-traces|exists-trace)\): (verified \([0-9]+ steps\)|falsified - (found trace|no trace found) \([0-9]+ steps\))[[:space:]]*$" "$raw" || true)"
+  count="$(printf '%s\n' "$matches" | awk 'NF{n++} END{print n+0}')"
+  [[ "$count" -eq 1 ]] || { printf 'nonterminal'; return; }
+  line="$matches"
+  if [[ "$line" == *": verified "* ]]; then printf 'verified'
+  elif [[ "$line" == *": falsified - "* ]]; then printf 'falsified'
   else printf 'nonterminal'; fi
 }
 
@@ -726,7 +731,15 @@ extract_pv_results() {
     $0 == "TARGET: " target {inside=1; next}
     inside && /^TARGET: / {exit}
     inside && /^RESULT / {sub(/\r$/,""); print}
-  ' "$summary" | LC_ALL=C sort
+  ' "$summary"
+}
+
+compare_proverif_results() {
+  local actual="$1" expected="$2" cpp_exit="$3" proverif_exit="$4" actual_count expected_count
+  [[ "$cpp_exit" -eq 0 && "$proverif_exit" -eq 0 && -s "$actual" && -s "$expected" ]] || return 1
+  actual_count="$(wc -l < "$actual" | tr -d ' ')"; expected_count="$(wc -l < "$expected" | tr -d ' ')"
+  [[ "$actual_count" -eq "$expected_count" ]] || return 1
+  cmp -s "$actual" "$expected"
 }
 
 run_proverif_target() {
@@ -745,9 +758,9 @@ run_proverif_target() {
     exit_code="$cpp_exit"; : > "$raw"
   fi
   actual="$(mktemp)"; expected="$(mktemp)"
-  grep '^RESULT ' "$raw" | sed 's/\r$//' | LC_ALL=C sort > "$actual" || true
+  grep '^RESULT ' "$raw" | sed 's/\r$//' > "$actual" || true
   extract_pv_results "$baseline" "$target" > "$expected"
-  if [[ "$exit_code" -eq 0 && -s "$actual" ]] && cmp -s "$actual" "$expected"; then status=MATCH; fi
+  if compare_proverif_results "$actual" "$expected" "$cpp_exit" "$exit_code"; then status=MATCH; fi
   rm -f "$actual" "$expected"
   printf '%s\t%s\t%s\tMATCH\t%s\tfalse\t%s\n' "$suite" "$target" "$status" "$exit_code" \
     "proverif/$suite/out/$target.out" >> "$out/aggregate.tsv"
@@ -768,6 +781,7 @@ write_provenance() {
     echo "proverif_executable=${PROVERIF_CMD[0]}"
     echo "cpp_executable=$CPP_CMD"
     echo "timeout_executable=$TIMEOUT_CMD"
+    echo "python_executable=$PYTHON_CMD"
     echo "uname_executable=$(command -v uname)"
     echo "bash_executable=$(command -v bash)"
     if command -v wslpath >/dev/null 2>&1; then echo "wslpath_executable=$(command -v wslpath)"; fi
@@ -787,6 +801,7 @@ write_provenance() {
     "${PROVERIF_CMD[@]}" -version 2>&1 | sed 's/^/proverif_version=/' || true
     "$CPP_CMD" --version 2>&1 | head -n1 | sed 's/^/cpp_version=/'
     "$TIMEOUT_CMD" --version 2>&1 | head -n1 | sed 's/^/timeout_version=/'
+    "$PYTHON_CMD" --version 2>&1 | sed 's/^/python_version=/'
   } > "$out/provenance.txt"
 }
 
@@ -809,9 +824,7 @@ write_frozen_input_table() {
 }
 
 terminal_status() { [[ "$1" == verified || "$1" == falsified || "$1" == MATCH ]]; }
-first_event_offset() { LC_ALL=C grep -abo -m1 -F "$2(" "$1" | head -n1 | cut -d: -f1; }
 event_count() { LC_ALL=C grep -ao -F "$2(" "$1" | wc -l | tr -d ' '; }
-unique_event_count() { LC_ALL=C grep -ao -E "$2\([^)]*\)" "$1" | LC_ALL=C sort -u | wc -l | tr -d ' '; }
 unique_event_argument_count() {
   local file="$1" event="$2" argument="$3"
   LC_ALL=C grep -ao -E "$event\([^)]*\)" "$file" \
@@ -820,18 +833,114 @@ unique_event_argument_count() {
     | LC_ALL=C sort -u | wc -l | tr -d ' '
 }
 
+validate_json_trace() {
+  "$PYTHON_CMD" - "$1" <<'PY'
+import json
+import sys
+
+try:
+    with open(sys.argv[1], "r", encoding="utf-8") as handle:
+        value = json.load(handle)
+except (OSError, UnicodeError, json.JSONDecodeError):
+    raise SystemExit(1)
+if not isinstance(value, dict):
+    raise SystemExit(1)
+graphs = value.get("graphs")
+if not isinstance(graphs, list) or not graphs:
+    raise SystemExit(1)
+PY
+}
+
+validate_dot_digraph() {
+  "$PYTHON_CMD" - "$1" <<'PY'
+import re
+import sys
+
+try:
+    text = open(sys.argv[1], "r", encoding="utf-8").read()
+except (OSError, UnicodeError):
+    raise SystemExit(1)
+if not re.match(r"^\s*(?:strict\s+)?digraph(?:\s+(?:[A-Za-z_][A-Za-z0-9_]*|\"(?:[^\"\\]|\\.)*\"))?\s*\{", text):
+    raise SystemExit(1)
+depth = 0
+opened = False
+in_string = False
+escaped = False
+line_comment = False
+block_comment = False
+i = 0
+last_close = -1
+while i < len(text):
+    char = text[i]
+    nxt = text[i + 1] if i + 1 < len(text) else ""
+    if line_comment:
+        if char == "\n":
+            line_comment = False
+    elif block_comment:
+        if char == "*" and nxt == "/":
+            block_comment = False
+            i += 1
+    elif in_string:
+        if escaped:
+            escaped = False
+        elif char == "\\":
+            escaped = True
+        elif char == '"':
+            in_string = False
+    elif char == '"':
+        in_string = True
+    elif char == "/" and nxt == "/":
+        line_comment = True
+        i += 1
+    elif char == "/" and nxt == "*":
+        block_comment = True
+        i += 1
+    elif char == "{":
+        depth += 1
+        opened = True
+    elif char == "}":
+        depth -= 1
+        if depth < 0:
+            raise SystemExit(1)
+        if depth == 0:
+            last_close = i
+    i += 1
+if not opened or depth != 0 or in_string or block_comment:
+    raise SystemExit(1)
+if text[last_close + 1:].strip().strip(";").strip():
+    raise SystemExit(1)
+PY
+}
+
+formula_digest_for() { extract_block lemma "$2" "$1" | normalize_text | sha256sum | awk '{print $1}'; }
+
+validate_trace_formula_contract() {
+  local label="$1" model="$2" lemma="$3" recorded_digest="$4" actual_digest formula
+  actual_digest="$(formula_digest_for "$model" "$lemma")"
+  [[ -n "$recorded_digest" && "$actual_digest" == "$recorded_digest" ]] || return 1
+  formula="$(extract_block lemma "$lemma" "$model" | normalize_text)"
+  case "$label" in
+    slot1-mismatch) [[ "$formula" == *'#p<#hf'* && "$formula" == *'#hf<#bf'* ]] ;;
+    slot2-mismatch) [[ "$formula" == *'#r1<#hf'* && "$formula" == *'#hf<#bf'* ]] ;;
+    *) return 0 ;;
+  esac
+}
+
 validate_trace_artifacts() {
-  local label="$1" model="$2" lemma="$3" raw="$4" json="$5" dot="$6"
-  local theory failures=0 a b c
+  local label="$1" model="$2" lemma="$3" raw="$4" json="$5" dot="$6" exit_code="$7" recorded_digest="$8"
+  local theory failures=0 event
   theory="$(awk '/^theory[[:space:]]+/{print $2; exit}' "$model")"
+  [[ "$exit_code" -eq 0 ]] || return 1
   [[ -s "$raw" && -s "$json" && -s "$dot" ]] || failures=1
-  grep -Eq "^[[:space:]]*$lemma \(exists-trace\): verified" "$raw" || failures=1
-  grep -Fq "$theory" "$raw" "$json" "$dot" || failures=1
-  grep -Fq "$lemma" "$raw" "$json" "$dot" || failures=1
+  [[ "$(parse_tamarin_result "$lemma" "$raw" "$exit_code")" == verified ]] || failures=1
+  grep -Fq "[Theory $theory]" "$raw" || failures=1
   grep -Fq '<<loop>>' "$raw" && failures=1
+  validate_trace_formula_contract "$label" "$model" "$lemma" "$recorded_digest" || failures=1
+  validate_json_trace "$json" || failures=1
+  validate_dot_digraph "$dot" || failures=1
   case "$label" in
     duplicate)
-      for a in DuplicateDetected BatchFail BatchClosed ConsumeReceiverState; do [[ "$(event_count "$dot" "$a")" -ge 1 ]] || failures=1; done
+      for event in DuplicateDetected BatchFail BatchClosed ConsumeReceiverState; do [[ "$(event_count "$dot" "$event")" -ge 1 ]] || failures=1; done
       [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -eq 0 ]] || failures=1
       ;;
     normal-replay)
@@ -842,15 +951,15 @@ validate_trace_artifacts() {
       [[ "$(event_count "$dot" BatchComplete)" -ge 1 ]] || failures=1
       ;;
     slot1-mismatch)
-      a="$(first_event_offset "$dot" HmacValidationFailed || true)"; b="$(first_event_offset "$dot" BatchFail || true)"
-      [[ -n "$a" && -n "$b" && "$a" -lt "$b" ]] || failures=1
+      [[ "$(event_count "$dot" HmacValidationFailed)" -ge 1 ]] || failures=1
+      [[ "$(event_count "$dot" BatchFail)" -ge 1 ]] || failures=1
       [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -eq 0 ]] || failures=1
       ;;
     slot2-mismatch)
-      a="$(first_event_offset "$dot" ConfirmedReceiverAccept || true)"
-      b="$(first_event_offset "$dot" HmacValidationFailed || true)"; c="$(first_event_offset "$dot" BatchFail || true)"
-      [[ -n "$a" && -n "$b" && -n "$c" && "$a" -lt "$b" && "$b" -lt "$c" ]] || failures=1
-      for a in BatchComplete ConsumerStarted InstallFromAccept; do [[ "$(event_count "$dot" "$a")" -eq 0 ]] || failures=1; done
+      [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -ge 1 ]] || failures=1
+      [[ "$(event_count "$dot" HmacValidationFailed)" -ge 1 ]] || failures=1
+      [[ "$(event_count "$dot" BatchFail)" -ge 1 ]] || failures=1
+      for event in BatchComplete ConsumerStarted InstallFromAccept; do [[ "$(event_count "$dot" "$event")" -eq 0 ]] || failures=1; done
       ;;
     normal-consumer)
       [[ "$(unique_event_argument_count "$dot" AcceptOutputCreated 1)" -ge 2 ]] || failures=1
@@ -865,40 +974,131 @@ validate_trace_artifacts() {
 }
 
 run_trace() {
-  local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL
+  local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL suite digest
   dir="$out/traces/$label"; raw="$dir/trace.out"; json="$dir/trace.json"; dot="$dir/trace.dot"
   mkdir -p "$dir"
   print_command "executed-trace[$label]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" \
     --derivcheck-timeout=0 "--prove=$lemma" "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" >> "$out/commands.txt"
   "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$lemma" \
     "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" > "$raw" 2>&1 || exit_code=$?
-  if [[ "$exit_code" -eq 0 ]] && validate_trace_artifacts "$label" "$ROOT_DIR/$model_rel" "$lemma" "$raw" "$json" "$dot"; then result=PASS; fi
+  if [[ "$model_rel" == "$COMBINED_REPLAY_REL" ]]; then suite=combined-replay; else suite=combined-impact; fi
+  digest="$(awk -F '\t' -v s="$suite" -v t="$lemma" '$1==s&&$2==t{print $3; exit}' "$out/formula-bodies.tsv")"
+  if validate_trace_artifacts "$label" "$ROOT_DIR/$model_rel" "$lemma" "$raw" "$json" "$dot" "$exit_code" "$digest"; then result=PASS; fi
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$label" "$model_rel" "$lemma" "$exit_code" "$result" \
     "traces/$label/trace.out" "traces/$label/trace.json" "traces/$label/trace.dot" >> "$out/trace-aggregate.tsv"
   [[ "$result" == PASS ]]
 }
 
-validate_trace_aggregate() {
+validate_trace_aggregate_structure() {
   local file="$1" expected actual
   [[ -f "$file" ]] || { echo "error: missing trace aggregate: $file" >&2; return 1; }
   [[ "$(head -n1 "$file")" == $'label\tmodel\tlemma\texit_status\tvalidation\traw\tjson\tdot' ]] || {
     echo "error: trace aggregate header mismatch" >&2; return 1; }
   [[ "$(awk -F '\t' 'NR>1 {if(NF!=8 || ($5!="PASS" && $5!="FAIL")) bad=1; n++} END{if(bad) exit 1; print n+0}' "$file")" == 5 ]] || {
     echo "error: trace aggregate must contain exactly five well-formed rows" >&2; return 1; }
-  expected=$'duplicate\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tduplicate_same_base_different_tag_fail_exists\nnormal-replay\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_accepts_complete\nslot1-mismatch\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\thmac_failure_slot1_exists\nslot2-mismatch\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\thmac_failure_slot2_after_prior_accept_exists\nnormal-consumer\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_outputs_consumer_complete'
-  actual="$(awk -F '\t' 'NR>1 {print $1 "\t" $2 "\t" $3}' "$file")"
-  [[ "$(printf '%s\n' "$actual" | LC_ALL=C sort)" == "$(printf '%s\n' "$expected" | LC_ALL=C sort)" ]] || {
+  expected=$'duplicate\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tduplicate_same_base_different_tag_fail_exists\ttraces/duplicate/trace.out\ttraces/duplicate/trace.json\ttraces/duplicate/trace.dot\nnormal-replay\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_accepts_complete\ttraces/normal-replay/trace.out\ttraces/normal-replay/trace.json\ttraces/normal-replay/trace.dot\nslot1-mismatch\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\thmac_failure_slot1_exists\ttraces/slot1-mismatch/trace.out\ttraces/slot1-mismatch/trace.json\ttraces/slot1-mismatch/trace.dot\nslot2-mismatch\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\thmac_failure_slot2_after_prior_accept_exists\ttraces/slot2-mismatch/trace.out\ttraces/slot2-mismatch/trace.json\ttraces/slot2-mismatch/trace.dot\nnormal-consumer\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_outputs_consumer_complete\ttraces/normal-consumer/trace.out\ttraces/normal-consumer/trace.json\ttraces/normal-consumer/trace.dot'
+  actual="$(awk -F '\t' 'NR>1 {print $1 "\t" $2 "\t" $3 "\t" $6 "\t" $7 "\t" $8}' "$file")"
+  [[ "$actual" == "$expected" ]] || {
     echo "error: trace aggregate witness mapping mismatch" >&2; return 1; }
+}
+
+validate_trace_all_pass() {
+  validate_trace_aggregate_structure "$1" || return 1
+  awk -F '\t' 'NR>1 && ($4!=0 || $5!="PASS") {exit 1}' "$1"
+}
+
+validate_parse_validation() {
+  local run="$1" file="$run/parse-validation.tsv" expected actual raw
+  [[ -f "$file" ]] || { echo "error: missing parse-validation.tsv" >&2; return 1; }
+  [[ "$(head -n1 "$file")" == $'model\texit_status\traw_output' ]] || {
+    echo "error: parse validation header mismatch" >&2; return 1; }
+  [[ "$(awk -F '\t' 'NR>1 {if(NF!=3 || $2!=0) bad=1; n++} END{if(bad) exit 1; print n+0}' "$file")" == 2 ]] || {
+    echo "error: parse validation must have exactly two exit-0 rows" >&2; return 1; }
+  expected=$'combined-replay\tparse/combined-replay.out\ncombined-impact\tparse/combined-impact.out'
+  actual="$(awk -F '\t' 'NR>1 {print $1 "\t" $3}' "$file")"
+  [[ "$actual" == "$expected" ]] || { echo "error: parse validation model/path mapping mismatch" >&2; return 1; }
+  while IFS=$'\t' read -r _ _ raw; do
+    [[ "$raw" == raw_output ]] && continue
+    [[ -s "$run/$raw" ]] || { echo "error: missing or empty parse output: $raw" >&2; return 1; }
+  done < "$file"
+}
+
+lookup_recorded_formula_digest() {
+  local table="$1" suite="$2" lemma="$3" count digest
+  count="$(awk -F '\t' -v s="$suite" -v t="$lemma" 'NR>1&&$1==s&&$2==t{n++} END{print n+0}' "$table")"
+  [[ "$count" -eq 1 ]] || return 1
+  digest="$(awk -F '\t' -v s="$suite" -v t="$lemma" 'NR>1&&$1==s&&$2==t{print $3}' "$table")"
+  [[ "$digest" =~ ^[0-9a-f]{64}$ ]] || return 1
+  printf '%s\n' "$digest"
+}
+
+revalidate_source_trace_artifacts() {
+  local run="$1" label model_rel lemma exit_code validation raw json dot suite digest failures=0
+  while IFS=$'\t' read -r label model_rel lemma exit_code validation raw json dot; do
+    [[ "$label" == label ]] && continue
+    if [[ "$model_rel" == "$COMBINED_REPLAY_REL" ]]; then suite=combined-replay
+    elif [[ "$model_rel" == "$COMBINED_IMPACT_REL" ]]; then suite=combined-impact
+    else failures=1; continue
+    fi
+    digest="$(lookup_recorded_formula_digest "$run/formula-bodies.tsv" "$suite" "$lemma" || true)"
+    [[ -n "$digest" ]] || { failures=1; continue; }
+    validate_trace_artifacts "$label" "$ROOT_DIR/$model_rel" "$lemma" "$run/$raw" "$run/$json" "$run/$dot" \
+      "$exit_code" "$digest" || failures=1
+  done < "$run/trace-aggregate.tsv"
+  [[ "$failures" -eq 0 ]]
+}
+
+require_summary_value() {
+  local file="$1" key="$2" expected="$3" count actual
+  count="$(awk -F= -v k="$key" '$1==k{n++} END{print n+0}' "$file")"
+  [[ "$count" -eq 1 ]] || { echo "error: summary key count is not one: $key" >&2; return 1; }
+  actual="$(awk -F= -v k="$key" '$1==k{print substr($0,index($0,"=")+1)}' "$file")"
+  [[ "$actual" == "$expected" ]] || { echo "error: summary mismatch for $key: $actual != $expected" >&2; return 1; }
+}
+
+validate_summary_consistency() {
+  local run="$1" aggregate="$run/aggregate.tsv" parse="$run/parse-validation.tsv" traces="$run/trace-aggregate.tsv"
+  local invoked terminal nonterminal mismatch parse_failures trace_total trace_failures
+  [[ -f "$run/summary.txt" ]] || { echo "error: missing source summary" >&2; return 1; }
+  invoked="$(awk -F '\t' 'NR>1{n++} END{print n+0}' "$aggregate")"
+  terminal="$(awk -F '\t' 'NR>1&&($3=="verified"||$3=="falsified"||$3=="MATCH"){n++} END{print n+0}' "$aggregate")"
+  nonterminal="$(awk -F '\t' 'NR>1&&$3=="nonterminal"{n++} END{print n+0}' "$aggregate")"
+  mismatch="$(awk -F '\t' 'NR>1&&$3!=$4{n++} END{print n+0}' "$aggregate")"
+  parse_failures="$(awk -F '\t' 'NR>1&&$2!=0{n++} END{print n+0}' "$parse")"
+  trace_total="$(awk -F '\t' 'NR>1{n++} END{print n+0}' "$traces")"
+  trace_failures="$(awk -F '\t' 'NR>1&&$5!="PASS"{n++} END{print n+0}' "$traces")"
+  require_summary_value "$run/summary.txt" invoked "$invoked" || return 1
+  require_summary_value "$run/summary.txt" terminal "$terminal" || return 1
+  require_summary_value "$run/summary.txt" nonterminal "$nonterminal" || return 1
+  require_summary_value "$run/summary.txt" mismatch "$mismatch" || return 1
+  require_summary_value "$run/summary.txt" parse_failures "$parse_failures" || return 1
+  require_summary_value "$run/summary.txt" trace_total "$trace_total" || return 1
+  require_summary_value "$run/summary.txt" trace_failures "$trace_failures" || return 1
+  require_summary_value "$run/summary.txt" invoked 301 || return 1
+  require_summary_value "$run/summary.txt" parse_failures 0 || return 1
+  require_summary_value "$run/summary.txt" trace_total 5 || return 1
+  require_summary_value "$run/summary.txt" trace_failures 0 || return 1
+  require_summary_value "$run/summary.txt" structural_failures 0
+}
+
+validate_source_qualification() {
+  local run="$1"
+  [[ -f "$run/provenance.txt" && -f "$run/formula-bodies.tsv" ]] || {
+    echo "error: incomplete source-run metadata: $run" >&2; return 1; }
+  validate_source_matrix "$run/aggregate.tsv" || return 1
+  validate_parse_validation "$run" || return 1
+  validate_trace_all_pass "$run/trace-aggregate.tsv" || return 1
+  revalidate_source_trace_artifacts "$run" || return 1
+  validate_summary_consistency "$run" || return 1
+  [[ -f "$run/source-run-status.txt" && "$(cat "$run/source-run-status.txt")" == VALID ]] || {
+    echo "error: source run is not marked VALID: $run" >&2; return 1; }
 }
 
 validate_source_run() {
   local run="$1"
   validate_manifest "$run" || return 1
-  validate_source_matrix "$run/aggregate.tsv" || return 1
   validate_binding_against_current "$run" || return 1
-  validate_trace_aggregate "$run/trace-aggregate.tsv" || return 1
-  [[ -f "$run/provenance.txt" && -f "$run/summary.txt" ]] || {
-    echo "error: incomplete source-run metadata: $run" >&2; return 1; }
+  validate_source_qualification "$run"
 }
 
 source_run() {
@@ -966,16 +1166,31 @@ source_run() {
   run_trace "$out" slot1-mismatch "$COMBINED_REPLAY_REL" hmac_failure_slot1_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" slot2-mismatch "$COMBINED_IMPACT_REL" hmac_failure_slot2_after_prior_accept_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" normal-consumer "$COMBINED_IMPACT_REL" normal_two_distinct_valid_confirmed_outputs_consumer_complete || trace_errors=$((trace_errors+1))
-  validate_trace_aggregate "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
+  validate_trace_aggregate_structure "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
   validate_source_matrix "$out/aggregate.tsv" || structural_errors=$((structural_errors+1))
   verify_repo_clean_except_logs || structural_errors=$((structural_errors+1))
   awk -F '\t' -v pe="$parse_errors" -v te="$trace_errors" -v se="$structural_errors" '
     NR>1 {n++; if($3=="verified"||$3=="falsified"||$3=="MATCH") t++; if($3!=$4)m++; if($3=="nonterminal") nt++}
     END{printf "invoked=%d\nterminal=%d\nnonterminal=%d\nmismatch=%d\nparse_failures=%d\ntrace_total=5\ntrace_failures=%d\nstructural_failures=%d\n",n,t,nt,m,pe,te,se}' \
     "$out/aggregate.tsv" > "$out/summary.txt"
-  make_manifest "$out" || structural_errors=$((structural_errors+1))
-  echo "source_run$n=COMPLETE_INVOCATION"
-  [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 ]]
+  printf 'INVALID\n' > "$out/source-run-status.txt"
+  local final_status=INVALID manifest_ok=0
+  if make_manifest "$out"; then manifest_ok=1; fi
+  if [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 && "$manifest_ok" -eq 1 ]]; then
+    printf 'VALID\n' > "$out/source-run-status.txt"
+    if make_manifest "$out" && validate_source_qualification "$out" && validate_manifest "$out"; then
+      final_status=VALID
+    else
+      printf 'INVALID\n' > "$out/source-run-status.txt"
+      make_manifest "$out" >/dev/null 2>&1 || true
+    fi
+  fi
+  if [[ "$final_status" == VALID ]]; then
+    echo "source_run$n=VALID_COMPLETE_INVOCATION"
+    return 0
+  fi
+  echo "source_run$n=INVALID_COMPLETE_INVOCATION"
+  return 1
 }
 
 lookup_actual() { awk -F '\t' -v s="$2" -v t="$3" 'NR>1 && $1==s && $2==t {print $3; exit}' "$1"; }
@@ -1044,10 +1259,58 @@ write_synthetic_aggregate() {
   done < <(emit_canonical_matrix)
 }
 
+write_synthetic_trace_dot() {
+  local label="$1" destination="$2" events
+  case "$label" in
+    duplicate) events='DuplicateDetected(B,b,r,i1,A,i2,A,m) BatchFail(B,b,r) BatchClosed(B,b,r) ConsumeReceiverState(B,r)' ;;
+    normal-replay) events='ConfirmedSend(A1,B,m1,s1,k1,t1) ConfirmedSend(A2,B,m2,s2,k2,t2) DedupPassed(B,b,r,i1,A1,m1,i2,A2,m2) HmacValidated(B,A1,b,i1,r,m1,s1,k1,t1) HmacValidated(B,A2,b,i2,r,m2,s2,k2,t2) ConfirmedReceiverAccept(B,A1,b,i1,r,m1,s1,k1,t1) ConfirmedReceiverAccept(B,A2,b,i2,r,m2,s2,k2,t2) BatchComplete(B,b,r)' ;;
+    slot1-mismatch) events='HmacValidationFailed(B,A1,b,i1,r,m1,s1,k1,bad,t1) BatchFail(B,b,r)' ;;
+    slot2-mismatch) events='ConfirmedReceiverAccept(B,A1,b,i1,r,m1,s1,k1,t1) HmacValidationFailed(B,A2,b,i2,r,m2,s2,k2,bad,t2) BatchFail(B,b,r)' ;;
+    normal-consumer) events='AcceptOutputCreated(aid1,B,A1,b,i1,r,m1,s1,k1) AcceptOutputCreated(aid2,B,A2,b,i2,r,m2,s2,k2) InstallFromAccept(aid1,B,h1,A1,b,i1,r,m1,s1,k1) InstallFromAccept(aid2,B,h2,A2,b,i2,r,m2,s2,k2) ConsumerComplete(B,b,r)' ;;
+    *) return 1 ;;
+  esac
+  printf 'digraph trace { node [label="%s"]; }\n' "$events" > "$destination"
+}
+
+write_synthetic_qualified_source() {
+  local run="$1" label model_rel lemma suite theory digest dir
+  mkdir -p "$run/parse"
+  write_synthetic_aggregate "$run/aggregate.tsv"
+  printf 'model\texit_status\traw_output\ncombined-replay\t0\tparse/combined-replay.out\ncombined-impact\t0\tparse/combined-impact.out\n' > "$run/parse-validation.tsv"
+  printf 'synthetic parse success\n' > "$run/parse/combined-replay.out"
+  printf 'synthetic parse success\n' > "$run/parse/combined-impact.out"
+  printf 'suite\ttarget\tformula_body_sha256\n' > "$run/formula-bodies.tsv"
+  printf 'label\tmodel\tlemma\texit_status\tvalidation\traw\tjson\tdot\n' > "$run/trace-aggregate.tsv"
+  while IFS=$'\t' read -r label model_rel lemma; do
+    case "$label" in
+      duplicate|normal-replay|slot1-mismatch) suite=combined-replay ;;
+      *) suite=combined-impact ;;
+    esac
+    theory="$(awk '/^theory[[:space:]]+/{print $2; exit}' "$ROOT_DIR/$model_rel")"
+    digest="$(formula_digest_for "$ROOT_DIR/$model_rel" "$lemma")"
+    printf '%s\t%s\t%s\n' "$suite" "$lemma" "$digest" >> "$run/formula-bodies.tsv"
+    dir="$run/traces/$label"; mkdir -p "$dir"
+    printf '[Theory %s] Theory loaded\n  %s (exists-trace): verified (1 steps)\n' "$theory" "$lemma" > "$dir/trace.out"
+    printf '{"graphs":[{}],"theory":"%s","lemma":"%s"}\n' "$theory" "$lemma" > "$dir/trace.json"
+    write_synthetic_trace_dot "$label" "$dir/trace.dot"
+    printf '%s\t%s\t%s\t0\tPASS\ttraces/%s/trace.out\ttraces/%s/trace.json\ttraces/%s/trace.dot\n' \
+      "$label" "$model_rel" "$lemma" "$label" "$label" "$label" >> "$run/trace-aggregate.tsv"
+  done <<EOF
+duplicate	$COMBINED_REPLAY_REL	duplicate_same_base_different_tag_fail_exists
+normal-replay	$COMBINED_REPLAY_REL	normal_two_distinct_valid_confirmed_accepts_complete
+slot1-mismatch	$COMBINED_REPLAY_REL	hmac_failure_slot1_exists
+slot2-mismatch	$COMBINED_IMPACT_REL	hmac_failure_slot2_after_prior_accept_exists
+normal-consumer	$COMBINED_IMPACT_REL	normal_two_distinct_valid_confirmed_outputs_consumer_complete
+EOF
+  printf 'synthetic provenance\n' > "$run/provenance.txt"
+  printf 'invoked=301\nterminal=301\nnonterminal=0\nmismatch=0\nparse_failures=0\ntrace_total=5\ntrace_failures=0\nstructural_failures=0\n' > "$run/summary.txt"
+  printf 'VALID\n' > "$run/source-run-status.txt"
+}
+
 expect_validator_failure() { if "$@" >/dev/null 2>&1; then echo "error: negative test unexpectedly passed: $*" >&2; return 1; fi; }
 
 self_test() {
-  local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification
+  local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification pv_actual pv_expected synthetic_run
   [[ -e "$LOG_DIR" ]] && before_log_exists=1
   static_checks >/dev/null || failures=1
   tmp="$(mktemp -d)"; base="$tmp/base.tsv"
@@ -1081,6 +1344,46 @@ self_test() {
   printf '<<loop>>\n' > "$tmp/loop.out"; classification="$(parse_tamarin_result target "$tmp/loop.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
   printf 'unknown result\n' > "$tmp/unknown.out"; classification="$(parse_tamarin_result target "$tmp/unknown.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
   printf '  target (exists-trace): verified (1 steps)\n' > "$tmp/timeout.out"; classification="$(parse_tamarin_result target "$tmp/timeout.out" 124)"; [[ "$classification" == nonterminal ]] || failures=1
+  printf '  target (exists-trace): verified (1 steps)\n' > "$tmp/verified.out"
+  classification="$(parse_tamarin_result target "$tmp/verified.out" 1)"; [[ "$classification" == nonterminal ]] || failures=1
+  classification="$(parse_tamarin_result target "$tmp/verified.out" 0)"; [[ "$classification" == verified ]] || failures=1
+  printf '  target (exists-trace): falsified - found trace (2 steps)\n' > "$tmp/falsified.out"
+  classification="$(parse_tamarin_result target "$tmp/falsified.out" 2)"; [[ "$classification" == nonterminal ]] || failures=1
+  classification="$(parse_tamarin_result target "$tmp/falsified.out" 0)"; [[ "$classification" == falsified ]] || failures=1
+  { cat "$tmp/verified.out"; cat "$tmp/verified.out"; } > "$tmp/duplicate-result.out"
+  classification="$(parse_tamarin_result target "$tmp/duplicate-result.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
+
+  pv_expected="$tmp/pv-expected"; pv_actual="$tmp/pv-actual"
+  printf 'RESULT first\nRESULT second\n' > "$pv_expected"; cp "$pv_expected" "$pv_actual"
+  compare_proverif_results "$pv_actual" "$pv_expected" 0 0 || failures=1
+  printf 'RESULT second\nRESULT first\n' > "$pv_actual"; expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 0 0 || failures=1
+  printf 'RESULT first\n' > "$pv_actual"; expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 0 0 || failures=1
+  printf 'RESULT first\nRESULT second\nRESULT third\n' > "$pv_actual"; expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 0 0 || failures=1
+  : > "$pv_actual"; expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 0 0 || failures=1
+  cp "$pv_expected" "$pv_actual"; expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 1 0 || failures=1
+  expect_validator_failure compare_proverif_results "$pv_actual" "$pv_expected" 0 1 || failures=1
+
+  printf '{"graphs":[{}]}\n' > "$tmp/valid.json"; validate_json_trace "$tmp/valid.json" || failures=1
+  printf '{invalid\n' > "$tmp/invalid.json"; expect_validator_failure validate_json_trace "$tmp/invalid.json" || failures=1
+  printf '{"graphs":[]}\n' > "$tmp/empty-graphs.json"; expect_validator_failure validate_json_trace "$tmp/empty-graphs.json" || failures=1
+  printf 'digraph G { a -> b; }\n' > "$tmp/valid.dot"; validate_dot_digraph "$tmp/valid.dot" || failures=1
+  printf 'graph G { a -- b;\n' > "$tmp/invalid.dot"; expect_validator_failure validate_dot_digraph "$tmp/invalid.dot" || failures=1
+
+  synthetic_run="$tmp/source-run"
+  write_synthetic_qualified_source "$synthetic_run"
+  validate_source_qualification "$synthetic_run" || failures=1
+  printf 'INVALID\n' > "$synthetic_run/source-run-status.txt"; expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
+  printf 'VALID\n' > "$synthetic_run/source-run-status.txt"
+  sed -i 's/combined-replay\t0/combined-replay\t1/' "$synthetic_run/parse-validation.tsv"
+  expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
+  sed -i 's/combined-replay\t1/combined-replay\t0/' "$synthetic_run/parse-validation.tsv"
+  sed -i '0,/\tPASS\t/s//\tFAIL\t/' "$synthetic_run/trace-aggregate.tsv"
+  expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
+  sed -i '0,/\tFAIL\t/s//\tPASS\t/' "$synthetic_run/trace-aggregate.tsv"
+  sed -i 's/invoked=301/invoked=300/' "$synthetic_run/summary.txt"
+  expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
+  sed -i 's/invoked=300/invoked=301/' "$synthetic_run/summary.txt"
+  validate_source_qualification "$synthetic_run" || failures=1
 
   mkdir -p "$tmp/log-layout/source-run1"
   validate_log_top_level_at "$tmp/log-layout" run2 || failures=1
@@ -1106,6 +1409,10 @@ self_test() {
   echo "composite_synthetic_tests=PASS"
   echo "clean_directory_tests=PASS"
   echo "path_tool_resolution_tests=PASS"
+  echo "tamarin_terminal_classification_tests=PASS"
+  echo "proverif_order_comparator_tests=PASS"
+  echo "json_dot_trace_tests=PASS"
+  echo "source_run_qualification_tests=PASS"
   echo "self_test=PASS"
 }
 
