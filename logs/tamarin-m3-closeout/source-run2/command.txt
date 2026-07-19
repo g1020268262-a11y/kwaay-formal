@@ -1,0 +1,624 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/milestones/run-m3-dedup.sh
+working_directory: /mnt/d/kwaay-formal
+parse_fixed_replay: tamarin-prover --parse-only tamarin/replay/kwaay_replay_fixed.spthy
+parse_fixed_impact: tamarin-prover --parse-only tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-replay][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][duplicate_batch_fail_exists]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][duplicate_detected_before_any_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_detected_before_any_accept tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][duplicate_batch_has_no_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][process_requires_dedup_pass]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_dedup_pass tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][dedup_pass_messages_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_pass_messages_distinct tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][dedup_decision_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_decision_single_use tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][dedup_outcomes_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_outcomes_exclusive tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][normal_distinct_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][normal_distinct_fail_slot1_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][normal_distinct_fail_slot2_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-replay][state_consumed_on_duplicate_fail]: tamarin-prover --derivcheck-timeout=0 --prove=state_consumed_on_duplicate_fail tamarin/replay/kwaay_replay_fixed.spthy
+proof[fixed-impact][accept_output_has_same_time_accept]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_has_same_time_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][receiver_accept_has_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_output tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][receiver_accept_has_unique_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_unique_output tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][accept_id_unique]: tamarin-prover --derivcheck-timeout=0 --prove=accept_id_unique tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_has_prior_accept]: tamarin-prover --derivcheck-timeout=0 --prove=install_has_prior_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_session_has_interface_origin]: tamarin-prover --derivcheck-timeout=0 --prove=install_session_has_interface_origin tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_from_accept_has_session]: tamarin-prover --derivcheck-timeout=0 --prove=install_from_accept_has_session tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_event_has_single_source]: tamarin-prover --derivcheck-timeout=0 --prove=install_event_has_single_source tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_handle_unique]: tamarin-prover --derivcheck-timeout=0 --prove=install_handle_unique tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][accept_output_installed_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_installed_at_most_once tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][distinct_accept_sources_have_distinct_handles]: tamarin-prover --derivcheck-timeout=0 --prove=distinct_accept_sources_have_distinct_handles tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][install_requires_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=install_requires_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][consumer_complete_requires_all_outputs_installed]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_requires_all_outputs_installed tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][consumer_complete_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_single_use tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][no_install_after_consumer_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_install_after_consumer_close tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_one_accept_one_install]: tamarin-prover --derivcheck-timeout=0 --prove=normal_one_accept_one_install tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_consumer_complete tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][one_send_two_accepts_two_installs_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][unique_install_within_completed_consumer]: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][duplicate_batch_fail_exists]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][duplicate_detected_before_any_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_detected_before_any_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][duplicate_batch_has_no_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][duplicate_batch_has_no_accept_output]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept_output tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][duplicate_batch_has_no_install]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_install tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][process_requires_dedup_pass]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_dedup_pass tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][dedup_pass_messages_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_pass_messages_distinct tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][dedup_decision_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_decision_single_use tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][dedup_outcomes_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_outcomes_exclusive tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_distinct_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_distinct_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_consumer_complete tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_distinct_fail_slot1_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][normal_distinct_fail_slot2_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][state_consumed_on_duplicate_fail]: tamarin-prover --derivcheck-timeout=0 --prove=state_consumed_on_duplicate_fail tamarin/impact/kwaay_impact_fixed.spthy
+proof[fixed-impact][no_consumer_after_failed_batch]: tamarin-prover --derivcheck-timeout=0 --prove=no_consumer_after_failed_batch tamarin/impact/kwaay_impact_fixed.spthy
+proof[original-replay][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_original.spthy
+proof[original-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_original.spthy
+proof[hmac-replay][normal_confirmed_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_confirmed_single_accept tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][normal_confirmed_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_confirmed_batch_complete tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][confirmed_receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_receiver_accept_has_sender tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][confirmed_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_message_unique_send tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][one_confirmed_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_confirmed_send_two_accepts_exists tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][confirmed_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_message_accepted_at_most_once tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][injective_confirmed_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_confirmed_receiver_accept tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[hmac-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_hmac_only.spthy
+proof[original-impact][accept_output_has_same_time_accept]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_has_same_time_accept tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][receiver_accept_has_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_output tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][receiver_accept_has_unique_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_unique_output tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][accept_id_unique]: tamarin-prover --derivcheck-timeout=0 --prove=accept_id_unique tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_has_prior_accept]: tamarin-prover --derivcheck-timeout=0 --prove=install_has_prior_accept tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_session_has_interface_origin]: tamarin-prover --derivcheck-timeout=0 --prove=install_session_has_interface_origin tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_from_accept_has_session]: tamarin-prover --derivcheck-timeout=0 --prove=install_from_accept_has_session tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_event_has_single_source]: tamarin-prover --derivcheck-timeout=0 --prove=install_event_has_single_source tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_handle_unique]: tamarin-prover --derivcheck-timeout=0 --prove=install_handle_unique tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][accept_output_installed_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_installed_at_most_once tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][distinct_accept_sources_have_distinct_handles]: tamarin-prover --derivcheck-timeout=0 --prove=distinct_accept_sources_have_distinct_handles tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][install_requires_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=install_requires_batch_complete tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][consumer_complete_requires_all_outputs_installed]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_requires_all_outputs_installed tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][consumer_complete_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_single_use tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][no_install_after_consumer_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_install_after_consumer_close tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][normal_one_accept_one_install]: tamarin-prover --derivcheck-timeout=0 --prove=normal_one_accept_one_install tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][normal_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_consumer_complete tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][one_send_two_accepts_two_installs_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][unique_install_within_completed_consumer]: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/impact/kwaay_impact_original.spthy
+proof[original-impact][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/impact/kwaay_impact_original.spthy
+proof[v6][executable_add_slot]: tamarin-prover --derivcheck-timeout=0 --prove=executable_add_slot tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][executable_seal_batch]: tamarin-prover --derivcheck-timeout=0 --prove=executable_seal_batch tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][executable_process_slot]: tamarin-prover --derivcheck-timeout=0 --prove=executable_process_slot tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][executable_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_complete tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][executable_batch_fail]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_fail tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][complete_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][fail_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=fail_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][slot_origin_without_early_compromise]: tamarin-prover --derivcheck-timeout=0 --prove=slot_origin_without_early_compromise tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][slot_key_known_requires_exception]: tamarin-prover --derivcheck-timeout=0 --prove=slot_key_known_requires_exception tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v6][partnered_slot_key_not_attacker_known_without_early_compromise]: tamarin-prover --derivcheck-timeout=0 --prove=partnered_slot_key_not_attacker_known_without_early_compromise tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+proof[v7][executable_four_slots_added]: tamarin-prover --derivcheck-timeout=0 --prove=executable_four_slots_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][executable_seal_batch]: tamarin-prover --derivcheck-timeout=0 --prove=executable_seal_batch tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][executable_four_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=executable_four_slots_processed tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][executable_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][executable_batch_fail]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][seal_requires_all_slots_added]: tamarin-prover --derivcheck-timeout=0 --prove=seal_requires_all_slots_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][complete_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][fail_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=fail_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][complete_requires_all_slots_done]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_done tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][complete_requires_all_added_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_added_slots_processed tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_add_after_complete]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_add_after_fail]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_slot_accept_after_complete]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_slot_accept_after_fail]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][no_slot_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_close tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proof[v7][slot_origin]: tamarin-prover --derivcheck-timeout=0 --prove=slot_origin tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+proverif[original][BASELINE]: cpp -P -D BASELINE proverif/kwaay_core_final.cpp.pv
+proverif[original][COMPONENT]: cpp -P -D COMPONENT proverif/kwaay_core_final.cpp.pv
+proverif[hmac][HMAC_BASELINE]: cpp -P -D HMAC_BASELINE proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+proverif[hmac][HMAC_COMPONENT]: cpp -P -D HMAC_COMPONENT proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+trace[duplicate-fail]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists --output-json=trace.json --output-dot=trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+trace[distinct-complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete --output-json=trace.json --output-dot=trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+trace[distinct-fail-slot1]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists --output-json=trace.json --output-dot=trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+trace[distinct-fail-slot2]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists --output-json=trace.json --output-dot=trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+trace[distinct-consumer]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_consumer_complete --output-json=trace.json --output-dot=trace.dot tamarin/impact/kwaay_impact_fixed.spthy
+executed-proof[fixed-replay][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][normal_single_accept]: logs/tamarin-m3-dedup/proofs/fixed-replay/normal_single_accept.out
+executed-proof[fixed-replay][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][normal_batch_complete]: logs/tamarin-m3-dedup/proofs/fixed-replay/normal_batch_complete.out
+executed-proof[fixed-replay][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][one_send_two_accepts_exists]: logs/tamarin-m3-dedup/proofs/fixed-replay/one_send_two_accepts_exists.out
+executed-proof[fixed-replay][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][same_message_accepted_at_most_once]: logs/tamarin-m3-dedup/proofs/fixed-replay/same_message_accepted_at_most_once.out
+executed-proof[fixed-replay][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][full_message_unique_send]: logs/tamarin-m3-dedup/proofs/fixed-replay/full_message_unique_send.out
+executed-proof[fixed-replay][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][receiver_accept_has_sender]: logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_accept_has_sender.out
+executed-proof[fixed-replay][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][injective_receiver_accept]: logs/tamarin-m3-dedup/proofs/fixed-replay/injective_receiver_accept.out
+executed-proof[fixed-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][slot_indices_distinct]: logs/tamarin-m3-dedup/proofs/fixed-replay/slot_indices_distinct.out
+executed-proof[fixed-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_slot_added.out
+executed-proof[fixed-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][process_requires_seal]: logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_seal.out
+executed-proof[fixed-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][complete_requires_all_slots_processed]: logs/tamarin-m3-dedup/proofs/fixed-replay/complete_requires_all_slots_processed.out
+executed-proof[fixed-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/fixed-replay/no_add_after_seal.out
+executed-proof[fixed-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][no_accept_after_close]: logs/tamarin-m3-dedup/proofs/fixed-replay/no_accept_after_close.out
+executed-proof[fixed-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/fixed-replay/batch_complete_consumes_state.out
+executed-proof[fixed-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/fixed-replay/batch_fail_consumes_state.out
+executed-proof[fixed-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/fixed-replay/batch_end_token_single_use.out
+executed-proof[fixed-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][receiver_state_single_batch]: logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_state_single_batch.out
+executed-proof[fixed-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_state_single_batch_end.out
+executed-proof[fixed-replay][duplicate_batch_fail_exists]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][duplicate_batch_fail_exists]: logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_batch_fail_exists.out
+executed-proof[fixed-replay][duplicate_detected_before_any_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_detected_before_any_accept tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][duplicate_detected_before_any_accept]: logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_detected_before_any_accept.out
+executed-proof[fixed-replay][duplicate_batch_has_no_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][duplicate_batch_has_no_accept]: logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_batch_has_no_accept.out
+executed-proof[fixed-replay][process_requires_dedup_pass]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_dedup_pass tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][process_requires_dedup_pass]: logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_dedup_pass.out
+executed-proof[fixed-replay][dedup_pass_messages_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_pass_messages_distinct tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][dedup_pass_messages_distinct]: logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_pass_messages_distinct.out
+executed-proof[fixed-replay][dedup_decision_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_decision_single_use tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][dedup_decision_single_use]: logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_decision_single_use.out
+executed-proof[fixed-replay][dedup_outcomes_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_outcomes_exclusive tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][dedup_outcomes_exclusive]: logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_outcomes_exclusive.out
+executed-proof[fixed-replay][normal_distinct_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][normal_distinct_batch_complete]: logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_batch_complete.out
+executed-proof[fixed-replay][normal_distinct_fail_slot1_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][normal_distinct_fail_slot1_exists]: logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_fail_slot1_exists.out
+executed-proof[fixed-replay][normal_distinct_fail_slot2_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][normal_distinct_fail_slot2_exists]: logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_fail_slot2_exists.out
+executed-proof[fixed-replay][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][batch_fail_complete_exclusive]: logs/tamarin-m3-dedup/proofs/fixed-replay/batch_fail_complete_exclusive.out
+executed-proof[fixed-replay][state_consumed_on_duplicate_fail]: tamarin-prover --derivcheck-timeout=0 --prove=state_consumed_on_duplicate_fail tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[fixed-replay][state_consumed_on_duplicate_fail]: logs/tamarin-m3-dedup/proofs/fixed-replay/state_consumed_on_duplicate_fail.out
+executed-proof[fixed-impact][accept_output_has_same_time_accept]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_has_same_time_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][accept_output_has_same_time_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/accept_output_has_same_time_accept.out
+executed-proof[fixed-impact][receiver_accept_has_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_output tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][receiver_accept_has_output]: logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_output.out
+executed-proof[fixed-impact][receiver_accept_has_unique_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_unique_output tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][receiver_accept_has_unique_output]: logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_unique_output.out
+executed-proof[fixed-impact][accept_id_unique]: tamarin-prover --derivcheck-timeout=0 --prove=accept_id_unique tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][accept_id_unique]: logs/tamarin-m3-dedup/proofs/fixed-impact/accept_id_unique.out
+executed-proof[fixed-impact][install_has_prior_accept]: tamarin-prover --derivcheck-timeout=0 --prove=install_has_prior_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_has_prior_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_has_prior_accept.out
+executed-proof[fixed-impact][install_session_has_interface_origin]: tamarin-prover --derivcheck-timeout=0 --prove=install_session_has_interface_origin tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_session_has_interface_origin]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_session_has_interface_origin.out
+executed-proof[fixed-impact][install_from_accept_has_session]: tamarin-prover --derivcheck-timeout=0 --prove=install_from_accept_has_session tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_from_accept_has_session]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_from_accept_has_session.out
+executed-proof[fixed-impact][install_event_has_single_source]: tamarin-prover --derivcheck-timeout=0 --prove=install_event_has_single_source tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_event_has_single_source]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_event_has_single_source.out
+executed-proof[fixed-impact][install_handle_unique]: tamarin-prover --derivcheck-timeout=0 --prove=install_handle_unique tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_handle_unique]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_handle_unique.out
+executed-proof[fixed-impact][accept_output_installed_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_installed_at_most_once tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][accept_output_installed_at_most_once]: logs/tamarin-m3-dedup/proofs/fixed-impact/accept_output_installed_at_most_once.out
+executed-proof[fixed-impact][distinct_accept_sources_have_distinct_handles]: tamarin-prover --derivcheck-timeout=0 --prove=distinct_accept_sources_have_distinct_handles tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][distinct_accept_sources_have_distinct_handles]: logs/tamarin-m3-dedup/proofs/fixed-impact/distinct_accept_sources_have_distinct_handles.out
+executed-proof[fixed-impact][install_requires_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=install_requires_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][install_requires_batch_complete]: logs/tamarin-m3-dedup/proofs/fixed-impact/install_requires_batch_complete.out
+executed-proof[fixed-impact][consumer_complete_requires_all_outputs_installed]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_requires_all_outputs_installed tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][consumer_complete_requires_all_outputs_installed]: logs/tamarin-m3-dedup/proofs/fixed-impact/consumer_complete_requires_all_outputs_installed.out
+executed-proof[fixed-impact][consumer_complete_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_single_use tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][consumer_complete_single_use]: logs/tamarin-m3-dedup/proofs/fixed-impact/consumer_complete_single_use.out
+executed-proof[fixed-impact][no_install_after_consumer_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_install_after_consumer_close tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][no_install_after_consumer_close]: logs/tamarin-m3-dedup/proofs/fixed-impact/no_install_after_consumer_close.out
+executed-proof[fixed-impact][normal_one_accept_one_install]: tamarin-prover --derivcheck-timeout=0 --prove=normal_one_accept_one_install tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_one_accept_one_install]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_one_accept_one_install.out
+executed-proof[fixed-impact][normal_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_consumer_complete tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_consumer_complete]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_consumer_complete.out
+executed-proof[fixed-impact][one_send_two_accepts_two_installs_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][one_send_two_accepts_two_installs_exists]: logs/tamarin-m3-dedup/proofs/fixed-impact/one_send_two_accepts_two_installs_exists.out
+executed-proof[fixed-impact][unique_install_within_completed_consumer]: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][unique_install_within_completed_consumer]: logs/tamarin-m3-dedup/proofs/fixed-impact/unique_install_within_completed_consumer.out
+executed-proof[fixed-impact][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_single_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_single_accept.out
+executed-proof[fixed-impact][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_batch_complete]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_batch_complete.out
+executed-proof[fixed-impact][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][one_send_two_accepts_exists]: logs/tamarin-m3-dedup/proofs/fixed-impact/one_send_two_accepts_exists.out
+executed-proof[fixed-impact][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][same_message_accepted_at_most_once]: logs/tamarin-m3-dedup/proofs/fixed-impact/same_message_accepted_at_most_once.out
+executed-proof[fixed-impact][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][full_message_unique_send]: logs/tamarin-m3-dedup/proofs/fixed-impact/full_message_unique_send.out
+executed-proof[fixed-impact][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][receiver_accept_has_sender]: logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_sender.out
+executed-proof[fixed-impact][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][injective_receiver_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/injective_receiver_accept.out
+executed-proof[fixed-impact][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][slot_indices_distinct]: logs/tamarin-m3-dedup/proofs/fixed-impact/slot_indices_distinct.out
+executed-proof[fixed-impact][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_slot_added.out
+executed-proof[fixed-impact][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][process_requires_seal]: logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_seal.out
+executed-proof[fixed-impact][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][complete_requires_all_slots_processed]: logs/tamarin-m3-dedup/proofs/fixed-impact/complete_requires_all_slots_processed.out
+executed-proof[fixed-impact][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/fixed-impact/no_add_after_seal.out
+executed-proof[fixed-impact][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][no_accept_after_close]: logs/tamarin-m3-dedup/proofs/fixed-impact/no_accept_after_close.out
+executed-proof[fixed-impact][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/fixed-impact/batch_complete_consumes_state.out
+executed-proof[fixed-impact][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/fixed-impact/batch_fail_consumes_state.out
+executed-proof[fixed-impact][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/fixed-impact/batch_end_token_single_use.out
+executed-proof[fixed-impact][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][receiver_state_single_batch]: logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_state_single_batch.out
+executed-proof[fixed-impact][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_state_single_batch_end.out
+executed-proof[fixed-impact][duplicate_batch_fail_exists]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][duplicate_batch_fail_exists]: logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_fail_exists.out
+executed-proof[fixed-impact][duplicate_detected_before_any_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_detected_before_any_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][duplicate_detected_before_any_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_detected_before_any_accept.out
+executed-proof[fixed-impact][duplicate_batch_has_no_accept]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][duplicate_batch_has_no_accept]: logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_accept.out
+executed-proof[fixed-impact][duplicate_batch_has_no_accept_output]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_accept_output tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][duplicate_batch_has_no_accept_output]: logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_accept_output.out
+executed-proof[fixed-impact][duplicate_batch_has_no_install]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_has_no_install tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][duplicate_batch_has_no_install]: logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_install.out
+executed-proof[fixed-impact][process_requires_dedup_pass]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_dedup_pass tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][process_requires_dedup_pass]: logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_dedup_pass.out
+executed-proof[fixed-impact][dedup_pass_messages_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_pass_messages_distinct tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][dedup_pass_messages_distinct]: logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_pass_messages_distinct.out
+executed-proof[fixed-impact][dedup_decision_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_decision_single_use tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][dedup_decision_single_use]: logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_decision_single_use.out
+executed-proof[fixed-impact][dedup_outcomes_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=dedup_outcomes_exclusive tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][dedup_outcomes_exclusive]: logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_outcomes_exclusive.out
+executed-proof[fixed-impact][normal_distinct_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_distinct_batch_complete]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_batch_complete.out
+executed-proof[fixed-impact][normal_distinct_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_consumer_complete tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_distinct_consumer_complete]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_consumer_complete.out
+executed-proof[fixed-impact][normal_distinct_fail_slot1_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_distinct_fail_slot1_exists]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_fail_slot1_exists.out
+executed-proof[fixed-impact][normal_distinct_fail_slot2_exists]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][normal_distinct_fail_slot2_exists]: logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_fail_slot2_exists.out
+executed-proof[fixed-impact][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][batch_fail_complete_exclusive]: logs/tamarin-m3-dedup/proofs/fixed-impact/batch_fail_complete_exclusive.out
+executed-proof[fixed-impact][state_consumed_on_duplicate_fail]: tamarin-prover --derivcheck-timeout=0 --prove=state_consumed_on_duplicate_fail tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][state_consumed_on_duplicate_fail]: logs/tamarin-m3-dedup/proofs/fixed-impact/state_consumed_on_duplicate_fail.out
+executed-proof[fixed-impact][no_consumer_after_failed_batch]: tamarin-prover --derivcheck-timeout=0 --prove=no_consumer_after_failed_batch tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[fixed-impact][no_consumer_after_failed_batch]: logs/tamarin-m3-dedup/proofs/fixed-impact/no_consumer_after_failed_batch.out
+executed-proof[original-replay][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][normal_single_accept]: logs/tamarin-m3-dedup/proofs/original-replay/normal_single_accept.out
+executed-proof[original-replay][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][normal_batch_complete]: logs/tamarin-m3-dedup/proofs/original-replay/normal_batch_complete.out
+executed-proof[original-replay][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][one_send_two_accepts_exists]: logs/tamarin-m3-dedup/proofs/original-replay/one_send_two_accepts_exists.out
+executed-proof[original-replay][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][same_message_accepted_at_most_once]: logs/tamarin-m3-dedup/proofs/original-replay/same_message_accepted_at_most_once.out
+executed-proof[original-replay][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][full_message_unique_send]: logs/tamarin-m3-dedup/proofs/original-replay/full_message_unique_send.out
+executed-proof[original-replay][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][receiver_accept_has_sender]: logs/tamarin-m3-dedup/proofs/original-replay/receiver_accept_has_sender.out
+executed-proof[original-replay][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][injective_receiver_accept]: logs/tamarin-m3-dedup/proofs/original-replay/injective_receiver_accept.out
+executed-proof[original-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][slot_indices_distinct]: logs/tamarin-m3-dedup/proofs/original-replay/slot_indices_distinct.out
+executed-proof[original-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/original-replay/process_requires_slot_added.out
+executed-proof[original-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][process_requires_seal]: logs/tamarin-m3-dedup/proofs/original-replay/process_requires_seal.out
+executed-proof[original-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][complete_requires_all_slots_processed]: logs/tamarin-m3-dedup/proofs/original-replay/complete_requires_all_slots_processed.out
+executed-proof[original-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/original-replay/no_add_after_seal.out
+executed-proof[original-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][no_accept_after_close]: logs/tamarin-m3-dedup/proofs/original-replay/no_accept_after_close.out
+executed-proof[original-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/original-replay/batch_complete_consumes_state.out
+executed-proof[original-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/original-replay/batch_fail_consumes_state.out
+executed-proof[original-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/original-replay/batch_end_token_single_use.out
+executed-proof[original-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][receiver_state_single_batch]: logs/tamarin-m3-dedup/proofs/original-replay/receiver_state_single_batch.out
+executed-proof[original-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_original.spthy
+raw_output[original-replay][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/original-replay/receiver_state_single_batch_end.out
+executed-proof[hmac-replay][normal_confirmed_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_confirmed_single_accept tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][normal_confirmed_single_accept]: logs/tamarin-m3-dedup/proofs/hmac-replay/normal_confirmed_single_accept.out
+executed-proof[hmac-replay][normal_confirmed_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_confirmed_batch_complete tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][normal_confirmed_batch_complete]: logs/tamarin-m3-dedup/proofs/hmac-replay/normal_confirmed_batch_complete.out
+executed-proof[hmac-replay][confirmed_receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_receiver_accept_has_sender tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][confirmed_receiver_accept_has_sender]: logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_receiver_accept_has_sender.out
+executed-proof[hmac-replay][confirmed_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_message_unique_send tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][confirmed_message_unique_send]: logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_message_unique_send.out
+executed-proof[hmac-replay][one_confirmed_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_confirmed_send_two_accepts_exists tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][one_confirmed_send_two_accepts_exists]: logs/tamarin-m3-dedup/proofs/hmac-replay/one_confirmed_send_two_accepts_exists.out
+executed-proof[hmac-replay][confirmed_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=confirmed_message_accepted_at_most_once tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][confirmed_message_accepted_at_most_once]: logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_message_accepted_at_most_once.out
+executed-proof[hmac-replay][injective_confirmed_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_confirmed_receiver_accept tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][injective_confirmed_receiver_accept]: logs/tamarin-m3-dedup/proofs/hmac-replay/injective_confirmed_receiver_accept.out
+executed-proof[hmac-replay][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][slot_indices_distinct]: logs/tamarin-m3-dedup/proofs/hmac-replay/slot_indices_distinct.out
+executed-proof[hmac-replay][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/hmac-replay/process_requires_slot_added.out
+executed-proof[hmac-replay][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][process_requires_seal]: logs/tamarin-m3-dedup/proofs/hmac-replay/process_requires_seal.out
+executed-proof[hmac-replay][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][complete_requires_all_slots_processed]: logs/tamarin-m3-dedup/proofs/hmac-replay/complete_requires_all_slots_processed.out
+executed-proof[hmac-replay][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/hmac-replay/no_add_after_seal.out
+executed-proof[hmac-replay][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][no_accept_after_close]: logs/tamarin-m3-dedup/proofs/hmac-replay/no_accept_after_close.out
+executed-proof[hmac-replay][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/hmac-replay/batch_complete_consumes_state.out
+executed-proof[hmac-replay][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/hmac-replay/batch_fail_consumes_state.out
+executed-proof[hmac-replay][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/hmac-replay/batch_end_token_single_use.out
+executed-proof[hmac-replay][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][receiver_state_single_batch]: logs/tamarin-m3-dedup/proofs/hmac-replay/receiver_state_single_batch.out
+executed-proof[hmac-replay][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/replay/kwaay_replay_hmac_only.spthy
+raw_output[hmac-replay][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/hmac-replay/receiver_state_single_batch_end.out
+executed-proof[original-impact][accept_output_has_same_time_accept]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_has_same_time_accept tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][accept_output_has_same_time_accept]: logs/tamarin-m3-dedup/proofs/original-impact/accept_output_has_same_time_accept.out
+executed-proof[original-impact][receiver_accept_has_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_output tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][receiver_accept_has_output]: logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_output.out
+executed-proof[original-impact][receiver_accept_has_unique_output]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_unique_output tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][receiver_accept_has_unique_output]: logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_unique_output.out
+executed-proof[original-impact][accept_id_unique]: tamarin-prover --derivcheck-timeout=0 --prove=accept_id_unique tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][accept_id_unique]: logs/tamarin-m3-dedup/proofs/original-impact/accept_id_unique.out
+executed-proof[original-impact][install_has_prior_accept]: tamarin-prover --derivcheck-timeout=0 --prove=install_has_prior_accept tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_has_prior_accept]: logs/tamarin-m3-dedup/proofs/original-impact/install_has_prior_accept.out
+executed-proof[original-impact][install_session_has_interface_origin]: tamarin-prover --derivcheck-timeout=0 --prove=install_session_has_interface_origin tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_session_has_interface_origin]: logs/tamarin-m3-dedup/proofs/original-impact/install_session_has_interface_origin.out
+executed-proof[original-impact][install_from_accept_has_session]: tamarin-prover --derivcheck-timeout=0 --prove=install_from_accept_has_session tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_from_accept_has_session]: logs/tamarin-m3-dedup/proofs/original-impact/install_from_accept_has_session.out
+executed-proof[original-impact][install_event_has_single_source]: tamarin-prover --derivcheck-timeout=0 --prove=install_event_has_single_source tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_event_has_single_source]: logs/tamarin-m3-dedup/proofs/original-impact/install_event_has_single_source.out
+executed-proof[original-impact][install_handle_unique]: tamarin-prover --derivcheck-timeout=0 --prove=install_handle_unique tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_handle_unique]: logs/tamarin-m3-dedup/proofs/original-impact/install_handle_unique.out
+executed-proof[original-impact][accept_output_installed_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=accept_output_installed_at_most_once tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][accept_output_installed_at_most_once]: logs/tamarin-m3-dedup/proofs/original-impact/accept_output_installed_at_most_once.out
+executed-proof[original-impact][distinct_accept_sources_have_distinct_handles]: tamarin-prover --derivcheck-timeout=0 --prove=distinct_accept_sources_have_distinct_handles tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][distinct_accept_sources_have_distinct_handles]: logs/tamarin-m3-dedup/proofs/original-impact/distinct_accept_sources_have_distinct_handles.out
+executed-proof[original-impact][install_requires_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=install_requires_batch_complete tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][install_requires_batch_complete]: logs/tamarin-m3-dedup/proofs/original-impact/install_requires_batch_complete.out
+executed-proof[original-impact][consumer_complete_requires_all_outputs_installed]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_requires_all_outputs_installed tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][consumer_complete_requires_all_outputs_installed]: logs/tamarin-m3-dedup/proofs/original-impact/consumer_complete_requires_all_outputs_installed.out
+executed-proof[original-impact][consumer_complete_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=consumer_complete_single_use tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][consumer_complete_single_use]: logs/tamarin-m3-dedup/proofs/original-impact/consumer_complete_single_use.out
+executed-proof[original-impact][no_install_after_consumer_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_install_after_consumer_close tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][no_install_after_consumer_close]: logs/tamarin-m3-dedup/proofs/original-impact/no_install_after_consumer_close.out
+executed-proof[original-impact][normal_one_accept_one_install]: tamarin-prover --derivcheck-timeout=0 --prove=normal_one_accept_one_install tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][normal_one_accept_one_install]: logs/tamarin-m3-dedup/proofs/original-impact/normal_one_accept_one_install.out
+executed-proof[original-impact][normal_consumer_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_consumer_complete tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][normal_consumer_complete]: logs/tamarin-m3-dedup/proofs/original-impact/normal_consumer_complete.out
+executed-proof[original-impact][one_send_two_accepts_two_installs_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_two_installs_exists tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][one_send_two_accepts_two_installs_exists]: logs/tamarin-m3-dedup/proofs/original-impact/one_send_two_accepts_two_installs_exists.out
+executed-proof[original-impact][unique_install_within_completed_consumer]: tamarin-prover --derivcheck-timeout=0 --prove=unique_install_within_completed_consumer tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][unique_install_within_completed_consumer]: logs/tamarin-m3-dedup/proofs/original-impact/unique_install_within_completed_consumer.out
+executed-proof[original-impact][normal_single_accept]: tamarin-prover --derivcheck-timeout=0 --prove=normal_single_accept tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][normal_single_accept]: logs/tamarin-m3-dedup/proofs/original-impact/normal_single_accept.out
+executed-proof[original-impact][normal_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_batch_complete tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][normal_batch_complete]: logs/tamarin-m3-dedup/proofs/original-impact/normal_batch_complete.out
+executed-proof[original-impact][one_send_two_accepts_exists]: tamarin-prover --derivcheck-timeout=0 --prove=one_send_two_accepts_exists tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][one_send_two_accepts_exists]: logs/tamarin-m3-dedup/proofs/original-impact/one_send_two_accepts_exists.out
+executed-proof[original-impact][same_message_accepted_at_most_once]: tamarin-prover --derivcheck-timeout=0 --prove=same_message_accepted_at_most_once tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][same_message_accepted_at_most_once]: logs/tamarin-m3-dedup/proofs/original-impact/same_message_accepted_at_most_once.out
+executed-proof[original-impact][full_message_unique_send]: tamarin-prover --derivcheck-timeout=0 --prove=full_message_unique_send tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][full_message_unique_send]: logs/tamarin-m3-dedup/proofs/original-impact/full_message_unique_send.out
+executed-proof[original-impact][receiver_accept_has_sender]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_accept_has_sender tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][receiver_accept_has_sender]: logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_sender.out
+executed-proof[original-impact][injective_receiver_accept]: tamarin-prover --derivcheck-timeout=0 --prove=injective_receiver_accept tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][injective_receiver_accept]: logs/tamarin-m3-dedup/proofs/original-impact/injective_receiver_accept.out
+executed-proof[original-impact][slot_indices_distinct]: tamarin-prover --derivcheck-timeout=0 --prove=slot_indices_distinct tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][slot_indices_distinct]: logs/tamarin-m3-dedup/proofs/original-impact/slot_indices_distinct.out
+executed-proof[original-impact][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/original-impact/process_requires_slot_added.out
+executed-proof[original-impact][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][process_requires_seal]: logs/tamarin-m3-dedup/proofs/original-impact/process_requires_seal.out
+executed-proof[original-impact][complete_requires_all_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_processed tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][complete_requires_all_slots_processed]: logs/tamarin-m3-dedup/proofs/original-impact/complete_requires_all_slots_processed.out
+executed-proof[original-impact][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/original-impact/no_add_after_seal.out
+executed-proof[original-impact][no_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_accept_after_close tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][no_accept_after_close]: logs/tamarin-m3-dedup/proofs/original-impact/no_accept_after_close.out
+executed-proof[original-impact][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/original-impact/batch_complete_consumes_state.out
+executed-proof[original-impact][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/original-impact/batch_fail_consumes_state.out
+executed-proof[original-impact][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/original-impact/batch_end_token_single_use.out
+executed-proof[original-impact][receiver_state_single_batch]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][receiver_state_single_batch]: logs/tamarin-m3-dedup/proofs/original-impact/receiver_state_single_batch.out
+executed-proof[original-impact][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/impact/kwaay_impact_original.spthy
+raw_output[original-impact][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/original-impact/receiver_state_single_batch_end.out
+executed-proof[v6][executable_add_slot]: tamarin-prover --derivcheck-timeout=0 --prove=executable_add_slot tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][executable_add_slot]: logs/tamarin-m3-dedup/proofs/v6/executable_add_slot.out
+executed-proof[v6][executable_seal_batch]: tamarin-prover --derivcheck-timeout=0 --prove=executable_seal_batch tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][executable_seal_batch]: logs/tamarin-m3-dedup/proofs/v6/executable_seal_batch.out
+executed-proof[v6][executable_process_slot]: tamarin-prover --derivcheck-timeout=0 --prove=executable_process_slot tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][executable_process_slot]: logs/tamarin-m3-dedup/proofs/v6/executable_process_slot.out
+executed-proof[v6][executable_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_complete tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][executable_batch_complete]: logs/tamarin-m3-dedup/proofs/v6/executable_batch_complete.out
+executed-proof[v6][executable_batch_fail]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_fail tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][executable_batch_fail]: logs/tamarin-m3-dedup/proofs/v6/executable_batch_fail.out
+executed-proof[v6][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/v6/process_requires_slot_added.out
+executed-proof[v6][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][process_requires_seal]: logs/tamarin-m3-dedup/proofs/v6/process_requires_seal.out
+executed-proof[v6][complete_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][complete_requires_seal]: logs/tamarin-m3-dedup/proofs/v6/complete_requires_seal.out
+executed-proof[v6][fail_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=fail_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][fail_requires_seal]: logs/tamarin-m3-dedup/proofs/v6/fail_requires_seal.out
+executed-proof[v6][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/v6/batch_complete_consumes_state.out
+executed-proof[v6][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/v6/batch_fail_consumes_state.out
+executed-proof[v6][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/v6/batch_end_token_single_use.out
+executed-proof[v6][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][batch_fail_complete_exclusive]: logs/tamarin-m3-dedup/proofs/v6/batch_fail_complete_exclusive.out
+executed-proof[v6][slot_origin_without_early_compromise]: tamarin-prover --derivcheck-timeout=0 --prove=slot_origin_without_early_compromise tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][slot_origin_without_early_compromise]: logs/tamarin-m3-dedup/proofs/v6/slot_origin_without_early_compromise.out
+executed-proof[v6][slot_key_known_requires_exception]: tamarin-prover --derivcheck-timeout=0 --prove=slot_key_known_requires_exception tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][slot_key_known_requires_exception]: logs/tamarin-m3-dedup/proofs/v6/slot_key_known_requires_exception.out
+executed-proof[v6][partnered_slot_key_not_attacker_known_without_early_compromise]: tamarin-prover --derivcheck-timeout=0 --prove=partnered_slot_key_not_attacker_known_without_early_compromise tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+raw_output[v6][partnered_slot_key_not_attacker_known_without_early_compromise]: logs/tamarin-m3-dedup/proofs/v6/partnered_slot_key_not_attacker_known_without_early_compromise.out
+executed-proof[v7][executable_four_slots_added]: tamarin-prover --derivcheck-timeout=0 --prove=executable_four_slots_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][executable_four_slots_added]: logs/tamarin-m3-dedup/proofs/v7/executable_four_slots_added.out
+executed-proof[v7][executable_seal_batch]: tamarin-prover --derivcheck-timeout=0 --prove=executable_seal_batch tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][executable_seal_batch]: logs/tamarin-m3-dedup/proofs/v7/executable_seal_batch.out
+executed-proof[v7][executable_four_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=executable_four_slots_processed tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][executable_four_slots_processed]: logs/tamarin-m3-dedup/proofs/v7/executable_four_slots_processed.out
+executed-proof[v7][executable_batch_complete]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][executable_batch_complete]: logs/tamarin-m3-dedup/proofs/v7/executable_batch_complete.out
+executed-proof[v7][executable_batch_fail]: tamarin-prover --derivcheck-timeout=0 --prove=executable_batch_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][executable_batch_fail]: logs/tamarin-m3-dedup/proofs/v7/executable_batch_fail.out
+executed-proof[v7][seal_requires_all_slots_added]: tamarin-prover --derivcheck-timeout=0 --prove=seal_requires_all_slots_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][seal_requires_all_slots_added]: logs/tamarin-m3-dedup/proofs/v7/seal_requires_all_slots_added.out
+executed-proof[v7][process_requires_slot_added]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_slot_added tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][process_requires_slot_added]: logs/tamarin-m3-dedup/proofs/v7/process_requires_slot_added.out
+executed-proof[v7][process_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=process_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][process_requires_seal]: logs/tamarin-m3-dedup/proofs/v7/process_requires_seal.out
+executed-proof[v7][complete_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][complete_requires_seal]: logs/tamarin-m3-dedup/proofs/v7/complete_requires_seal.out
+executed-proof[v7][fail_requires_seal]: tamarin-prover --derivcheck-timeout=0 --prove=fail_requires_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][fail_requires_seal]: logs/tamarin-m3-dedup/proofs/v7/fail_requires_seal.out
+executed-proof[v7][complete_requires_all_slots_done]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_slots_done tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][complete_requires_all_slots_done]: logs/tamarin-m3-dedup/proofs/v7/complete_requires_all_slots_done.out
+executed-proof[v7][complete_requires_all_added_slots_processed]: tamarin-prover --derivcheck-timeout=0 --prove=complete_requires_all_added_slots_processed tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][complete_requires_all_added_slots_processed]: logs/tamarin-m3-dedup/proofs/v7/complete_requires_all_added_slots_processed.out
+executed-proof[v7][no_add_after_seal]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_seal tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_add_after_seal]: logs/tamarin-m3-dedup/proofs/v7/no_add_after_seal.out
+executed-proof[v7][no_add_after_complete]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_add_after_complete]: logs/tamarin-m3-dedup/proofs/v7/no_add_after_complete.out
+executed-proof[v7][no_add_after_fail]: tamarin-prover --derivcheck-timeout=0 --prove=no_add_after_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_add_after_fail]: logs/tamarin-m3-dedup/proofs/v7/no_add_after_fail.out
+executed-proof[v7][no_slot_accept_after_complete]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_complete tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_slot_accept_after_complete]: logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_complete.out
+executed-proof[v7][no_slot_accept_after_fail]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_fail tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_slot_accept_after_fail]: logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_fail.out
+executed-proof[v7][no_slot_accept_after_close]: tamarin-prover --derivcheck-timeout=0 --prove=no_slot_accept_after_close tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][no_slot_accept_after_close]: logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_close.out
+executed-proof[v7][batch_complete_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_complete_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][batch_complete_consumes_state]: logs/tamarin-m3-dedup/proofs/v7/batch_complete_consumes_state.out
+executed-proof[v7][batch_fail_consumes_state]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_consumes_state tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][batch_fail_consumes_state]: logs/tamarin-m3-dedup/proofs/v7/batch_fail_consumes_state.out
+executed-proof[v7][batch_end_token_single_use]: tamarin-prover --derivcheck-timeout=0 --prove=batch_end_token_single_use tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][batch_end_token_single_use]: logs/tamarin-m3-dedup/proofs/v7/batch_end_token_single_use.out
+executed-proof[v7][batch_fail_complete_exclusive]: tamarin-prover --derivcheck-timeout=0 --prove=batch_fail_complete_exclusive tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][batch_fail_complete_exclusive]: logs/tamarin-m3-dedup/proofs/v7/batch_fail_complete_exclusive.out
+executed-proof[v7][receiver_state_single_batch_end]: tamarin-prover --derivcheck-timeout=0 --prove=receiver_state_single_batch_end tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][receiver_state_single_batch_end]: logs/tamarin-m3-dedup/proofs/v7/receiver_state_single_batch_end.out
+executed-proof[v7][slot_origin]: tamarin-prover --derivcheck-timeout=0 --prove=slot_origin tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+raw_output[v7][slot_origin]: logs/tamarin-m3-dedup/proofs/v7/slot_origin.out
+executed-proverif-cpp[proverif-original][BASELINE]: cpp -P -D BASELINE /mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv
+executed-proverif[proverif-original][BASELINE]: timeout 300 /mnt/d/Proverif/proverif2.05/proverif.exe D:\\kwaay-formal\\logs\\tamarin-m3-dedup\\regressions\\proverif-original\\generated\\BASELINE.pv
+raw_output[proverif-original][BASELINE]: logs/tamarin-m3-dedup/regressions/proverif-original/BASELINE.out
+executed-proverif-cpp[proverif-original][COMPONENT]: cpp -P -D COMPONENT /mnt/d/kwaay-formal/proverif/kwaay_core_final.cpp.pv
+executed-proverif[proverif-original][COMPONENT]: timeout 300 /mnt/d/Proverif/proverif2.05/proverif.exe D:\\kwaay-formal\\logs\\tamarin-m3-dedup\\regressions\\proverif-original\\generated\\COMPONENT.pv
+raw_output[proverif-original][COMPONENT]: logs/tamarin-m3-dedup/regressions/proverif-original/COMPONENT.out
+executed-proverif-cpp[proverif-hmac][HMAC_BASELINE]: cpp -P -D HMAC_BASELINE /mnt/d/kwaay-formal/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+executed-proverif[proverif-hmac][HMAC_BASELINE]: timeout 300 /mnt/d/Proverif/proverif2.05/proverif.exe D:\\kwaay-formal\\logs\\tamarin-m3-dedup\\regressions\\proverif-hmac\\generated\\HMAC_BASELINE.pv
+raw_output[proverif-hmac][HMAC_BASELINE]: logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_BASELINE.out
+executed-proverif-cpp[proverif-hmac][HMAC_COMPONENT]: cpp -P -D HMAC_COMPONENT /mnt/d/kwaay-formal/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+executed-proverif[proverif-hmac][HMAC_COMPONENT]: timeout 300 /mnt/d/Proverif/proverif2.05/proverif.exe D:\\kwaay-formal\\logs\\tamarin-m3-dedup\\regressions\\proverif-hmac\\generated\\HMAC_COMPONENT.pv
+raw_output[proverif-hmac][HMAC_COMPONENT]: logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_COMPONENT.out
+executed-trace[duplicate-fail]: tamarin-prover --derivcheck-timeout=0 --prove=duplicate_batch_fail_exists --output-json=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/duplicate-fail/trace.json --output-dot=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/duplicate-fail/trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[trace][duplicate-fail]: logs/tamarin-m3-dedup/traces/duplicate-fail/trace.out
+executed-trace[distinct-complete]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_batch_complete --output-json=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-complete/trace.json --output-dot=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-complete/trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[trace][distinct-complete]: logs/tamarin-m3-dedup/traces/distinct-complete/trace.out
+executed-trace[distinct-fail-slot1]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot1_exists --output-json=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.json --output-dot=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[trace][distinct-fail-slot1]: logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.out
+executed-trace[distinct-fail-slot2]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_fail_slot2_exists --output-json=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.json --output-dot=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.dot tamarin/replay/kwaay_replay_fixed.spthy
+raw_output[trace][distinct-fail-slot2]: logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.out
+executed-trace[distinct-consumer]: tamarin-prover --derivcheck-timeout=0 --prove=normal_distinct_consumer_complete --output-json=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-consumer/trace.json --output-dot=/mnt/d/kwaay-formal/logs/tamarin-m3-dedup/traces/distinct-consumer/trace.dot tamarin/impact/kwaay_impact_fixed.spthy
+raw_output[trace][distinct-consumer]: logs/tamarin-m3-dedup/traces/distinct-consumer/trace.out

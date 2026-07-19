@@ -1,0 +1,113 @@
+digraph "trace_Kwaay_Replay_Fixed_SL2-AS0-CL0-A1-C1-NB_normal_distinct_fail_slot2_exists-InitSenderState-InitReceiverState-InitSenderState-InitReceiverState-SealBatch_case_1-SealBatch-ProcessSlot1-PassDistinctBatch-PassDistinctBatch-SenderCreatesMessage-FailSlot2-ProcessSlot1-CreateBatch-PassDistinctBatch-FailSlot2-SenderCreatesMessage-SenderCreatesMessage-SenderCreatesMessage-SenderCreatesMessage-SenderCreatesMessage-SenderCreatesMessage" {
+nodesep="0.3";
+ranksep="0.3";
+node[fontsize="8",fontname="Helvetica",width="0.3",height="0.2"];
+edge[fontsize="8",fontname="Helvetica"];
+n6[shape="record",label="{{<n0> SealedStage1( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l|<n1> BatchEndToken( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l|<n2> CheckedSlot2( $B, ~bid, ~rst, ~idx, $A,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\<CT2, CT6, CT4\>\l)\l}|{<n3> #f : FailSlot2[UseBatchEndToken( $B, ~bid, ~rst ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BatchSlotFail( $B, ~bid, ~idx, $A, ~rst, \<CT2, CT6, CT4\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BatchFail( $B, ~bid, ~rst ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BatchClosed( $B, ~bid, ~rst ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ConsumeReceiverState( $B, ~rst )]\l}|{<n4> ClosedBatch( $B, ~bid, ~rst )|<n5> UsedReceiverState( $B, ~rst )}}",fillcolor="#d5d897",style="filled",fontcolor="black",role="Undefined"];
+n13[shape="record",label="{{<n7> DedupPending( $B, ~bid, ~rst, ~idx.1, $A, \<CT1, CT5, CT3\>,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~idx, $A, \<CT2, CT6, CT4\>\l)\l|<n8> DedupDecisionToken( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l}|{<n9> #p : PassDistinctBatch[Neq( \<CT1, CT5, CT3\>, \<CT2, CT6, CT4\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DedupPassed( $B, ~bid, ~rst, ~idx.1, $A, \<CT1, CT5, CT3\>, ~idx, $A, \<CT2, CT6, CT4\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UseDedupDecisionToken( $B, ~bid, ~rst )]\l}|{<n10> CheckedSlot1( $B, ~bid, ~rst,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~idx.1, $A, \<CT1, CT5, CT3\>\l)\l|<n11> CheckedSlot2( $B, ~bid, ~rst,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~idx, $A, \<CT2, CT6, CT4\>\l)\l|<n12> SealedStage0( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l}}",fillcolor="#d1d897",style="filled",fontcolor="black",role="Undefined"];
+n20[shape="record",label="{{<n14> SealedStage0( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l|<n15> CheckedSlot1( $B, ~bid, ~rst,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~idx.1, $A, \<CT1, CT5, CT3\>\l)\l|<n16> !HonestSession( $A, $B, ~rst,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;\<CT1, CT5, CT3\>, SE1, SE3\l)\l}|{<n17> #r : ProcessSlot1[BatchSlot( $B, ~bid, ~idx.1, $A, \<CT1, CT5, CT3\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReceiverAccept( $B, $A, ~bid, ~idx.1, ~rst, \<CT1, CT5, CT3\>, SE1, SE3 ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SlotProcessed( $B, ~bid, ~idx.1, $A, \<CT1, CT5, CT3\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Slot1Done( $B, ~bid, ~rst )]\l}|{<n18> SealedStage1( $B, ~bid, ~rst )|<n19> Slot1DoneFact( $B, ~bid, ~rst )}}",fillcolor="#cdd997",style="filled",fontcolor="black",role="Undefined"];
+n29[shape="record",label="{{<n21> !SenderState( $A, ~sst.1\l)\l|<n22> !ReceiverPublicState( $B, ~rst\l)\l|<n23> Fr( ~rl.1 )|<n24> Fr( ~rk.1 )|<n25> Fr( ~rs.1 )}|{<n26> #s1 : SenderCreatesMessage[SenderSession( $A, $B, \<CT1, CT5, CT3\>, SE1, SE3 )]}|{<n27> Out( \<$A, $B, CT1, CT5, CT3\> )|<n28> !HonestSession( $A, $B, ~rst, \<CT1, CT5, CT3\>, SE1, SE3\l)\l}}",fillcolor="#c6d998",style="filled",fontcolor="black",role="Undefined"];
+n38[shape="record",label="{{<n30> !SenderState( $A, ~sst )|<n31> !ReceiverPublicState( $B, ~rst.1 )|<n32> Fr( ~rl )|<n33> Fr( ~rk )|<n34> Fr( ~rs )}|{<n35> #s2 : SenderCreatesMessage[SenderSession( $A, $B, \<CT2, CT6, CT4\>, SE2, SE4 )]}|{<n36> Out( \<$A, $B, CT2, CT6, CT4\> )|<n37> !HonestSession( $A, $B, ~rst.1, \<CT2, CT6, CT4\>, SE2,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SE4\l)\l}}",fillcolor="#c6d998",style="filled",fontcolor="black",role="Undefined"];
+n39[label="#vk : coerce[!KU( CT2 )]",shape="ellipse"];
+n40[label="#vl : irecv",shape="ellipse"];
+n45[shape="record",label="{{<n41> Fr( ~sst.1 )}|{<n42> #vr : InitSenderState[SenderStateCreated( $A, ~sst.1 )]}|{<n43> !SenderState( $A, ~sst.1 )|<n44> SenderCompromiseToken( $A, ~sst.1 )}}",fillcolor="#b4db99",style="filled",fontcolor="black",role="Undefined"];
+n46[label="#vk.1 : coerce[!KU( CT6 )]",shape="ellipse"];
+n47[label="#vl.1 : irecv",shape="ellipse"];
+n53[shape="record",label="{{<n48> Fr( ~rst )}|{<n49> #vr.1 : InitReceiverState[ReceiverStateCreated( $B, ~rst )]}|{<n50> ReceiverState( $B, ~rst\l)\l|<n51> !ReceiverPublicState( $B, ~rst\l)\l|<n52> ReceiverCompromiseToken( $B, ~rst\l)\l}}",fillcolor="#b1dc9a",style="filled",fontcolor="black",role="Undefined"];
+n54[label="#vk.2 : coerce[!KU( CT4 )]",shape="ellipse"];
+n59[shape="record",label="{{<n55> Fr( ~sst )}|{<n56> #vr.2 : InitSenderState[SenderStateCreated( $A, ~sst )]}|{<n57> !SenderState( $A, ~sst )|<n58> SenderCompromiseToken( $A, ~sst )}}",fillcolor="#b4db99",style="filled",fontcolor="black",role="Undefined"];
+n60[label="#vk.3 : coerce[!KU( CT1 )]",shape="ellipse"];
+n66[shape="record",label="{{<n61> Fr( ~rst.1 )}|{<n62> #vr.3 : InitReceiverState[ReceiverStateCreated( $B, ~rst.1 )]}|{<n63> ReceiverState( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst.1\l)\l|<n64> !ReceiverPublicState( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst.1\l)\l|<n65> ReceiverCompromiseToken( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst.1\l)\l}}",fillcolor="#b1dc9a",style="filled",fontcolor="black",role="Undefined"];
+n67[label="#vk.4 : coerce[!KU( CT5 )]",shape="ellipse"];
+n74[shape="record",label="{{<n68> OpenStage2( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l|<n69> AddedSlot1( $B, ~bid, ~rst, ~idx.1,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A, \<CT1, CT5, CT3\>\l)\l|<n70> AddedSlot2( $B, ~bid, ~rst, ~idx,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;$A, \<CT2, CT6, CT4\>\l)\l}|{<n71> #vr.4 : SealBatch[SealBatchEvent( $B, ~bid, ~rst )]}|{<n72> DedupPending( $B, ~bid, ~rst, ~idx.1, $A, \<CT1, CT5, CT3\>,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~idx, $A, \<CT2, CT6, CT4\>\l)\l|<n73> DedupDecisionToken( $B,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~bid, ~rst\l)\l}}",fillcolor="#addc9a",style="filled",fontcolor="black",role="Undefined"];
+n75[label="#vk.5 : coerce[!KU( CT3 )]",shape="ellipse"];
+n82[shape="record",label="{{<n76> OpenStage1( $B, ~bid, ~rst )|<n77> In( \<$A, $B, CT2, CT6, CT4\> )|<n78> Fr( ~idx )}|{<n79> #vr.5 : AddSlot2[SlotAdded( $B, ~bid, ~idx, $A, \<CT2, CT6, CT4\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Slot2Added( $B, ~bid, ~rst, ~idx, $A, \<CT2, CT6, CT4\> )]\l}|{<n80> OpenStage2( $B, ~bid, ~rst )|<n81> AddedSlot2( $B, ~bid, ~rst, ~idx, $A, \<CT2, CT6, CT4\> )}}",fillcolor="#a9dc9a",style="filled",fontcolor="black",role="Undefined"];
+n89[shape="record",label="{{<n83> OpenStage0( $B, ~bid, ~rst )|<n84> In( \<$A, $B, CT1, CT5, CT3\> )|<n85> Fr( ~idx.1 )}|{<n86> #vr.6 : AddSlot1[SlotAdded( $B, ~bid, ~idx.1, $A, \<CT1, CT5, CT3\> ),\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Slot1Added( $B, ~bid, ~rst, ~idx.1, $A, \<CT1, CT5, CT3\> )]\l}|{<n87> OpenStage1( $B, ~bid, ~rst\l)\l|<n88> AddedSlot1( $B, ~bid, ~rst, ~idx.1, $A, \<CT1, CT5, CT3\> )}}",fillcolor="#a6dd9a",style="filled",fontcolor="black",role="Undefined"];
+n96[shape="record",label="{{<n90> ReceiverState( $B, ~rst )|<n91> Fr( ~bid )}|{<n92> #vr.7 : CreateBatch[BatchCreated( $B, ~bid, ~rst )]}|{<n93> OpenStage0( $B, ~bid,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst\l)\l|<n94> BatchEndToken( $B, ~bid,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst\l)\l|<n95> BatchCompromiseToken( $B, ~bid,\l&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~rst\l)\l}}",fillcolor="#a2dd9b",style="filled",fontcolor="black",role="Undefined"];
+n97[label="#vr.8 : d_0_snd",shape="ellipse"];
+n98[label="#vr.9 : d_0_snd",shape="ellipse"];
+n99[label="#vf.10 : isend",shape="ellipse"];
+n100[label="#vr.11 : d_0_snd",shape="ellipse"];
+n101[label="#vf.12 : isend",shape="ellipse"];
+n102[label="#vr.14 : d_0_snd",shape="ellipse"];
+n103[label="#vr.15 : d_0_snd",shape="ellipse"];
+n104[label="#vr.17 : d_0_snd",shape="ellipse"];
+n13:n10 -> n20:n15[style="bold",weight="10.0"];
+n13:n11 -> n6:n2[style="bold",weight="10.0"];
+n13:n12 -> n20:n14[style="bold",weight="10.0"];
+n20:n18 -> n6:n0[style="bold",weight="10.0"];
+n29:n27 -> n47[color="gray30"];
+n29:n28 -> n20:n16[style="bold",weight="10.0",color="gray50"];
+n38:n36 -> n40[color="gray30"];
+n40 -> n97[color="orangered2"];
+n45:n43 -> n29:n21[style="bold",weight="10.0",color="gray50"];
+n47 -> n102[color="orangered2"];
+n53:n50 -> n96:n90[style="bold",weight="10.0"];
+n53:n51 -> n29:n22[style="bold",weight="10.0",color="gray50"];
+n59:n57 -> n38:n30[style="bold",weight="10.0",color="gray50"];
+n66:n64 -> n38:n31[style="bold",weight="10.0",color="gray50"];
+n74:n72 -> n13:n7[style="bold",weight="10.0"];
+n74:n73 -> n13:n8[style="bold",weight="10.0"];
+n82:n80 -> n74:n68[style="bold",weight="10.0"];
+n82:n81 -> n74:n70[style="bold",weight="10.0"];
+n89:n87 -> n82:n76[style="bold",weight="10.0"];
+n89:n88 -> n74:n69[style="bold",weight="10.0"];
+n96:n93 -> n89:n83[style="bold",weight="10.0"];
+n96:n94 -> n6:n1[style="bold",weight="10.0"];
+n97 -> n98[color="orangered2"];
+n98 -> n39[color="orangered2"];
+n98 -> n100[color="orangered2"];
+n99 -> n82:n77[color="gray30"];
+n100 -> n46[color="orangered2"];
+n100 -> n54[color="orangered2"];
+n101 -> n89:n84[color="gray30"];
+n102 -> n103[color="orangered2"];
+n103 -> n60[color="orangered2"];
+n103 -> n104[color="orangered2"];
+n104 -> n67[color="orangered2"];
+n104 -> n75[color="orangered2"];
+n39 -> n99[color="red",style="dashed"];
+n40 -> n99[color="red",style="dashed"];
+n46 -> n99[color="red",style="dashed"];
+n47 -> n101[color="red",style="dashed"];
+n54 -> n99[color="red",style="dashed"];
+n60 -> n101[color="red",style="dashed"];
+n67 -> n101[color="red",style="dashed"];
+n75 -> n101[color="red",style="dashed"];
+n97 -> n99[color="red",style="dashed"];
+n98 -> n99[color="red",style="dashed"];
+n100 -> n99[color="red",style="dashed"];
+n102 -> n101[color="red",style="dashed"];
+n103 -> n101[color="red",style="dashed"];
+n104 -> n101[color="red",style="dashed"];
+{
+rank="sink";
+n105[shape="plain",label=<<TABLE BORDER="1" CELLBORDER="0" CELLSPACING="3" CELLPADDING="1"><TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_l($A, $B, ~rst, ~rl.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_l($A, $B, ~rst.1, ~rl)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT3</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_s($A, $B, ~sst.1, ~rst, ~rs.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT4</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_s($A, $B, ~sst, ~rst.1, ~rs)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT5</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_k($A, $B, ~rst, ~rk.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">CT6</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">ct_k($A, $B, ~rst.1, ~rk)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">RE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">receiver_prekey($B, ~rst)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">RE2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">receiver_pk($B, ~rst)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">RE3</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">receiver_prekey($B, ~rst.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">RE4</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">receiver_pk($B, ~rst.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE10</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_s($A, $B, ~sst, ~rst.1, ~rs)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE11</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_k($A, $B, ~rst.1, ~rk)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE12</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_l($A, $B, ~rst.1, ~rl)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE13</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">sender_prekey($A, ~sst)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE14</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">sender_pk($A, ~sst)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE2</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">session_id($A, $B, SE14, RE4, SE13, RE3, &lt;CT2, CT6, CT4&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE4</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">session_key(SE12, SE11, SE10, SE2)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE5</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_s($A, $B, ~sst.1, ~rst, ~rs.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE6</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_k($A, $B, ~rst, ~rk.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE7</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">secret_l($A, $B, ~rst, ~rl.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE8</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">sender_prekey($A, ~sst.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE9</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">sender_pk($A, ~sst.1)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE1</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">session_id($A, $B, SE9, RE2, SE8, RE1, &lt;CT1, CT5, CT3&gt;)</TD></TR>
+                                                                 <TR><TD ALIGN="LEFT" VALIGN="TOP"><FONT COLOR="#000000">SE3</FONT></TD> <TD ALIGN="LEFT" VALIGN="TOP">=</TD> <TD ALIGN="LEFT" VALIGN="TOP">session_key(SE7, SE6, SE5, SE1)</TD></TR></TABLE>>];
+
+}
+n6:n3 -> n105[style="invis"];
+
+}

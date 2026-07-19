@@ -1,0 +1,391 @@
+repository_path: /mnt/d/kwaay-formal
+actual_runner_path: /mnt/d/kwaay-formal/tamarin/milestones/run-m3-dedup.sh
+utc_start: 2026-07-17T11:22:59Z
+git_branch: codex/m3-batch-local-atomic-dedup
+git_head: 282532fd922f3a7f7928f3772b3325fe06785730
+git_tree: 077ba2fa6bb64f49edff9478a45a66f838ea62e8
+execution_mode: sequential_per_exact_lemma
+clean_pre_run_status: true
+tracked_input_metadata:
+path: tamarin/milestones/run-m3-dedup.sh
+  blob_oid: 1b2bcd06448b832663b4534dcfc5074ac3c9e683
+  sha256: 410ec3a46e0829238b00ee1972580aa3631d94394fa92f83a20562d923b1216c
+  eol: LF
+path: tamarin/replay/kwaay_replay_fixed.spthy
+  blob_oid: 493568857492e9c17b896dfb2ab3692f7b48d365
+  sha256: ae040141a099953dc237bb44ee0f88d55b5ea396cc2019475a5fb3a72eaf36ec
+  eol: LF
+path: tamarin/impact/kwaay_impact_fixed.spthy
+  blob_oid: 3a707c022594ce84f23c2f39623715fe3c3f47e2
+  sha256: 0c46643fb278598d45b91dc2ce4a963ab1a7f3336581a5afe599cc888b9bd808
+  eol: CRLF
+path: tamarin/replay/README-fixed.md
+  blob_oid: 80cd51965a4e888bfa03d7e28f28f9a999ad7dbc
+  sha256: 16a10e8416145b380c446d5ac04f2951a961e25c9333e20c2f58e80f5061e1be
+  eol: LF
+path: tamarin/impact/README-fixed.md
+  blob_oid: 776055cd75b300eeb8bdf2e4eedb24b02300badb
+  sha256: 16ae5d373f918fa12c9643e33ee687fe92ed4900d2d494e2f8ac8a05b0b14a63
+  eol: LF
+path: tamarin/replay/kwaay_replay_original.spthy
+  blob_oid: e3699da2f827a683ded2feaaa7db2d51ad74c023
+  sha256: 064ec603bdfac917246a12762774701bc624c40ccb11eb6a88adf94befb4322e
+  eol: LF
+path: tamarin/replay/kwaay_replay_hmac_only.spthy
+  blob_oid: 589e8693f23d76fcf3977d6ca3784a2f670d5d8d
+  sha256: d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6
+  eol: CRLF
+path: tamarin/impact/kwaay_impact_original.spthy
+  blob_oid: c5cdc0d7233f3a415839b8f289182c0986d911a8
+  sha256: 0c20e36137c27bd138101a91ef5ce1e16109fccf696f942eb98c3d855a11fa41
+  eol: CRLF
+path: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+  blob_oid: cc7d7d962bbe1bc8d8e09354ca8fdf911be865f9
+  sha256: 7733815c2a176d9bd0ca411b6ff7d966e0eaba9f9e377523af0e614697a5e302
+  eol: mixed-or-CRLF
+path: tamarin/kwaay_splitkem_batch_dynamic_v7.spthy
+  blob_oid: 7c8c73eb795ee5fd8196654af2a6ecf04a73b380
+  sha256: 7dd91deac3e16fbb600b1dd646e6c783aa56ce779b9097216bba0814e7b37a47
+  eol: LF
+path: proverif/kwaay_core_final.cpp.pv
+  blob_oid: f8fded3f616d7b6e203933921922ef049437e36b
+  sha256: b28b8145992d96f190cc478608b7e36669f0040a06319a63f2d69969347de867
+  eol: mixed-or-CRLF
+path: proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv
+  blob_oid: 69d27acf560552293b486f5667b6be50e331fa93
+  sha256: 940fdb4a0449a0d35a70f488d1c68f6e79884cf5651419c96b1d65aa295b04bd
+  eol: mixed-or-CRLF
+path: logs/final/proverif/summary.txt
+  blob_oid: ff24b5e33537be899d1f25c8a825e02e8054cf2f
+  sha256: b3a59616ae0d9a3eeb81d878515fdd79e29cbf4951fcf6029e2eb6944bd6075e
+  eol: mixed-or-CRLF
+path: logs/variants/hmac-confirmation/proverif/summary.txt
+  blob_oid: 41162bc55aeb077d65a0c259a1c96e050a718325
+  sha256: 6de331e25170c36f893ceb78888fd12dbefe3f47b952bda98dfe40d51aa2c503
+  eol: mixed-or-CRLF
+git_check_attr_output:
+tamarin/milestones/run-m3-dedup.sh: text: set
+tamarin/milestones/run-m3-dedup.sh: eol: lf
+tamarin/replay/kwaay_replay_fixed.spthy: text: unspecified
+tamarin/replay/kwaay_replay_fixed.spthy: eol: unspecified
+tamarin/impact/kwaay_impact_fixed.spthy: text: unspecified
+tamarin/impact/kwaay_impact_fixed.spthy: eol: unspecified
+tamarin/replay/README-fixed.md: text: unspecified
+tamarin/replay/README-fixed.md: eol: unspecified
+tamarin/impact/README-fixed.md: text: unspecified
+tamarin/impact/README-fixed.md: eol: unspecified
+tamarin/replay/kwaay_replay_original.spthy: text: unspecified
+tamarin/replay/kwaay_replay_original.spthy: eol: unspecified
+tamarin/replay/kwaay_replay_hmac_only.spthy: text: unspecified
+tamarin/replay/kwaay_replay_hmac_only.spthy: eol: unspecified
+tamarin/impact/kwaay_impact_original.spthy: text: unspecified
+tamarin/impact/kwaay_impact_original.spthy: eol: unspecified
+tamarin/kwaay_splitkem_batch_dynamic_v6.spthy: text: unspecified
+tamarin/kwaay_splitkem_batch_dynamic_v6.spthy: eol: unspecified
+tamarin/kwaay_splitkem_batch_dynamic_v7.spthy: text: unspecified
+tamarin/kwaay_splitkem_batch_dynamic_v7.spthy: eol: unspecified
+proverif/kwaay_core_final.cpp.pv: text: unspecified
+proverif/kwaay_core_final.cpp.pv: eol: unspecified
+proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv: text: unspecified
+proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv: eol: unspecified
+logs/final/proverif/summary.txt: text: unspecified
+logs/final/proverif/summary.txt: eol: unspecified
+logs/variants/hmac-confirmation/proverif/summary.txt: text: unspecified
+logs/variants/hmac-confirmation/proverif/summary.txt: eol: unspecified
+
+tamarin-prover --version:
+maude tool: 'maude'
+ checking version: tamarin-prover 1.12.0, (C) David Basin, Cas Cremers, Jannik Dreier, Simon Meier, Ralf Sasse, Benedikt Schmidt, 2010-2023
+
+This program comes with ABSOLUTELY NO WARRANTY. It is free software, and you
+are welcome to redistribute it according to its LICENSE, see
+'https://github.com/tamarin-prover/tamarin-prover/blob/master/LICENSE'.
+
+3.5.1. OK.
+ checking installation: OK.
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+
+maude --version:
+3.5.1
+
+proverif version:
+proverif.exe: unknown option '-version'.
+Proverif 2.05. Cryptographic protocol verifier, by Bruno Blanchet, Vincent Cheval, and Marc Sylvestre
+  -test 		display a bit more information for debugging
+  -in <format> 		choose the input format (horn, horntype, spass, pi, pitype)
+  -out <format> 	choose the output format (solve, spass)
+  -o <filename> 	choose the output file name (for spass output)
+  -lib <filename> 	choose the library file (for pitype front-end only)
+  -set <param> <value> 	equivalent to adding set <param> = <value> to the input file
+  -TulaFale <version> 	indicate the version of TulaFale when ProVerif is used inside TulaFale
+  -graph 			create the trace graph from the dot file in the directory specified
+  -commandLineGraph 			Define the command for the creation of the graph trace from the dot file
+  -gc 			display gc statistics
+  -parse-only 		just parse the input file and report errors (if any)
+  -html 			HTML display
+  -help  Display this list of options
+  --help  Display this list of options
+
+utc_end: 2026-07-17T13:43:48Z
+K-Waay M3 batch-local atomic dedup evidence summary
+git_head: 282532fd922f3a7f7928f3772b3325fe06785730
+git_tree: 077ba2fa6bb64f49edff9478a45a66f838ea62e8
+parse_fixed_replay_status: 0
+parse_fixed_impact_status: 0
+fixed_replay_status: 0
+fixed_impact_status: 1
+original_replay_regression_status: 0
+hmac_replay_regression_status: 0
+original_impact_regression_status: 0
+v6_regression_status: 0
+v7_regression_status: 0
+proverif_regression_status: 0
+formula_comparison_status: 0
+constructor_comparison_status: 0
+consumer_rule_comparison_status: 0
+trace_status: 0
+post_run_unexpected_status_empty: true
+post_run_git_status:
+?? logs/tamarin-m3-dedup/aggregate-fixed-impact.tsv
+?? logs/tamarin-m3-dedup/aggregate-fixed-replay.tsv
+?? logs/tamarin-m3-dedup/aggregate-hmac-replay.tsv
+?? logs/tamarin-m3-dedup/aggregate-original-impact.tsv
+?? logs/tamarin-m3-dedup/aggregate-original-replay.tsv
+?? logs/tamarin-m3-dedup/aggregate-v6.tsv
+?? logs/tamarin-m3-dedup/aggregate-v7.tsv
+?? logs/tamarin-m3-dedup/command.txt
+?? logs/tamarin-m3-dedup/constructor-comparison.txt
+?? logs/tamarin-m3-dedup/consumer-rule-comparison.txt
+?? logs/tamarin-m3-dedup/frozen-formula-comparison.txt
+?? logs/tamarin-m3-dedup/parse/fixed-impact.out
+?? logs/tamarin-m3-dedup/parse/fixed-replay.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/accept_id_unique.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/accept_output_has_same_time_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/accept_output_installed_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/batch_fail_complete_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/complete_requires_all_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/consumer_complete_requires_all_outputs_installed.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/consumer_complete_single_use.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_decision_single_use.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_outcomes_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/dedup_pass_messages_distinct.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/distinct_accept_sources_have_distinct_handles.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_fail_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_accept_output.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_batch_has_no_install.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/duplicate_detected_before_any_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/full_message_unique_send.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/injective_receiver_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_event_has_single_source.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_from_accept_has_session.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_handle_unique.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_has_prior_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_requires_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/install_session_has_interface_origin.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/no_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/no_consumer_after_failed_batch.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/no_install_after_consumer_close.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_consumer_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_consumer_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_fail_slot1_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_distinct_fail_slot2_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_one_accept_one_install.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/normal_single_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/one_send_two_accepts_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/one_send_two_accepts_two_installs_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_dedup_pass.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_output.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_sender.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_accept_has_unique_output.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_state_single_batch.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/same_message_accepted_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/slot_indices_distinct.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/state_consumed_on_duplicate_fail.out
+?? logs/tamarin-m3-dedup/proofs/fixed-impact/unique_install_within_completed_consumer.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/batch_fail_complete_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/complete_requires_all_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_decision_single_use.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_outcomes_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/dedup_pass_messages_distinct.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_batch_fail_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_batch_has_no_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/duplicate_detected_before_any_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/full_message_unique_send.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/injective_receiver_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/no_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/normal_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_fail_slot1_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/normal_distinct_fail_slot2_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/normal_single_accept.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/one_send_two_accepts_exists.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_dedup_pass.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_accept_has_sender.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_state_single_batch.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/same_message_accepted_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/slot_indices_distinct.out
+?? logs/tamarin-m3-dedup/proofs/fixed-replay/state_consumed_on_duplicate_fail.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/complete_requires_all_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_message_accepted_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_message_unique_send.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/confirmed_receiver_accept_has_sender.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/injective_confirmed_receiver_accept.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/no_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/normal_confirmed_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/normal_confirmed_single_accept.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/one_confirmed_send_two_accepts_exists.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/receiver_state_single_batch.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/hmac-replay/slot_indices_distinct.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/accept_id_unique.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/accept_output_has_same_time_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/accept_output_installed_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/complete_requires_all_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/consumer_complete_requires_all_outputs_installed.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/consumer_complete_single_use.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/distinct_accept_sources_have_distinct_handles.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/full_message_unique_send.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/injective_receiver_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_event_has_single_source.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_from_accept_has_session.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_handle_unique.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_has_prior_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_requires_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/install_session_has_interface_origin.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/no_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/no_install_after_consumer_close.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/normal_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/normal_consumer_complete.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/normal_one_accept_one_install.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/normal_single_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/one_send_two_accepts_exists.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/one_send_two_accepts_two_installs_exists.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_output.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_sender.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/receiver_accept_has_unique_output.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/receiver_state_single_batch.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/same_message_accepted_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/slot_indices_distinct.out
+?? logs/tamarin-m3-dedup/proofs/original-impact/unique_install_within_completed_consumer.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/complete_requires_all_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/full_message_unique_send.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/injective_receiver_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/no_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/normal_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/normal_single_accept.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/one_send_two_accepts_exists.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/receiver_accept_has_sender.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/receiver_state_single_batch.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/same_message_accepted_at_most_once.out
+?? logs/tamarin-m3-dedup/proofs/original-replay/slot_indices_distinct.out
+?? logs/tamarin-m3-dedup/proofs/v6/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/v6/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/v6/batch_fail_complete_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/v6/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/v6/complete_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v6/executable_add_slot.out
+?? logs/tamarin-m3-dedup/proofs/v6/executable_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/v6/executable_batch_fail.out
+?? logs/tamarin-m3-dedup/proofs/v6/executable_process_slot.out
+?? logs/tamarin-m3-dedup/proofs/v6/executable_seal_batch.out
+?? logs/tamarin-m3-dedup/proofs/v6/fail_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v6/partnered_slot_key_not_attacker_known_without_early_compromise.out
+?? logs/tamarin-m3-dedup/proofs/v6/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v6/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/v6/slot_key_known_requires_exception.out
+?? logs/tamarin-m3-dedup/proofs/v6/slot_origin_without_early_compromise.out
+?? logs/tamarin-m3-dedup/proofs/v7/batch_complete_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/v7/batch_end_token_single_use.out
+?? logs/tamarin-m3-dedup/proofs/v7/batch_fail_complete_exclusive.out
+?? logs/tamarin-m3-dedup/proofs/v7/batch_fail_consumes_state.out
+?? logs/tamarin-m3-dedup/proofs/v7/complete_requires_all_added_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/v7/complete_requires_all_slots_done.out
+?? logs/tamarin-m3-dedup/proofs/v7/complete_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v7/executable_batch_complete.out
+?? logs/tamarin-m3-dedup/proofs/v7/executable_batch_fail.out
+?? logs/tamarin-m3-dedup/proofs/v7/executable_four_slots_added.out
+?? logs/tamarin-m3-dedup/proofs/v7/executable_four_slots_processed.out
+?? logs/tamarin-m3-dedup/proofs/v7/executable_seal_batch.out
+?? logs/tamarin-m3-dedup/proofs/v7/fail_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_add_after_complete.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_add_after_fail.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_add_after_seal.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_close.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_complete.out
+?? logs/tamarin-m3-dedup/proofs/v7/no_slot_accept_after_fail.out
+?? logs/tamarin-m3-dedup/proofs/v7/process_requires_seal.out
+?? logs/tamarin-m3-dedup/proofs/v7/process_requires_slot_added.out
+?? logs/tamarin-m3-dedup/proofs/v7/receiver_state_single_batch_end.out
+?? logs/tamarin-m3-dedup/proofs/v7/seal_requires_all_slots_added.out
+?? logs/tamarin-m3-dedup/proofs/v7/slot_origin.out
+?? logs/tamarin-m3-dedup/proverif-result-comparison.tsv
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_BASELINE.cpp.err
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_BASELINE.out
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_COMPONENT.cpp.err
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/HMAC_COMPONENT.out
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/generated/HMAC_BASELINE.pv
+?? logs/tamarin-m3-dedup/regressions/proverif-hmac/generated/HMAC_COMPONENT.pv
+?? logs/tamarin-m3-dedup/regressions/proverif-original/BASELINE.cpp.err
+?? logs/tamarin-m3-dedup/regressions/proverif-original/BASELINE.out
+?? logs/tamarin-m3-dedup/regressions/proverif-original/COMPONENT.cpp.err
+?? logs/tamarin-m3-dedup/regressions/proverif-original/COMPONENT.out
+?? logs/tamarin-m3-dedup/regressions/proverif-original/generated/BASELINE.pv
+?? logs/tamarin-m3-dedup/regressions/proverif-original/generated/COMPONENT.pv
+?? logs/tamarin-m3-dedup/result-vector-comparison.tsv
+?? logs/tamarin-m3-dedup/traces/distinct-complete/trace.dot
+?? logs/tamarin-m3-dedup/traces/distinct-complete/trace.json
+?? logs/tamarin-m3-dedup/traces/distinct-complete/trace.out
+?? logs/tamarin-m3-dedup/traces/distinct-consumer/trace.dot
+?? logs/tamarin-m3-dedup/traces/distinct-consumer/trace.json
+?? logs/tamarin-m3-dedup/traces/distinct-consumer/trace.out
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.dot
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.json
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot1/trace.out
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.dot
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.json
+?? logs/tamarin-m3-dedup/traces/distinct-fail-slot2/trace.out
+?? logs/tamarin-m3-dedup/traces/duplicate-fail/trace.dot
+?? logs/tamarin-m3-dedup/traces/duplicate-fail/trace.json
+?? logs/tamarin-m3-dedup/traces/duplicate-fail/trace.out
+?? logs/tamarin-m3-dedup/versions.txt

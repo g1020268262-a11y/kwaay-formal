@@ -1,0 +1,5 @@
+suite	target	exit_status	result_vector_match	raw_output
+proverif-original	BASELINE	0	MATCH	regressions/proverif-original/BASELINE.out
+proverif-original	COMPONENT	0	MATCH	regressions/proverif-original/COMPONENT.out
+proverif-hmac	HMAC_BASELINE	0	MATCH	regressions/proverif-hmac/HMAC_BASELINE.out
+proverif-hmac	HMAC_COMPONENT	0	MATCH	regressions/proverif-hmac/HMAC_COMPONENT.out

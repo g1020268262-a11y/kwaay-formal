@@ -1,0 +1,604 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory loaded
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory translated
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done
+theory Kwaay_SplitKem_Batch_Dynamic_V6
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: cts/4[private,constructor], fst/1, ks/4[private,constructor],
+           pair/2, rkey/5[private,constructor], snd/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+rule (modulo E) InitReceiverState:
+   [ Fr( ~rst ) ]
+  --[ ReceiverStateCreated( $B, ~rst ) ]->
+   [
+   ReceiverState( $B, ~rst ), !ReceiverPublicState( $B, ~rst ),
+   ReceiverCompromiseToken( $B, ~rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) InitSenderState:
+   [ Fr( ~sst ) ]
+  --[ SenderStateCreated( $A, ~sst ) ]->
+   [ !SenderState( $A, ~sst ), SenderCompromiseToken( $A, ~sst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SenderCreatesComponent:
+   [ !SenderState( $A, sst ), !ReceiverPublicState( $B, rst ), Fr( ~r ) ]
+  --[
+  SenderComponent( $A, $B, rst, cts($A, $B, sst, ~r), ks($A, $B, sst, ~r) )
+  ]->
+   [
+   Out( <$A, $B, cts($A, $B, sst, ~r)> ),
+   !ComponentKey( $A, $B, rst, cts($A, $B, sst, ~r), ks($A, $B, sst, ~r) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CreateBatch:
+   [ ReceiverState( $B, rst ), Fr( ~bid ) ]
+  --[ BatchCreated( $B, ~bid, rst ) ]->
+   [
+   AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
+   AddSlotToken( $B, ~bid, rst ), AddSlotToken( $B, ~bid, rst ),
+   SealToken( $B, ~bid, rst ), BatchEndToken( $B, ~bid, rst ),
+   BatchCompromiseToken( $B, ~bid, rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) AddSlot:
+   [ AddSlotToken( $B, bid, rst ), In( <$A, $B, cts_in> ), Fr( ~idx ) ]
+  --[ SlotAdded( $B, bid, ~idx, $A, cts_in ) ]->
+   [ PendingSlot( $B, bid, ~idx, $A, cts_in ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SealBatch:
+   [ SealToken( $B, bid, rst ) ]
+  --[ SealBatchEvent( $B, bid, rst ) ]->
+   [ !BatchSealedFact( $B, bid, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ProcessPendingSlot:
+   [
+   !BatchSealedFact( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts_in ),
+   !ComponentKey( $A, $B, rst, cts_in, Ks )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, cts_in ),
+  BatchSlotAccept( $B, bid, idx, $A, rst, cts_in, Ks ),
+  ReceiverAcceptsComponent( $B, $A, rst, cts_in, Ks ),
+  ReceiverKey( $B, $A, bid, idx, rst, cts_in, Ks,
+               rkey($B, $A, rst, cts_in, Ks)
+  ),
+  PartneredSlot( $A, $B, bid, idx, rst, cts_in, Ks ),
+  SlotProcessed( $B, bid, idx, $A, cts_in ),
+  DoneSlotEvent( $B, bid, idx, $A, cts_in )
+  ]->
+   [ DoneSlot( $B, bid, idx, $A, cts_in ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseReceiverState:
+   [ ReceiverState( $B, rst ), ReceiverCompromiseToken( $B, rst ) ]
+  --[ CompromiseReceiverState( $B, rst ) ]->
+   [
+   ReceiverState( $B, rst ), !CompromisedReceiverState( $B, rst ),
+   Out( rst )
+   ]
+
+  // loop breaker: [0]
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseActiveReceiverState:
+   [ BatchCompromiseToken( $B, bid, rst ) ]
+  --[ CompromiseReceiverState( $B, rst ) ]->
+   [ !CompromisedReceiverState( $B, rst ), Out( rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseSenderState:
+   [ !SenderState( $A, sst ), SenderCompromiseToken( $A, sst ) ]
+  --[ CompromiseSenderState( $A, sst ) ]->
+   [ !CompromisedSenderState( $A, sst ), Out( sst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ForgedProcessAfterReceiverStateCompromise:
+   [
+   !BatchSealedFact( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts_in ),
+   !CompromisedReceiverState( $B, rst ), Fr( ~fake_Ks )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, cts_in ),
+  BatchSlotAccept( $B, bid, idx, $A, rst, cts_in, ~fake_Ks ),
+  ForgedReceiverAccept( $B, $A, rst, cts_in, ~fake_Ks ),
+  ReceiverAcceptsComponent( $B, $A, rst, cts_in, ~fake_Ks ),
+  ReceiverKey( $B, $A, bid, idx, rst, cts_in, ~fake_Ks,
+               rkey($B, $A, rst, cts_in, ~fake_Ks)
+  ),
+  AttackerKnowsKey( rkey($B, $A, rst, cts_in, ~fake_Ks) ),
+  UnpartneredReceiverSlot( $B, $A, bid, idx, rst, cts_in, ~fake_Ks,
+                           rkey($B, $A, rst, cts_in, ~fake_Ks)
+  ),
+  SlotProcessed( $B, bid, idx, $A, cts_in ),
+  DoneSlotEvent( $B, bid, idx, $A, cts_in )
+  ]->
+   [
+   DoneSlot( $B, bid, idx, $A, cts_in ),
+   Out( rkey($B, $A, rst, cts_in, ~fake_Ks) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ForgedProcessAfterSenderStateCompromise:
+   [
+   !BatchSealedFact( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   !CompromisedSenderState( $A, sst ), In( r )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  BatchSlotAccept( $B, bid, idx, $A, rst, cts($A, $B, sst, r),
+                   ks($A, $B, sst, r)
+  ),
+  ForgedReceiverAccept( $B, $A, rst, cts($A, $B, sst, r),
+                        ks($A, $B, sst, r)
+  ),
+  ReceiverAcceptsComponent( $B, $A, rst, cts($A, $B, sst, r),
+                            ks($A, $B, sst, r)
+  ),
+  ReceiverKey( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+               ks($A, $B, sst, r),
+               rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  AttackerKnowsKey( rkey($B, $A, rst, cts($A, $B, sst, r),
+                         ks($A, $B, sst, r))
+  ),
+  UnpartneredReceiverSlot( $B, $A, bid, idx, rst, cts($A, $B, sst, r),
+                           ks($A, $B, sst, r),
+                           rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r))
+  ),
+  SlotProcessed( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+  DoneSlotEvent( $B, bid, idx, $A, cts($A, $B, sst, r) )
+  ]->
+   [
+   DoneSlot( $B, bid, idx, $A, cts($A, $B, sst, r) ),
+   Out( rkey($B, $A, rst, cts($A, $B, sst, r), ks($A, $B, sst, r)) )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompleteSealedBatch:
+   [ !BatchSealedFact( $B, bid, rst ), BatchEndToken( $B, bid, rst ) ]
+  --[
+  UseBatchEndToken( $B, bid, rst ), BatchComplete( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) FailSealedBatch:
+   [
+   !BatchSealedFact( $B, bid, rst ), BatchEndToken( $B, bid, rst ),
+   PendingSlot( $B, bid, idx, $A, cts_in )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ), BatchSlot( $B, bid, idx, $A, cts_in ),
+  BatchSlotFail( $B, bid, idx, $A, rst, cts_in ),
+  BatchFail( $B, bid, rst ), ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+restriction strict_batch_completion:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+
+  /*
+  expanded formula:
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (¬(∃ idx A cts_in #j.
+        (SlotAdded( B, bid, idx, A, cts_in ) @ #j) ∧
+        (¬(∃ #k. (SlotProcessed( B, bid, idx, A, cts_in ) @ #k) ∧ (#k < #i)))))"
+  */
+
+lemma executable_add_slot:
+  exists-trace
+  "∃ B A bid idx cts #i. SlotAdded( B, bid, idx, A, cts ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ B A bid idx cts #i. (SlotAdded( B, bid, idx, A, cts ) @ #i)"
+*/
+by sorry
+
+lemma executable_seal_batch:
+  exists-trace "∃ B bid rst #i. SealBatchEvent( B, bid, rst ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ B bid rst #i. (SealBatchEvent( B, bid, rst ) @ #i)"
+*/
+by sorry
+
+lemma executable_process_slot:
+  exists-trace
+  "∃ B A bid idx rst cts Ks #i.
+    BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ B A bid idx rst cts Ks #i.
+  (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i)"
+*/
+by sorry
+
+lemma executable_batch_complete:
+  exists-trace "∃ B bid rst #i. BatchComplete( B, bid, rst ) @ #i"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ B bid rst #i. (BatchComplete( B, bid, rst ) @ #i)"
+*/
+by sorry
+
+lemma executable_batch_fail:
+  exists-trace
+  "∃ B A bid idx rst cts #i.
+    (BatchSlotFail( B, bid, idx, A, rst, cts ) @ #i) ∧
+    (BatchFail( B, bid, rst ) @ #i)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ B A bid idx rst cts #i.
+  (BatchSlotFail( B, bid, idx, A, rst, cts ) @ #i) ∧
+  (BatchFail( B, bid, rst ) @ #i)"
+*/
+by sorry
+
+lemma process_requires_slot_added:
+  all-traces
+  "∀ B A bid idx rst cts Ks #i.
+    (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i) ⇒
+    (∃ #j. (SlotAdded( B, bid, idx, A, cts ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst cts Ks #i.
+  (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i)
+ ∧
+  ∀ #j. (SlotAdded( B, bid, idx, A, cts ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma process_requires_seal:
+  all-traces
+  "∀ B A bid idx rst cts Ks #i.
+    (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i) ⇒
+    (∃ #j. (SealBatchEvent( B, bid, rst ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst cts Ks #i.
+  (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i)
+ ∧
+  ∀ #j. (SealBatchEvent( B, bid, rst ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma complete_requires_seal:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (∃ #j. (SealBatchEvent( B, bid, rst ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchComplete( B, bid, rst ) @ #i)
+ ∧
+  ∀ #j. (SealBatchEvent( B, bid, rst ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma fail_requires_seal:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchFail( B, bid, rst ) @ #i) ⇒
+    (∃ #j. (SealBatchEvent( B, bid, rst ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchFail( B, bid, rst ) @ #i)
+ ∧
+  ∀ #j. (SealBatchEvent( B, bid, rst ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma batch_complete_consumes_state:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (ConsumeReceiverState( B, rst ) @ #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchComplete( B, bid, rst ) @ #i)
+ ∧
+  ¬(ConsumeReceiverState( B, rst ) @ #i)"
+*/
+by sorry
+
+lemma batch_fail_consumes_state:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchFail( B, bid, rst ) @ #i) ⇒ (ConsumeReceiverState( B, rst ) @ #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchFail( B, bid, rst ) @ #i) ∧ ¬(ConsumeReceiverState( B, rst ) @ #i)"
+*/
+by sorry
+
+lemma batch_end_token_single_use:
+  all-traces
+  "∀ B bid rst #i #j.
+    ((UseBatchEndToken( B, bid, rst ) @ #i) ∧
+     (UseBatchEndToken( B, bid, rst ) @ #j)) ⇒
+    (#i = #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i #j.
+  (UseBatchEndToken( B, bid, rst ) @ #i) ∧
+  (UseBatchEndToken( B, bid, rst ) @ #j)
+ ∧
+  ¬(#i = #j)"
+*/
+by sorry
+
+lemma batch_fail_complete_exclusive:
+  all-traces
+  "∀ B bid rst #i #j.
+    ((BatchFail( B, bid, rst ) @ #i) ∧ (BatchComplete( B, bid, rst ) @ #j)) ⇒
+    (⊥)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i #j.
+  (BatchFail( B, bid, rst ) @ #i) ∧ (BatchComplete( B, bid, rst ) @ #j)"
+*/
+by sorry
+
+lemma slot_origin_without_early_compromise:
+  all-traces
+  "∀ B A bid idx rst cts Ks #i.
+    (((BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i) ∧
+      (¬(∃ #j. (CompromiseReceiverState( B, rst ) @ #j) ∧ (#j < #i)))) ∧
+     (¬(∃ sst #j. (CompromiseSenderState( A, sst ) @ #j) ∧ (#j < #i)))) ⇒
+    (∃ #j. (SenderComponent( A, B, rst, cts, Ks ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst cts Ks #i.
+  (BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i)
+ ∧
+  (∀ #j. (CompromiseReceiverState( B, rst ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ sst #j. (CompromiseSenderState( A, sst ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ #j. (SenderComponent( A, B, rst, cts, Ks ) @ #j) ⇒ ¬(#j < #i))"
+*/
+simplify
+solve( BatchSlotAccept( B, bid, idx, A, rst, cts, Ks ) @ #i )
+  case ForgedProcessAfterReceiverStateCompromise
+  solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
+    case SealBatch_case_1
+    solve( PendingSlot( $B, ~bid, idx, $A, cts ) ▶₁ #i )
+      case AddSlot_case_1
+      solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
+        case CompromiseActiveReceiverState_case_1
+        by contradiction /* from formulas */
+      next
+        case CompromiseActiveReceiverState_case_2
+        by contradiction /* from formulas */
+      next
+        case CompromiseReceiverState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_2
+      solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
+        case CompromiseActiveReceiverState_case_1
+        by contradiction /* from formulas */
+      next
+        case CompromiseActiveReceiverState_case_2
+        by contradiction /* from formulas */
+      next
+        case CompromiseReceiverState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_3
+      solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
+        case CompromiseActiveReceiverState_case_1
+        by contradiction /* from formulas */
+      next
+        case CompromiseActiveReceiverState_case_2
+        by contradiction /* from formulas */
+      next
+        case CompromiseReceiverState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_4
+      solve( !CompromisedReceiverState( $B, ~rst ) ▶₂ #i )
+        case CompromiseActiveReceiverState_case_1
+        by contradiction /* from formulas */
+      next
+        case CompromiseActiveReceiverState_case_2
+        by contradiction /* from formulas */
+      next
+        case CompromiseReceiverState
+        by contradiction /* from formulas */
+      qed
+    qed
+  next
+    case SealBatch_case_2
+    by contradiction /* from formulas */
+  qed
+next
+  case ForgedProcessAfterSenderStateCompromise
+  solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
+    case SealBatch_case_1
+    solve( PendingSlot( $B, ~bid, idx, $A, cts($A, $B, sst, r) ) ▶₁ #i )
+      case AddSlot_case_1
+      solve( !CompromisedSenderState( $A, sst ) ▶₂ #i )
+        case CompromiseSenderState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_2
+      solve( !CompromisedSenderState( $A, sst ) ▶₂ #i )
+        case CompromiseSenderState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_3
+      solve( !CompromisedSenderState( $A, sst ) ▶₂ #i )
+        case CompromiseSenderState
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_4
+      solve( !CompromisedSenderState( $A, sst ) ▶₂ #i )
+        case CompromiseSenderState
+        by contradiction /* from formulas */
+      qed
+    qed
+  next
+    case SealBatch_case_2
+    by contradiction /* from formulas */
+  qed
+next
+  case ProcessPendingSlot
+  solve( !BatchSealedFact( $B, bid, rst ) ▶₀ #i )
+    case SealBatch_case_1
+    solve( PendingSlot( $B, ~bid, idx, $A, cts ) ▶₁ #i )
+      case AddSlot_case_1
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_2
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_3
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by contradiction /* from formulas */
+      qed
+    next
+      case AddSlot_case_4
+      solve( !ComponentKey( $A, $B, ~rst, cts, Ks ) ▶₂ #i )
+        case SenderCreatesComponent
+        by contradiction /* from formulas */
+      qed
+    qed
+  next
+    case SealBatch_case_2
+    by contradiction /* from formulas */
+  qed
+qed
+
+lemma slot_key_known_requires_exception:
+  all-traces
+  "∀ B A bid idx rst cts Ks k #i.
+    ((ReceiverKey( B, A, bid, idx, rst, cts, Ks, k ) @ #i) ∧
+     (AttackerKnowsKey( k ) @ #i)) ⇒
+    (((∃ #j.
+        UnpartneredReceiverSlot( B, A, bid, idx, rst, cts, Ks, k ) @ #j) ∨
+      (∃ #j. (CompromiseReceiverState( B, rst ) @ #j) ∧ (#j < #i))) ∨
+     (∃ sst #j. (CompromiseSenderState( A, sst ) @ #j) ∧ (#j < #i)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst cts Ks k #i.
+  (ReceiverKey( B, A, bid, idx, rst, cts, Ks, k ) @ #i) ∧
+  (AttackerKnowsKey( k ) @ #i)
+ ∧
+  (∀ #j.
+    (UnpartneredReceiverSlot( B, A, bid, idx, rst, cts, Ks, k ) @ #j) ⇒ ⊥) ∧
+  (∀ #j. (CompromiseReceiverState( B, rst ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ sst #j. (CompromiseSenderState( A, sst ) @ #j) ⇒ ¬(#j < #i))"
+*/
+by sorry
+
+lemma partnered_slot_key_not_attacker_known_without_early_compromise:
+  all-traces
+  "∀ B A bid idx rst cts Ks k #i.
+    ((((ReceiverKey( B, A, bid, idx, rst, cts, Ks, k ) @ #i) ∧
+       (PartneredSlot( A, B, bid, idx, rst, cts, Ks ) @ #i)) ∧
+      (¬(∃ #j. (CompromiseReceiverState( B, rst ) @ #j) ∧ (#j < #i)))) ∧
+     (¬(∃ sst #j. (CompromiseSenderState( A, sst ) @ #j) ∧ (#j < #i)))) ⇒
+    (¬(∃ #j. AttackerKnowsKey( k ) @ #j))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst cts Ks k #i.
+  (ReceiverKey( B, A, bid, idx, rst, cts, Ks, k ) @ #i) ∧
+  (PartneredSlot( A, B, bid, idx, rst, cts, Ks ) @ #i)
+ ∧
+  (∀ #j. (CompromiseReceiverState( B, rst ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∀ sst #j. (CompromiseSenderState( A, sst ) @ #j) ⇒ ¬(#j < #i)) ∧
+  (∃ #j. (AttackerKnowsKey( k ) @ #j))"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: tamarin/kwaay_splitkem_batch_dynamic_v6.spthy
+
+  processing time: 1.80s
+  
+  executable_add_slot (exists-trace): analysis incomplete (1 steps)
+  executable_seal_batch (exists-trace): analysis incomplete (1 steps)
+  executable_process_slot (exists-trace): analysis incomplete (1 steps)
+  executable_batch_complete (exists-trace): analysis incomplete (1 steps)
+  executable_batch_fail (exists-trace): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_seal (all-traces): analysis incomplete (1 steps)
+  fail_requires_seal (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  batch_fail_complete_exclusive (all-traces): analysis incomplete (1 steps)
+  slot_origin_without_early_compromise (all-traces): verified (43 steps)
+  slot_key_known_requires_exception (all-traces): analysis incomplete (1 steps)
+  partnered_slot_key_not_attacker_known_without_early_compromise (all-traces): analysis incomplete (1 steps)
+
+==============================================================================

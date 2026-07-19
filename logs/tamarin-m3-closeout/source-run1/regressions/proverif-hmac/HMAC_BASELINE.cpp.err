@@ -1,0 +1,9 @@
+/mnt/d/kwaay-formal/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv:357:7: warning: missing terminating ' character
+  357 |      B's receiver prekey is the local state that BatchReceive would unfold
+      |       ^
+/mnt/d/kwaay-formal/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv:374:17: warning: missing terminating ' character
+  374 |      A obtains B's claimed receiver prekey from the server / public channel
+      |                 ^
+/mnt/d/kwaay-formal/proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv:386:15: warning: missing terminating ' character
+  386 |      replace B's local receiver prekey/state. *)
+      |               ^

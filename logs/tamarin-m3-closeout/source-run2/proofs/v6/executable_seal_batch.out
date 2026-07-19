@@ -1,0 +1,7 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory loaded
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory translated
+[Theory Kwaay_SplitKem_Batch_Dynamic_V6] Theory closed
+tamarin-prover: <<loop>>
