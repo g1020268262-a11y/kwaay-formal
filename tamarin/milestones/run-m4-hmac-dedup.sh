@@ -6,6 +6,19 @@ set -euo pipefail
 # --static-only performs no proof and creates no log directory.
 # --source-run N invokes every required target and writes source-runN.
 # --assemble-composite mechanically applies the Run-1-primary policy.
+# --self-test exercises validators with synthetic fixtures and never invokes a prover.
+
+if [[ -n "${KWAAY_REPO_ROOT+x}" ]]; then
+  echo "error: KWAAY_REPO_ROOT is not accepted; the runner derives the repository from its own path" >&2
+  exit 2
+fi
+
+for bootstrap_command in readlink dirname; do
+  command -v "$bootstrap_command" >/dev/null 2>&1 || {
+    echo "error: required bootstrap command not found: $bootstrap_command" >&2
+    exit 2
+  }
+done
 
 RUNNER_PATH="$(readlink -f "${BASH_SOURCE[0]}")"
 RUNNER_DIR="$(dirname "$RUNNER_PATH")"
@@ -30,6 +43,39 @@ PROVERIF_HMAC_BASELINE_REL="logs/variants/hmac-confirmation/proverif/summary.txt
 LOG_REL="logs/tamarin-m4-hmac-dedup"
 LOG_DIR="$ROOT_DIR/$LOG_REL"
 PROOF_TIMEOUT_SECONDS=300
+AGGREGATE_HEADER=$'suite\ttarget\tactual_status\texpected_status\texit_status\tloop\traw_output'
+MATRIX_HEADER=$'suite\ttarget\texpected_status'
+
+if [[ "$RUNNER_PATH" != "$ROOT_DIR/$RUNNER_REL" ]]; then
+  echo "error: resolved runner path is outside the expected repository location: $RUNNER_PATH" >&2
+  exit 2
+fi
+
+GIT_CMD=()
+GIT_ROOT_REPORTED=
+if [[ "$ROOT_DIR" == /mnt/?/* ]] \
+    && [[ -x /mnt/d/Git/cmd/git.exe ]] \
+    && command -v wslpath >/dev/null 2>&1; then
+  GIT_ROOT_WINDOWS="$(wslpath -w "$ROOT_DIR")"
+  GIT_CMD=(/mnt/d/Git/cmd/git.exe -C "$GIT_ROOT_WINDOWS")
+  GIT_ROOT_REPORTED="$(wslpath -u "$("${GIT_CMD[@]}" rev-parse --show-toplevel)")"
+else
+  command -v git >/dev/null 2>&1 || { echo "error: required command not found: git" >&2; exit 2; }
+  GIT_CMD=("$(command -v git)" -c "safe.directory=$ROOT_DIR" -C "$ROOT_DIR")
+  GIT_ROOT_REPORTED="$("${GIT_CMD[@]}" rev-parse --show-toplevel)"
+fi
+if [[ "$(readlink -f "$GIT_ROOT_REPORTED")" != "$ROOT_DIR" ]]; then
+  echo "error: runner-derived root and Git root differ" >&2
+  exit 2
+fi
+
+COMMON_REQUIRED_COMMANDS=(awk sed grep sort find xargs sha256sum head tail cut wc tr cmp diff mktemp cp chmod rm mkdir)
+for common_command in "${COMMON_REQUIRED_COMMANDS[@]}"; do
+  command -v "$common_command" >/dev/null 2>&1 || {
+    echo "error: required command not found: $common_command" >&2
+    exit 2
+  }
+done
 
 REPLAY_HMAC=(
   normal_confirmed_single_accept normal_confirmed_batch_complete
@@ -225,7 +271,228 @@ FROZEN_SHA256["$PROVERIF_ORIGINAL_BASELINE_REL"]="b3a59616ae0d9a3eeb81d878515fdd
 FROZEN_BLOB["$PROVERIF_HMAC_BASELINE_REL"]="41162bc55aeb077d65a0c259a1c96e050a718325"
 FROZEN_SHA256["$PROVERIF_HMAC_BASELINE_REL"]="6de331e25170c36f893ceb78888fd12dbefe3f47b952bda98dfe40d51aa2c503"
 
-git_cmd() { git -c "safe.directory=$ROOT_DIR" -C "$ROOT_DIR" "$@"; }
+git_cmd() { "${GIT_CMD[@]}" "$@"; }
+
+emit_suite_matrix() {
+  local suite="$1" array_name="$2" map_name="$3" target
+  local -n targets="$array_name" expected_map="$map_name"
+  for target in "${targets[@]}"; do
+    printf '%s\t%s\t%s\n' "$suite" "$target" "${expected_map[$target]}"
+  done
+}
+
+emit_proverif_matrix() {
+  local suite="$1" array_name="$2" target
+  local -n targets="$array_name"
+  for target in "${targets[@]}"; do printf '%s\t%s\tMATCH\n' "$suite" "$target"; done
+}
+
+emit_canonical_matrix() {
+  printf '%s\n' "$MATRIX_HEADER"
+  emit_suite_matrix combined-replay COMBINED_REPLAY_TARGETS EXPECT_COMBINED_REPLAY
+  emit_suite_matrix combined-impact COMBINED_IMPACT_TARGETS EXPECT_COMBINED_IMPACT
+  emit_suite_matrix original-replay ORIGINAL_REPLAY_TARGETS EXPECT_ORIGINAL_REPLAY
+  emit_suite_matrix hmac-replay HMAC_REPLAY_TARGETS EXPECT_HMAC_REPLAY
+  emit_suite_matrix original-impact ORIGINAL_IMPACT_TARGETS EXPECT_ORIGINAL_IMPACT
+  emit_suite_matrix fixed-replay FIXED_REPLAY_TARGETS EXPECT_FIXED_REPLAY
+  emit_suite_matrix fixed-impact FIXED_IMPACT_TARGETS EXPECT_FIXED_IMPACT
+  emit_suite_matrix v6 V6_TARGETS EXPECT_V6
+  emit_suite_matrix v7 V7_TARGETS EXPECT_V7
+  emit_proverif_matrix proverif-original PROVERIF_ORIGINAL_TARGETS
+  emit_proverif_matrix proverif-hmac PROVERIF_HMAC_TARGETS
+}
+
+validate_canonical_matrix() {
+  local matrix="${1:-}" own=0 rows unique expected_counts actual suite count failures=0
+  if [[ -z "$matrix" ]]; then matrix="$(mktemp)"; emit_canonical_matrix > "$matrix"; own=1; fi
+  [[ "$(head -n1 "$matrix")" == "$MATRIX_HEADER" ]] || { echo "error: canonical matrix header mismatch" >&2; failures=1; }
+  rows="$(awk -F '\t' 'NR>1 {if(NF!=3) bad=1; n++} END{if(bad) exit 1; print n+0}' "$matrix")" || failures=1
+  [[ "$rows" == 301 ]] || { echo "error: canonical matrix has $rows rows, expected 301" >&2; failures=1; }
+  unique="$(awk -F '\t' 'NR>1 {print $1 "\t" $2}' "$matrix" | LC_ALL=C sort -u | wc -l | tr -d ' ')"
+  [[ "$unique" == 301 ]] || { echo "error: canonical suite/target combinations are not unique" >&2; failures=1; }
+  expected_counts=$'combined-replay\t38\ncombined-impact\t62\noriginal-replay\t18\nhmac-replay\t18\noriginal-impact\t37\nfixed-replay\t30\nfixed-impact\t53\nv6\t16\nv7\t24\nproverif-original\t2\nproverif-hmac\t3'
+  actual="$(awk -F '\t' 'NR>1 {n[$1]++} END{for(s in n) print s "\t" n[s]}' "$matrix" | LC_ALL=C sort)"
+  [[ "$actual" == "$(printf '%s\n' "$expected_counts" | LC_ALL=C sort)" ]] || {
+    echo "error: canonical suite counts differ from the frozen 301-target matrix" >&2; failures=1; }
+  if awk -F '\t' 'NR>1 && $3!="verified" && $3!="falsified" && $3!="MATCH" {exit 1}' "$matrix"; then :; else
+    echo "error: invalid expected status in canonical matrix" >&2; failures=1
+  fi
+  [[ "$own" -eq 0 ]] || rm -f "$matrix"
+  [[ "$failures" -eq 0 ]]
+}
+
+validate_source_matrix() {
+  local aggregate="$1" canonical actual rows unique failures=0
+  [[ -f "$aggregate" ]] || { echo "error: missing aggregate: $aggregate" >&2; return 1; }
+  [[ "$(head -n1 "$aggregate")" == "$AGGREGATE_HEADER" ]] || {
+    echo "error: aggregate header mismatch: $aggregate" >&2; return 1; }
+  rows="$(awk -F '\t' 'NR>1 {if(NF!=7) bad=1; n++} END{if(bad) exit 1; print n+0}' "$aggregate")" || {
+    echo "error: malformed aggregate row" >&2; return 1; }
+  [[ "$rows" == 301 ]] || { echo "error: aggregate has $rows rows, expected 301" >&2; failures=1; }
+  unique="$(awk -F '\t' 'NR>1 {print $1 "\t" $2}' "$aggregate" | LC_ALL=C sort -u | wc -l | tr -d ' ')"
+  [[ "$unique" == 301 ]] || { echo "error: duplicate suite/target in aggregate" >&2; failures=1; }
+  canonical="$(mktemp)"; actual="$(mktemp)"
+  emit_canonical_matrix | tail -n +2 | LC_ALL=C sort > "$canonical"
+  awk -F '\t' 'NR>1 {print $1 "\t" $2 "\t" $4}' "$aggregate" | LC_ALL=C sort > "$actual"
+  if ! cmp -s "$canonical" "$actual"; then
+    echo "error: aggregate has missing, extra, or expected-status-drifted targets" >&2
+    diff -u "$canonical" "$actual" >&2 || true
+    failures=1
+  fi
+  rm -f "$canonical" "$actual"
+  if awk -F '\t' 'NR>1 && $3!="verified" && $3!="falsified" && $3!="MATCH" && $3!="nonterminal" {exit 1}' "$aggregate"; then :; else
+    echo "error: invalid actual status in aggregate" >&2; failures=1
+  fi
+  [[ "$failures" -eq 0 ]]
+}
+
+source_has_nonterminal() { awk -F '\t' 'NR>1 && $3=="nonterminal" {found=1} END{exit(found?0:1)}' "$1"; }
+
+unexpected_git_status() {
+  git_cmd status --porcelain=v1 --untracked-files=all | awk -v log="$LOG_REL" '
+    {
+      path=substr($0,4)
+      if (path==log || index(path,log "/")==1) next
+      print
+    }
+  '
+}
+
+verify_repo_clean_except_logs() {
+  local status
+  status="$(unexpected_git_status)"
+  [[ -z "$status" ]] || { echo "error: repository changes outside $LOG_REL" >&2; printf '%s\n' "$status" >&2; return 1; }
+}
+
+BOUND_PATHS=("$RUNNER_REL" "$COMBINED_REPLAY_REL" "$COMBINED_IMPACT_REL" "${FROZEN_PATHS[@]}")
+
+verify_current_binding_state() {
+  local path
+  verify_repo_clean_except_logs || return 1
+  for path in "${BOUND_PATHS[@]}"; do
+    [[ -f "$ROOT_DIR/$path" ]] || { echo "error: bound input missing: $path" >&2; return 1; }
+    git_cmd cat-file -e "HEAD:$path" 2>/dev/null || { echo "error: bound input is not tracked at HEAD: $path" >&2; return 1; }
+  done
+  git_cmd diff --quiet HEAD -- "${BOUND_PATHS[@]}" || {
+    echo "error: runner/model/frozen input differs from current HEAD" >&2; return 1; }
+  verify_frozen_inputs
+}
+
+write_binding() {
+  local destination="$1" path
+  {
+    printf 'key\tvalue\n'
+    printf 'git_head\t%s\n' "$(git_cmd rev-parse HEAD)"
+    printf 'git_tree\t%s\n' "$(git_cmd show -s --format=%T HEAD)"
+    printf 'git_branch\t%s\n' "$(git_cmd branch --show-current)"
+    for path in "${BOUND_PATHS[@]}"; do
+      printf 'blob:%s\t%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")"
+      printf 'sha256:%s\t%s\n' "$path" "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
+    done
+  } > "$destination"
+}
+
+validate_binding_against_current() {
+  local run="$1" current
+  [[ -f "$run/binding.tsv" ]] || { echo "error: missing binding.tsv in $run" >&2; return 1; }
+  verify_current_binding_state || return 1
+  current="$(mktemp)"; write_binding "$current"
+  if ! cmp -s "$current" "$run/binding.tsv"; then
+    echo "error: current Commit A binding differs from source run: $run" >&2
+    diff -u "$run/binding.tsv" "$current" >&2 || true
+    rm -f "$current"; return 1
+  fi
+  rm -f "$current"
+}
+
+validate_log_top_level_at() {
+  local directory="$1" mode="$2" entries allowed entry
+  [[ -d "$directory" ]] || { echo "error: missing log directory: $directory" >&2; return 1; }
+  case "$mode" in
+    run2) allowed=$'source-run1' ;;
+    assemble) allowed=$'source-run1\nsource-run2' ;;
+    *) return 2 ;;
+  esac
+  entries="$(find "$directory" -mindepth 1 -maxdepth 1 -printf '%f\n' | LC_ALL=C sort)"
+  while IFS= read -r entry; do
+    [[ -z "$entry" ]] && continue
+    grep -Fxq "$entry" <<<"$allowed" || { echo "error: unknown or stale top-level log artifact: $entry" >&2; return 1; }
+  done <<<"$entries"
+  [[ -d "$directory/source-run1" ]] || { echo "error: legal source-run1 is required" >&2; return 1; }
+  if [[ "$mode" == run2 && "$entries" != source-run1 ]]; then
+    echo "error: Run 2 requires source-run1 to be the only top-level entry" >&2; return 1
+  fi
+}
+
+validate_log_top_level() { validate_log_top_level_at "$LOG_DIR" "$1"; }
+
+make_manifest() {
+  local out="$1"
+  (cd "$out" && find . -type f ! -path './SHA256SUMS.txt' -printf '%P\0' | LC_ALL=C sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+  validate_manifest "$out"
+}
+
+validate_manifest() {
+  local out="$1" listed actual failures=0
+  [[ -d "$out" && -f "$out/SHA256SUMS.txt" ]] || { echo "error: missing source manifest: $out" >&2; return 1; }
+  listed="$(mktemp)"; actual="$(mktemp)"
+  awk 'length($1)==64 {line=$0; sub(/^[0-9a-fA-F]{64}  ?/,"",line); print line}' "$out/SHA256SUMS.txt" | LC_ALL=C sort > "$listed"
+  (cd "$out" && find . -type f ! -path './SHA256SUMS.txt' -printf '%P\n' | LC_ALL=C sort) > "$actual"
+  if ! cmp -s "$listed" "$actual"; then
+    echo "error: manifest inventory mismatch in $out" >&2
+    diff -u "$listed" "$actual" >&2 || true
+    failures=1
+  fi
+  if [[ "$(wc -l < "$listed" | tr -d ' ')" != "$(LC_ALL=C sort -u "$listed" | wc -l | tr -d ' ')" ]]; then
+    echo "error: duplicate manifest path in $out" >&2; failures=1
+  fi
+  if ! (cd "$out" && sha256sum -c SHA256SUMS.txt >/dev/null); then
+    echo "error: sha256sum verification failed in $out" >&2; failures=1
+  fi
+  rm -f "$listed" "$actual"
+  [[ "$failures" -eq 0 ]]
+}
+
+resolve_proverif() {
+  PROVERIF_CMD=(); PROVERIF_NEEDS_WIN_PATH=0
+  if command -v proverif >/dev/null 2>&1; then
+    PROVERIF_CMD=("$(command -v proverif)")
+  elif command -v proverif.exe >/dev/null 2>&1; then
+    PROVERIF_CMD=("$(command -v proverif.exe)"); PROVERIF_NEEDS_WIN_PATH=1
+  elif [[ -x /mnt/d/Proverif/proverif2.05/proverif.exe ]]; then
+    PROVERIF_CMD=(/mnt/d/Proverif/proverif2.05/proverif.exe); PROVERIF_NEEDS_WIN_PATH=1
+  else
+    echo "error: ProVerif not found" >&2; return 1
+  fi
+}
+
+resolve_formal_tools() {
+  local command_name
+  for command_name in tamarin-prover maude cpp timeout uname; do
+    command -v "$command_name" >/dev/null 2>&1 || { echo "error: required command not found: $command_name" >&2; return 1; }
+  done
+  TAMARIN_CMD="$(command -v tamarin-prover)"
+  MAUDE_CMD="$(command -v maude)"
+  CPP_CMD="$(command -v cpp)"
+  TIMEOUT_CMD="$(command -v timeout)"
+  resolve_proverif
+  local help
+  help="$("$TAMARIN_CMD" --help 2>&1)"
+  grep -q -- '--output-json' <<<"$help" && grep -q -- '--output-dot' <<<"$help" || {
+    echo "error: Tamarin does not advertise JSON/DOT output" >&2; return 1; }
+}
+
+tool_input_path() {
+  local path="$1"
+  if [[ "$PROVERIF_NEEDS_WIN_PATH" -eq 1 ]]; then
+    command -v wslpath >/dev/null 2>&1 || { echo "error: wslpath required for Windows ProVerif" >&2; return 1; }
+    wslpath -w "$path"
+  else
+    printf '%s\n' "$path"
+  fi
+}
+
+print_command() { local label="$1"; shift; printf '%s:' "$label"; printf ' %q' "$@"; printf '\n'; }
 
 extract_lemmas() { sed -n 's/^lemma[[:space:]]\+\([A-Za-z0-9_]\+\):.*/\1/p' "$1"; }
 
@@ -289,6 +556,65 @@ compare_formula_exact() {
   rm -f "$a" "$b"
 }
 
+project_impact_rule() {
+  local name="$1" source="$2" destination="$3"
+  extract_block rule "$name" "$source" | normalize_text > "$destination"
+  case "$name" in
+    ProcessSlot1|ProcessSlot2)
+      sed -E -i \
+        -e 's/,Fr\(~aid\)//' \
+        -e 's/,AcceptOutputCreated\(~aid,\$B,\$A,bid,idx,rst,m,sid,k\)//' \
+        -e 's/,AcceptedOutput\(~aid,\$B,\$A,bid,idx,rst,m,sid,k\)//' \
+        "$destination"
+      ;;
+    CompleteBatch)
+      sed -E -i \
+        -e 's/,ConsumerStarted\(\$B,bid,rst\)//' \
+        -e 's/,ConsumerStage0\(\$B,bid,rst\)//' \
+        "$destination"
+      ;;
+  esac
+}
+
+compare_replay_impact_lower() {
+  local failures=0 name a b functions_a functions_b
+  functions_a="$(mktemp)"; functions_b="$(mktemp)"
+  awk '{sub(/\r$/,"")} /^functions:/{p=1} p{print} p && /^$/{exit}' "$ROOT_DIR/$COMBINED_REPLAY_REL" | normalize_text > "$functions_a"
+  awk '{sub(/\r$/,"")} /^functions:/{p=1} p{print} p && /^$/{exit}' "$ROOT_DIR/$COMBINED_IMPACT_REL" | normalize_text > "$functions_b"
+  cmp -s "$functions_a" "$functions_b" || { echo "error: combined replay/impact functions differ" >&2; failures=1; }
+  rm -f "$functions_a" "$functions_b"
+
+  for name in Inequality TagInequality; do
+    a="$(mktemp)"; b="$(mktemp)"
+    extract_block restriction "$name" "$ROOT_DIR/$COMBINED_REPLAY_REL" | normalize_text > "$a"
+    extract_block restriction "$name" "$ROOT_DIR/$COMBINED_IMPACT_REL" | normalize_text > "$b"
+    cmp -s "$a" "$b" || { echo "error: combined restriction mismatch: $name" >&2; failures=1; }
+    rm -f "$a" "$b"
+  done
+
+  for name in InitReceiverState InitSenderState SenderCreatesConfirmedMessage CreateBatch \
+      AddSlot1 AddSlot2 SealBatch RejectDuplicateBatch PassDistinctBatch \
+      DetectHmacMismatchSlot1 DetectHmacMismatchSlot2 CloseHmacRejectSlot1 CloseHmacRejectSlot2 \
+      FailSlot1 FailSlot2 CompromiseReceiverState CompromiseActiveReceiverState CompromiseSenderState; do
+    compare_rule_normalized "$name" "$ROOT_DIR/$COMBINED_REPLAY_REL" "$ROOT_DIR/$COMBINED_IMPACT_REL" || failures=1
+  done
+  for name in ProcessSlot1 ProcessSlot2 CompleteBatch; do
+    a="$(mktemp)"; b="$(mktemp)"
+    extract_block rule "$name" "$ROOT_DIR/$COMBINED_REPLAY_REL" | normalize_text > "$a"
+    project_impact_rule "$name" "$ROOT_DIR/$COMBINED_IMPACT_REL" "$b"
+    cmp -s "$a" "$b" || {
+      echo "error: combined lower-layer projection mismatch: $name" >&2
+      diff -u "$a" "$b" >&2 || true
+      failures=1
+    }
+    rm -f "$a" "$b"
+  done
+  for name in "${COMBINED_REPLAY_TARGETS[@]}"; do
+    compare_formula_exact "$name" "$ROOT_DIR/$COMBINED_REPLAY_REL" "$ROOT_DIR/$COMBINED_IMPACT_REL" || failures=1
+  done
+  [[ "$failures" -eq 0 ]]
+}
+
 static_checks() {
   local failures=0 functions_a functions_b rule
   for path in "$COMBINED_REPLAY_REL" "$COMBINED_IMPACT_REL" \
@@ -297,6 +623,7 @@ static_checks() {
   done
   check_inventory "$ROOT_DIR/$COMBINED_REPLAY_REL" COMBINED_REPLAY_TARGETS combined_replay || failures=1
   check_inventory "$ROOT_DIR/$COMBINED_IMPACT_REL" COMBINED_IMPACT_TARGETS combined_impact || failures=1
+  validate_canonical_matrix || failures=1
 
   if grep -P -n '(^|[^A-Za-z0-9_])(SenderSession|ReceiverAccept)\(' \
       "$ROOT_DIR/$COMBINED_REPLAY_REL" "$ROOT_DIR/$COMBINED_IMPACT_REL"; then
@@ -338,6 +665,7 @@ static_checks() {
   done
   grep -q 'HmacValidationFailed(' "$ROOT_DIR/$COMBINED_REPLAY_REL" || failures=1
   grep -q '#hf < #bf' "$ROOT_DIR/$COMBINED_REPLAY_REL" || failures=1
+  compare_replay_impact_lower || failures=1
   verify_frozen_inputs || failures=1
 
   if [[ "$failures" -ne 0 ]]; then return 1; fi
@@ -348,6 +676,8 @@ static_checks() {
   echo "m3_dedup_structure=MATCH_WITH_APPROVED_TAG_PROJECTION"
   echo "alias_tokens=ABSENT"
   echo "frozen_blobs_and_sha256=MATCH"
+  echo "canonical_target_matrix=301 MATCH"
+  echo "combined_replay_impact_lower_layer=MATCH_WITH_NARROW_PROJECTION"
   echo "static_checks=PASS"
 }
 
@@ -362,9 +692,11 @@ verify_frozen_inputs() {
 }
 
 parse_tamarin_result() {
-  local target="$1" raw="$2" line
-  if grep -q '<<loop>>' "$raw"; then printf 'nonterminal'; return; fi
-  line="$(grep -E "^[[:space:]]*$target \((all-traces|exists-trace)\): (verified|falsified)" "$raw" | tail -n1 || true)"
+  local target="$1" raw="$2" exit_code="$3" line
+  if [[ ! -s "$raw" || "$exit_code" == 124 || "$exit_code" == 137 ]] || grep -q '<<loop>>' "$raw"; then
+    printf 'nonterminal'; return
+  fi
+  line="$(grep -E "^[[:space:]]*$target \((all-traces|exists-trace)\): (verified|falsified)( |$)" "$raw" | tail -n1 || true)"
   if [[ "$line" == *": verified"* ]]; then printf 'verified'
   elif [[ "$line" == *": falsified"* ]]; then printf 'falsified'
   else printf 'nonterminal'; fi
@@ -377,9 +709,11 @@ run_tamarin_suite() {
   mkdir -p "$out/proofs/$suite"
   for target in "${targets[@]}"; do
     raw="$out/proofs/$suite/$target.out"; exit_code=0
-    printf 'tamarin-prover --derivcheck-timeout=0 --prove=%q %q\n' "$target" "$model" >> "$out/commands.txt"
-    timeout "$PROOF_TIMEOUT_SECONDS" tamarin-prover --derivcheck-timeout=0 "--prove=$target" "$model" > "$raw" 2>&1 || exit_code=$?
-    status="$(parse_tamarin_result "$target" "$raw")"
+    print_command "executed-proof[$suite][$target]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" \
+      "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$target" "$model" >> "$out/commands.txt"
+    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 \
+      "--prove=$target" "$model" > "$raw" 2>&1 || exit_code=$?
+    status="$(parse_tamarin_result "$target" "$raw" "$exit_code")"
     loop=false; grep -q '<<loop>>' "$raw" && loop=true
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$status" \
       "${expected_map[$target]}" "$exit_code" "$loop" "proofs/$suite/$target.out" >> "$out/aggregate.tsv"
@@ -392,52 +726,68 @@ extract_pv_results() {
     $0 == "TARGET: " target {inside=1; next}
     inside && /^TARGET: / {exit}
     inside && /^RESULT / {sub(/\r$/,""); print}
-  ' "$summary"
+  ' "$summary" | LC_ALL=C sort
 }
 
 run_proverif_target() {
   local out="$1" suite="$2" target="$3" model="$4" baseline="$5"
-  local generated raw actual expected exit_code=0 status=nonterminal
+  local generated raw actual expected input cpp_exit=0 exit_code=0 status=nonterminal
   mkdir -p "$out/proverif/$suite/generated" "$out/proverif/$suite/out"
-  generated="$out/proverif/$suite/generated/$target.pv"
-  raw="$out/proverif/$suite/out/$target.out"
-  printf 'cpp -P -D %q %q > %q\n' "$target" "$model" "$generated" >> "$out/commands.txt"
-  cpp -P -D "$target" "$model" > "$generated"
-  printf 'proverif %q\n' "$generated" >> "$out/commands.txt"
-  timeout "$PROOF_TIMEOUT_SECONDS" proverif "$generated" > "$raw" 2>&1 || exit_code=$?
+  generated="$out/proverif/$suite/generated/$target.pv"; raw="$out/proverif/$suite/out/$target.out"
+  print_command "executed-cpp[$suite][$target]" "$CPP_CMD" -P -D "$target" "$model" >> "$out/commands.txt"
+  "$CPP_CMD" -P -D "$target" "$model" > "$generated" 2> "$out/proverif/$suite/out/$target.cpp.err" || cpp_exit=$?
+  if [[ "$cpp_exit" -eq 0 ]]; then
+    input="$(tool_input_path "$generated")"
+    print_command "executed-proverif[$suite][$target]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" \
+      "${PROVERIF_CMD[@]}" "$input" >> "$out/commands.txt"
+    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "${PROVERIF_CMD[@]}" "$input" > "$raw" 2>&1 || exit_code=$?
+  else
+    exit_code="$cpp_exit"; : > "$raw"
+  fi
   actual="$(mktemp)"; expected="$(mktemp)"
-  grep '^RESULT ' "$raw" | sed 's/\r$//' > "$actual" || true
+  grep '^RESULT ' "$raw" | sed 's/\r$//' | LC_ALL=C sort > "$actual" || true
   extract_pv_results "$baseline" "$target" > "$expected"
-  if [[ "$exit_code" -eq 0 ]] && cmp -s "$actual" "$expected"; then status=MATCH; fi
+  if [[ "$exit_code" -eq 0 && -s "$actual" ]] && cmp -s "$actual" "$expected"; then status=MATCH; fi
   rm -f "$actual" "$expected"
   printf '%s\t%s\t%s\tMATCH\t%s\tfalse\t%s\n' "$suite" "$target" "$status" "$exit_code" \
     "proverif/$suite/out/$target.out" >> "$out/aggregate.tsv"
 }
 
 write_provenance() {
-  local out="$1"
+  local out="$1" run_number="$2" os_name path command_name
+  os_name="$(awk -F= '$1=="PRETTY_NAME"{gsub(/^"|"$/,"",$2); print $2; exit}' /etc/os-release 2>/dev/null || true)"
   {
     echo "git_head=$(git_cmd rev-parse HEAD)"
     echo "git_tree=$(git_cmd show -s --format=%T HEAD)"
     echo "git_branch=$(git_cmd branch --show-current)"
-    echo "runner_blob=$(git_cmd rev-parse HEAD:$RUNNER_REL)"
-    echo "runner_sha256=$(sha256sum "$ROOT_DIR/$RUNNER_REL" | awk '{print $1}')"
-    echo "combined_replay_blob=$(git_cmd rev-parse HEAD:$COMBINED_REPLAY_REL)"
-    echo "combined_replay_sha256=$(sha256sum "$ROOT_DIR/$COMBINED_REPLAY_REL" | awk '{print $1}')"
-    echo "combined_impact_blob=$(git_cmd rev-parse HEAD:$COMBINED_IMPACT_REL)"
-    echo "combined_impact_sha256=$(sha256sum "$ROOT_DIR/$COMBINED_IMPACT_REL" | awk '{print $1}')"
+    echo "os=${os_name:-unknown}"
+    echo "uname=$(uname -a)"
+    echo "git_executable=${GIT_CMD[0]}"
+    echo "tamarin_executable=$TAMARIN_CMD"
+    echo "maude_executable=$MAUDE_CMD"
+    echo "proverif_executable=${PROVERIF_CMD[0]}"
+    echo "cpp_executable=$CPP_CMD"
+    echo "timeout_executable=$TIMEOUT_CMD"
+    echo "uname_executable=$(command -v uname)"
+    echo "bash_executable=$(command -v bash)"
+    if command -v wslpath >/dev/null 2>&1; then echo "wslpath_executable=$(command -v wslpath)"; fi
+    for command_name in "${COMMON_REQUIRED_COMMANDS[@]}"; do
+      printf 'resolved_executable[%s]=%s\n' "$command_name" "$(command -v "$command_name")"
+    done
     echo "proof_timeout_seconds=$PROOF_TIMEOUT_SECONDS"
-    echo "command=$RUNNER_REL --source-run"
-    tamarin-prover --version 2>&1 | sed 's/^/tamarin=/'
-    maude --version 2>&1 | head -n3 | sed 's/^/maude=/'
-    proverif -version 2>&1 | sed 's/^/proverif=/' || true
+    echo "source_run_number=$run_number"
+    printf 'exact_runner_command='; printf '%q ' "$0" --source-run "$run_number"; echo
+    echo "binding_file=binding.tsv"
+    for path in "${BOUND_PATHS[@]}"; do
+      printf 'bound_blob[%s]=%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")"
+      printf 'bound_sha256[%s]=%s\n' "$path" "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
+    done
+    "$TAMARIN_CMD" --version 2>&1 | sed 's/^/tamarin_version=/'
+    "$MAUDE_CMD" --version 2>&1 | head -n3 | sed 's/^/maude_version=/'
+    "${PROVERIF_CMD[@]}" -version 2>&1 | sed 's/^/proverif_version=/' || true
+    "$CPP_CMD" --version 2>&1 | head -n1 | sed 's/^/cpp_version=/'
+    "$TIMEOUT_CMD" --version 2>&1 | head -n1 | sed 's/^/timeout_version=/'
   } > "$out/provenance.txt"
-}
-
-make_manifest() {
-  local out="$1"
-  (cd "$out" && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
-  (cd "$out" && sha256sum -c SHA256SUMS.txt)
 }
 
 write_formula_digests() {
@@ -450,36 +800,131 @@ write_formula_digests() {
 }
 
 write_frozen_input_table() {
-  local out="$1" path blob sha
+  local out="$1" path
   printf 'path\tblob\tsha256\n' > "$out/frozen-inputs.tsv"
   for path in "${FROZEN_PATHS[@]}"; do
-    blob="$(git_cmd rev-parse "HEAD:$path")"
-    sha="$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
-    printf '%s\t%s\t%s\n' "$path" "$blob" "$sha" >> "$out/frozen-inputs.tsv"
+    printf '%s\t%s\t%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")" \
+      "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')" >> "$out/frozen-inputs.tsv"
   done
 }
 
 terminal_status() { [[ "$1" == verified || "$1" == falsified || "$1" == MATCH ]]; }
+first_event_offset() { LC_ALL=C grep -abo -m1 -F "$2(" "$1" | head -n1 | cut -d: -f1; }
+event_count() { LC_ALL=C grep -ao -F "$2(" "$1" | wc -l | tr -d ' '; }
+unique_event_count() { LC_ALL=C grep -ao -E "$2\([^)]*\)" "$1" | LC_ALL=C sort -u | wc -l | tr -d ' '; }
+unique_event_argument_count() {
+  local file="$1" event="$2" argument="$3"
+  LC_ALL=C grep -ao -E "$event\([^)]*\)" "$file" \
+    | sed -E "s/^$event\\(//; s/\\)$//" \
+    | awk -F ',' -v field="$argument" '{value=$field; gsub(/[[:space:]\\\\]/,"",value); if(value!="") print value}' \
+    | LC_ALL=C sort -u | wc -l | tr -d ' '
+}
+
+validate_trace_artifacts() {
+  local label="$1" model="$2" lemma="$3" raw="$4" json="$5" dot="$6"
+  local theory failures=0 a b c
+  theory="$(awk '/^theory[[:space:]]+/{print $2; exit}' "$model")"
+  [[ -s "$raw" && -s "$json" && -s "$dot" ]] || failures=1
+  grep -Eq "^[[:space:]]*$lemma \(exists-trace\): verified" "$raw" || failures=1
+  grep -Fq "$theory" "$raw" "$json" "$dot" || failures=1
+  grep -Fq "$lemma" "$raw" "$json" "$dot" || failures=1
+  grep -Fq '<<loop>>' "$raw" && failures=1
+  case "$label" in
+    duplicate)
+      for a in DuplicateDetected BatchFail BatchClosed ConsumeReceiverState; do [[ "$(event_count "$dot" "$a")" -ge 1 ]] || failures=1; done
+      [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -eq 0 ]] || failures=1
+      ;;
+    normal-replay)
+      [[ "$(unique_event_argument_count "$dot" ConfirmedSend 3)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" DedupPassed)" -ge 1 ]] || failures=1
+      [[ "$(event_count "$dot" HmacValidated)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" BatchComplete)" -ge 1 ]] || failures=1
+      ;;
+    slot1-mismatch)
+      a="$(first_event_offset "$dot" HmacValidationFailed || true)"; b="$(first_event_offset "$dot" BatchFail || true)"
+      [[ -n "$a" && -n "$b" && "$a" -lt "$b" ]] || failures=1
+      [[ "$(event_count "$dot" ConfirmedReceiverAccept)" -eq 0 ]] || failures=1
+      ;;
+    slot2-mismatch)
+      a="$(first_event_offset "$dot" ConfirmedReceiverAccept || true)"
+      b="$(first_event_offset "$dot" HmacValidationFailed || true)"; c="$(first_event_offset "$dot" BatchFail || true)"
+      [[ -n "$a" && -n "$b" && -n "$c" && "$a" -lt "$b" && "$b" -lt "$c" ]] || failures=1
+      for a in BatchComplete ConsumerStarted InstallFromAccept; do [[ "$(event_count "$dot" "$a")" -eq 0 ]] || failures=1; done
+      ;;
+    normal-consumer)
+      [[ "$(unique_event_argument_count "$dot" AcceptOutputCreated 1)" -ge 2 ]] || failures=1
+      [[ "$(unique_event_argument_count "$dot" InstallFromAccept 3)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" AcceptOutputCreated)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" InstallFromAccept)" -ge 2 ]] || failures=1
+      [[ "$(event_count "$dot" ConsumerComplete)" -ge 1 ]] || failures=1
+      ;;
+    *) failures=1 ;;
+  esac
+  [[ "$failures" -eq 0 ]]
+}
+
+run_trace() {
+  local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL
+  dir="$out/traces/$label"; raw="$dir/trace.out"; json="$dir/trace.json"; dot="$dir/trace.dot"
+  mkdir -p "$dir"
+  print_command "executed-trace[$label]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" \
+    --derivcheck-timeout=0 "--prove=$lemma" "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" >> "$out/commands.txt"
+  "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$lemma" \
+    "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" > "$raw" 2>&1 || exit_code=$?
+  if [[ "$exit_code" -eq 0 ]] && validate_trace_artifacts "$label" "$ROOT_DIR/$model_rel" "$lemma" "$raw" "$json" "$dot"; then result=PASS; fi
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$label" "$model_rel" "$lemma" "$exit_code" "$result" \
+    "traces/$label/trace.out" "traces/$label/trace.json" "traces/$label/trace.dot" >> "$out/trace-aggregate.tsv"
+  [[ "$result" == PASS ]]
+}
+
+validate_trace_aggregate() {
+  local file="$1" expected actual
+  [[ -f "$file" ]] || { echo "error: missing trace aggregate: $file" >&2; return 1; }
+  [[ "$(head -n1 "$file")" == $'label\tmodel\tlemma\texit_status\tvalidation\traw\tjson\tdot' ]] || {
+    echo "error: trace aggregate header mismatch" >&2; return 1; }
+  [[ "$(awk -F '\t' 'NR>1 {if(NF!=8 || ($5!="PASS" && $5!="FAIL")) bad=1; n++} END{if(bad) exit 1; print n+0}' "$file")" == 5 ]] || {
+    echo "error: trace aggregate must contain exactly five well-formed rows" >&2; return 1; }
+  expected=$'duplicate\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tduplicate_same_base_different_tag_fail_exists\nnormal-replay\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_accepts_complete\nslot1-mismatch\ttamarin/replay/kwaay_replay_hmac_dedup.spthy\thmac_failure_slot1_exists\nslot2-mismatch\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\thmac_failure_slot2_after_prior_accept_exists\nnormal-consumer\ttamarin/impact/kwaay_impact_hmac_dedup.spthy\tnormal_two_distinct_valid_confirmed_outputs_consumer_complete'
+  actual="$(awk -F '\t' 'NR>1 {print $1 "\t" $2 "\t" $3}' "$file")"
+  [[ "$(printf '%s\n' "$actual" | LC_ALL=C sort)" == "$(printf '%s\n' "$expected" | LC_ALL=C sort)" ]] || {
+    echo "error: trace aggregate witness mapping mismatch" >&2; return 1; }
+}
+
+validate_source_run() {
+  local run="$1"
+  validate_manifest "$run" || return 1
+  validate_source_matrix "$run/aggregate.tsv" || return 1
+  validate_binding_against_current "$run" || return 1
+  validate_trace_aggregate "$run/trace-aggregate.tsv" || return 1
+  [[ -f "$run/provenance.txt" && -f "$run/summary.txt" ]] || {
+    echo "error: incomplete source-run metadata: $run" >&2; return 1; }
+}
 
 source_run() {
-  local n="$1" out="$LOG_DIR/source-run$n" status
+  local n="$1" out parse_errors=0 trace_errors=0 structural_errors=0 status parse_exit
   [[ "$n" == 1 || "$n" == 2 ]] || { echo "error: source run must be 1 or 2" >&2; exit 2; }
-  static_checks; verify_frozen_inputs
-  [[ -z "$(git_cmd status --porcelain=v1 --untracked-files=all -- . ':!logs/tamarin-m4-hmac-dedup')" ]] || {
-    echo "error: tracked/source state is not clean" >&2; exit 2; }
-  [[ ! -e "$out" ]] || { echo "error: source run exists: $out" >&2; exit 2; }
-  if [[ "$n" == 2 ]]; then
-    [[ -f "$LOG_DIR/source-run1/aggregate.tsv" ]] || { echo "error: Run 1 is required" >&2; exit 2; }
-    if awk -F '\t' 'NR>1 && $3 != $4 {bad=1} END{exit bad}' "$LOG_DIR/source-run1/aggregate.tsv" \
-       && awk -F '\t' 'NR>1 && $3 == "nonterminal" {bad=1} END{exit bad}' "$LOG_DIR/source-run1/aggregate.tsv"; then
-      echo "error: Run 1 is complete and matches expected; Run 2 is forbidden" >&2; exit 2
-    fi
+  if [[ "$n" == 1 ]]; then
+    [[ ! -e "$LOG_DIR" ]] || { echo "error: Run 1 requires the entire log directory to be absent: $LOG_DIR" >&2; exit 2; }
+  else
+    validate_log_top_level run2 || exit 2
+    validate_source_run "$LOG_DIR/source-run1" || exit 2
+    source_has_nonterminal "$LOG_DIR/source-run1/aggregate.tsv" || {
+      echo "error: Run 2 is forbidden unless Run 1 contains at least one nonterminal target" >&2; exit 2; }
   fi
+  verify_current_binding_state || exit 2
+  static_checks
+  resolve_formal_tools || exit 2
+  out="$LOG_DIR/source-run$n"
+  [[ ! -e "$out" ]] || { echo "error: source run exists: $out" >&2; exit 2; }
   mkdir -p "$out/parse"
-  printf 'suite\ttarget\tactual_status\texpected_status\texit_status\tloop\traw_output\n' > "$out/aggregate.tsv"
+  printf '%s\n' "$AGGREGATE_HEADER" > "$out/aggregate.tsv"
   printf 'suite\ttarget\tformula_body_sha256\n' > "$out/formula-bodies.tsv"
+  printf 'label\tmodel\tlemma\texit_status\tvalidation\traw\tjson\tdot\n' > "$out/trace-aggregate.tsv"
   : > "$out/commands.txt"
-  write_provenance "$out"
+  emit_canonical_matrix > "$out/canonical-target-matrix.tsv"
+  write_binding "$out/binding.tsv"
+  write_provenance "$out" "$n"
   write_frozen_input_table "$out"
   static_checks > "$out/static-comparison.txt"
   write_formula_digests "$out" combined-replay "$ROOT_DIR/$COMBINED_REPLAY_REL" COMBINED_REPLAY_TARGETS
@@ -491,10 +936,16 @@ source_run() {
   write_formula_digests "$out" fixed-impact "$ROOT_DIR/$FIXED_IMPACT_REL" FIXED_IMPACT_TARGETS
   write_formula_digests "$out" v6 "$ROOT_DIR/$V6_REL" V6_TARGETS
   write_formula_digests "$out" v7 "$ROOT_DIR/$V7_REL" V7_TARGETS
-  printf 'tamarin-prover --parse-only %q\n' "$ROOT_DIR/$COMBINED_REPLAY_REL" >> "$out/commands.txt"
-  tamarin-prover --parse-only "$ROOT_DIR/$COMBINED_REPLAY_REL" > "$out/parse/combined-replay.out" 2>&1
-  printf 'tamarin-prover --parse-only %q\n' "$ROOT_DIR/$COMBINED_IMPACT_REL" >> "$out/commands.txt"
-  tamarin-prover --parse-only "$ROOT_DIR/$COMBINED_IMPACT_REL" > "$out/parse/combined-impact.out" 2>&1
+  printf 'model\texit_status\traw_output\n' > "$out/parse-validation.tsv"
+  for status in combined-replay combined-impact; do
+    local model
+    if [[ "$status" == combined-replay ]]; then model="$ROOT_DIR/$COMBINED_REPLAY_REL"; else model="$ROOT_DIR/$COMBINED_IMPACT_REL"; fi
+    parse_exit=0
+    print_command "executed-parse[$status]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --parse-only "$model" >> "$out/commands.txt"
+    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --parse-only "$model" > "$out/parse/$status.out" 2>&1 || parse_exit=$?
+    [[ "$parse_exit" -eq 0 ]] || parse_errors=$((parse_errors+1))
+    printf '%s\t%s\t%s\n' "$status" "$parse_exit" "parse/$status.out" >> "$out/parse-validation.tsv"
+  done
   run_tamarin_suite "$out" combined-replay "$ROOT_DIR/$COMBINED_REPLAY_REL" COMBINED_REPLAY_TARGETS EXPECT_COMBINED_REPLAY
   run_tamarin_suite "$out" combined-impact "$ROOT_DIR/$COMBINED_IMPACT_REL" COMBINED_IMPACT_TARGETS EXPECT_COMBINED_IMPACT
   run_tamarin_suite "$out" original-replay "$ROOT_DIR/$ORIGINAL_REPLAY_REL" ORIGINAL_REPLAY_TARGETS EXPECT_ORIGINAL_REPLAY
@@ -510,68 +961,163 @@ source_run() {
   for status in "${PROVERIF_HMAC_TARGETS[@]}"; do
     run_proverif_target "$out" proverif-hmac "$status" "$ROOT_DIR/$PROVERIF_HMAC_REL" "$ROOT_DIR/$PROVERIF_HMAC_BASELINE_REL"
   done
-  awk -F '\t' 'NR>1 {n++; if($3=="verified"||$3=="falsified"||$3=="MATCH") t++; if($3!=$4)m++}
-    END{printf "invoked=%d\nterminal=%d\nmismatch=%d\n",n,t,m}' "$out/aggregate.tsv" > "$out/summary.txt"
-  make_manifest "$out"
+  run_trace "$out" duplicate "$COMBINED_REPLAY_REL" duplicate_same_base_different_tag_fail_exists || trace_errors=$((trace_errors+1))
+  run_trace "$out" normal-replay "$COMBINED_REPLAY_REL" normal_two_distinct_valid_confirmed_accepts_complete || trace_errors=$((trace_errors+1))
+  run_trace "$out" slot1-mismatch "$COMBINED_REPLAY_REL" hmac_failure_slot1_exists || trace_errors=$((trace_errors+1))
+  run_trace "$out" slot2-mismatch "$COMBINED_IMPACT_REL" hmac_failure_slot2_after_prior_accept_exists || trace_errors=$((trace_errors+1))
+  run_trace "$out" normal-consumer "$COMBINED_IMPACT_REL" normal_two_distinct_valid_confirmed_outputs_consumer_complete || trace_errors=$((trace_errors+1))
+  validate_trace_aggregate "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
+  validate_source_matrix "$out/aggregate.tsv" || structural_errors=$((structural_errors+1))
+  verify_repo_clean_except_logs || structural_errors=$((structural_errors+1))
+  awk -F '\t' -v pe="$parse_errors" -v te="$trace_errors" -v se="$structural_errors" '
+    NR>1 {n++; if($3=="verified"||$3=="falsified"||$3=="MATCH") t++; if($3!=$4)m++; if($3=="nonterminal") nt++}
+    END{printf "invoked=%d\nterminal=%d\nnonterminal=%d\nmismatch=%d\nparse_failures=%d\ntrace_total=5\ntrace_failures=%d\nstructural_failures=%d\n",n,t,nt,m,pe,te,se}' \
+    "$out/aggregate.tsv" > "$out/summary.txt"
+  make_manifest "$out" || structural_errors=$((structural_errors+1))
   echo "source_run$n=COMPLETE_INVOCATION"
+  [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 ]]
 }
 
-assemble_composite() {
-  local run1="$LOG_DIR/source-run1" run2="$LOG_DIR/source-run2" selection="$LOG_DIR/composite-selection.tsv"
-  local vector="$LOG_DIR/composite-result-vector.tsv" unresolved=0 mismatch=0 conflicts=0
-  [[ -f "$run1/aggregate.tsv" ]] || { echo "error: missing Run 1" >&2; exit 2; }
-  if [[ -d "$run2" ]]; then
-    cmp -s "$run1/provenance.txt" "$run2/provenance.txt" || { echo "error: provenance conflict" >&2; exit 1; }
-  fi
+lookup_actual() { awk -F '\t' -v s="$2" -v t="$3" 'NR>1 && $1==s && $2==t {print $3; exit}' "$1"; }
+
+select_composite() {
+  local run1="$1" run2="$2" selection="$3" vector="$4" summary="$5"
+  local suite target expected r1 r2 selected chosen reason match
+  local unresolved=0 mismatch=0 conflicts=0
   printf 'suite\ttarget\texpected\trun1\trun2\tselected_run\tselected_status\treason\n' > "$selection"
   printf 'suite\ttarget\tactual_status\texpected_status\tselected_run\tmatch\n' > "$vector"
-  while IFS=$'\t' read -r suite target r1 expected exit1 loop1 raw1; do
+  while IFS=$'\t' read -r suite target expected; do
     [[ "$suite" == suite ]] && continue
-    local r2=missing selected=none chosen=nonterminal reason="Run 1 nonterminal and no legal fallback"
-    if [[ -f "$run2/aggregate.tsv" ]]; then
-      r2="$(awk -F '\t' -v s="$suite" -v t="$target" '$1==s&&$2==t{print $3}' "$run2/aggregate.tsv")"
-      [[ -n "$r2" ]] || r2=missing
-    fi
+    r1="$(lookup_actual "$run1" "$suite" "$target")"; r2=missing
+    [[ -z "$run2" ]] || r2="$(lookup_actual "$run2" "$suite" "$target")"
+    [[ -n "$r2" ]] || r2=missing
+    selected=none; chosen=nonterminal; reason="Run 1 nonterminal and no legal terminal fallback"
     if terminal_status "$r1"; then
       selected=run1; chosen="$r1"; reason="Run 1 primary terminal"
       if terminal_status "$r2" && [[ "$r1" != "$r2" ]]; then conflicts=$((conflicts+1)); fi
     elif terminal_status "$r2"; then
-      selected=run2; chosen="$r2"; reason="Run 1 nonterminal; legal Run 2 terminal fallback"
+      selected=run2; chosen="$r2"; reason="Run 1 nonterminal; Run 2 terminal fallback"
     else
       unresolved=$((unresolved+1))
     fi
-    [[ "$chosen" == "$expected" ]] || mismatch=$((mismatch+1))
+    if [[ "$chosen" == "$expected" ]]; then match=MATCH; else match=MISMATCH; mismatch=$((mismatch+1)); fi
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$expected" "$r1" "$r2" "$selected" "$chosen" "$reason" >> "$selection"
-    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$chosen" "$expected" "$selected" "$([[ "$chosen" == "$expected" ]] && echo MATCH || echo MISMATCH)" >> "$vector"
-  done < "$run1/aggregate.tsv"
+    printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$chosen" "$expected" "$selected" "$match" >> "$vector"
+  done < <(emit_canonical_matrix)
   {
-    echo "classification=transparent composite; Run 1 primary"
+    echo "classification=transparent composite; canonical 301-target matrix; Run 1 primary"
     echo "terminal_conflicts=$conflicts"
     echo "unresolved=$unresolved"
     echo "mismatches=$mismatch"
-  } > "$LOG_DIR/composite-summary.txt"
-  [[ "$conflicts" -eq 0 && "$unresolved" -eq 0 && "$mismatch" -eq 0 ]] || exit 1
-  (cd "$LOG_DIR" && find . -type f ! -name SHA256SUMS.txt -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS.txt)
+  } > "$summary"
+  [[ "$conflicts" -eq 0 && "$unresolved" -eq 0 && "$mismatch" -eq 0 ]]
+}
+
+assemble_composite() {
+  local run1="$LOG_DIR/source-run1" run2="$LOG_DIR/source-run2" run2_aggregate=
+  validate_log_top_level assemble || exit 2
+  verify_current_binding_state || exit 2
+  static_checks
+  validate_source_run "$run1" || exit 2
+  if [[ -d "$run2" ]]; then
+    validate_source_run "$run2" || exit 2
+    source_has_nonterminal "$run1/aggregate.tsv" || { echo "error: a Run 2 exists although Run 1 has no nonterminal target" >&2; exit 2; }
+    cmp -s "$run1/binding.tsv" "$run2/binding.tsv" || { echo "error: Run 1/Run 2 binding conflict" >&2; exit 2; }
+    run2_aggregate="$run2/aggregate.tsv"
+  fi
+  select_composite "$run1/aggregate.tsv" "$run2_aggregate" "$LOG_DIR/composite-selection.tsv" \
+    "$LOG_DIR/composite-result-vector.tsv" "$LOG_DIR/composite-summary.txt" || {
+      echo "error: composite has unresolved, mismatch, or terminal conflict" >&2; exit 1; }
+  verify_repo_clean_except_logs || exit 2
+  make_manifest "$LOG_DIR"
   echo "composite=PASS"
 }
 
+write_synthetic_aggregate() {
+  local destination="$1" override_suite="${2:-}" override_target="${3:-}" override_status="${4:-}"
+  printf '%s\n' "$AGGREGATE_HEADER" > "$destination"
+  while IFS=$'\t' read -r suite target expected; do
+    [[ "$suite" == suite ]] && continue
+    local actual="$expected"
+    if [[ "$suite" == "$override_suite" && "$target" == "$override_target" ]]; then actual="$override_status"; fi
+    printf '%s\t%s\t%s\t%s\t0\tfalse\tsynthetic/%s/%s.out\n' "$suite" "$target" "$actual" "$expected" "$suite" "$target" >> "$destination"
+  done < <(emit_canonical_matrix)
+}
+
+expect_validator_failure() { if "$@" >/dev/null 2>&1; then echo "error: negative test unexpectedly passed: $*" >&2; return 1; fi; }
+
+self_test() {
+  local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification
+  [[ -e "$LOG_DIR" ]] && before_log_exists=1
+  static_checks >/dev/null || failures=1
+  tmp="$(mktemp -d)"; base="$tmp/base.tsv"
+  write_synthetic_aggregate "$base"
+  validate_source_matrix "$base" || failures=1
+
+  fixture="$tmp/missing.tsv"; awk 'NR!=2' "$base" > "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
+  fixture="$tmp/duplicate.tsv"; cp "$base" "$fixture"; sed -n '2p' "$base" >> "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
+  fixture="$tmp/extra.tsv"; cp "$base" "$fixture"; printf 'extra\ttarget\tverified\tverified\t0\tfalse\tx\n' >> "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
+  fixture="$tmp/expected.tsv"; awk -F '\t' 'BEGIN{OFS="\t"} NR==2{$4=($4=="verified"?"falsified":"verified")} {print}' "$base" > "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
+  fixture="$tmp/header.tsv"; { echo 'wrong-header'; tail -n +2 "$base"; } > "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
+
+  mkdir -p "$tmp/manifest"; printf 'alpha\n' > "$tmp/manifest/a"; make_manifest "$tmp/manifest" >/dev/null || failures=1
+  printf 'tamper\n' >> "$tmp/manifest/a"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
+  make_manifest "$tmp/manifest" >/dev/null || failures=1; printf 'extra\n' > "$tmp/manifest/extra"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
+  make_manifest "$tmp/manifest" >/dev/null || failures=1; rm -f "$tmp/manifest/a"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
+
+  selection="$tmp/selection.tsv"; vector="$tmp/vector.tsv"; summary="$tmp/summary.txt"
+  select_composite "$base" "" "$selection" "$vector" "$summary" || failures=1
+  write_synthetic_aggregate "$tmp/run1-nonterminal.tsv" combined-replay normal_confirmed_single_accept nonterminal
+  write_synthetic_aggregate "$tmp/run2.tsv"
+  expect_validator_failure select_composite "$tmp/run1-nonterminal.tsv" "" "$selection" "$vector" "$summary" || failures=1
+  select_composite "$tmp/run1-nonterminal.tsv" "$tmp/run2.tsv" "$selection" "$vector" "$summary" || failures=1
+  grep -Fq $'combined-replay\tnormal_confirmed_single_accept\tverified\tnonterminal\tverified\trun2' "$selection" || failures=1
+  write_synthetic_aggregate "$tmp/run1-unexpected.tsv" combined-replay normal_confirmed_single_accept falsified
+  if source_has_nonterminal "$tmp/run1-unexpected.tsv"; then failures=1; fi
+  expect_validator_failure select_composite "$tmp/run1-unexpected.tsv" "$tmp/run2.tsv" "$selection" "$vector" "$summary" || failures=1
+  grep -Fq $'combined-replay\tnormal_confirmed_single_accept\tverified\tfalsified\tverified\trun1' "$selection" || failures=1
+
+  : > "$tmp/empty.out"; classification="$(parse_tamarin_result target "$tmp/empty.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
+  printf '<<loop>>\n' > "$tmp/loop.out"; classification="$(parse_tamarin_result target "$tmp/loop.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
+  printf 'unknown result\n' > "$tmp/unknown.out"; classification="$(parse_tamarin_result target "$tmp/unknown.out" 0)"; [[ "$classification" == nonterminal ]] || failures=1
+  printf '  target (exists-trace): verified (1 steps)\n' > "$tmp/timeout.out"; classification="$(parse_tamarin_result target "$tmp/timeout.out" 124)"; [[ "$classification" == nonterminal ]] || failures=1
+
+  mkdir -p "$tmp/log-layout/source-run1"
+  validate_log_top_level_at "$tmp/log-layout" run2 || failures=1
+  mkdir -p "$tmp/log-layout/source-run2"
+  expect_validator_failure validate_log_top_level_at "$tmp/log-layout" run2 || failures=1
+  validate_log_top_level_at "$tmp/log-layout" assemble || failures=1
+  printf 'stale\n' > "$tmp/log-layout/composite-summary.txt"
+  expect_validator_failure validate_log_top_level_at "$tmp/log-layout" assemble || failures=1
+
+  mock="$tmp/mock-bin"; mkdir -p "$mock"
+  printf '#!/usr/bin/env bash\nexit 0\n' > "$mock/proverif"; chmod +x "$mock/proverif"
+  (PATH="$mock:/usr/bin:/bin"; resolve_proverif; [[ "${PROVERIF_CMD[0]}" == "$mock/proverif" && "$PROVERIF_NEEDS_WIN_PATH" -eq 0 ]]) || failures=1
+  rm -f "$mock/proverif"; printf '#!/usr/bin/env bash\nexit 0\n' > "$mock/proverif.exe"; chmod +x "$mock/proverif.exe"
+  (PATH="$mock:/usr/bin:/bin"; resolve_proverif; [[ "${PROVERIF_CMD[0]}" == "$mock/proverif.exe" && "$PROVERIF_NEEDS_WIN_PATH" -eq 1 ]]) || failures=1
+  [[ "$(readlink -f "$GIT_ROOT_REPORTED")" == "$ROOT_DIR" ]] || failures=1
+
+  rm -rf "$tmp"
+  if [[ "$before_log_exists" -eq 0 && -e "$LOG_DIR" ]]; then echo "error: self-test created formal log directory" >&2; failures=1; fi
+  [[ "$failures" -eq 0 ]] || return 1
+  echo "target_matrix_tests=PASS"
+  echo "manifest_tamper_tests=PASS"
+  echo "matrix_missing_duplicate_extra_tests=PASS"
+  echo "composite_synthetic_tests=PASS"
+  echo "clean_directory_tests=PASS"
+  echo "path_tool_resolution_tests=PASS"
+  echo "self_test=PASS"
+}
+
 usage() {
-  echo "usage: $RUNNER_REL --static-only | --source-run 1|2 | --assemble-composite" >&2
+  echo "usage: $RUNNER_REL --static-only | --self-test | --source-run 1|2 | --assemble-composite" >&2
   exit 2
 }
 
 case "${1:-}" in
-  --static-only)
-    [[ $# -eq 1 ]] || usage
-    static_checks
-    ;;
-  --source-run)
-    [[ $# -eq 2 ]] || usage
-    source_run "$2"
-    ;;
-  --assemble-composite)
-    [[ $# -eq 1 ]] || usage
-    assemble_composite
-    ;;
+  --static-only) [[ $# -eq 1 ]] || usage; static_checks ;;
+  --self-test) [[ $# -eq 1 ]] || usage; self_test ;;
+  --source-run) [[ $# -eq 2 ]] || usage; source_run "$2" ;;
+  --assemble-composite) [[ $# -eq 1 ]] || usage; assemble_composite ;;
   *) usage ;;
 esac
