@@ -1019,6 +1019,16 @@ validate_trace_all_pass() {
   awk -F '\t' 'NR>1 && ($4!=0 || $5!="PASS") {exit 1}' "$1"
 }
 
+tamarin_parse_output_is_wellformed() {
+  local raw="$1"
+  [[ -s "$raw" ]] || return 1
+  if LC_ALL=C grep -Eiq \
+      'conversion[[:space:]]+to[[:space:]]+guarded[[:space:]]+formula[[:space:]]+failed|unguarded[[:space:]]+variable|well[ -]?formedness[^[:cntrl:]]*(fail|error)|(fail|error)[^[:cntrl:]]*well[ -]?formedness' \
+      "$raw"; then
+    return 1
+  fi
+}
+
 validate_parse_validation() {
   local run="$1" file="$run/parse-validation.tsv" expected actual raw
   [[ -f "$file" ]] || { echo "error: missing parse-validation.tsv" >&2; return 1; }
@@ -1032,6 +1042,10 @@ validate_parse_validation() {
   while IFS=$'\t' read -r _ _ raw; do
     [[ "$raw" == raw_output ]] && continue
     [[ -s "$run/$raw" ]] || { echo "error: missing or empty parse output: $raw" >&2; return 1; }
+    tamarin_parse_output_is_wellformed "$run/$raw" || {
+      echo "error: Tamarin parse output contains a guarded-formula or wellformedness failure: $raw" >&2
+      return 1
+    }
   done < "$file"
 }
 
@@ -1157,7 +1171,9 @@ source_run() {
     parse_exit=0
     print_command "executed-parse[$status]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --parse-only "$model" >> "$out/commands.txt"
     "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --parse-only "$model" > "$out/parse/$status.out" 2>&1 || parse_exit=$?
-    [[ "$parse_exit" -eq 0 ]] || parse_errors=$((parse_errors+1))
+    if [[ "$parse_exit" -ne 0 ]] || ! tamarin_parse_output_is_wellformed "$out/parse/$status.out"; then
+      parse_errors=$((parse_errors+1))
+    fi
     printf '%s\t%s\t%s\n' "$status" "$parse_exit" "parse/$status.out" >> "$out/parse-validation.tsv"
   done
   run_tamarin_suite "$out" combined-replay "$ROOT_DIR/$COMBINED_REPLAY_REL" COMBINED_REPLAY_TARGETS EXPECT_COMBINED_REPLAY
@@ -1394,6 +1410,15 @@ self_test() {
   printf 'digraph G { a -> b; }\n' > "$tmp/valid.dot"; validate_dot_digraph "$tmp/valid.dot" || failures=1
   printf 'graph G { a -- b;\n' > "$tmp/invalid.dot"; expect_validator_failure validate_dot_digraph "$tmp/invalid.dot" || failures=1
 
+  printf '/* All wellformedness checks were successful. */\n' > "$tmp/wellformed.out"
+  tamarin_parse_output_is_wellformed "$tmp/wellformed.out" || failures=1
+  printf 'conversion to guarded formula failed: unguarded variable(s) tag2\n' > "$tmp/guarded-failure.out"
+  expect_validator_failure tamarin_parse_output_is_wellformed "$tmp/guarded-failure.out" || failures=1
+  printf 'Wellformedness check failed\n' > "$tmp/wellformedness-failed.out"
+  expect_validator_failure tamarin_parse_output_is_wellformed "$tmp/wellformedness-failed.out" || failures=1
+  printf 'ERROR: protocol well-formedness failure\n' > "$tmp/wellformedness-error.out"
+  expect_validator_failure tamarin_parse_output_is_wellformed "$tmp/wellformedness-error.out" || failures=1
+
   synthetic_run="$tmp/source-run"
   write_synthetic_qualified_source "$synthetic_run"
   validate_source_qualification "$synthetic_run" || failures=1
@@ -1439,6 +1464,7 @@ self_test() {
   echo "json_dot_trace_tests=PASS"
   echo "source_run_qualification_tests=PASS"
   echo "gawk_unexpected_git_status_test=PASS"
+  echo "parse_output_failure_gate_tests=PASS"
   echo "self_test=PASS"
 }
 

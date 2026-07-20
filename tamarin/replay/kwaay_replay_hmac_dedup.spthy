@@ -466,7 +466,7 @@ lemma normal_distinct_batch_complete:
 
 lemma normal_distinct_fail_slot1_exists:
   exists-trace
-  "Ex A1 A2 B m1 m2 tag1 tag2 bid idx1 idx2 rst #p #f.
+  "Ex A1 A2 B m1 m2 tag1 bid idx1 idx2 rst #p #f.
        DedupPassed(B,bid,rst,idx1,A1,m1,idx2,A2,m2) @ #p
      & BatchSlotFail(B,bid,idx1,A1,rst,<m1,tag1>) @ #f
      & BatchFail(B,bid,rst) @ #f
