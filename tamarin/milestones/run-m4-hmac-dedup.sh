@@ -1421,7 +1421,6 @@ source_run() {
   run_trace "$out" slot2-mismatch "$COMBINED_IMPACT_REL" hmac_failure_slot2_after_prior_accept_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" normal-consumer "$COMBINED_IMPACT_REL" normal_two_distinct_valid_confirmed_outputs_consumer_complete || trace_errors=$((trace_errors+1))
   rm -f "$CURRENT_TARGET_FILE"
-  write_run_state FINALIZING "source_run_number=$n" "progress=$SOURCE_PROGRESS_CURRENT/$SOURCE_PROGRESS_TOTAL"
   validate_trace_aggregate_structure "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
   validate_source_matrix "$out/aggregate.tsv" || structural_errors=$((structural_errors+1))
   verify_repo_clean_except_logs || structural_errors=$((structural_errors+1))
@@ -1429,28 +1428,31 @@ source_run() {
     NR>1 {n++; if($3=="verified"||$3=="falsified"||$3=="MATCH") t++; if($3!=$4)m++; if($3=="nonterminal") nt++}
     END{printf "invoked=%d\nterminal=%d\nnonterminal=%d\nmismatch=%d\nparse_failures=%d\ntrace_total=5\ntrace_failures=%d\nstructural_failures=%d\n",n,t,nt,m,pe,te,se}' \
     "$out/aggregate.tsv" > "$out/summary.txt"
-  printf 'INVALID\n' > "$out/source-run-status.txt"
   local final_status=INVALID manifest_ok=0
-  stage_notice "source-run$n manifest (diagnostic state)"
+  if [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 ]]; then
+    final_status=VALID
+    printf '%s\n' VALID > "$out/source-run-status.txt"
+    write_run_state COMPLETE "source_run_number=$n" "final_status=VALID" "progress=$SOURCE_PROGRESS_CURRENT/$SOURCE_PROGRESS_TOTAL"
+  else
+    printf '%s\n' INVALID > "$out/source-run-status.txt"
+    write_run_state COMPLETE_INVALID "source_run_number=$n" "final_status=INVALID"
+  fi
+  trap - TERM INT HUP
+  stage_notice "source-run$n final manifest"
   if make_manifest "$out"; then manifest_ok=1; fi
-  if [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 && "$manifest_ok" -eq 1 ]]; then
-    printf 'VALID\n' > "$out/source-run-status.txt"
-    stage_notice "source-run$n manifest (VALID finalization)"
-    if make_manifest "$out" && validate_source_qualification "$out" && validate_manifest "$out"; then
-      final_status=VALID
-    else
-      printf 'INVALID\n' > "$out/source-run-status.txt"
+  if [[ "$final_status" == VALID ]]; then
+    if [[ "$manifest_ok" -ne 1 ]] || ! validate_source_qualification "$out" || ! validate_manifest "$out"; then
+      final_status=INVALID
+      printf '%s\n' INVALID > "$out/source-run-status.txt"
+      write_run_state COMPLETE_INVALID "source_run_number=$n" "final_status=INVALID"
       stage_notice "source-run$n manifest (INVALID recovery)"
       make_manifest "$out" >/dev/null 2>&1 || true
     fi
   fi
-  trap - TERM INT HUP
   if [[ "$final_status" == VALID ]]; then
-    write_run_state COMPLETE "source_run_number=$n" "final_status=VALID" "progress=$SOURCE_PROGRESS_CURRENT/$SOURCE_PROGRESS_TOTAL"
     echo "source_run$n=VALID_COMPLETE_INVOCATION"
     return 0
   fi
-  [[ "$final_status" == VALID ]] || write_run_state COMPLETE_INVALID "source_run_number=$n" "final_status=INVALID"
   echo "source_run$n=INVALID_COMPLETE_INVOCATION"
   return 1
 }
@@ -1594,6 +1596,12 @@ self_test() {
   printf 'tamper\n' >> "$tmp/manifest/a"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
   make_manifest "$tmp/manifest" >/dev/null || failures=1; printf 'extra\n' > "$tmp/manifest/extra"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
   make_manifest "$tmp/manifest" >/dev/null || failures=1; rm -f "$tmp/manifest/a"; expect_validator_failure validate_manifest "$tmp/manifest" || failures=1
+  mkdir -p "$tmp/final-manifest"
+  printf '%s\n' payload > "$tmp/final-manifest/payload.txt"
+  printf '%s\n' VALID > "$tmp/final-manifest/source-run-status.txt"
+  printf '%s\n' COMPLETE > "$tmp/final-manifest/run-state.txt"
+  make_manifest "$tmp/final-manifest" >/dev/null || failures=1
+  validate_manifest "$tmp/final-manifest" || failures=1
 
   selection="$tmp/selection.tsv"; vector="$tmp/vector.tsv"; summary="$tmp/summary.txt"
   select_composite "$base" "" "$selection" "$vector" "$summary" || failures=1
@@ -1648,8 +1656,9 @@ self_test() {
   synthetic_run="$tmp/source-run"
   write_synthetic_qualified_source "$synthetic_run"
   validate_source_qualification "$synthetic_run" || failures=1
-  printf 'INVALID\n' > "$synthetic_run/source-run-status.txt"; expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
-  printf 'VALID\n' > "$synthetic_run/source-run-status.txt"
+  printf '%s\n' INVALID > "$synthetic_run/source-run-status.txt"
+  expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
+  printf '%s\n' VALID > "$synthetic_run/source-run-status.txt"
   sed -i 's/combined-replay\t0/combined-replay\t1/' "$synthetic_run/parse-validation.tsv"
   expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
   sed -i 's/combined-replay\t1/combined-replay\t0/' "$synthetic_run/parse-validation.tsv"
@@ -1758,6 +1767,7 @@ self_test() {
   [[ "$failures" -eq 0 ]] || return 1
   echo "target_matrix_tests=PASS"
   echo "manifest_tamper_tests=PASS"
+  echo "final_manifest_order_test=PASS"
   echo "matrix_missing_duplicate_extra_tests=PASS"
   echo "composite_synthetic_tests=PASS"
   echo "clean_directory_tests=PASS"
