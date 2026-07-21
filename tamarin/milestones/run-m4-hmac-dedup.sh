@@ -7,6 +7,12 @@ set -euo pipefail
 # --source-run N invokes every required target and writes source-runN.
 # --assemble-composite mechanically applies the Run-1-primary policy.
 # --self-test exercises validators with synthetic fixtures and never invokes a prover.
+#
+# Tamarin proof targets run in a per-target user-systemd cgroup with
+# MemoryMax=${TAMARIN_MEMORY_MAX_MB}M and MemorySwapMax=0.  The default 6144 MB
+# is deliberately below the previously observed WSL-wide OOM point, so one
+# pathological target is recorded as nonterminal instead of exhausting the whole
+# WSL session.
 
 if [[ -n "${KWAAY_REPO_ROOT+x}" ]]; then
   echo "error: KWAAY_REPO_ROOT is not accepted; the runner derives the repository from its own path" >&2
@@ -43,10 +49,22 @@ PROVERIF_HMAC_BASELINE_REL="logs/variants/hmac-confirmation/proverif/summary.txt
 LOG_REL="logs/tamarin-m4-hmac-dedup"
 LOG_DIR="$ROOT_DIR/$LOG_REL"
 PROOF_TIMEOUT_SECONDS=300
+DEFAULT_TAMARIN_MEMORY_MAX_MB=6144
+TAMARIN_MEMORY_MAX_MB="${KWAAY_TAMARIN_MEMORY_MAX_MB:-$DEFAULT_TAMARIN_MEMORY_MAX_MB}"
 SOURCE_PROGRESS_CURRENT=0
 SOURCE_PROGRESS_TOTAL=301
-AGGREGATE_HEADER=$'suite\ttarget\tactual_status\texpected_status\texit_status\tloop\traw_output'
-MATRIX_HEADER=$'suite\ttarget\texpected_status'
+AGGREGATE_HEADER=$'suite	target	actual_status	expected_status	exit_status	loop	raw_output'
+MATRIX_HEADER=$'suite	target	expected_status'
+RESOURCE_EVENTS_HEADER=$'suite	target	event	exit_status	systemd_result	exec_main_code	exec_main_status	memory_max_mb	memory_swap_max	raw_output	unit'
+RUN_STATE_FILE=
+CURRENT_TARGET_FILE=
+CURRENT_SYSTEMD_UNIT=
+CURRENT_SYSTEMD_WAIT_PID=
+CURRENT_SUITE=
+CURRENT_TARGET=
+CURRENT_RAW=
+CURRENT_STARTED_AT=
+SOURCE_RUN_INTERRUPTING=0
 
 if [[ "$RUNNER_PATH" != "$ROOT_DIR/$RUNNER_REL" ]]; then
   echo "error: resolved runner path is outside the expected repository location: $RUNNER_PATH" >&2
@@ -274,7 +292,192 @@ FROZEN_SHA256["$PROVERIF_ORIGINAL_BASELINE_REL"]="b3a59616ae0d9a3eeb81d878515fdd
 FROZEN_BLOB["$PROVERIF_HMAC_BASELINE_REL"]="41162bc55aeb077d65a0c259a1c96e050a718325"
 FROZEN_SHA256["$PROVERIF_HMAC_BASELINE_REL"]="6de331e25170c36f893ceb78888fd12dbefe3f47b952bda98dfe40d51aa2c503"
 
-git_cmd() { "${GIT_CMD[@]}" "$@"; }
+git_cmd() { "${GIT_CMD[@]}" "$@" </dev/null; }
+
+validate_positive_mb() {
+  local value="$1"
+  [[ "$value" =~ ^[0-9]+$ && "$value" -ge 16 ]] || {
+    echo "error: --memory-max-mb must be an integer >= 16: $value" >&2
+    return 1
+  }
+}
+
+iso_timestamp() { date -Is; }
+
+atomic_write() {
+  local destination="$1" tmp
+  tmp="$(mktemp "${destination}.tmp.XXXXXX")"
+  cat > "$tmp"
+  mv -f "$tmp" "$destination"
+}
+
+write_run_state() {
+  local state="$1"; shift
+  [[ -n "$RUN_STATE_FILE" ]] || return 0
+  {
+    printf '%s\n' "$state"
+    printf 'updated_at=%s\n' "$(iso_timestamp)"
+    printf 'memory_max_mb=%s\n' "$TAMARIN_MEMORY_MAX_MB"
+    printf 'memory_swap_max=0\n'
+    for item in "$@"; do printf '%s\n' "$item"; done
+  } | atomic_write "$RUN_STATE_FILE"
+}
+
+write_current_target() {
+  local phase="$1" suite="$2" target="$3" raw="$4" pid="$5" unit="$6" exit_status="${7:-}" event="${8:-}"
+  [[ -n "$CURRENT_TARGET_FILE" ]] || return 0
+  {
+    printf 'phase=%s\n' "$phase"
+    printf 'updated_at=%s\n' "$(iso_timestamp)"
+    printf 'suite=%s\n' "$suite"
+    printf 'target=%s\n' "$target"
+    printf 'pid=%s\n' "${pid:-none}"
+    printf 'systemd_unit=%s\n' "${unit:-none}"
+    printf 'raw_output=%s\n' "$raw"
+    [[ -z "$CURRENT_STARTED_AT" ]] || printf 'started_at=%s\n' "$CURRENT_STARTED_AT"
+    [[ -z "$exit_status" ]] || printf 'exit_status=%s\n' "$exit_status"
+    [[ -z "$event" ]] || printf 'event=%s\n' "$event"
+  } | atomic_write "$CURRENT_TARGET_FILE"
+}
+
+append_resource_event() {
+  local out="$1" suite="$2" target="$3" event="$4" exit_status="$5" result="$6" code="$7" status="$8" raw="$9" unit="${10}"
+  printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\t0\t%s\t%s\n' \
+    "$suite" "$target" "$event" "$exit_status" "${result:-unknown}" "${code:-unknown}" \
+    "${status:-unknown}" "$TAMARIN_MEMORY_MAX_MB" "$raw" "$unit" >> "$out/resource-events.tsv"
+}
+
+unit_safe_name() {
+  local suite="$1" target="$2" cleaned
+  cleaned="$(printf '%s-%s' "$suite" "$target" | tr -c 'A-Za-z0-9_' '-' | cut -c1-80)"
+  printf 'kwaay-m4-%s-%s-%s' "$$" "$SOURCE_PROGRESS_CURRENT" "$cleaned"
+}
+
+extract_proverif_version_line() {
+  grep -E '^[Pp]ro[Vv]erif[[:space:]][0-9]' "$@" 2>/dev/null | head -n 1
+}
+
+write_proverif_version_probe() {
+  local stdout stderr status=0 version bad_fd=false
+  stdout="$(mktemp)"; stderr="$(mktemp)"
+  "${PROVERIF_CMD[@]}" -version </dev/null >"$stdout" 2>"$stderr" || status=$?
+  printf 'proverif_version_probe_status=%s\n' "$status"
+  version="$(extract_proverif_version_line "$stdout" || true)"
+  [[ -n "$version" ]] || version="$(extract_proverif_version_line "$stderr" || true)"
+  if [[ -n "$version" ]]; then
+    printf 'proverif_version=%s\n' "$version"
+  else
+    printf 'proverif_version_probe_result=unavailable\n'
+  fi
+  if grep -Fq 'read failed 9: Bad file descriptor' "$stdout" "$stderr" 2>/dev/null; then bad_fd=true; fi
+  printf 'proverif_version_probe_bad_fd=%s\n' "$bad_fd"
+  rm -f "$stdout" "$stderr"
+}
+
+require_resource_isolation() {
+  validate_positive_mb "$TAMARIN_MEMORY_MAX_MB" || return 1
+  command -v systemd-run >/dev/null 2>&1 || { echo "error: systemd-run required for per-target memory limits" >&2; return 1; }
+  command -v systemctl >/dev/null 2>&1 || { echo "error: systemctl required for per-target memory diagnostics" >&2; return 1; }
+  systemctl --user show-environment >/dev/null 2>&1 || {
+    echo "error: systemd --user is unavailable; cannot apply per-target cgroup memory limits" >&2
+    return 1
+  }
+  local unit status result
+  unit="kwaay-m4-preflight-$$"
+  systemd-run --user --wait --quiet --unit="$unit" \
+    --property=MemoryAccounting=yes --property=MemoryMax=32M --property=MemorySwapMax=0 \
+    --property=StandardInput=null --property=StandardOutput=null --property=StandardError=null \
+    /usr/bin/python3 -c 'a=bytearray(256*1024*1024); print(len(a))' >/dev/null 2>&1 || status=$?
+  result="$(systemctl --user show "$unit.service" -p Result --value 2>/dev/null || true)"
+  systemctl --user reset-failed "$unit.service" >/dev/null 2>&1 || true
+  if [[ "${status:-0}" -eq 0 || "$result" != oom-kill ]]; then
+    echo "error: systemd --user MemoryMax/MemorySwapMax preflight did not produce cgroup oom-kill" >&2
+    return 1
+  fi
+}
+
+LAST_SYSTEMD_RESULT=unknown
+LAST_EXEC_MAIN_CODE=unknown
+LAST_EXEC_MAIN_STATUS=unknown
+
+normalize_systemd_exit_status() {
+  local runner_exit="$1" code="$2" status="$3"
+  if [[ "$code" == 1 && "$status" =~ ^[0-9]+$ ]]; then
+    printf '%s' "$status"
+  elif [[ "$code" == 2 && "$status" =~ ^[0-9]+$ ]]; then
+    printf '%s' $((128 + status))
+  else
+    printf '%s' "$runner_exit"
+  fi
+}
+
+run_limited_tamarin_command() {
+  local out="$1" suite="$2" target="$3" raw="$4" unit exit_code=0
+  shift 4
+  : > "$raw"
+  unit="$(unit_safe_name "$suite" "$target")"
+  LAST_SYSTEMD_RESULT=unknown
+  LAST_EXEC_MAIN_CODE=unknown
+  LAST_EXEC_MAIN_STATUS=unknown
+  CURRENT_SYSTEMD_UNIT="$unit"
+  CURRENT_SUITE="$suite"
+  CURRENT_TARGET="$target"
+  CURRENT_RAW="$raw"
+  CURRENT_STARTED_AT="$(iso_timestamp)"
+  systemd-run --user --wait --quiet --unit="$unit" \
+    --setenv=PATH="$PATH" --setenv=HOME="${HOME:-$ROOT_DIR}" \
+    --property=MemoryAccounting=yes --property=MemoryMax="${TAMARIN_MEMORY_MAX_MB}M" --property=MemorySwapMax=0 \
+    --property=KillMode=control-group --property=StandardInput=null \
+    --property="StandardOutput=file:$raw" --property="StandardError=append:$raw" \
+    "$@" &
+  CURRENT_SYSTEMD_WAIT_PID=$!
+  write_current_target running "$suite" "$target" "$raw" "$CURRENT_SYSTEMD_WAIT_PID" "$unit"
+  wait "$CURRENT_SYSTEMD_WAIT_PID" || exit_code=$?
+  LAST_SYSTEMD_RESULT="$(systemctl --user show "$unit.service" -p Result --value 2>/dev/null || true)"
+  LAST_EXEC_MAIN_CODE="$(systemctl --user show "$unit.service" -p ExecMainCode --value 2>/dev/null || true)"
+  LAST_EXEC_MAIN_STATUS="$(systemctl --user show "$unit.service" -p ExecMainStatus --value 2>/dev/null || true)"
+  exit_code="$(normalize_systemd_exit_status "$exit_code" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS")"
+  systemctl --user reset-failed "$unit.service" >/dev/null 2>&1 || true
+  CURRENT_SYSTEMD_WAIT_PID=
+  CURRENT_SYSTEMD_UNIT=
+  return "$exit_code"
+}
+
+classify_target_event() {
+  local exit_code="$1" result="$2" code="$3" status="$4"
+  if [[ "$result" == oom-kill ]]; then printf 'oom_kill'
+  elif [[ "$code" == 2 && "$status" == 9 ]]; then printf 'sigkill'
+  elif [[ "$exit_code" == 124 ]]; then printf 'timeout'
+  elif [[ "$exit_code" == 0 ]]; then printf 'none'
+  else printf 'nonzero_exit'; fi
+}
+
+terminate_current_proof() {
+  local reason="$1"
+  if [[ -n "$CURRENT_SYSTEMD_UNIT" ]]; then
+    systemctl --user kill --kill-whom=all "$CURRENT_SYSTEMD_UNIT.service" >/dev/null 2>&1 || true
+    systemctl --user stop "$CURRENT_SYSTEMD_UNIT.service" >/dev/null 2>&1 || true
+  fi
+  if [[ -n "$CURRENT_SYSTEMD_WAIT_PID" ]]; then wait "$CURRENT_SYSTEMD_WAIT_PID" >/dev/null 2>&1 || true; fi
+  [[ -n "$CURRENT_SYSTEMD_UNIT" ]] && systemctl --user reset-failed "$CURRENT_SYSTEMD_UNIT.service" >/dev/null 2>&1 || true
+  write_current_target interrupted "${CURRENT_SUITE:-unknown}" "${CURRENT_TARGET:-unknown}" \
+    "${CURRENT_RAW:-unknown}" "${CURRENT_SYSTEMD_WAIT_PID:-none}" "${CURRENT_SYSTEMD_UNIT:-none}" "" "$reason"
+}
+
+handle_source_interrupt() {
+  local signal_name="$1" exit_code="$2" run_dir
+  [[ "$SOURCE_RUN_INTERRUPTING" -eq 0 ]] || exit "$exit_code"
+  SOURCE_RUN_INTERRUPTING=1
+  terminate_current_proof "$signal_name"
+  if [[ -n "$RUN_STATE_FILE" ]]; then
+    run_dir="$(dirname "$RUN_STATE_FILE")"
+    rm -f "$run_dir/source-run-status.txt" "$run_dir/SHA256SUMS.txt"
+  fi
+  write_run_state INTERRUPTED "signal=$signal_name" "exit_code=$exit_code" \
+    "last_suite=${CURRENT_SUITE:-unknown}" "last_target=${CURRENT_TARGET:-unknown}" \
+    "sigkill_note=SIGKILL and whole-WSL OOM shutdown cannot be trapped; per-target cgroup isolation is the primary protection"
+  exit "$exit_code"
+}
 
 emit_suite_matrix() {
   local suite="$1" array_name="$2" map_name="$3" target
@@ -719,18 +922,20 @@ parse_tamarin_result() {
 run_tamarin_suite() {
   local out="$1" suite="$2" model="$3" array_name="$4" map_name="$5"
   local -n targets="$array_name" expected_map="$map_name"
-  local target raw status exit_code loop
+  local target raw raw_rel status exit_code loop event unit
   mkdir -p "$out/proofs/$suite"
   for target in "${targets[@]}"; do
-    raw="$out/proofs/$suite/$target.out"; exit_code=0
-    print_command "executed-proof[$suite][$target]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" \
-      "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$target" "$model" >> "$out/commands.txt"
-    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 \
-      "--prove=$target" "$model" > "$raw" 2>&1 || exit_code=$?
+    raw="$out/proofs/$suite/$target.out"; raw_rel="proofs/$suite/$target.out"; exit_code=0
+    print_command "executed-proof[$suite][$target]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS"       "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$target" "$model" >> "$out/commands.txt"
+    run_limited_tamarin_command "$out" "$suite" "$target" "$raw"       "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0       "--prove=$target" "$model" || exit_code=$?
     status="$(parse_tamarin_result "$target" "$raw" "$exit_code")"
     loop=false; grep -q '<<loop>>' "$raw" && loop=true
+    event="$(classify_target_event "$exit_code" "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS")"
+    unit="$(unit_safe_name "$suite" "$target")"
+    append_resource_event "$out" "$suite" "$target" "$event" "$exit_code"       "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS" "$raw_rel" "$unit"
     printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$status" \
-      "${expected_map[$target]}" "$exit_code" "$loop" "proofs/$suite/$target.out" >> "$out/aggregate.tsv"
+      "${expected_map[$target]}" "$exit_code" "$loop" "$raw_rel" >> "$out/aggregate.tsv"
+    write_current_target completed "$suite" "$target" "$raw_rel" none "$unit" "$exit_code" "$event"
     report_source_progress "$suite" "$target" "$status"
   done
 }
@@ -754,16 +959,18 @@ compare_proverif_results() {
 
 run_proverif_target() {
   local out="$1" suite="$2" target="$3" model="$4" baseline="$5"
-  local generated raw actual expected input cpp_exit=0 exit_code=0 status=nonterminal
+  local generated raw raw_rel actual expected input cpp_exit=0 exit_code=0 status=nonterminal
   mkdir -p "$out/proverif/$suite/generated" "$out/proverif/$suite/out"
-  generated="$out/proverif/$suite/generated/$target.pv"; raw="$out/proverif/$suite/out/$target.out"
+  generated="$out/proverif/$suite/generated/$target.pv"; raw="$out/proverif/$suite/out/$target.out"; raw_rel="proverif/$suite/out/$target.out"
+  CURRENT_SUITE="$suite"; CURRENT_TARGET="$target"; CURRENT_RAW="$raw_rel"; CURRENT_STARTED_AT="$(iso_timestamp)"
+  write_current_target running "$suite" "$target" "$raw_rel" runner none
   print_command "executed-cpp[$suite][$target]" "$CPP_CMD" -P -D "$target" "$model" >> "$out/commands.txt"
   "$CPP_CMD" -P -D "$target" "$model" > "$generated" 2> "$out/proverif/$suite/out/$target.cpp.err" || cpp_exit=$?
   if [[ "$cpp_exit" -eq 0 ]]; then
     input="$(tool_input_path "$generated")"
     print_command "executed-proverif[$suite][$target]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" \
       "${PROVERIF_CMD[@]}" "$input" >> "$out/commands.txt"
-    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "${PROVERIF_CMD[@]}" "$input" > "$raw" 2>&1 || exit_code=$?
+    "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "${PROVERIF_CMD[@]}" "$input" </dev/null > "$raw" 2>&1 || exit_code=$?
   else
     exit_code="$cpp_exit"; : > "$raw"
   fi
@@ -773,7 +980,8 @@ run_proverif_target() {
   if compare_proverif_results "$actual" "$expected" "$cpp_exit" "$exit_code"; then status=MATCH; fi
   rm -f "$actual" "$expected"
   printf '%s\t%s\t%s\tMATCH\t%s\tfalse\t%s\n' "$suite" "$target" "$status" "$exit_code" \
-    "proverif/$suite/out/$target.out" >> "$out/aggregate.tsv"
+    "$raw_rel" >> "$out/aggregate.tsv"
+  write_current_target completed "$suite" "$target" "$raw_rel" none none "$exit_code" none
   report_source_progress "$suite" "$target" "$status"
 }
 
@@ -800,8 +1008,11 @@ write_provenance() {
       printf 'resolved_executable[%s]=%s\n' "$command_name" "$(command -v "$command_name")"
     done
     echo "proof_timeout_seconds=$PROOF_TIMEOUT_SECONDS"
+    echo "tamarin_memory_max_mb=$TAMARIN_MEMORY_MAX_MB"
+    echo "tamarin_memory_swap_max=0"
+    echo "tamarin_memory_limit_mechanism=systemd-run --user transient service cgroup"
     echo "source_run_number=$run_number"
-    printf 'exact_runner_command='; printf '%q ' "$0" --source-run "$run_number"; echo
+    printf 'exact_runner_command='; printf '%q ' "$0" --memory-max-mb "$TAMARIN_MEMORY_MAX_MB" --source-run "$run_number"; echo
     echo "binding_file=binding.tsv"
     for path in "${BOUND_PATHS[@]}"; do
       printf 'bound_blob[%s]=%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")"
@@ -809,7 +1020,7 @@ write_provenance() {
     done
     "$TAMARIN_CMD" --version 2>&1 | sed 's/^/tamarin_version=/'
     "$MAUDE_CMD" --version 2>&1 | head -n3 | sed 's/^/maude_version=/'
-    "${PROVERIF_CMD[@]}" -version 2>&1 | sed 's/^/proverif_version=/' || true
+    write_proverif_version_probe
     "$CPP_CMD" --version 2>&1 | head -n1 | sed 's/^/cpp_version=/'
     "$TIMEOUT_CMD" --version 2>&1 | head -n1 | sed 's/^/timeout_version=/'
     "$PYTHON_CMD" --version 2>&1 | sed 's/^/python_version=/'
@@ -985,17 +1196,17 @@ validate_trace_artifacts() {
 }
 
 run_trace() {
-  local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL suite digest
-  dir="$out/traces/$label"; raw="$dir/trace.out"; json="$dir/trace.json"; dot="$dir/trace.dot"
+  local out="$1" label="$2" model_rel="$3" lemma="$4" dir raw json dot exit_code=0 result=FAIL suite digest raw_rel unit
+  dir="$out/traces/$label"; raw="$dir/trace.out"; json="$dir/trace.json"; dot="$dir/trace.dot"; raw_rel="traces/$label/trace.out"
   stage_notice "trace $label / $lemma"
   mkdir -p "$dir"
-  print_command "executed-trace[$label]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" \
-    --derivcheck-timeout=0 "--prove=$lemma" "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" >> "$out/commands.txt"
-  "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$lemma" \
-    "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" > "$raw" 2>&1 || exit_code=$?
+  print_command "executed-trace[$label]" "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD"     --derivcheck-timeout=0 "--prove=$lemma" "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" >> "$out/commands.txt"
+  run_limited_tamarin_command "$out" "$label" "$lemma" "$raw"     "$TIMEOUT_CMD" "$PROOF_TIMEOUT_SECONDS" "$TAMARIN_CMD" --derivcheck-timeout=0 "--prove=$lemma"     "--output-json=$json" "--output-dot=$dot" "$ROOT_DIR/$model_rel" || exit_code=$?
   if [[ "$model_rel" == "$COMBINED_REPLAY_REL" ]]; then suite=combined-replay; else suite=combined-impact; fi
   digest="$(awk -F '\t' -v s="$suite" -v t="$lemma" '$1==s&&$2==t{print $3; exit}' "$out/formula-bodies.tsv")"
   if validate_trace_artifacts "$label" "$ROOT_DIR/$model_rel" "$lemma" "$raw" "$json" "$dot" "$exit_code" "$digest"; then result=PASS; fi
+  unit="$(unit_safe_name "$label" "$lemma")"
+  append_resource_event "$out" "$suite" "$lemma" "$(classify_target_event "$exit_code" "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS")"     "$exit_code" "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS" "$raw_rel" "$unit"
   printf '%s\t%s\t%s\t%s\t%s\t%s\t%s\t%s\n' "$label" "$model_rel" "$lemma" "$exit_code" "$result" \
     "traces/$label/trace.out" "traces/$label/trace.json" "traces/$label/trace.dot" >> "$out/trace-aggregate.tsv"
   [[ "$result" == PASS ]]
@@ -1141,11 +1352,20 @@ source_run() {
   verify_current_binding_state || exit 2
   static_checks
   resolve_formal_tools || exit 2
+  require_resource_isolation || exit 2
   SOURCE_PROGRESS_CURRENT=0
   out="$LOG_DIR/source-run$n"
   [[ ! -e "$out" ]] || { echo "error: source run exists: $out" >&2; exit 2; }
   mkdir -p "$out/parse"
+  RUN_STATE_FILE="$out/run-state.txt"
+  CURRENT_TARGET_FILE="$out/current-target.txt"
+  write_run_state RUNNING "source_run_number=$n" "progress=0/$SOURCE_PROGRESS_TOTAL" \
+    "sigkill_note=SIGKILL and whole-WSL OOM shutdown cannot be trapped; per-target cgroup isolation is the primary protection"
+  trap 'handle_source_interrupt TERM 143' TERM
+  trap 'handle_source_interrupt INT 130' INT
+  trap 'handle_source_interrupt HUP 129' HUP
   printf '%s\n' "$AGGREGATE_HEADER" > "$out/aggregate.tsv"
+  printf '%s\n' "$RESOURCE_EVENTS_HEADER" > "$out/resource-events.tsv"
   printf 'suite\ttarget\tformula_body_sha256\n' > "$out/formula-bodies.tsv"
   printf 'label\tmodel\tlemma\texit_status\tvalidation\traw\tjson\tdot\n' > "$out/trace-aggregate.tsv"
   : > "$out/commands.txt"
@@ -1200,6 +1420,8 @@ source_run() {
   run_trace "$out" slot1-mismatch "$COMBINED_REPLAY_REL" hmac_failure_slot1_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" slot2-mismatch "$COMBINED_IMPACT_REL" hmac_failure_slot2_after_prior_accept_exists || trace_errors=$((trace_errors+1))
   run_trace "$out" normal-consumer "$COMBINED_IMPACT_REL" normal_two_distinct_valid_confirmed_outputs_consumer_complete || trace_errors=$((trace_errors+1))
+  rm -f "$CURRENT_TARGET_FILE"
+  write_run_state FINALIZING "source_run_number=$n" "progress=$SOURCE_PROGRESS_CURRENT/$SOURCE_PROGRESS_TOTAL"
   validate_trace_aggregate_structure "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
   validate_source_matrix "$out/aggregate.tsv" || structural_errors=$((structural_errors+1))
   verify_repo_clean_except_logs || structural_errors=$((structural_errors+1))
@@ -1222,10 +1444,13 @@ source_run() {
       make_manifest "$out" >/dev/null 2>&1 || true
     fi
   fi
+  trap - TERM INT HUP
   if [[ "$final_status" == VALID ]]; then
+    write_run_state COMPLETE "source_run_number=$n" "final_status=VALID" "progress=$SOURCE_PROGRESS_CURRENT/$SOURCE_PROGRESS_TOTAL"
     echo "source_run$n=VALID_COMPLETE_INVOCATION"
     return 0
   fi
+  [[ "$final_status" == VALID ]] || write_run_state COMPLETE_INVALID "source_run_number=$n" "final_status=INVALID"
   echo "source_run$n=INVALID_COMPLETE_INVOCATION"
   return 1
 }
@@ -1350,6 +1575,7 @@ expect_validator_failure() { if "$@" >/dev/null 2>&1; then echo "error: negative
 
 self_test() {
   local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification pv_actual pv_expected synthetic_run
+  local probe_out resource_out timeout_cmd resource_exit next_exit event old_memory old_run_state old_current_target old_started old_unit old_wait old_suite old_target old_raw interrupt_dir unit active_state signal_status status
   [[ -e "$LOG_DIR" ]] && before_log_exists=1
   static_checks >/dev/null || failures=1
   tmp="$(mktemp -d)"; base="$tmp/base.tsv"
@@ -1443,6 +1669,83 @@ self_test() {
   printf 'stale\n' > "$tmp/log-layout/composite-summary.txt"
   expect_validator_failure validate_log_top_level_at "$tmp/log-layout" assemble || failures=1
 
+  classification="$(classify_target_event 124 exit-code 1 124)"; [[ "$classification" == timeout ]] || failures=1
+  classification="$(classify_target_event 137 oom-kill 2 9)"; [[ "$classification" == oom_kill ]] || failures=1
+  classification="$(classify_target_event 137 signal 2 9)"; [[ "$classification" == sigkill ]] || failures=1
+  classification="$(classify_target_event 2 exit-code 1 2)"; [[ "$classification" == nonzero_exit ]] || failures=1
+  classification="$(classify_target_event 0 success 1 0)"; [[ "$classification" == none ]] || failures=1
+  [[ "$(normalize_systemd_exit_status 1 1 124)" == 124 ]] || failures=1
+  [[ "$(normalize_systemd_exit_status 1 2 9)" == 137 ]] || failures=1
+
+  mock="$tmp/mock-version"; mkdir -p "$mock"
+  printf '#!/usr/bin/env bash\necho "read failed 9: Bad file descriptor" >&2\nexit 1\n' > "$mock/proverif-bad"; chmod +x "$mock/proverif-bad"
+  PROVERIF_CMD=("$mock/proverif-bad"); probe_out="$tmp/proverif-bad.probe"; write_proverif_version_probe > "$probe_out"
+  grep -Fxq 'proverif_version_probe_result=unavailable' "$probe_out" || failures=1
+  grep -Fxq 'proverif_version_probe_bad_fd=true' "$probe_out" || failures=1
+  if grep -q '^proverif_version=' "$probe_out"; then failures=1; fi
+  printf '#!/usr/bin/env bash\necho "read failed 9: Bad file descriptor" >&2\necho "ProVerif 2.05: synthetic version"\nexit 0\n' > "$mock/proverif-good"; chmod +x "$mock/proverif-good"
+  PROVERIF_CMD=("$mock/proverif-good"); probe_out="$tmp/proverif-good.probe"; write_proverif_version_probe > "$probe_out"
+  grep -Fxq 'proverif_version=ProVerif 2.05: synthetic version' "$probe_out" || failures=1
+  grep -Fxq 'proverif_version_probe_bad_fd=true' "$probe_out" || failures=1
+
+  old_memory="$TAMARIN_MEMORY_MAX_MB"; old_run_state="$RUN_STATE_FILE"; old_current_target="$CURRENT_TARGET_FILE"
+  old_started="$CURRENT_STARTED_AT"; old_unit="$CURRENT_SYSTEMD_UNIT"; old_wait="$CURRENT_SYSTEMD_WAIT_PID"
+  old_suite="$CURRENT_SUITE"; old_target="$CURRENT_TARGET"; old_raw="$CURRENT_RAW"
+  resource_out="$tmp/resource"; mkdir -p "$resource_out"
+  printf '%s\n' "$RESOURCE_EVENTS_HEADER" > "$resource_out/resource-events.tsv"
+  printf '%s\n' "$AGGREGATE_HEADER" > "$resource_out/aggregate.tsv"
+  RUN_STATE_FILE="$resource_out/run-state.txt"; CURRENT_TARGET_FILE="$resource_out/current-target.txt"; CURRENT_STARTED_AT=
+  write_run_state RUNNING synthetic=true
+  write_current_target running synthetic atomic "$resource_out/atomic.out" 123 unit-test
+  grep -Fxq 'phase=running' "$CURRENT_TARGET_FILE" || failures=1
+  if find "$resource_out" -maxdepth 1 -name 'current-target.txt.tmp.*' | grep -q .; then failures=1; fi
+  timeout_cmd="$(command -v timeout)"
+  TAMARIN_MEMORY_MAX_MB=32
+  require_resource_isolation || failures=1
+  resource_exit=0
+  run_limited_tamarin_command "$resource_out" synthetic resource-limit "$resource_out/resource-limit.out" \
+    /usr/bin/python3 -c 'a=bytearray(256*1024*1024); print(len(a))' || resource_exit=$?
+  event="$(classify_target_event "$resource_exit" "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS")"
+  status="$(parse_tamarin_result resource-limit "$resource_out/resource-limit.out" "$resource_exit")"
+  [[ "$resource_exit" -ne 0 && "$event" == oom_kill && "$status" == nonterminal ]] || failures=1
+  append_resource_event "$resource_out" synthetic resource-limit "$event" "$resource_exit" \
+    "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS" resource-limit.out "$CURRENT_SYSTEMD_UNIT"
+  next_exit=0
+  run_limited_tamarin_command "$resource_out" synthetic after-resource-limit "$resource_out/after-resource-limit.out" /bin/echo after-resource-limit || next_exit=$?
+  [[ "$next_exit" -eq 0 ]] || failures=1
+  grep -Fxq 'after-resource-limit' "$resource_out/after-resource-limit.out" || failures=1
+  TAMARIN_MEMORY_MAX_MB=128
+  resource_exit=0
+  run_limited_tamarin_command "$resource_out" synthetic timeout-target "$resource_out/timeout-target.out" \
+    "$timeout_cmd" 1 /bin/sleep 3 || resource_exit=$?
+  event="$(classify_target_event "$resource_exit" "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS")"
+  [[ "$resource_exit" -eq 124 && "$event" == timeout ]] || failures=1
+  append_resource_event "$resource_out" synthetic timeout-target "$event" "$resource_exit" \
+    "$LAST_SYSTEMD_RESULT" "$LAST_EXEC_MAIN_CODE" "$LAST_EXEC_MAIN_STATUS" timeout-target.out "$CURRENT_SYSTEMD_UNIT"
+  unit="$(unit_safe_name synthetic term-cleanup)"
+  CURRENT_SYSTEMD_UNIT="$unit"; CURRENT_SYSTEMD_WAIT_PID=; CURRENT_SUITE=synthetic; CURRENT_TARGET=term-cleanup; CURRENT_RAW=term-cleanup.out; CURRENT_STARTED_AT="$(iso_timestamp)"
+  systemd-run --user --quiet --unit="$unit" --property=KillMode=control-group \
+    --property=StandardInput=null --property=StandardOutput=null --property=StandardError=null /bin/sleep 60 >/dev/null || failures=1
+  terminate_current_proof TERM
+  active_state="$(systemctl --user is-active "$unit.service" 2>/dev/null || true)"
+  [[ "$active_state" != active ]] || failures=1
+  grep -Fxq 'event=TERM' "$CURRENT_TARGET_FILE" || failures=1
+  interrupt_dir="$tmp/interrupted"; mkdir -p "$interrupt_dir"
+  printf 'VALID\n' > "$interrupt_dir/source-run-status.txt"
+  printf 'synthetic manifest\n' > "$interrupt_dir/SHA256SUMS.txt"
+  signal_status=0
+  ( RUN_STATE_FILE="$interrupt_dir/run-state.txt"; CURRENT_TARGET_FILE="$interrupt_dir/current-target.txt"; \
+    SOURCE_RUN_INTERRUPTING=0; CURRENT_SYSTEMD_UNIT=; CURRENT_SYSTEMD_WAIT_PID=; CURRENT_SUITE=synthetic; \
+    CURRENT_TARGET=int-cleanup; CURRENT_RAW=interrupted.out; CURRENT_STARTED_AT="$(iso_timestamp)"; \
+    handle_source_interrupt INT 130 ) || signal_status=$?
+  [[ "$signal_status" -eq 130 ]] || failures=1
+  grep -Fxq 'INTERRUPTED' "$interrupt_dir/run-state.txt" || failures=1
+  grep -Fxq 'signal=INT' "$interrupt_dir/run-state.txt" || failures=1
+  [[ ! -e "$interrupt_dir/source-run-status.txt" && ! -e "$interrupt_dir/SHA256SUMS.txt" ]] || failures=1
+  TAMARIN_MEMORY_MAX_MB="$old_memory"; RUN_STATE_FILE="$old_run_state"; CURRENT_TARGET_FILE="$old_current_target"
+  CURRENT_STARTED_AT="$old_started"; CURRENT_SYSTEMD_UNIT="$old_unit"; CURRENT_SYSTEMD_WAIT_PID="$old_wait"
+  CURRENT_SUITE="$old_suite"; CURRENT_TARGET="$old_target"; CURRENT_RAW="$old_raw"
+
   mock="$tmp/mock-bin"; mkdir -p "$mock"
   printf '#!/usr/bin/env bash\nexit 0\n' > "$mock/proverif"; chmod +x "$mock/proverif"
   (PATH="$mock:/usr/bin:/bin"; resolve_proverif; [[ "${PROVERIF_CMD[0]}" == "$mock/proverif" && "$PROVERIF_NEEDS_WIN_PATH" -eq 0 ]]) || failures=1
@@ -1465,13 +1768,35 @@ self_test() {
   echo "source_run_qualification_tests=PASS"
   echo "gawk_unexpected_git_status_test=PASS"
   echo "parse_output_failure_gate_tests=PASS"
+  echo "resource_limit_synthetic_tests=PASS"
+  echo "signal_cleanup_tests=PASS"
+  echo "proverif_bad_fd_probe_tests=PASS"
+  echo "run_state_current_target_tests=PASS"
   echo "self_test=PASS"
 }
 
 usage() {
-  echo "usage: $RUNNER_REL --static-only | --self-test | --source-run 1|2 | --assemble-composite" >&2
+  echo "usage: $RUNNER_REL [--memory-max-mb N] --static-only | --self-test | --source-run 1|2 | --assemble-composite" >&2
   exit 2
 }
+
+
+args=()
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    --memory-max-mb)
+      [[ $# -ge 2 ]] || usage
+      TAMARIN_MEMORY_MAX_MB="$2"
+      shift 2
+      ;;
+    *)
+      args+=("$1")
+      shift
+      ;;
+  esac
+done
+set -- "${args[@]}"
+validate_positive_mb "$TAMARIN_MEMORY_MAX_MB" || exit 2
 
 case "${1:-}" in
   --static-only) [[ $# -eq 1 ]] || usage; static_checks ;;
