@@ -1134,6 +1134,17 @@ if text[last_close + 1:].strip().strip(";").strip():
 PY
 }
 
+trace_raw_matches_theory() {
+  local raw="$1" theory="$2" line trimmed
+  [[ -s "$raw" && -n "$theory" ]] || return 1
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    line="${line%$'\r'}"
+    trimmed="$(printf '%s' "$line" | sed -E 's/^[[:space:]]+//; s/[[:space:]]+$//')"
+    [[ "$trimmed" == "[Theory $theory]" || "$trimmed" == "theory $theory" ]] && return 0
+  done < "$raw"
+  return 1
+}
+
 formula_digest_for() { extract_block lemma "$2" "$1" | normalize_text | sha256sum | awk '{print $1}'; }
 
 validate_trace_formula_contract() {
@@ -1155,7 +1166,7 @@ validate_trace_artifacts() {
   [[ "$exit_code" -eq 0 ]] || return 1
   [[ -s "$raw" && -s "$json" && -s "$dot" ]] || failures=1
   [[ "$(parse_tamarin_result "$lemma" "$raw" "$exit_code")" == verified ]] || failures=1
-  grep -Fq "[Theory $theory]" "$raw" || failures=1
+  trace_raw_matches_theory "$raw" "$theory" || failures=1
   grep -Fq '<<loop>>' "$raw" && failures=1
   validate_trace_formula_contract "$label" "$model" "$lemma" "$recorded_digest" || failures=1
   validate_json_trace "$json" || failures=1
@@ -1556,7 +1567,7 @@ write_synthetic_qualified_source() {
     digest="$(formula_digest_for "$ROOT_DIR/$model_rel" "$lemma")"
     printf '%s\t%s\t%s\n' "$suite" "$lemma" "$digest" >> "$run/formula-bodies.tsv"
     dir="$run/traces/$label"; mkdir -p "$dir"
-    printf '[Theory %s] Theory loaded\n  %s (exists-trace): verified (1 steps)\n' "$theory" "$lemma" > "$dir/trace.out"
+    printf '[Theory %s]\n  %s (exists-trace): verified (1 steps)\n' "$theory" "$lemma" > "$dir/trace.out"
     printf '{"graphs":[{}],"theory":"%s","lemma":"%s"}\n' "$theory" "$lemma" > "$dir/trace.json"
     write_synthetic_trace_dot "$label" "$dir/trace.dot"
     printf '%s\t%s\t%s\t0\tPASS\ttraces/%s/trace.out\ttraces/%s/trace.json\ttraces/%s/trace.dot\n' \
@@ -1643,6 +1654,12 @@ self_test() {
   printf '{"graphs":[]}\n' > "$tmp/empty-graphs.json"; expect_validator_failure validate_json_trace "$tmp/empty-graphs.json" || failures=1
   printf 'digraph G { a -> b; }\n' > "$tmp/valid.dot"; validate_dot_digraph "$tmp/valid.dot" || failures=1
   printf 'graph G { a -- b;\n' > "$tmp/invalid.dot"; expect_validator_failure validate_dot_digraph "$tmp/invalid.dot" || failures=1
+  printf '[Theory CorrectTheory]\n' > "$tmp/theory-bracket.out"; trace_raw_matches_theory "$tmp/theory-bracket.out" CorrectTheory || failures=1
+  printf 'theory CorrectTheory\n' > "$tmp/theory-source.out"; trace_raw_matches_theory "$tmp/theory-source.out" CorrectTheory || failures=1
+  printf '  theory CorrectTheory  \r\n' > "$tmp/theory-crlf.out"; trace_raw_matches_theory "$tmp/theory-crlf.out" CorrectTheory || failures=1
+  printf 'theory WrongTheory\n' > "$tmp/theory-wrong.out"; expect_validator_failure trace_raw_matches_theory "$tmp/theory-wrong.out" CorrectTheory || failures=1
+  printf 'theory CorrectTheory_extra\n' > "$tmp/theory-extra.out"; expect_validator_failure trace_raw_matches_theory "$tmp/theory-extra.out" CorrectTheory || failures=1
+  printf 'ordinary log mentions CorrectTheory but has no marker\n' > "$tmp/theory-missing.out"; expect_validator_failure trace_raw_matches_theory "$tmp/theory-missing.out" CorrectTheory || failures=1
 
   printf '/* All wellformedness checks were successful. */\n' > "$tmp/wellformed.out"
   tamarin_parse_output_is_wellformed "$tmp/wellformed.out" || failures=1
