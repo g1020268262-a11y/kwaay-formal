@@ -1,0 +1,1254 @@
+theory Kwaay_Replay_HMAC_Dedup
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: confirm_key/1, ct_k/4[private,constructor],
+           ct_l/4[private,constructor], ct_s/5[private,constructor], fst/1, hmac/2,
+           pair/2, receiver_pk/2[private,constructor],
+           receiver_prekey/2[private,constructor], secret_k/4[private,constructor],
+           secret_l/4[private,constructor], secret_s/5[private,constructor],
+           sender_pk/2[private,constructor], sender_prekey/2[private,constructor],
+           session_id/7[private,constructor], session_key/4[private,constructor],
+           snd/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+restriction Inequality:
+  "∀ x #i. (Neq( x, x ) @ #i) ⇒ (⊥)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i. (Neq( x, x ) @ #i) ⇒ (⊥)"
+  */
+
+restriction TagInequality:
+  "∀ x #i. (TagMismatch( x, x ) @ #i) ⇒ (⊥)"
+  // safety formula
+
+  /*
+  expanded formula:
+  "∀ x #i. (TagMismatch( x, x ) @ #i) ⇒ (⊥)"
+  */
+
+rule (modulo E) InitReceiverState:
+   [ Fr( ~rst ) ]
+  --[ ReceiverStateCreated( $B, ~rst ) ]->
+   [
+   ReceiverState( $B, ~rst ), !ReceiverPublicState( $B, ~rst ),
+   ReceiverCompromiseToken( $B, ~rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) InitSenderState:
+   [ Fr( ~sst ) ]
+  --[ SenderStateCreated( $A, ~sst ) ]->
+   [ !SenderState( $A, ~sst ), SenderCompromiseToken( $A, ~sst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SenderCreatesConfirmedMessage:
+   [
+   !SenderState( $A, sst ), !ReceiverPublicState( $B, rst ), Fr( ~rl ),
+   Fr( ~rk ), Fr( ~rs )
+   ]
+  --[
+  ConfirmedSend( $A, $B,
+                 <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                  ct_s($A, $B, sst, rst, ~rs)>,
+                 session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                            sender_prekey($A, sst), receiver_prekey($B, rst),
+                            <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                             ct_s($A, $B, sst, rst, ~rs)>),
+                 session_key(secret_l($A, $B, rst, ~rl), secret_k($A, $B, rst, ~rk),
+                             secret_s($A, $B, sst, rst, ~rs),
+                             session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                                        sender_prekey($A, sst), receiver_prekey($B, rst),
+                                        <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                                         ct_s($A, $B, sst, rst, ~rs)>)),
+                 hmac(confirm_key(session_key(secret_l($A, $B, rst, ~rl),
+                                              secret_k($A, $B, rst, ~rk), secret_s($A, $B, sst, rst, ~rs),
+                                              session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                                                         sender_prekey($A, sst), receiver_prekey($B, rst),
+                                                         <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                                                          ct_s($A, $B, sst, rst, ~rs)>))),
+                      session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                                 sender_prekey($A, sst), receiver_prekey($B, rst),
+                                 <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                                  ct_s($A, $B, sst, rst, ~rs)>))
+  )
+  ]->
+   [
+   Out( <$A, $B, 
+         <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+          ct_s($A, $B, sst, rst, ~rs)>, 
+         hmac(confirm_key(session_key(secret_l($A, $B, rst, ~rl),
+                                      secret_k($A, $B, rst, ~rk), secret_s($A, $B, sst, rst, ~rs),
+                                      session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                                                 sender_prekey($A, sst), receiver_prekey($B, rst),
+                                                 <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                                                  ct_s($A, $B, sst, rst, ~rs)>))),
+              session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                         sender_prekey($A, sst), receiver_prekey($B, rst),
+                         <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                          ct_s($A, $B, sst, rst, ~rs)>))
+        >
+   ),
+   !HonestSession( $A, $B, rst,
+                   <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                    ct_s($A, $B, sst, rst, ~rs)>,
+                   session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                              sender_prekey($A, sst), receiver_prekey($B, rst),
+                              <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                               ct_s($A, $B, sst, rst, ~rs)>),
+                   session_key(secret_l($A, $B, rst, ~rl), secret_k($A, $B, rst, ~rk),
+                               secret_s($A, $B, sst, rst, ~rs),
+                               session_id($A, $B, sender_pk($A, sst), receiver_pk($B, rst),
+                                          sender_prekey($A, sst), receiver_prekey($B, rst),
+                                          <ct_l($A, $B, rst, ~rl), ct_k($A, $B, rst, ~rk), 
+                                           ct_s($A, $B, sst, rst, ~rs)>))
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CreateBatch:
+   [ ReceiverState( $B, rst ), Fr( ~bid ) ]
+  --[ BatchCreated( $B, ~bid, rst ) ]->
+   [
+   OpenStage0( $B, ~bid, rst ), BatchEndToken( $B, ~bid, rst ),
+   BatchCompromiseToken( $B, ~bid, rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) AddSlot1:
+   [ OpenStage0( $B, bid, rst ), In( <$A, $B, m, tag> ), Fr( ~idx ) ]
+  --[
+  SlotAdded( $B, bid, ~idx, $A, <m, tag> ),
+  Slot1Added( $B, bid, rst, ~idx, $A, <m, tag> )
+  ]->
+   [
+   OpenStage1( $B, bid, rst ), AddedSlot1( $B, bid, rst, ~idx, $A, m, tag )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) AddSlot2:
+   [ OpenStage1( $B, bid, rst ), In( <$A, $B, m, tag> ), Fr( ~idx ) ]
+  --[
+  SlotAdded( $B, bid, ~idx, $A, <m, tag> ),
+  Slot2Added( $B, bid, rst, ~idx, $A, <m, tag> )
+  ]->
+   [
+   OpenStage2( $B, bid, rst ), AddedSlot2( $B, bid, rst, ~idx, $A, m, tag )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SealBatch:
+   [
+   OpenStage2( $B, bid, rst ),
+   AddedSlot1( $B, bid, rst, idx1, $A1, m1, tag1 ),
+   AddedSlot2( $B, bid, rst, idx2, $A2, m2, tag2 )
+   ]
+  --[ SealBatchEvent( $B, bid, rst ) ]->
+   [
+   DedupPending( $B, bid, rst, idx1, $A1, m1, tag1, idx2, $A2, m2, tag2 ),
+   DedupDecisionToken( $B, bid, rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) RejectDuplicateBatch:
+   [
+   DedupPending( $B, bid, rst, idx1, $A1, m, tag1, idx2, $A2, m, tag2 ),
+   DedupDecisionToken( $B, bid, rst ), BatchEndToken( $B, bid, rst )
+   ]
+  --[
+  DuplicateDetected( $B, bid, rst, idx1, $A1, idx2, $A2, m ),
+  UseDedupDecisionToken( $B, bid, rst ), UseBatchEndToken( $B, bid, rst ),
+  BatchFail( $B, bid, rst ), BatchClosed( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) PassDistinctBatch:
+   [
+   DedupPending( $B, bid, rst, idx1, $A1, m1, tag1, idx2, $A2, m2, tag2 ),
+   DedupDecisionToken( $B, bid, rst )
+   ]
+  --[
+  Neq( m1, m2 ), DedupPassed( $B, bid, rst, idx1, $A1, m1, idx2, $A2, m2 ),
+  UseDedupDecisionToken( $B, bid, rst )
+  ]->
+   [
+   CheckedSlot1( $B, bid, rst, idx1, $A1, m1, tag1 ),
+   CheckedSlot2( $B, bid, rst, idx2, $A2, m2, tag2 ),
+   SealedStage0( $B, bid, rst )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ProcessSlot1:
+   [
+   SealedStage0( $B, bid, rst ),
+   CheckedSlot1( $B, bid, rst, idx, $A, m, hmac(confirm_key(k), sid) ),
+   !HonestSession( $A, $B, rst, m, sid, k )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, <m, hmac(confirm_key(k), sid)> ),
+  HmacValidated( $B, $A, bid, idx, rst, m, sid, k,
+                 hmac(confirm_key(k), sid)
+  ),
+  ConfirmedReceiverAccept( $B, $A, bid, idx, rst, m, sid, k,
+                           hmac(confirm_key(k), sid)
+  ),
+  SlotProcessed( $B, bid, idx, $A, <m, hmac(confirm_key(k), sid)> ),
+  Slot1Done( $B, bid, rst )
+  ]->
+   [ SealedStage1( $B, bid, rst ), Slot1DoneFact( $B, bid, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ProcessSlot2:
+   [
+   SealedStage1( $B, bid, rst ),
+   CheckedSlot2( $B, bid, rst, idx, $A, m, hmac(confirm_key(k), sid) ),
+   !HonestSession( $A, $B, rst, m, sid, k )
+   ]
+  --[
+  BatchSlot( $B, bid, idx, $A, <m, hmac(confirm_key(k), sid)> ),
+  HmacValidated( $B, $A, bid, idx, rst, m, sid, k,
+                 hmac(confirm_key(k), sid)
+  ),
+  ConfirmedReceiverAccept( $B, $A, bid, idx, rst, m, sid, k,
+                           hmac(confirm_key(k), sid)
+  ),
+  SlotProcessed( $B, bid, idx, $A, <m, hmac(confirm_key(k), sid)> ),
+  Slot2Done( $B, bid, rst )
+  ]->
+   [ SealedStage2( $B, bid, rst ), Slot2DoneFact( $B, bid, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DetectHmacMismatchSlot1:
+   [
+   SealedStage0( $B, bid, rst ),
+   CheckedSlot1( $B, bid, rst, idx, $A, m, tag ),
+   !HonestSession( $A, $B, rst, m, sid, k )
+   ]
+  --[
+  TagMismatch( tag, hmac(confirm_key(k), sid) ),
+  HmacValidationFailed( $B, $A, bid, idx, rst, m, sid, k, tag,
+                        hmac(confirm_key(k), sid)
+  )
+  ]->
+   [
+   HmacRejectPendingSlot1( $B, bid, rst, idx, $A, m, sid, k, tag,
+                           hmac(confirm_key(k), sid)
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) DetectHmacMismatchSlot2:
+   [
+   SealedStage1( $B, bid, rst ),
+   CheckedSlot2( $B, bid, rst, idx, $A, m, tag ),
+   !HonestSession( $A, $B, rst, m, sid, k )
+   ]
+  --[
+  TagMismatch( tag, hmac(confirm_key(k), sid) ),
+  HmacValidationFailed( $B, $A, bid, idx, rst, m, sid, k, tag,
+                        hmac(confirm_key(k), sid)
+  )
+  ]->
+   [
+   HmacRejectPendingSlot2( $B, bid, rst, idx, $A, m, sid, k, tag,
+                           hmac(confirm_key(k), sid)
+   )
+   ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CloseHmacRejectSlot1:
+   [
+   HmacRejectPendingSlot1( $B, bid, rst, idx, $A, m, sid, k, tag, expected
+   ),
+   BatchEndToken( $B, bid, rst )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ),
+  BatchSlotFail( $B, bid, idx, $A, rst, <m, tag> ),
+  BatchFail( $B, bid, rst ), BatchClosed( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CloseHmacRejectSlot2:
+   [
+   HmacRejectPendingSlot2( $B, bid, rst, idx, $A, m, sid, k, tag, expected
+   ),
+   BatchEndToken( $B, bid, rst )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ),
+  BatchSlotFail( $B, bid, idx, $A, rst, <m, tag> ),
+  BatchFail( $B, bid, rst ), BatchClosed( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompleteBatch:
+   [
+   SealedStage2( $B, bid, rst ), BatchEndToken( $B, bid, rst ),
+   Slot1DoneFact( $B, bid, rst ), Slot2DoneFact( $B, bid, rst )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ), BatchComplete( $B, bid, rst ),
+  BatchClosed( $B, bid, rst ), ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) FailSlot1:
+   [
+   SealedStage0( $B, bid, rst ), BatchEndToken( $B, bid, rst ),
+   CheckedSlot1( $B, bid, rst, idx, $A, m, tag )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ),
+  BatchSlotFail( $B, bid, idx, $A, rst, <m, tag> ),
+  BatchFail( $B, bid, rst ), BatchClosed( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) FailSlot2:
+   [
+   SealedStage1( $B, bid, rst ), BatchEndToken( $B, bid, rst ),
+   CheckedSlot2( $B, bid, rst, idx, $A, m, tag )
+   ]
+  --[
+  UseBatchEndToken( $B, bid, rst ),
+  BatchSlotFail( $B, bid, idx, $A, rst, <m, tag> ),
+  BatchFail( $B, bid, rst ), BatchClosed( $B, bid, rst ),
+  ConsumeReceiverState( $B, rst )
+  ]->
+   [ ClosedBatch( $B, bid, rst ), UsedReceiverState( $B, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseReceiverState:
+   [ ReceiverState( $B, rst ), ReceiverCompromiseToken( $B, rst ) ]
+  --[ CompromiseReceiverState( $B, rst ) ]->
+   [
+   ReceiverState( $B, rst ), !CompromisedReceiverState( $B, rst ),
+   Out( rst )
+   ]
+
+  // loop breaker: [0]
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseActiveReceiverState:
+   [ BatchCompromiseToken( $B, bid, rst ) ]
+  --[ CompromiseReceiverState( $B, rst ) ]->
+   [ !CompromisedReceiverState( $B, rst ), Out( rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CompromiseSenderState:
+   [ !SenderState( $A, sst ), SenderCompromiseToken( $A, sst ) ]
+  --[ CompromiseSenderState( $A, sst ) ]->
+   [ !CompromisedSenderState( $A, sst ), Out( sst ) ]
+
+  /* has exactly the trivial AC variant */
+
+lemma normal_confirmed_single_accept:
+  exists-trace
+  "∃ A B m sid k tag bid idx rst #s #r.
+    ((ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+     (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)) ∧
+    (#s < #r)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B m sid k tag bid idx rst #s #r.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)
+ ∧
+  #s < #r"
+*/
+by sorry
+
+lemma normal_confirmed_batch_complete:
+  exists-trace
+  "∃ A B m sid k tag bid idx rst #s #r #c.
+    ((((ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+       (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)) ∧
+      (BatchComplete( B, bid, rst ) @ #c)) ∧
+     (#s < #r)) ∧
+    (#r < #c)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B m sid k tag bid idx rst #s #r #c.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r) ∧
+  (BatchComplete( B, bid, rst ) @ #c)
+ ∧
+  (#s < #r) ∧ (#r < #c)"
+*/
+by sorry
+
+lemma confirmed_receiver_accept_has_sender:
+  all-traces
+  "∀ A B m sid k tag bid idx rst #r.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r) ⇒
+    (∃ #s. (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧ (#s < #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag bid idx rst #r.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)
+ ∧
+  ∀ #s. (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ⇒ ¬(#s < #r)"
+*/
+by sorry
+
+lemma confirmed_message_unique_send:
+  all-traces
+  "∀ A B m sid k tag #s1 #s2.
+    ((ConfirmedSend( A, B, m, sid, k, tag ) @ #s1) ∧
+     (ConfirmedSend( A, B, m, sid, k, tag ) @ #s2)) ⇒
+    (#s1 = #s2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag #s1 #s2.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s1) ∧
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s2)
+ ∧
+  ¬(#s1 = #s2)"
+*/
+by sorry
+
+lemma one_confirmed_send_two_accepts_exists:
+  exists-trace
+  "∃ A B m sid k tag bid idx1 idx2 rst #s #r1 #r2 #c.
+    ((((((((((((ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+               (ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag
+                ) @ #r1)) ∧
+              (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag
+               ) @ #r2)) ∧
+             (BatchComplete( B, bid, rst ) @ #c)) ∧
+            (¬(idx1 = idx2))) ∧
+           (¬(#r1 = #r2))) ∧
+          (#s < #r1)) ∧
+         (#s < #r2)) ∧
+        (#r1 < #c)) ∧
+       (#r2 < #c)) ∧
+      (∀ #s2. (ConfirmedSend( A, B, m, sid, k, tag ) @ #s2) ⇒ (#s2 = #s))) ∧
+     (¬(∃ X st #cr. CompromiseReceiverState( X, st ) @ #cr))) ∧
+    (¬(∃ X st #cs. CompromiseSenderState( X, st ) @ #cs))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B m sid k tag bid idx1 idx2 rst #s #r1 #r2 #c.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag ) @ #r2) ∧
+  (BatchComplete( B, bid, rst ) @ #c)
+ ∧
+  (¬(idx1 = idx2)) ∧
+  (¬(#r1 = #r2)) ∧
+  (#s < #r1) ∧
+  (#s < #r2) ∧
+  (#r1 < #c) ∧
+  (#r2 < #c) ∧
+  (∀ #s2. (ConfirmedSend( A, B, m, sid, k, tag ) @ #s2) ⇒ #s2 = #s) ∧
+  (∀ X st #cr. (CompromiseReceiverState( X, st ) @ #cr) ⇒ ⊥) ∧
+  (∀ X st #cs. (CompromiseSenderState( X, st ) @ #cs) ⇒ ⊥)"
+*/
+by sorry
+
+lemma confirmed_message_accepted_at_most_once:
+  all-traces
+  "∀ A B m sid k tag bid idx1 idx2 rst #r1 #r2.
+    ((ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag
+      ) @ #r1) ∧
+     (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag
+      ) @ #r2)) ⇒
+    (#r1 = #r2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag bid idx1 idx2 rst #r1 #r2.
+  (ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag ) @ #r2)
+ ∧
+  ¬(#r1 = #r2)"
+*/
+by sorry
+
+lemma injective_confirmed_receiver_accept:
+  all-traces
+  "∀ A B m sid k tag bid idx1 idx2 rst #s #r1 #r2.
+    (((((ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+        (ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag
+         ) @ #r1)) ∧
+       (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag
+        ) @ #r2)) ∧
+      (#s < #r1)) ∧
+     (#s < #r2)) ⇒
+    (#r1 = #r2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag bid idx1 idx2 rst #s #r1 #r2.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx1, rst, m, sid, k, tag ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx2, rst, m, sid, k, tag ) @ #r2)
+ ∧
+  (#s < #r1) ∧ (#s < #r2) ∧ (¬(#r1 = #r2))"
+*/
+by sorry
+
+lemma slot_indices_distinct:
+  all-traces
+  "∀ B bid rst idx1 idx2 A1 A2 cm1 cm2 #i #j.
+    ((Slot1Added( B, bid, rst, idx1, A1, cm1 ) @ #i) ∧
+     (Slot2Added( B, bid, rst, idx2, A2, cm2 ) @ #j)) ⇒
+    (¬(idx1 = idx2))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 idx2 A1 A2 cm1 cm2 #i #j.
+  (Slot1Added( B, bid, rst, idx1, A1, cm1 ) @ #i) ∧
+  (Slot2Added( B, bid, rst, idx2, A2, cm2 ) @ #j)
+ ∧
+  idx1 = idx2"
+*/
+by sorry
+
+lemma process_requires_slot_added:
+  all-traces
+  "∀ B A bid idx rst m sid k tag #i.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #i) ⇒
+    (∃ #j. (SlotAdded( B, bid, idx, A, <m, tag> ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst m sid k tag #i.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #i)
+ ∧
+  ∀ #j. (SlotAdded( B, bid, idx, A, <m, tag> ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma process_requires_seal:
+  all-traces
+  "∀ B A bid idx rst m sid k tag #i.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #i) ⇒
+    (∃ #j. (SealBatchEvent( B, bid, rst ) @ #j) ∧ (#j < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst m sid k tag #i.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #i)
+ ∧
+  ∀ #j. (SealBatchEvent( B, bid, rst ) @ #j) ⇒ ¬(#j < #i)"
+*/
+by sorry
+
+lemma complete_requires_all_slots_processed:
+  all-traces
+  "∀ B bid rst idx A cm #i #j.
+    ((BatchComplete( B, bid, rst ) @ #i) ∧
+     (SlotAdded( B, bid, idx, A, cm ) @ #j)) ⇒
+    (∃ #p.
+      ((SlotProcessed( B, bid, idx, A, cm ) @ #p) ∧ (#j < #p)) ∧ (#p < #i))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx A cm #i #j.
+  (BatchComplete( B, bid, rst ) @ #i) ∧
+  (SlotAdded( B, bid, idx, A, cm ) @ #j)
+ ∧
+  ∀ #p.
+   (SlotProcessed( B, bid, idx, A, cm ) @ #p)
+  ⇒
+   ((¬(#j < #p)) ∨ (¬(#p < #i)))"
+*/
+by sorry
+
+lemma no_add_after_seal:
+  all-traces
+  "∀ B bid rst idx A cm #i #j.
+    ((SealBatchEvent( B, bid, rst ) @ #i) ∧
+     (SlotAdded( B, bid, idx, A, cm ) @ #j)) ⇒
+    (#j < #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx A cm #i #j.
+  (SealBatchEvent( B, bid, rst ) @ #i) ∧
+  (SlotAdded( B, bid, idx, A, cm ) @ #j)
+ ∧
+  ¬(#j < #i)"
+*/
+by sorry
+
+lemma no_accept_after_close:
+  all-traces
+  "∀ B A bid idx rst m sid k tag #i #j.
+    ((BatchClosed( B, bid, rst ) @ #i) ∧
+     (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #j)) ⇒
+    (#j < #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst m sid k tag #i #j.
+  (BatchClosed( B, bid, rst ) @ #i) ∧
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #j)
+ ∧
+  ¬(#j < #i)"
+*/
+by sorry
+
+lemma batch_complete_consumes_state:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchComplete( B, bid, rst ) @ #i) ⇒
+    (ConsumeReceiverState( B, rst ) @ #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchComplete( B, bid, rst ) @ #i)
+ ∧
+  ¬(ConsumeReceiverState( B, rst ) @ #i)"
+*/
+by sorry
+
+lemma batch_fail_consumes_state:
+  all-traces
+  "∀ B bid rst #i.
+    (BatchFail( B, bid, rst ) @ #i) ⇒ (ConsumeReceiverState( B, rst ) @ #i)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i.
+  (BatchFail( B, bid, rst ) @ #i) ∧ ¬(ConsumeReceiverState( B, rst ) @ #i)"
+*/
+by sorry
+
+lemma batch_end_token_single_use:
+  all-traces
+  "∀ B bid rst #i #j.
+    ((UseBatchEndToken( B, bid, rst ) @ #i) ∧
+     (UseBatchEndToken( B, bid, rst ) @ #j)) ⇒
+    (#i = #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #i #j.
+  (UseBatchEndToken( B, bid, rst ) @ #i) ∧
+  (UseBatchEndToken( B, bid, rst ) @ #j)
+ ∧
+  ¬(#i = #j)"
+*/
+by sorry
+
+lemma receiver_state_single_batch:
+  all-traces
+  "∀ B bid1 bid2 rst #i #j.
+    ((BatchCreated( B, bid1, rst ) @ #i) ∧
+     (BatchCreated( B, bid2, rst ) @ #j)) ⇒
+    ((#i = #j) ∧ (bid1 = bid2))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid1 bid2 rst #i #j.
+  (BatchCreated( B, bid1, rst ) @ #i) ∧ (BatchCreated( B, bid2, rst ) @ #j)
+ ∧
+  ((¬(#i = #j)) ∨ (¬(bid1 = bid2)))"
+*/
+by sorry
+
+lemma receiver_state_single_batch_end:
+  all-traces
+  "∀ B rst #i #j.
+    ((ConsumeReceiverState( B, rst ) @ #i) ∧
+     (ConsumeReceiverState( B, rst ) @ #j)) ⇒
+    (#i = #j)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B rst #i #j.
+  (ConsumeReceiverState( B, rst ) @ #i) ∧
+  (ConsumeReceiverState( B, rst ) @ #j)
+ ∧
+  ¬(#i = #j)"
+*/
+by sorry
+
+lemma duplicate_batch_fail_exists:
+  exists-trace
+  "∃ A B m sid k tag bid idx1 idx2 rst #s #a1 #a2 #seal #d.
+    (((((((((ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+            (Slot1Added( B, bid, rst, idx1, A, <m, tag> ) @ #a1)) ∧
+           (Slot2Added( B, bid, rst, idx2, A, <m, tag> ) @ #a2)) ∧
+          (SealBatchEvent( B, bid, rst ) @ #seal)) ∧
+         (DuplicateDetected( B, bid, rst, idx1, A, idx2, A, m ) @ #d)) ∧
+        (BatchFail( B, bid, rst ) @ #d)) ∧
+       (#s < #a1)) ∧
+      (#a1 < #a2)) ∧
+     (#a2 < #seal)) ∧
+    (#seal < #d)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B m sid k tag bid idx1 idx2 rst #s #a1 #a2 #seal #d.
+  (ConfirmedSend( A, B, m, sid, k, tag ) @ #s) ∧
+  (Slot1Added( B, bid, rst, idx1, A, <m, tag> ) @ #a1) ∧
+  (Slot2Added( B, bid, rst, idx2, A, <m, tag> ) @ #a2) ∧
+  (SealBatchEvent( B, bid, rst ) @ #seal) ∧
+  (DuplicateDetected( B, bid, rst, idx1, A, idx2, A, m ) @ #d) ∧
+  (BatchFail( B, bid, rst ) @ #d)
+ ∧
+  (#s < #a1) ∧ (#a1 < #a2) ∧ (#a2 < #seal) ∧ (#seal < #d)"
+*/
+by sorry
+
+lemma duplicate_detected_before_any_accept:
+  all-traces
+  "∀ B bid rst idx1 A1 idx2 A2 m #d.
+    (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d) ⇒
+    (¬(∃ A idx m2 sid k tag #r.
+        (ConfirmedReceiverAccept( B, A, bid, idx, rst, m2, sid, k, tag ) @ #r) ∧
+        (#r < #d)))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 A1 idx2 A2 m #d.
+  (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d)
+ ∧
+  ∃ A idx m2 sid k tag #r.
+   (ConfirmedReceiverAccept( B, A, bid, idx, rst, m2, sid, k, tag ) @ #r)
+  ∧
+   #r < #d"
+*/
+by sorry
+
+lemma duplicate_batch_has_no_accept:
+  all-traces
+  "∀ B bid rst idx1 A1 idx2 A2 m #d.
+    (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d) ⇒
+    (¬(∃ A idx m2 sid k tag #r.
+        ConfirmedReceiverAccept( B, A, bid, idx, rst, m2, sid, k, tag ) @ #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 A1 idx2 A2 m #d.
+  (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d)
+ ∧
+  ∃ A idx m2 sid k tag #r.
+   (ConfirmedReceiverAccept( B, A, bid, idx, rst, m2, sid, k, tag ) @ #r)"
+*/
+by sorry
+
+lemma process_requires_dedup_pass:
+  all-traces
+  "∀ B A bid idx rst m sid k tag #r.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r) ⇒
+    (∃ idx1 A1 m1 idx2 A2 m2 #p.
+      ((DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+       (#p < #r)) ∧
+      ((((idx = idx1) ∧ (A = A1)) ∧ (m = m1)) ∨
+       (((idx = idx2) ∧ (A = A2)) ∧ (m = m2))))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B A bid idx rst m sid k tag #r.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)
+ ∧
+  ∀ idx1 A1 m1 idx2 A2 m2 #p.
+   (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p)
+  ⇒
+   ((¬(#p < #r)) ∨
+    ((((¬(idx = idx1)) ∨ (¬(A = A1)) ∨ (¬(m = m1)))) ∧
+     (((¬(idx = idx2)) ∨ (¬(A = A2)) ∨ (¬(m = m2))))))"
+*/
+by sorry
+
+lemma dedup_pass_messages_distinct:
+  all-traces
+  "∀ B bid rst idx1 A1 m1 idx2 A2 m2 #p.
+    (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ⇒
+    (¬(m1 = m2))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 A1 m1 idx2 A2 m2 #p.
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧ m1 = m2"
+*/
+by sorry
+
+lemma dedup_decision_single_use:
+  all-traces
+  "∀ B bid rst #d1 #d2.
+    ((UseDedupDecisionToken( B, bid, rst ) @ #d1) ∧
+     (UseDedupDecisionToken( B, bid, rst ) @ #d2)) ⇒
+    (#d1 = #d2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #d1 #d2.
+  (UseDedupDecisionToken( B, bid, rst ) @ #d1) ∧
+  (UseDedupDecisionToken( B, bid, rst ) @ #d2)
+ ∧
+  ¬(#d1 = #d2)"
+*/
+by sorry
+
+lemma dedup_outcomes_exclusive:
+  all-traces
+  "∀ B bid rst idx1 A1 idx2 A2 m pidx1 PA1 pm1 pidx2 PA2 pm2 #d #p.
+    ((DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d) ∧
+     (DedupPassed( B, bid, rst, pidx1, PA1, pm1, pidx2, PA2, pm2 ) @ #p)) ⇒
+    (⊥)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 A1 idx2 A2 m pidx1 PA1 pm1 pidx2 PA2 pm2 #d #p.
+  (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d) ∧
+  (DedupPassed( B, bid, rst, pidx1, PA1, pm1, pidx2, PA2, pm2 ) @ #p)"
+*/
+by sorry
+
+lemma normal_distinct_batch_complete:
+  exists-trace
+  "∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #s1 #s2 #p
+     #r1 #r2 #c.
+    (((((((((((ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+              (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2)) ∧
+             (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p)) ∧
+            (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+             ) @ #r1)) ∧
+           (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m2, sid2, k2, tag2
+            ) @ #r2)) ∧
+          (BatchComplete( B, bid, rst ) @ #c)) ∧
+         (¬(m1 = m2))) ∧
+        (#s1 < #p)) ∧
+       (#s2 < #p)) ∧
+      (#p < #r1)) ∧
+     (#r1 < #r2)) ∧
+    (#r2 < #c)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #s1 #s2 #p
+   #r1 #r2 #c.
+  (ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+  (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2) ∧
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+   ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m2, sid2, k2, tag2
+   ) @ #r2) ∧
+  (BatchComplete( B, bid, rst ) @ #c)
+ ∧
+  (¬(m1 = m2)) ∧
+  (#s1 < #p) ∧
+  (#s2 < #p) ∧
+  (#p < #r1) ∧
+  (#r1 < #r2) ∧
+  (#r2 < #c)"
+*/
+by sorry
+
+lemma normal_distinct_fail_slot1_exists:
+  exists-trace
+  "∃ A1 A2 B m1 m2 tag1 bid idx1 idx2 rst #p #f.
+    ((((DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+       (BatchSlotFail( B, bid, idx1, A1, rst, <m1, tag1> ) @ #f)) ∧
+      (BatchFail( B, bid, rst ) @ #f)) ∧
+     (¬(m1 = m2))) ∧
+    (#p < #f)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 tag1 bid idx1 idx2 rst #p #f.
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (BatchSlotFail( B, bid, idx1, A1, rst, <m1, tag1> ) @ #f) ∧
+  (BatchFail( B, bid, rst ) @ #f)
+ ∧
+  (¬(m1 = m2)) ∧ (#p < #f)"
+*/
+by sorry
+
+lemma normal_distinct_fail_slot2_exists:
+  exists-trace
+  "∃ A1 A2 B m1 m2 sid1 k1 tag1 tag2 bid idx1 idx2 rst #p #r #f.
+    ((((((DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+         (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+          ) @ #r)) ∧
+        (BatchSlotFail( B, bid, idx2, A2, rst, <m2, tag2> ) @ #f)) ∧
+       (BatchFail( B, bid, rst ) @ #f)) ∧
+      (¬(m1 = m2))) ∧
+     (#p < #r)) ∧
+    (#r < #f)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 sid1 k1 tag1 tag2 bid idx1 idx2 rst #p #r #f.
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+   ) @ #r) ∧
+  (BatchSlotFail( B, bid, idx2, A2, rst, <m2, tag2> ) @ #f) ∧
+  (BatchFail( B, bid, rst ) @ #f)
+ ∧
+  (¬(m1 = m2)) ∧ (#p < #r) ∧ (#r < #f)"
+*/
+by sorry
+
+lemma batch_fail_complete_exclusive:
+  all-traces
+  "∀ B bid rst #f #c.
+    ((BatchFail( B, bid, rst ) @ #f) ∧ (BatchComplete( B, bid, rst ) @ #c)) ⇒
+    (⊥)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst #f #c.
+  (BatchFail( B, bid, rst ) @ #f) ∧ (BatchComplete( B, bid, rst ) @ #c)"
+*/
+by sorry
+
+lemma state_consumed_on_duplicate_fail:
+  all-traces
+  "∀ B bid rst idx1 A1 idx2 A2 m #d.
+    (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d) ⇒
+    (((BatchFail( B, bid, rst ) @ #d) ∧ (BatchClosed( B, bid, rst ) @ #d)) ∧
+     (ConsumeReceiverState( B, rst ) @ #d))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ B bid rst idx1 A1 idx2 A2 m #d.
+  (DuplicateDetected( B, bid, rst, idx1, A1, idx2, A2, m ) @ #d)
+ ∧
+  ((¬(BatchFail( B, bid, rst ) @ #d)) ∨
+   (¬(BatchClosed( B, bid, rst ) @ #d)) ∨
+   (¬(ConsumeReceiverState( B, rst ) @ #d)))"
+*/
+simplify
+by contradiction /* from formulas */
+
+lemma confirmed_base_message_accepted_at_most_once:
+  all-traces
+  "∀ A1 A2 B m sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #r1 #r2.
+    ((ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m, sid1, k1, tag1
+      ) @ #r1) ∧
+     (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m, sid2, k2, tag2
+      ) @ #r2)) ⇒
+    (#r1 = #r2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A1 A2 B m sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #r1 #r2.
+  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m, sid1, k1, tag1
+   ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m, sid2, k2, tag2
+   ) @ #r2)
+ ∧
+  ¬(#r1 = #r2)"
+*/
+by sorry
+
+lemma duplicate_same_base_different_tag_fail_exists:
+  exists-trace
+  "∃ A B m sid k tag1 tag2 bid idx1 idx2 rst #s #a1 #a2 #seal #d.
+    ((((((((((((((((ConfirmedSend( A, B, m, sid, k, tag1 ) @ #s) ∧
+                   (Slot1Added( B, bid, rst, idx1, A, <m, tag1> ) @ #a1)) ∧
+                  (Slot2Added( B, bid, rst, idx2, A, <m, tag2> ) @ #a2)) ∧
+                 (SealBatchEvent( B, bid, rst ) @ #seal)) ∧
+                (DuplicateDetected( B, bid, rst, idx1, A, idx2, A, m ) @ #d)) ∧
+               (UseDedupDecisionToken( B, bid, rst ) @ #d)) ∧
+              (UseBatchEndToken( B, bid, rst ) @ #d)) ∧
+             (BatchFail( B, bid, rst ) @ #d)) ∧
+            (BatchClosed( B, bid, rst ) @ #d)) ∧
+           (ConsumeReceiverState( B, rst ) @ #d)) ∧
+          (¬(tag1 = tag2))) ∧
+         (¬(idx1 = idx2))) ∧
+        (#s < #a1)) ∧
+       (#a1 < #a2)) ∧
+      (#a2 < #seal)) ∧
+     (#seal < #d)) ∧
+    (¬(∃ A3 idx3 m3 sid3 k3 tag3 #r.
+        ConfirmedReceiverAccept( B, A3, bid, idx3, rst, m3, sid3, k3, tag3
+        ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A B m sid k tag1 tag2 bid idx1 idx2 rst #s #a1 #a2 #seal #d.
+  (ConfirmedSend( A, B, m, sid, k, tag1 ) @ #s) ∧
+  (Slot1Added( B, bid, rst, idx1, A, <m, tag1> ) @ #a1) ∧
+  (Slot2Added( B, bid, rst, idx2, A, <m, tag2> ) @ #a2) ∧
+  (SealBatchEvent( B, bid, rst ) @ #seal) ∧
+  (DuplicateDetected( B, bid, rst, idx1, A, idx2, A, m ) @ #d) ∧
+  (UseDedupDecisionToken( B, bid, rst ) @ #d) ∧
+  (UseBatchEndToken( B, bid, rst ) @ #d) ∧
+  (BatchFail( B, bid, rst ) @ #d) ∧
+  (BatchClosed( B, bid, rst ) @ #d) ∧
+  (ConsumeReceiverState( B, rst ) @ #d)
+ ∧
+  (¬(tag1 = tag2)) ∧
+  (¬(idx1 = idx2)) ∧
+  (#s < #a1) ∧
+  (#a1 < #a2) ∧
+  (#a2 < #seal) ∧
+  (#seal < #d) ∧
+  (∀ A3 idx3 m3 sid3 k3 tag3 #r.
+    (ConfirmedReceiverAccept( B, A3, bid, idx3, rst, m3, sid3, k3, tag3
+     ) @ #r)
+   ⇒
+    ⊥)"
+*/
+by sorry
+
+lemma confirmed_accept_requires_valid_tag:
+  all-traces
+  "∀ A B m sid k tag bid idx rst #r.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r) ⇒
+    (tag = hmac(confirm_key(k), sid))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag bid idx rst #r.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)
+ ∧
+  ¬(tag = hmac(confirm_key(k), sid))"
+*/
+by sorry
+
+lemma confirmed_accept_requires_hmac_validated:
+  all-traces
+  "∀ A B m sid k tag bid idx rst #r.
+    (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r) ⇒
+    (HmacValidated( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A B m sid k tag bid idx rst #r.
+  (ConfirmedReceiverAccept( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)
+ ∧
+  ¬(HmacValidated( B, A, bid, idx, rst, m, sid, k, tag ) @ #r)"
+*/
+by sorry
+
+lemma hmac_failure_slot1_exists:
+  exists-trace
+  "∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bad1 bid idx1 idx2 rst #s1 #s2
+     #a1 #a2 #seal #p #hf #bf.
+    (((((((((((((ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+                (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2)) ∧
+               (Slot1Added( B, bid, rst, idx1, A1, <m1, bad1> ) @ #a1)) ∧
+              (Slot2Added( B, bid, rst, idx2, A2, <m2, tag2> ) @ #a2)) ∧
+             (SealBatchEvent( B, bid, rst ) @ #seal)) ∧
+            (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p)) ∧
+           (TagMismatch( bad1, tag1 ) @ #hf)) ∧
+          (HmacValidationFailed( B, A1, bid, idx1, rst, m1, sid1, k1, bad1, tag1
+           ) @ #hf)) ∧
+         (BatchFail( B, bid, rst ) @ #bf)) ∧
+        (¬(m1 = m2))) ∧
+       (#seal < #p)) ∧
+      (#p < #hf)) ∧
+     (#hf < #bf)) ∧
+    (¬(∃ A3 m3 sid3 k3 tag3 #r.
+        ConfirmedReceiverAccept( B, A3, bid, idx1, rst, m3, sid3, k3, tag3
+        ) @ #r))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bad1 bid idx1 idx2 rst #s1 #s2
+   #a1 #a2 #seal #p #hf #bf.
+  (ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+  (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2) ∧
+  (Slot1Added( B, bid, rst, idx1, A1, <m1, bad1> ) @ #a1) ∧
+  (Slot2Added( B, bid, rst, idx2, A2, <m2, tag2> ) @ #a2) ∧
+  (SealBatchEvent( B, bid, rst ) @ #seal) ∧
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (TagMismatch( bad1, tag1 ) @ #hf) ∧
+  (HmacValidationFailed( B, A1, bid, idx1, rst, m1, sid1, k1, bad1, tag1
+   ) @ #hf) ∧
+  (BatchFail( B, bid, rst ) @ #bf)
+ ∧
+  (¬(m1 = m2)) ∧
+  (#seal < #p) ∧
+  (#p < #hf) ∧
+  (#hf < #bf) ∧
+  (∀ A3 m3 sid3 k3 tag3 #r.
+    (ConfirmedReceiverAccept( B, A3, bid, idx1, rst, m3, sid3, k3, tag3
+     ) @ #r)
+   ⇒
+    ⊥)"
+*/
+by sorry
+
+lemma hmac_failure_slot2_after_prior_accept_replay_exists:
+  exists-trace
+  "∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bad2 bid idx1 idx2 rst #s1 #s2
+     #p #r1 #hf #bf.
+    ((((((((((((((ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+                 (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2)) ∧
+                (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p)) ∧
+               (HmacValidated( B, A1, bid, idx1, rst, m1, sid1, k1, tag1 ) @ #r1)) ∧
+              (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+               ) @ #r1)) ∧
+             (TagMismatch( bad2, tag2 ) @ #hf)) ∧
+            (HmacValidationFailed( B, A2, bid, idx2, rst, m2, sid2, k2, bad2, tag2
+             ) @ #hf)) ∧
+           (BatchFail( B, bid, rst ) @ #bf)) ∧
+          (¬(m1 = m2))) ∧
+         (#s1 < #p)) ∧
+        (#s2 < #p)) ∧
+       (#p < #r1)) ∧
+      (#r1 < #hf)) ∧
+     (#hf < #bf)) ∧
+    (¬(∃ #c. BatchComplete( B, bid, rst ) @ #c))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bad2 bid idx1 idx2 rst #s1 #s2
+   #p #r1 #hf #bf.
+  (ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+  (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2) ∧
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (HmacValidated( B, A1, bid, idx1, rst, m1, sid1, k1, tag1 ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+   ) @ #r1) ∧
+  (TagMismatch( bad2, tag2 ) @ #hf) ∧
+  (HmacValidationFailed( B, A2, bid, idx2, rst, m2, sid2, k2, bad2, tag2
+   ) @ #hf) ∧
+  (BatchFail( B, bid, rst ) @ #bf)
+ ∧
+  (¬(m1 = m2)) ∧
+  (#s1 < #p) ∧
+  (#s2 < #p) ∧
+  (#p < #r1) ∧
+  (#r1 < #hf) ∧
+  (#hf < #bf) ∧
+  (∀ #c. (BatchComplete( B, bid, rst ) @ #c) ⇒ ⊥)"
+*/
+by sorry
+
+lemma hmac_failed_slot_has_no_accept:
+  all-traces
+  "∀ A1 A2 B bid idx rst m1 m2 sid1 sid2 k1 k2 tag expected tag2 #hf #r.
+    ((HmacValidationFailed( B, A1, bid, idx, rst, m1, sid1, k1, tag, expected
+      ) @ #hf) ∧
+     (ConfirmedReceiverAccept( B, A2, bid, idx, rst, m2, sid2, k2, tag2
+      ) @ #r)) ⇒
+    (⊥)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A1 A2 B bid idx rst m1 m2 sid1 sid2 k1 k2 tag expected tag2 #hf #r.
+  (HmacValidationFailed( B, A1, bid, idx, rst, m1, sid1, k1, tag, expected
+   ) @ #hf) ∧
+  (ConfirmedReceiverAccept( B, A2, bid, idx, rst, m2, sid2, k2, tag2
+   ) @ #r)"
+*/
+by sorry
+
+lemma normal_two_distinct_valid_confirmed_accepts_complete:
+  exists-trace
+  "∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #s1 #s2 #p
+     #r1 #r2 #c.
+    (((((((((((((((((((ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+                      (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2)) ∧
+                     (Neq( m1, m2 ) @ #p)) ∧
+                    (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p)) ∧
+                   (HmacValidated( B, A1, bid, idx1, rst, m1, sid1, k1, tag1 ) @ #r1)) ∧
+                  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+                   ) @ #r1)) ∧
+                 (HmacValidated( B, A2, bid, idx2, rst, m2, sid2, k2, tag2 ) @ #r2)) ∧
+                (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m2, sid2, k2, tag2
+                 ) @ #r2)) ∧
+               (BatchComplete( B, bid, rst ) @ #c)) ∧
+              (¬(m1 = m2))) ∧
+             (¬(idx1 = idx2))) ∧
+            (¬(#s1 = #s2))) ∧
+           (¬(#r1 = #r2))) ∧
+          (#s1 < #p)) ∧
+         (#s2 < #p)) ∧
+        (#p < #r1)) ∧
+       (#r1 < #r2)) ∧
+      (#r2 < #c)) ∧
+     (¬(∃ X st #cr. CompromiseReceiverState( X, st ) @ #cr))) ∧
+    (¬(∃ X st #cs. CompromiseSenderState( X, st ) @ #cs))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A1 A2 B m1 m2 sid1 sid2 k1 k2 tag1 tag2 bid idx1 idx2 rst #s1 #s2 #p
+   #r1 #r2 #c.
+  (ConfirmedSend( A1, B, m1, sid1, k1, tag1 ) @ #s1) ∧
+  (ConfirmedSend( A2, B, m2, sid2, k2, tag2 ) @ #s2) ∧
+  (Neq( m1, m2 ) @ #p) ∧
+  (DedupPassed( B, bid, rst, idx1, A1, m1, idx2, A2, m2 ) @ #p) ∧
+  (HmacValidated( B, A1, bid, idx1, rst, m1, sid1, k1, tag1 ) @ #r1) ∧
+  (ConfirmedReceiverAccept( B, A1, bid, idx1, rst, m1, sid1, k1, tag1
+   ) @ #r1) ∧
+  (HmacValidated( B, A2, bid, idx2, rst, m2, sid2, k2, tag2 ) @ #r2) ∧
+  (ConfirmedReceiverAccept( B, A2, bid, idx2, rst, m2, sid2, k2, tag2
+   ) @ #r2) ∧
+  (BatchComplete( B, bid, rst ) @ #c)
+ ∧
+  (¬(m1 = m2)) ∧
+  (¬(idx1 = idx2)) ∧
+  (¬(#s1 = #s2)) ∧
+  (¬(#r1 = #r2)) ∧
+  (#s1 < #p) ∧
+  (#s2 < #p) ∧
+  (#p < #r1) ∧
+  (#r1 < #r2) ∧
+  (#r2 < #c) ∧
+  (∀ X st #cr. (CompromiseReceiverState( X, st ) @ #cr) ⇒ ⊥) ∧
+  (∀ X st #cs. (CompromiseSenderState( X, st ) @ #cs) ⇒ ⊥)"
+*/
+by sorry
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: /home/kwaay/kwaay-formal/tamarin/replay/kwaay_replay_hmac_dedup.spthy
+
+  processing time: 0.14s
+  
+  normal_confirmed_single_accept (exists-trace): analysis incomplete (1 steps)
+  normal_confirmed_batch_complete (exists-trace): analysis incomplete (1 steps)
+  confirmed_receiver_accept_has_sender (all-traces): analysis incomplete (1 steps)
+  confirmed_message_unique_send (all-traces): analysis incomplete (1 steps)
+  one_confirmed_send_two_accepts_exists (exists-trace): analysis incomplete (1 steps)
+  confirmed_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  injective_confirmed_receiver_accept (all-traces): analysis incomplete (1 steps)
+  slot_indices_distinct (all-traces): analysis incomplete (1 steps)
+  process_requires_slot_added (all-traces): analysis incomplete (1 steps)
+  process_requires_seal (all-traces): analysis incomplete (1 steps)
+  complete_requires_all_slots_processed (all-traces): analysis incomplete (1 steps)
+  no_add_after_seal (all-traces): analysis incomplete (1 steps)
+  no_accept_after_close (all-traces): analysis incomplete (1 steps)
+  batch_complete_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_fail_consumes_state (all-traces): analysis incomplete (1 steps)
+  batch_end_token_single_use (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch (all-traces): analysis incomplete (1 steps)
+  receiver_state_single_batch_end (all-traces): analysis incomplete (1 steps)
+  duplicate_batch_fail_exists (exists-trace): analysis incomplete (1 steps)
+  duplicate_detected_before_any_accept (all-traces): analysis incomplete (1 steps)
+  duplicate_batch_has_no_accept (all-traces): analysis incomplete (1 steps)
+  process_requires_dedup_pass (all-traces): analysis incomplete (1 steps)
+  dedup_pass_messages_distinct (all-traces): analysis incomplete (1 steps)
+  dedup_decision_single_use (all-traces): analysis incomplete (1 steps)
+  dedup_outcomes_exclusive (all-traces): analysis incomplete (1 steps)
+  normal_distinct_batch_complete (exists-trace): analysis incomplete (1 steps)
+  normal_distinct_fail_slot1_exists (exists-trace): analysis incomplete (1 steps)
+  normal_distinct_fail_slot2_exists (exists-trace): analysis incomplete (1 steps)
+  batch_fail_complete_exclusive (all-traces): analysis incomplete (1 steps)
+  state_consumed_on_duplicate_fail (all-traces): verified (2 steps)
+  confirmed_base_message_accepted_at_most_once (all-traces): analysis incomplete (1 steps)
+  duplicate_same_base_different_tag_fail_exists (exists-trace): analysis incomplete (1 steps)
+  confirmed_accept_requires_valid_tag (all-traces): analysis incomplete (1 steps)
+  confirmed_accept_requires_hmac_validated (all-traces): analysis incomplete (1 steps)
+  hmac_failure_slot1_exists (exists-trace): analysis incomplete (1 steps)
+  hmac_failure_slot2_after_prior_accept_replay_exists (exists-trace): analysis incomplete (1 steps)
+  hmac_failed_slot_has_no_accept (all-traces): analysis incomplete (1 steps)
+  normal_two_distinct_valid_confirmed_accepts_complete (exists-trace): analysis incomplete (1 steps)
+
+==============================================================================

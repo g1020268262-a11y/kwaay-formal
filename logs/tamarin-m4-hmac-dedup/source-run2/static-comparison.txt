@@ -1,0 +1,14 @@
+combined_replay_count=38
+combined_impact_count=62
+consumer_rules=3/3 MATCH
+hmac_functions=MATCH
+hmac_sender_rule=MATCH
+hmac_matching_formulas=2/2 MATCH
+m3_dedup_structure=MATCH_WITH_APPROVED_TAG_PROJECTION
+alias_tokens=ABSENT
+frozen_blobs_and_sha256=MATCH
+evidence_scope=tamarin-only
+canonical_target_matrix=296 MATCH
+proverif_targets=not_run_out_of_scope
+combined_replay_impact_lower_layer=MATCH_WITH_NARROW_PROJECTION
+static_checks=PASS
