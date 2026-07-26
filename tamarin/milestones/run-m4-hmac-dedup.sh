@@ -272,27 +272,28 @@ declare -A FROZEN_BLOB=() FROZEN_SHA256=()
 FROZEN_BLOB["$ORIGINAL_REPLAY_REL"]="e3699da2f827a683ded2feaaa7db2d51ad74c023"
 FROZEN_SHA256["$ORIGINAL_REPLAY_REL"]="064ec603bdfac917246a12762774701bc624c40ccb11eb6a88adf94befb4322e"
 FROZEN_BLOB["$HMAC_REPLAY_REL"]="589e8693f23d76fcf3977d6ca3784a2f670d5d8d"
-FROZEN_SHA256["$HMAC_REPLAY_REL"]="d46ead8564b8cc8410f9f3a655c72be440e5fce3f2455022e0b00155508873f6"
+FROZEN_SHA256["$HMAC_REPLAY_REL"]="31325a0e3024b0a9aa550ee0226b611b570c86ba72f698fd01e91669b213579f"
 FROZEN_BLOB["$FIXED_REPLAY_REL"]="493568857492e9c17b896dfb2ab3692f7b48d365"
-FROZEN_SHA256["$FIXED_REPLAY_REL"]="7d5ebdca2b5f71856d4e94a18ddce17212bd25c7dd869f3495a123ae521452b3"
+FROZEN_SHA256["$FIXED_REPLAY_REL"]="ae040141a099953dc237bb44ee0f88d55b5ea396cc2019475a5fb3a72eaf36ec"
 FROZEN_BLOB["$ORIGINAL_IMPACT_REL"]="c5cdc0d7233f3a415839b8f289182c0986d911a8"
-FROZEN_SHA256["$ORIGINAL_IMPACT_REL"]="0c20e36137c27bd138101a91ef5ce1e16109fccf696f942eb98c3d855a11fa41"
+FROZEN_SHA256["$ORIGINAL_IMPACT_REL"]="a76999a32d4d3c63f88af544c6cb5fa7a7d7240fcad5c0e9f2b3d17abaf9d2f0"
 FROZEN_BLOB["$FIXED_IMPACT_REL"]="3a707c022594ce84f23c2f39623715fe3c3f47e2"
-FROZEN_SHA256["$FIXED_IMPACT_REL"]="0c46643fb278598d45b91dc2ce4a963ab1a7f3336581a5afe599cc888b9bd808"
+FROZEN_SHA256["$FIXED_IMPACT_REL"]="cc3c24537d9fc24fe9e2a14321fa57b649498710940ce48621da1bed1a5c27a9"
 FROZEN_BLOB["$V6_REL"]="cc7d7d962bbe1bc8d8e09354ca8fdf911be865f9"
-FROZEN_SHA256["$V6_REL"]="7733815c2a176d9bd0ca411b6ff7d966e0eaba9f9e377523af0e614697a5e302"
+FROZEN_SHA256["$V6_REL"]="ebded39cc3ba1a771dd639dd78586efd54b9c6acc242fa2cca244e334af479b3"
 FROZEN_BLOB["$V7_REL"]="7c8c73eb795ee5fd8196654af2a6ecf04a73b380"
 FROZEN_SHA256["$V7_REL"]="7dd91deac3e16fbb600b1dd646e6c783aa56ce779b9097216bba0814e7b37a47"
 FROZEN_BLOB["$PROVERIF_ORIGINAL_REL"]="f8fded3f616d7b6e203933921922ef049437e36b"
-FROZEN_SHA256["$PROVERIF_ORIGINAL_REL"]="b28b8145992d96f190cc478608b7e36669f0040a06319a63f2d69969347de867"
+FROZEN_SHA256["$PROVERIF_ORIGINAL_REL"]="73d7ae3d4ad4a120c868b3c841ce9a604ad21bf2349234bcea54ff8204e3857e"
 FROZEN_BLOB["$PROVERIF_HMAC_REL"]="69d27acf560552293b486f5667b6be50e331fa93"
-FROZEN_SHA256["$PROVERIF_HMAC_REL"]="940fdb4a0449a0d35a70f488d1c68f6e79884cf5651419c96b1d65aa295b04bd"
+FROZEN_SHA256["$PROVERIF_HMAC_REL"]="b7a1787ae12bdff7b3a02d179adf00f56006bd03a786726cdbc39fbf4c2e775a"
 FROZEN_BLOB["$PROVERIF_ORIGINAL_BASELINE_REL"]="ff24b5e33537be899d1f25c8a825e02e8054cf2f"
-FROZEN_SHA256["$PROVERIF_ORIGINAL_BASELINE_REL"]="b3a59616ae0d9a3eeb81d878515fdd79e29cbf4951fcf6029e2eb6944bd6075e"
+FROZEN_SHA256["$PROVERIF_ORIGINAL_BASELINE_REL"]="c123f736ae51c118c4c7dda480d4e1cc26a1d65823c2c140e7ca9410d0549b51"
 FROZEN_BLOB["$PROVERIF_HMAC_BASELINE_REL"]="41162bc55aeb077d65a0c259a1c96e050a718325"
-FROZEN_SHA256["$PROVERIF_HMAC_BASELINE_REL"]="6de331e25170c36f893ceb78888fd12dbefe3f47b952bda98dfe40d51aa2c503"
+FROZEN_SHA256["$PROVERIF_HMAC_BASELINE_REL"]="f427e18060550a0d596207dd6993901d189174dac1d316ffcd6d4661d6a10925"
 
 git_cmd() { "${GIT_CMD[@]}" "$@" </dev/null; }
+git_blob_sha256() { git_cmd cat-file blob "HEAD:$1" | sha256sum | awk '{print $1}'; }
 
 validate_positive_mb() {
   local value="$1"
@@ -899,7 +900,7 @@ verify_frozen_inputs() {
   local path blob sha
   for path in "${FROZEN_PATHS[@]}"; do
     blob="$(git_cmd rev-parse "HEAD:$path")"
-    sha="$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
+    sha="$(git_blob_sha256 "$path")"
     [[ "$blob" == "${FROZEN_BLOB[$path]}" ]] || { echo "error: frozen blob drift: $path" >&2; return 1; }
     [[ "$sha" == "${FROZEN_SHA256[$path]}" ]] || { echo "error: frozen SHA drift: $path" >&2; return 1; }
   done
@@ -1016,7 +1017,8 @@ write_provenance() {
     echo "binding_file=binding.tsv"
     for path in "${BOUND_PATHS[@]}"; do
       printf 'bound_blob[%s]=%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")"
-      printf 'bound_sha256[%s]=%s\n' "$path" "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
+      printf 'bound_git_blob_sha256[%s]=%s\n' "$path" "$(git_blob_sha256 "$path")"
+      printf 'bound_worktree_sha256[%s]=%s\n' "$path" "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')"
     done
     "$TAMARIN_CMD" --version 2>&1 | sed 's/^/tamarin_version=/'
     "$MAUDE_CMD" --version 2>&1 | head -n3 | sed 's/^/maude_version=/'
@@ -1038,9 +1040,10 @@ write_formula_digests() {
 
 write_frozen_input_table() {
   local out="$1" path
-  printf 'path\tblob\tsha256\n' > "$out/frozen-inputs.tsv"
+  printf 'path\tblob\tgit_blob_sha256\tworktree_sha256\n' > "$out/frozen-inputs.tsv"
   for path in "${FROZEN_PATHS[@]}"; do
-    printf '%s\t%s\t%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")" \
+    printf '%s\t%s\t%s\t%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")" \
+      "$(git_blob_sha256 "$path")" \
       "$(sha256sum "$ROOT_DIR/$path" | awk '{print $1}')" >> "$out/frozen-inputs.tsv"
   done
 }
@@ -1587,7 +1590,7 @@ EOF
 expect_validator_failure() { if "$@" >/dev/null 2>&1; then echo "error: negative test unexpectedly passed: $*" >&2; return 1; fi; }
 
 self_test() {
-  local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification pv_actual pv_expected synthetic_run
+  local tmp base fixture selection vector summary before_log_exists=0 failures=0 mock classification pv_actual pv_expected synthetic_run frozen_repo
   local probe_out resource_out timeout_cmd resource_exit next_exit event old_memory old_run_state old_current_target old_started old_unit old_wait old_suite old_target old_raw interrupt_dir unit active_state signal_status status
   [[ -e "$LOG_DIR" ]] && before_log_exists=1
   static_checks >/dev/null || failures=1
@@ -1613,6 +1616,33 @@ self_test() {
   printf '%s\n' COMPLETE > "$tmp/final-manifest/run-state.txt"
   make_manifest "$tmp/final-manifest" >/dev/null || failures=1
   validate_manifest "$tmp/final-manifest" || failures=1
+
+  frozen_repo="$tmp/frozen-repo"
+  mkdir -p "$frozen_repo"
+  git -C "$frozen_repo" init -q
+  git -C "$frozen_repo" config user.name "M4 Self Test"
+  git -C "$frozen_repo" config user.email "m4-self-test@example.invalid"
+  printf 'alpha\nbeta\n' > "$frozen_repo/frozen.txt"
+  git -C "$frozen_repo" add frozen.txt
+  git -C "$frozen_repo" commit -q -m initial
+  (
+    ROOT_DIR="$frozen_repo"
+    GIT_CMD=(git -C "$frozen_repo")
+    FROZEN_PATHS=(frozen.txt)
+    FROZEN_BLOB=()
+    FROZEN_SHA256=()
+    FROZEN_BLOB["frozen.txt"]="$(git -C "$frozen_repo" rev-parse HEAD:frozen.txt)"
+    FROZEN_SHA256["frozen.txt"]="$(git -C "$frozen_repo" cat-file blob HEAD:frozen.txt | sha256sum | awk '{print $1}')"
+    verify_frozen_inputs || exit 1
+    printf 'alpha\r\nbeta\r\n' > "$frozen_repo/frozen.txt"
+    verify_frozen_inputs || exit 1
+    printf 'alpha\nbeta\n' > "$frozen_repo/frozen.txt"
+    verify_frozen_inputs || exit 1
+    printf 'changed\n' > "$frozen_repo/frozen.txt"
+    git -C "$frozen_repo" add frozen.txt
+    git -C "$frozen_repo" commit -q -m changed
+    expect_validator_failure verify_frozen_inputs || exit 1
+  ) || failures=1
 
   selection="$tmp/selection.tsv"; vector="$tmp/vector.tsv"; summary="$tmp/summary.txt"
   select_composite "$base" "" "$selection" "$vector" "$summary" || failures=1
