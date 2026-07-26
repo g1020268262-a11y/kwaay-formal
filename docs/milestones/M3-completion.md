@@ -202,5 +202,7 @@ text/JSON/DOT artifacts。
 
 ## 11. 唯一后继任务
 
-M3 已完成。当前唯一下一步是 M4：建立 HMAC confirmation + batch-local
-atomic dedup combined model。M4 尚未开始，不能把预期状态写成实际结果。
+M3 已完成。M4 后续也已完成，见
+`docs/milestones/M4-completion.md`。当前唯一下一步是 M5：冻结最终可复现
+artifact/result table。不能把 M4 的 Tamarin-only evidence 写成 full 301-target
+run，也不能声称本轮重新运行了 ProVerif 5 targets。

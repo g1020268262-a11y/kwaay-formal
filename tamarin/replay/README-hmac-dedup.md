@@ -90,8 +90,43 @@ hmac_failure_slot1_exists                                    verified
 hmac_failure_slot2_after_prior_accept_replay_exists          verified
 ```
 
-These are Commit A expected statuses, not evidence results. No M4 proof or
-formal evidence was run or generated while creating this artifact.
+These were Commit A expected statuses at model-freeze time. Formal evidence was
+later generated in Evidence Commit B
+`740666a3abd6937b52818d0f4acaf8ea0d023c58` under
+`logs/tamarin-m4-hmac-dedup/`.
+
+## Evidence Commit B
+
+M4 replay is included in the Tamarin-only evidence scope:
+
+```text
+evidence_scope=tamarin-only
+canonical_target_count=296
+proverif_targets=not_run_out_of_scope
+composite terminal=296/296
+composite MATCH=296/296
+terminal_conflicts=0
+unresolved=0
+mismatches=0
+```
+
+The two source runs are both complete `VALID` invocations. Run 1 has two
+combined-impact OOM nonterminals, both verified by Run 2. Run 2 has five
+combined-impact timeout nonterminals, all already terminal in Run 1. No single
+source run is described as 296/296 terminal; that is the transparent composite
+result.
+
+Reproduction entry points:
+
+```bash
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --static-only
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --source-run 1
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --source-run 2
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --assemble-composite
+```
+
+The full 301-target mode also exists in the runner, but Evidence Commit B is
+not a full 301-target run. It does not rerun ProVerif.
 
 ## Limitations
 
@@ -101,4 +136,6 @@ formal evidence was run or generated while creating this artifact.
 - Dolev--Yao/free-constructor abstraction, not computational security;
 - `HonestSession` remains the successful reconstruction abstraction;
 - no independent key-material compromise theory;
-- no deployed implementation or arbitrary-length batch claim.
+- no deployed implementation or arbitrary-length batch claim;
+- ProVerif original/HMAC claims are inherited from prior committed evidence,
+  not rerun in this M4 Tamarin-only evidence round.

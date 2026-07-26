@@ -1,6 +1,6 @@
 # K-Waay：从当前仓库到可投稿模型的路线图
 
-更新时间：2026-07-19
+更新时间：2026-07-27
 
 ## 1. 总判断
 
@@ -33,9 +33,10 @@ Batch-local atomic dedup（fixed two-slot）
   └─ actual P3 under C_install-v2：unique installation established；normal distinct consumer reachable
 
 HMAC confirmation + batch-local duplicate rejection
-  ├─ expected/not modeled：恢复 P2 one-send-one-accept
-  ├─ expected/not modeled：在 C_install 下恢复 unique installation
-  └─ expected/not modeled：保持 P0-S、P0-O、batch lifecycle 与 compromise 边界
+  ├─ actual M4 Tamarin-only：恢复 fixed two-slot、batch-local P2 one-send-one-accept
+  ├─ actual M4 Tamarin-only：在 C_install-v2 下阻断 duplicate accepted output / duplicate installation
+  ├─ actual M4 Tamarin-only：保留 distinct-message batch / consumer reachability
+  └─ ProVerif P0-S/P0-O/P1：引用既有 original core 与 HMAC confirmation evidence，本轮未重跑
 ```
 
 这条主线能把已经做完的 ProVerif core、HMAC 变体、Tamarin batch lifecycle 和新 replay 反例串成一个贡献，而不需要继续扩展“通用 Q1 检测器”。
@@ -56,11 +57,17 @@ baseline Commit A2 为 `841feabd908a01bdc68669ad99253a6755820389`，正式
 evidence Commit B 为 `e216a86e1ac7113013e58b17cb0217374ea95ca2`；M2 已通过
 Chat 审查。M3 model/runner baseline A3 为
 `282532fd922f3a7f7928f3772b3325fe06785730`，transparent composite evidence
-Commit B 为 `b0ff0b23977614deea8375cb95c0909be71e5c71`。M3 已完成；M4/M5
-仍是 expected/not modeled，不能当作实际运行结果引用。
+Commit B 为 `b0ff0b23977614deea8375cb95c0909be71e5c71`。M3 已完成。M4
+model/runner baseline Commit A 为 `96010c72e71defc775c7c2ee99c937ff700a3227`，
+Tamarin-only composite evidence Commit B 为
+`740666a3abd6937b52818d0f4acaf8ea0d023c58`。M4 已完成：two complete
+source runs were VALID, and the transparent composite result is 296/296
+terminal, 296/296 MATCH, with 0 terminal conflicts, 0 unresolved rows, and 0
+mismatches. ProVerif 的 5 个 full-mode targets 本轮明确
+`not_run_out_of_scope`，只引用此前已提交和审查的 original core/HMAC
+confirmation evidence。
 
-当前唯一下一步是 M4：建立 HMAC confirmation + batch-local atomic dedup
-combined model。M4 尚未开始，M5 仍为 future work。
+当前唯一下一步是 M5：冻结最终可复现 artifact/result table。M5 尚未开始。
 
 ## 3. 模型总表
 
@@ -70,8 +77,8 @@ combined model。M4 尚未开始，M5 仍为 future work。
 | 0 | 通用 Q1 模型作为主贡献 | ⛔ | 已有通用模板，但参数依赖协议映射，不能宣称适用所有协议 | 只保留为内部诊断器 / artifact 辅助材料 | 正文最多一段说明，不再扩展协议族 | 避免稀释论文贡献 |
 | 1 | ProVerif final core | ✅ | `proverif/kwaay_core_final.cpp.pv` 已运行；baseline secrecy true、component authenticity true、`RecvDone ==> SendDone` false | 不再新增功能，只做回归与文档同步 | 固定 commit、版本、命令和结果表 | 论文 baseline |
 | 1 | Tamarin receiver/batch lifecycle | ✅ | V6/V7 已覆盖 compromise、slot、abort、state consumption、fixed 4-slot terminal lifecycle | 将 V6 与 V7 的职责写清，不再追求任意长度 batch | 所有选定 lemma 一键复现，论文不夸称 arbitrary-length | 状态语义支撑 |
-| 1 | Paper ↔ model mapping | ✅ | 已纳入 ProVerif final core、HMAC confirmation、Tamarin V6/V7、replay original、HMAC-only replay bridge、M2 original impact/composition、M3 fixed replay/impact 和 preliminary deniability artifacts；M3 映射记录 linear dedup decision、duplicate/distinct branches 及 output/install 阻断关系 | 后续只随新增 artifact/result 同步 | 每个 claim 指向唯一模型和 lemma/query；不同 Tamarin artifact 不共用错误的对象映射 | 审稿可信度 |
-| 1 | Threat / compromise matrix | ✅ | material 与 timing 已拆为正交维度；实验 ledger 记录 exact target、方向和 baseline；M3 timing 只按实际公式更新，material-specific cells 保持 not modeled | 后续里程碑只更新实际新增的 artifact/result | 每个 theorem 有明确前提；experiment 不被推广为 theorem | 防止过度声称 |
+| 1 | Paper ↔ model mapping | ✅ | 已纳入 ProVerif final core、HMAC confirmation、Tamarin V6/V7、replay original、HMAC-only replay bridge、M2 original impact/composition、M3 fixed replay/impact、M4 HMAC+dedup replay/impact 和 preliminary deniability artifacts；M4 映射记录 confirmed base message、accepted output 与 conditional install 边界 | 后续只随新增 artifact/result 同步 | 每个 claim 指向唯一模型和 lemma/query；不同 Tamarin artifact 不共用错误的对象映射；ProVerif inherited evidence 与 M4 Tamarin-only evidence 不混写 | 审稿可信度 |
+| 1 | Threat / compromise matrix | ✅ | material 与 timing 已拆为正交维度；实验 ledger 记录 exact target、方向和 baseline；M4 只新增 no-compromise combined baseline 与 state/timing 边界，不扩写 material compromise | 后续里程碑只更新实际新增的 artifact/result | 每个 theorem 有明确前提；experiment 不被推广为 theorem | 防止过度声称 |
 | 1 | 清理 model drift | 🟡 | `LEAK_SIGSK` 当前实际结果已按 `LEAK_SIGSK_AB` alias 记录；根 README 仍描述为早期 no-batch 模型 | M0 文档以 committed summary 为准；README 同步另行确认 | M0 无未解释结果漂移；README 更新仍为独立文档任务 | artifact 基线质量 |
 | 2 | K-Waay 专用 Q1 诊断 | ✅ | `KWAAY_LIKE / ATTACKER_KEY_BAD / AUTHZ_BAD / CONFIRMED_FIX` 已运行 | 仅作为理解和回归材料；主论文使用 final core/HMAC 的真实查询 | 不再依赖模板结果支撑 K-Waay 主 claim | 辅助解释危害边界 |
 | 2 | 原始 core 的 non-injective agreement gap | ✅ | final core 中带 A/B/sid/key 的 `RecvDone ==> SendDone` 为 false | 导出并人工解释最小 trace，确认事件位置和会话绑定 | trace 中每个攻击步骤都能对应 Figure 7 对象 | 既有安全边界 |
@@ -86,7 +93,7 @@ combined model。M4 尚未开始，M5 仍为 future work。
 | 5 | Fixed Tamarin replay model | ✅ | `tamarin/replay/kwaay_replay_fixed.spthy`、`README-fixed.md`、A3 与 closeout evidence 已提交 | 冻结模型；M4 仅在独立 combined artifact 复用 | `one_send_two_accepts_exists` falsified；`same_message_accepted_at_most_once`、`injective_receiver_accept`、`normal_distinct_batch_complete` verified | 修复实现 |
 | 5 | 修复 one-send-many-accepts | ✅ | fixed replay 30/30 目标取得预期终态；transparent composite vector 196/196 MATCH | 只按 same-B/bid/rst、exact complete `m` 引用 | duplicate failure 与 distinct success/FailSlot1/FailSlot2 均有非空 trace | 核心修复结论 |
 | 5 | Fixed impact under `C_install-v2` | ✅ | `tamarin/impact/kwaay_impact_fixed.spthy` 53/53 目标取得预期终态 | 保持 consumer rules 3/3 与 conditional composition 边界 | duplicate-install witness falsified；unique installation、normal distinct consumer、no duplicate output/install verified | 条件化修复影响 |
-| 5 | Combined fix：HMAC + dedup | ⬜ | HMAC 与 replay 当前分离 | 建 combined 变体，证明 Q1 与 injectivity 同时恢复 | expected/not modeled: non-injective correspondence true；injective agreement true；P3 under `C_install` duplicate install 不可达 | 最强、最完整的修复故事 |
+| 5 | Combined fix：HMAC + dedup | ✅ | `tamarin/replay/kwaay_replay_hmac_dedup.spthy`、`tamarin/impact/kwaay_impact_hmac_dedup.spthy`、`docs/milestones/M4-completion.md`、`logs/tamarin-m4-hmac-dedup/` | 冻结 M4；M5 只做 final artifact/result table，不重新解释为 full 301-target run | actual Tamarin-only composite：296/296 terminal、296/296 MATCH；Run 1 两个 OOM nonterminal 由 Run 2 verified fallback 补齐；Run 2 五个 timeout 目标由 Run 1 terminal 结果覆盖；ProVerif 5 targets 本轮 out of scope | combined HMAC+dedup 的 Tamarin 主证据 |
 | 5 | M3 regression/composite evidence | ✅ | 两次同 A3/inputs/tools 的完整 manifest-valid 运行各有一个不同 intermittent `<<loop>>`；机械 composite 196/196 MATCH、无冲突、无 mismatch | 明确称为 transparent composite evidence；不得称为一次 clean 196/196 run | 55/55 formulas、constructors、consumer rules 3/3、Original/HMAC/M2/V6/V7/ProVerif regressions 与 5 traces 全部 MATCH/valid | 证明修复没有破坏冻结性质 |
 | 5 | 修复 compromise assumptions | ⬜ | HMAC 只有一个 leak case，dedup 尚无 compromise 分析 | 只选择与论文 claim 有关的最小 compromise 集；区分认证密钥泄露与 receiver state 泄露 | 每个修复 theorem 的例外条件明确且能复现 | 防止“只在理想模型有效”质疑 |
 | 6 | Symbolic deniability core diff | ✅ | core equivalence VERIFIED；negative sanity 为 EXPECTED_NON_EQUIV | 保留为强化贡献，不让它阻塞 replay 主线 | core/negative 两个结果可复现 | 可选第二贡献 |
@@ -241,24 +248,33 @@ intermittent source-saturation `<<loop>>`；机械选择得到 196/196 expected 
 M3 positive lemmas 只覆盖 fixed two-slot、同一 `B,bid,rst` 和 exact complete
 message `m`。不得改写为 global、cross-batch 或 rollback replay theorem。
 
-### M4：完成 combined fix 与统一回归
+### M4：完成 combined fix 与统一回归 ✅
 
 用同一组性质比较：
 
-以下表格严格区分当前 actual result 与未来 expected/not modeled：
+以下表格严格区分 actual result 与 inherited evidence：
 
 | 性质 | Original | HMAC only | Dedup only | HMAC + dedup |
 |---|---:|---:|---:|---:|
-| P0-S symbolic secrecy | actual: true | actual ProVerif baseline: true；Tamarin bridge 未建模 secrecy | fixed replay 未建模 secrecy；P0-S regression MATCH | expected/not modeled: true |
-| P0-O component origin | actual: true | actual ProVerif component target: true；Tamarin bridge 未独立建模 concrete origin | fixed replay 未独立建模 concrete origin；P0-O regression MATCH | expected/not modeled: true |
-| P1 non-injective exact-parameter correspondence | actual: false | actual ProVerif baseline: true；Tamarin matching existence/order verified 但在 `HonestSession` 下主要为结构性结果 | dedup-only 不恢复 original ProVerif P1 | expected/not modeled: true |
-| P2 one-send-one-accept / injectivity | actual replay: false | actual HMAC-only replay: false（same-batch/same-state） | actual fixed two-slot same-B/bid/rst exact-message result: true | expected/not modeled: true |
-| P3 under `C_install` unique installation | actual M2: falsified under `C_install-v2`; conditional duplicate-install witness verified | not modeled | actual fixed impact under `C_install-v2`: verified；duplicate-install witness falsified | not modeled |
-| batch lifecycle / atomic close | actual selected lifecycle lemmas: true | actual selected HMAC-bridge lifecycle lemmas: true | actual selected fixed lifecycle/dedup lemmas: true | expected/not modeled: true |
+| P0-S symbolic secrecy | actual: true | actual ProVerif baseline: true；Tamarin bridge 未建模 secrecy | fixed replay 未建模 secrecy；M3 ProVerif regression MATCH | inherited ProVerif evidence only；M4 Tamarin-only run 未重跑 ProVerif |
+| P0-O component origin | actual: true | actual ProVerif component target: true；Tamarin bridge 未独立建模 concrete origin | fixed replay 未独立建模 concrete origin；M3 ProVerif regression MATCH | inherited ProVerif evidence only；M4 Tamarin-only run 未重跑 ProVerif |
+| P1 non-injective exact-parameter correspondence | actual: false | actual ProVerif baseline: true；Tamarin matching existence/order verified 但在 `HonestSession` 下主要为结构性结果 | dedup-only 不恢复 original ProVerif P1 | inherited ProVerif HMAC evidence；M4 Tamarin records confirmed-send/confirmed-accept matching, not a new ProVerif run |
+| P2 one-send-one-accept / injectivity | actual replay: false | actual HMAC-only replay: false（same-batch/same-state） | actual fixed two-slot same-B/bid/rst exact-message result: true | actual M4 Tamarin-only：fixed two-slot same-B/bid/rst exact base-message result true |
+| P3 under `C_install` unique installation | actual M2: falsified under `C_install-v2`; conditional duplicate-install witness verified | not modeled | actual fixed impact under `C_install-v2`: verified；duplicate-install witness falsified | actual M4 Tamarin-only：duplicate accepted output/install blocked under `C_install-v2`；distinct consumer reachable |
+| batch lifecycle / atomic close | actual selected lifecycle lemmas: true | actual selected HMAC-bridge lifecycle lemmas: true | actual selected fixed lifecycle/dedup lemmas: true | actual M4 Tamarin-only：duplicate rejection atomic；slot-2 mismatch after slot-1 accept reachable |
 
-实际模型结果如与“预期”不同，先解释原因，不能直接改查询去迎合表格。
-M4 对 P2 的 positive 结果也必须报告实际量化范围；same-batch/same-state
-positive lemma 不能自动作为 global injectivity theorem。
+M4 的 positive 结果只覆盖 fixed two-slot、同一 `B,bid,rst` 和 exact complete
+base message `m`。same-batch/same-state positive lemma 不能自动作为 global
+injectivity theorem。M4 also records the important negative boundary: slot 2
+can fail after slot 1 has produced a confirmed accept, so the artifact must not
+be summarized as “all failed batches have no partial output.”
+
+M4 evidence is `logs/tamarin-m4-hmac-dedup/`, with `evidence_scope=tamarin-only`.
+The canonical Tamarin-only matrix has 296 targets. Source Run 1 and Source Run 2
+are both `VALID` complete invocations, and the transparent composite result is
+296/296 terminal and 296/296 MATCH. The five ProVerif full-mode targets were not
+run in this evidence round; the ProVerif story continues to cite the previously
+committed original core and HMAC confirmation summaries.
 
 ### M5：Artifact freeze
 
@@ -325,18 +341,18 @@ M0 + M1 + M2 + M3 + M4 + M5
 
 ## 7. 当前唯一下一步
 
-M3 已完成并登记 transparent composite evidence。当前不要先写论文正文，不要
-开始 M5，也不要把 `C_install-v2` 条件化结果提升为 deployed behavior。
+M4 已完成并登记 Tamarin-only transparent composite evidence。当前不要把
+`C_install-v2` 条件化结果提升为 deployed behavior，也不要把本轮 evidence 写成
+full 301-target run 或 ProVerif rerun。
 
-当前唯一下一步是 M4：
+当前唯一下一步是 M5：
 
 ```text
-建立 HMAC confirmation + batch-local atomic dedup combined model，
-并运行统一回归。
+冻结最终可复现 artifact/result table 与 paper-facing artifact bundle。
 ```
 
-M4 尚未开始。其结果仍为 expected/not modeled；M3 dedup-only 结果不恢复原
-ProVerif P1，也不能替代 combined evidence。
+M5 尚未开始。M4 的 Tamarin-only 296-target evidence 已完成；ProVerif 5 个
+targets 本轮未运行，仍引用既有 original core/HMAC confirmation evidence。
 
 ## 8. Venue 规格依据
 

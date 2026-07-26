@@ -83,5 +83,57 @@ duplicate_batch_has_no_install                              verified
 no_consumer_after_failed_batch                              verified
 ```
 
-These are Commit A expected statuses only. No M4 proofs, regressions, ProVerif
-suite, or formal evidence directory was produced during Commit A.
+These were Commit A expected statuses at model-freeze time. Formal Tamarin-only
+evidence was later generated in Evidence Commit B
+`740666a3abd6937b52818d0f4acaf8ea0d023c58` under
+`logs/tamarin-m4-hmac-dedup/`.
+
+## Evidence Commit B
+
+The impact theory is included in the M4 Tamarin-only composite evidence:
+
+```text
+evidence_scope=tamarin-only
+canonical_target_count=296
+proverif_targets=not_run_out_of_scope
+composite terminal=296/296
+composite MATCH=296/296
+terminal_conflicts=0
+unresolved=0
+mismatches=0
+```
+
+Run 1 was complete and `VALID` with two combined-impact OOM nonterminals:
+
+```text
+confirmed_receiver_accept_has_unique_output
+duplicate_batch_has_no_accept_output
+```
+
+Both were verified in Run 2 and selected as legal transparent-composite
+fallbacks. Run 2 was also complete and `VALID`; its five timeout nonterminals
+were already terminal in Run 1. No single source run is described as 296/296
+terminal.
+
+Reproduction entry points:
+
+```bash
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --static-only
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --source-run 1
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --source-run 2
+bash tamarin/milestones/run-m4-hmac-dedup.sh --tamarin-only --assemble-composite
+```
+
+Evidence Commit B does not run ProVerif. The ProVerif original core and HMAC
+confirmation claims are inherited from earlier committed evidence under
+`logs/final/proverif/` and `logs/variants/hmac-confirmation/proverif/`.
+
+## Limitations
+
+The impact result is conditional on the bounded `C_install-v2` consumer. It does
+not prove deployed upper-layer behavior, real session cloning prevention,
+Double Ratchet behavior, arbitrary-length batches, rollback protection,
+cross-batch replay protection, or computational security. Slot-2 explicit HMAC
+mismatch can occur after slot-1 accept, so the combined model must not be
+summarized as proving that every failed batch has no partial lower-layer
+output.
