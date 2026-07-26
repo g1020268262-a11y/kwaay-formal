@@ -53,6 +53,9 @@ DEFAULT_TAMARIN_MEMORY_MAX_MB=6144
 TAMARIN_MEMORY_MAX_MB="${KWAAY_TAMARIN_MEMORY_MAX_MB:-$DEFAULT_TAMARIN_MEMORY_MAX_MB}"
 SOURCE_PROGRESS_CURRENT=0
 SOURCE_PROGRESS_TOTAL=301
+EVIDENCE_SCOPE=full
+CANONICAL_TARGET_COUNT=301
+PROVERIF_TARGET_SCOPE=run
 AGGREGATE_HEADER=$'suite	target	actual_status	expected_status	exit_status	loop	raw_output'
 MATRIX_HEADER=$'suite	target	expected_status'
 RESOURCE_EVENTS_HEADER=$'suite	target	event	exit_status	systemd_result	exec_main_code	exec_main_status	memory_max_mb	memory_swap_max	raw_output	unit'
@@ -505,8 +508,10 @@ emit_canonical_matrix() {
   emit_suite_matrix fixed-impact FIXED_IMPACT_TARGETS EXPECT_FIXED_IMPACT
   emit_suite_matrix v6 V6_TARGETS EXPECT_V6
   emit_suite_matrix v7 V7_TARGETS EXPECT_V7
-  emit_proverif_matrix proverif-original PROVERIF_ORIGINAL_TARGETS
-  emit_proverif_matrix proverif-hmac PROVERIF_HMAC_TARGETS
+  if [[ "$EVIDENCE_SCOPE" == full ]]; then
+    emit_proverif_matrix proverif-original PROVERIF_ORIGINAL_TARGETS
+    emit_proverif_matrix proverif-hmac PROVERIF_HMAC_TARGETS
+  fi
 }
 
 validate_canonical_matrix() {
@@ -514,13 +519,16 @@ validate_canonical_matrix() {
   if [[ -z "$matrix" ]]; then matrix="$(mktemp)"; emit_canonical_matrix > "$matrix"; own=1; fi
   [[ "$(head -n1 "$matrix")" == "$MATRIX_HEADER" ]] || { echo "error: canonical matrix header mismatch" >&2; failures=1; }
   rows="$(awk -F '\t' 'NR>1 {if(NF!=3) bad=1; n++} END{if(bad) exit 1; print n+0}' "$matrix")" || failures=1
-  [[ "$rows" == 301 ]] || { echo "error: canonical matrix has $rows rows, expected 301" >&2; failures=1; }
+  [[ "$rows" == "$CANONICAL_TARGET_COUNT" ]] || { echo "error: canonical matrix has $rows rows, expected $CANONICAL_TARGET_COUNT" >&2; failures=1; }
   unique="$(awk -F '\t' 'NR>1 {print $1 "\t" $2}' "$matrix" | LC_ALL=C sort -u | wc -l | tr -d ' ')"
-  [[ "$unique" == 301 ]] || { echo "error: canonical suite/target combinations are not unique" >&2; failures=1; }
-  expected_counts=$'combined-replay\t38\ncombined-impact\t62\noriginal-replay\t18\nhmac-replay\t18\noriginal-impact\t37\nfixed-replay\t30\nfixed-impact\t53\nv6\t16\nv7\t24\nproverif-original\t2\nproverif-hmac\t3'
+  [[ "$unique" == "$CANONICAL_TARGET_COUNT" ]] || { echo "error: canonical suite/target combinations are not unique" >&2; failures=1; }
+  expected_counts=$'combined-replay\t38\ncombined-impact\t62\noriginal-replay\t18\nhmac-replay\t18\noriginal-impact\t37\nfixed-replay\t30\nfixed-impact\t53\nv6\t16\nv7\t24'
+  if [[ "$EVIDENCE_SCOPE" == full ]]; then
+    expected_counts+=$'\nproverif-original\t2\nproverif-hmac\t3'
+  fi
   actual="$(awk -F '\t' 'NR>1 {n[$1]++} END{for(s in n) print s "\t" n[s]}' "$matrix" | LC_ALL=C sort)"
   [[ "$actual" == "$(printf '%s\n' "$expected_counts" | LC_ALL=C sort)" ]] || {
-    echo "error: canonical suite counts differ from the frozen 301-target matrix" >&2; failures=1; }
+    echo "error: canonical suite counts differ from the frozen $CANONICAL_TARGET_COUNT-target matrix" >&2; failures=1; }
   if awk -F '\t' 'NR>1 && $3!="verified" && $3!="falsified" && $3!="MATCH" {exit 1}' "$matrix"; then :; else
     echo "error: invalid expected status in canonical matrix" >&2; failures=1
   fi
@@ -535,9 +543,9 @@ validate_source_matrix() {
     echo "error: aggregate header mismatch: $aggregate" >&2; return 1; }
   rows="$(awk -F '\t' 'NR>1 {if(NF!=7) bad=1; n++} END{if(bad) exit 1; print n+0}' "$aggregate")" || {
     echo "error: malformed aggregate row" >&2; return 1; }
-  [[ "$rows" == 301 ]] || { echo "error: aggregate has $rows rows, expected 301" >&2; failures=1; }
+  [[ "$rows" == "$CANONICAL_TARGET_COUNT" ]] || { echo "error: aggregate has $rows rows, expected $CANONICAL_TARGET_COUNT" >&2; failures=1; }
   unique="$(awk -F '\t' 'NR>1 {print $1 "\t" $2}' "$aggregate" | LC_ALL=C sort -u | wc -l | tr -d ' ')"
-  [[ "$unique" == 301 ]] || { echo "error: duplicate suite/target in aggregate" >&2; failures=1; }
+  [[ "$unique" == "$CANONICAL_TARGET_COUNT" ]] || { echo "error: duplicate suite/target in aggregate" >&2; failures=1; }
   canonical="$(mktemp)"; actual="$(mktemp)"
   emit_canonical_matrix | tail -n +2 | LC_ALL=C sort > "$canonical"
   awk -F '\t' 'NR>1 {print $1 "\t" $2 "\t" $4}' "$aggregate" | LC_ALL=C sort > "$actual"
@@ -683,7 +691,12 @@ resolve_formal_tools() {
   CPP_CMD="$(command -v cpp)"
   TIMEOUT_CMD="$(command -v timeout)"
   PYTHON_CMD="$(command -v python3)"
-  resolve_proverif
+  if [[ "$EVIDENCE_SCOPE" == full ]]; then
+    resolve_proverif
+  else
+    PROVERIF_CMD=()
+    PROVERIF_NEEDS_WIN_PATH=0
+  fi
   local help
   help="$("$TAMARIN_CMD" --help 2>&1)"
   grep -q -- '--output-json' <<<"$help" && grep -q -- '--output-dot' <<<"$help" || {
@@ -891,7 +904,13 @@ static_checks() {
   echo "m3_dedup_structure=MATCH_WITH_APPROVED_TAG_PROJECTION"
   echo "alias_tokens=ABSENT"
   echo "frozen_blobs_and_sha256=MATCH"
-  echo "canonical_target_matrix=301 MATCH"
+  if [[ "$EVIDENCE_SCOPE" == tamarin-only ]]; then
+    echo "evidence_scope=$EVIDENCE_SCOPE"
+  fi
+  echo "canonical_target_matrix=$CANONICAL_TARGET_COUNT MATCH"
+  if [[ "$EVIDENCE_SCOPE" == tamarin-only ]]; then
+    echo "proverif_targets=not_run_out_of_scope"
+  fi
   echo "combined_replay_impact_lower_layer=MATCH_WITH_NARROW_PROJECTION"
   echo "static_checks=PASS"
 }
@@ -998,7 +1017,11 @@ write_provenance() {
     echo "git_executable=${GIT_CMD[0]}"
     echo "tamarin_executable=$TAMARIN_CMD"
     echo "maude_executable=$MAUDE_CMD"
-    echo "proverif_executable=${PROVERIF_CMD[0]}"
+    if [[ "$EVIDENCE_SCOPE" == full ]]; then
+      echo "proverif_executable=${PROVERIF_CMD[0]}"
+    else
+      echo "proverif_executable=not_required_for_tamarin_only"
+    fi
     echo "cpp_executable=$CPP_CMD"
     echo "timeout_executable=$TIMEOUT_CMD"
     echo "python_executable=$PYTHON_CMD"
@@ -1009,11 +1032,24 @@ write_provenance() {
       printf 'resolved_executable[%s]=%s\n' "$command_name" "$(command -v "$command_name")"
     done
     echo "proof_timeout_seconds=$PROOF_TIMEOUT_SECONDS"
+    echo "evidence_scope=$EVIDENCE_SCOPE"
+    echo "canonical_target_count=$CANONICAL_TARGET_COUNT"
+    if [[ "$EVIDENCE_SCOPE" == tamarin-only ]]; then
+      echo "proverif_targets=not_run_out_of_scope"
+    else
+      echo "proverif_targets=run"
+    fi
     echo "tamarin_memory_max_mb=$TAMARIN_MEMORY_MAX_MB"
     echo "tamarin_memory_swap_max=0"
     echo "tamarin_memory_limit_mechanism=systemd-run --user transient service cgroup"
     echo "source_run_number=$run_number"
-    printf 'exact_runner_command='; printf '%q ' "$0" --memory-max-mb "$TAMARIN_MEMORY_MAX_MB" --source-run "$run_number"; echo
+    printf 'exact_runner_command='
+    if [[ "$EVIDENCE_SCOPE" == tamarin-only ]]; then
+      printf '%q ' "$0" --tamarin-only --memory-max-mb "$TAMARIN_MEMORY_MAX_MB" --source-run "$run_number"
+    else
+      printf '%q ' "$0" --memory-max-mb "$TAMARIN_MEMORY_MAX_MB" --source-run "$run_number"
+    fi
+    echo
     echo "binding_file=binding.tsv"
     for path in "${BOUND_PATHS[@]}"; do
       printf 'bound_blob[%s]=%s\n' "$path" "$(git_cmd rev-parse "HEAD:$path")"
@@ -1022,7 +1058,11 @@ write_provenance() {
     done
     "$TAMARIN_CMD" --version 2>&1 | sed 's/^/tamarin_version=/'
     "$MAUDE_CMD" --version 2>&1 | head -n3 | sed 's/^/maude_version=/'
-    write_proverif_version_probe
+    if [[ "$EVIDENCE_SCOPE" == full ]]; then
+      write_proverif_version_probe
+    else
+      echo "proverif_version=not_run_out_of_scope"
+    fi
     "$CPP_CMD" --version 2>&1 | head -n1 | sed 's/^/cpp_version=/'
     "$TIMEOUT_CMD" --version 2>&1 | head -n1 | sed 's/^/timeout_version=/'
     "$PYTHON_CMD" --version 2>&1 | sed 's/^/python_version=/'
@@ -1325,7 +1365,14 @@ validate_summary_consistency() {
   require_summary_value "$run/summary.txt" parse_failures "$parse_failures" || return 1
   require_summary_value "$run/summary.txt" trace_total "$trace_total" || return 1
   require_summary_value "$run/summary.txt" trace_failures "$trace_failures" || return 1
-  require_summary_value "$run/summary.txt" invoked 301 || return 1
+  require_summary_value "$run/summary.txt" evidence_scope "$EVIDENCE_SCOPE" || return 1
+  require_summary_value "$run/summary.txt" canonical_target_count "$CANONICAL_TARGET_COUNT" || return 1
+  if [[ "$EVIDENCE_SCOPE" == tamarin-only ]]; then
+    require_summary_value "$run/summary.txt" proverif_targets not_run_out_of_scope || return 1
+  else
+    require_summary_value "$run/summary.txt" proverif_targets run || return 1
+  fi
+  require_summary_value "$run/summary.txt" invoked "$CANONICAL_TARGET_COUNT" || return 1
   require_summary_value "$run/summary.txt" parse_failures 0 || return 1
   require_summary_value "$run/summary.txt" trace_total 5 || return 1
   require_summary_value "$run/summary.txt" trace_failures 0 || return 1
@@ -1419,12 +1466,14 @@ source_run() {
   run_tamarin_suite "$out" fixed-impact "$ROOT_DIR/$FIXED_IMPACT_REL" FIXED_IMPACT_TARGETS EXPECT_FIXED_IMPACT
   run_tamarin_suite "$out" v6 "$ROOT_DIR/$V6_REL" V6_TARGETS EXPECT_V6
   run_tamarin_suite "$out" v7 "$ROOT_DIR/$V7_REL" V7_TARGETS EXPECT_V7
-  for status in "${PROVERIF_ORIGINAL_TARGETS[@]}"; do
-    run_proverif_target "$out" proverif-original "$status" "$ROOT_DIR/$PROVERIF_ORIGINAL_REL" "$ROOT_DIR/$PROVERIF_ORIGINAL_BASELINE_REL"
-  done
-  for status in "${PROVERIF_HMAC_TARGETS[@]}"; do
-    run_proverif_target "$out" proverif-hmac "$status" "$ROOT_DIR/$PROVERIF_HMAC_REL" "$ROOT_DIR/$PROVERIF_HMAC_BASELINE_REL"
-  done
+  if [[ "$EVIDENCE_SCOPE" == full ]]; then
+    for status in "${PROVERIF_ORIGINAL_TARGETS[@]}"; do
+      run_proverif_target "$out" proverif-original "$status" "$ROOT_DIR/$PROVERIF_ORIGINAL_REL" "$ROOT_DIR/$PROVERIF_ORIGINAL_BASELINE_REL"
+    done
+    for status in "${PROVERIF_HMAC_TARGETS[@]}"; do
+      run_proverif_target "$out" proverif-hmac "$status" "$ROOT_DIR/$PROVERIF_HMAC_REL" "$ROOT_DIR/$PROVERIF_HMAC_BASELINE_REL"
+    done
+  fi
   if [[ "$SOURCE_PROGRESS_CURRENT" -ne "$SOURCE_PROGRESS_TOTAL" ]]; then
     echo "error: progress counter ended at $SOURCE_PROGRESS_CURRENT, expected $SOURCE_PROGRESS_TOTAL" >&2
     structural_errors=$((structural_errors+1))
@@ -1438,9 +1487,10 @@ source_run() {
   validate_trace_aggregate_structure "$out/trace-aggregate.tsv" || structural_errors=$((structural_errors+1))
   validate_source_matrix "$out/aggregate.tsv" || structural_errors=$((structural_errors+1))
   verify_repo_clean_except_logs || structural_errors=$((structural_errors+1))
-  awk -F '\t' -v pe="$parse_errors" -v te="$trace_errors" -v se="$structural_errors" '
+  awk -F '\t' -v pe="$parse_errors" -v te="$trace_errors" -v se="$structural_errors" \
+    -v scope="$EVIDENCE_SCOPE" -v canonical="$CANONICAL_TARGET_COUNT" -v pv="$PROVERIF_TARGET_SCOPE" '
     NR>1 {n++; if($3=="verified"||$3=="falsified"||$3=="MATCH") t++; if($3!=$4)m++; if($3=="nonterminal") nt++}
-    END{printf "invoked=%d\nterminal=%d\nnonterminal=%d\nmismatch=%d\nparse_failures=%d\ntrace_total=5\ntrace_failures=%d\nstructural_failures=%d\n",n,t,nt,m,pe,te,se}' \
+    END{printf "evidence_scope=%s\ncanonical_target_count=%d\nproverif_targets=%s\ninvoked=%d\nterminal=%d\nnonterminal=%d\nmismatch=%d\nparse_failures=%d\ntrace_total=5\ntrace_failures=%d\nstructural_failures=%d\n",scope,canonical,pv,n,t,nt,m,pe,te,se}' \
     "$out/aggregate.tsv" > "$out/summary.txt"
   local final_status=INVALID manifest_ok=0
   if [[ "$parse_errors" -eq 0 && "$trace_errors" -eq 0 && "$structural_errors" -eq 0 ]]; then
@@ -1498,7 +1548,10 @@ select_composite() {
     printf '%s\t%s\t%s\t%s\t%s\t%s\n' "$suite" "$target" "$chosen" "$expected" "$selected" "$match" >> "$vector"
   done < <(emit_canonical_matrix)
   {
-    echo "classification=transparent composite; canonical 301-target matrix; Run 1 primary"
+    echo "classification=transparent composite; evidence_scope=$EVIDENCE_SCOPE; canonical $CANONICAL_TARGET_COUNT-target matrix; Run 1 primary"
+    echo "evidence_scope=$EVIDENCE_SCOPE"
+    echo "canonical_target_count=$CANONICAL_TARGET_COUNT"
+    echo "proverif_targets=$PROVERIF_TARGET_SCOPE"
     echo "terminal_conflicts=$conflicts"
     echo "unresolved=$unresolved"
     echo "mismatches=$mismatch"
@@ -1583,7 +1636,8 @@ slot2-mismatch	$COMBINED_IMPACT_REL	hmac_failure_slot2_after_prior_accept_exists
 normal-consumer	$COMBINED_IMPACT_REL	normal_two_distinct_valid_confirmed_outputs_consumer_complete
 EOF
   printf 'synthetic provenance\n' > "$run/provenance.txt"
-  printf 'invoked=301\nterminal=301\nnonterminal=0\nmismatch=0\nparse_failures=0\ntrace_total=5\ntrace_failures=0\nstructural_failures=0\n' > "$run/summary.txt"
+  printf 'evidence_scope=%s\ncanonical_target_count=%s\nproverif_targets=%s\ninvoked=%s\nterminal=%s\nnonterminal=0\nmismatch=0\nparse_failures=0\ntrace_total=5\ntrace_failures=0\nstructural_failures=0\n' \
+    "$EVIDENCE_SCOPE" "$CANONICAL_TARGET_COUNT" "$PROVERIF_TARGET_SCOPE" "$CANONICAL_TARGET_COUNT" "$CANONICAL_TARGET_COUNT" > "$run/summary.txt"
   printf 'VALID\n' > "$run/source-run-status.txt"
 }
 
@@ -1599,6 +1653,25 @@ self_test() {
   if grep -Fq "$LOG_REL" "$tmp/unexpected-git-status.out"; then failures=1; fi
   write_synthetic_aggregate "$base"
   validate_source_matrix "$base" || failures=1
+  [[ "$(awk 'END{print NR-1}' "$base")" == 301 ]] || failures=1
+
+  (
+    EVIDENCE_SCOPE=tamarin-only
+    CANONICAL_TARGET_COUNT=296
+    SOURCE_PROGRESS_TOTAL=296
+    PROVERIF_TARGET_SCOPE=not_run_out_of_scope
+    emit_canonical_matrix > "$tmp/tamarin-only-matrix.tsv"
+    [[ "$(awk 'END{print NR-1}' "$tmp/tamarin-only-matrix.tsv")" == 296 ]] || exit 1
+    if awk -F '\t' 'NR>1 && $1 ~ /^proverif-/ {found=1} END{exit(found?0:1)}' "$tmp/tamarin-only-matrix.tsv"; then exit 1; fi
+    validate_canonical_matrix "$tmp/tamarin-only-matrix.tsv" || exit 1
+    write_synthetic_aggregate "$tmp/tamarin-only-aggregate.tsv"
+    validate_source_matrix "$tmp/tamarin-only-aggregate.tsv" || exit 1
+    mkdir -p "$tmp/mock-no-proverif"
+    printf '#!/usr/bin/env bash\nif [[ "${1:-}" == "--help" ]]; then echo "--output-json --output-dot"; fi\n' > "$tmp/mock-no-proverif/tamarin-prover"
+    printf '#!/usr/bin/env bash\nexit 0\n' > "$tmp/mock-no-proverif/maude"
+    chmod +x "$tmp/mock-no-proverif/tamarin-prover" "$tmp/mock-no-proverif/maude"
+    PATH="$tmp/mock-no-proverif:/usr/bin:/bin" resolve_formal_tools || exit 1
+  ) || failures=1
 
   fixture="$tmp/missing.tsv"; awk 'NR!=2' "$base" > "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
   fixture="$tmp/duplicate.tsv"; cp "$base" "$fixture"; sed -n '2p' "$base" >> "$fixture"; expect_validator_failure validate_source_matrix "$fixture" || failures=1
@@ -1712,10 +1785,26 @@ self_test() {
   sed -i '0,/\tPASS\t/s//\tFAIL\t/' "$synthetic_run/trace-aggregate.tsv"
   expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
   sed -i '0,/\tFAIL\t/s//\tPASS\t/' "$synthetic_run/trace-aggregate.tsv"
-  sed -i 's/invoked=301/invoked=300/' "$synthetic_run/summary.txt"
+  sed -i "s/invoked=$CANONICAL_TARGET_COUNT/invoked=0/" "$synthetic_run/summary.txt"
   expect_validator_failure validate_source_qualification "$synthetic_run" || failures=1
-  sed -i 's/invoked=300/invoked=301/' "$synthetic_run/summary.txt"
+  sed -i "s/invoked=0/invoked=$CANONICAL_TARGET_COUNT/" "$synthetic_run/summary.txt"
   validate_source_qualification "$synthetic_run" || failures=1
+  (
+    EVIDENCE_SCOPE=tamarin-only
+    CANONICAL_TARGET_COUNT=296
+    SOURCE_PROGRESS_TOTAL=296
+    PROVERIF_TARGET_SCOPE=not_run_out_of_scope
+    write_synthetic_qualified_source "$tmp/tamarin-only-source-run"
+    validate_source_qualification "$tmp/tamarin-only-source-run" || exit 1
+  ) || failures=1
+  expect_validator_failure validate_source_qualification "$tmp/tamarin-only-source-run" || failures=1
+  (
+    EVIDENCE_SCOPE=tamarin-only
+    CANONICAL_TARGET_COUNT=296
+    SOURCE_PROGRESS_TOTAL=296
+    PROVERIF_TARGET_SCOPE=not_run_out_of_scope
+    expect_validator_failure validate_source_qualification "$synthetic_run" || exit 1
+  ) || failures=1
 
   mkdir -p "$tmp/log-layout/source-run1"
   validate_log_top_level_at "$tmp/log-layout" run2 || failures=1
@@ -1823,6 +1912,7 @@ self_test() {
   echo "proverif_order_comparator_tests=PASS"
   echo "json_dot_trace_tests=PASS"
   echo "source_run_qualification_tests=PASS"
+  echo "tamarin_only_scope_tests=PASS"
   echo "gawk_unexpected_git_status_test=PASS"
   echo "parse_output_failure_gate_tests=PASS"
   echo "resource_limit_synthetic_tests=PASS"
@@ -1833,7 +1923,7 @@ self_test() {
 }
 
 usage() {
-  echo "usage: $RUNNER_REL [--memory-max-mb N] --static-only | --self-test | --source-run 1|2 | --assemble-composite" >&2
+  echo "usage: $RUNNER_REL [--tamarin-only] [--memory-max-mb N] --static-only | --self-test | --source-run 1|2 | --assemble-composite" >&2
   exit 2
 }
 
@@ -1841,6 +1931,13 @@ usage() {
 args=()
 while [[ $# -gt 0 ]]; do
   case "$1" in
+    --tamarin-only)
+      EVIDENCE_SCOPE=tamarin-only
+      CANONICAL_TARGET_COUNT=296
+      SOURCE_PROGRESS_TOTAL=296
+      PROVERIF_TARGET_SCOPE=not_run_out_of_scope
+      shift
+      ;;
     --memory-max-mb)
       [[ $# -ge 2 ]] || usage
       TAMARIN_MEMORY_MAX_MB="$2"
