@@ -1,0 +1,56 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "K-Waay actual results TSV row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "run_id", "property_id", "tool", "suite", "target_id",
+    "actual_status", "terminal", "expected_match", "evidence_class",
+    "execution_scope", "direct_or_inherited", "source_commit", "source_tree",
+    "model_commit", "model_tree", "evidence_commit", "evidence_tree",
+    "evidence_storage", "evidence_manifest_sha256",
+    "source_run", "selected_run", "selection_reason", "exit_status",
+    "resource_event", "steps", "raw_path", "raw_blob", "raw_sha256",
+    "summary_path", "provenance_valid", "terminal_conflict"
+  ],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "run_id": {"type": "string", "minLength": 1},
+    "property_id": {"type": "string", "minLength": 1},
+    "tool": {"enum": ["tamarin-prover", "proverif"]},
+    "suite": {"type": "string", "minLength": 1},
+    "target_id": {"type": "string", "minLength": 1},
+    "actual_status": {
+      "enum": ["verified", "falsified", "true", "false", "timeout", "oom",
+        "loop", "missing", "incomplete", "not_run", "not_run_out_of_scope",
+        "conflict"]
+    },
+    "terminal": {"enum": ["true", "false"]},
+    "expected_match": {"enum": ["MATCH", "MISMATCH", "not_applicable"]},
+    "evidence_class": {"type": "string"},
+    "execution_scope": {"type": "string"},
+    "direct_or_inherited": {"enum": ["direct", "inherited"]},
+    "source_commit": {"type": "string"},
+    "source_tree": {"type": "string"},
+    "model_commit": {"type": "string"},
+    "model_tree": {"type": "string"},
+    "evidence_commit": {"type": "string"},
+    "evidence_tree": {"type": "string"},
+    "evidence_storage": {
+      "enum": ["committed-git", "external-manifest", "scope-declaration"]
+    },
+    "evidence_manifest_sha256": {"type": "string"},
+    "source_run": {"type": "string"},
+    "selected_run": {"type": "string"},
+    "selection_reason": {"type": "string"},
+    "exit_status": {"type": "string"},
+    "resource_event": {"type": "string"},
+    "steps": {"type": "string"},
+    "raw_path": {"type": "string"},
+    "raw_blob": {"type": "string"},
+    "raw_sha256": {"type": "string"},
+    "summary_path": {"type": "string"},
+    "provenance_valid": {"enum": ["true", "false"]},
+    "terminal_conflict": {"enum": ["true", "false"]}
+  }
+}

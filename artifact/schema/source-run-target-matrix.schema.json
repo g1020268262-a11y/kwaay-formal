@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "K-Waay source-run target matrix TSV row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "property_id", "tool", "suite", "target_id", "model_path",
+    "model_commit", "model_tree", "model_blob", "model_sha256",
+    "query_index", "query_or_lemma", "formula_sha256", "expected_status"
+  ],
+  "properties": {
+    "property_id": {"type": "string", "minLength": 1},
+    "tool": {"enum": ["tamarin-prover", "proverif"]},
+    "suite": {"type": "string", "minLength": 1},
+    "target_id": {"type": "string", "minLength": 1},
+    "model_path": {"type": "string", "minLength": 1},
+    "model_commit": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "model_tree": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "model_blob": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+    "model_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "query_index": {"type": "string", "pattern": "^[0-9]+$"},
+    "query_or_lemma": {"type": "string", "minLength": 1},
+    "formula_sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+    "expected_status": {
+      "enum": ["verified", "falsified", "true", "false"]
+    }
+  }
+}

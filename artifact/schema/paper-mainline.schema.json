@@ -1,0 +1,22 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "K-Waay paper-mainline manifest TSV row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "artifact_id", "path", "artifact_class", "milestone", "paper_role",
+    "authoritative_or_generated", "evidence_path", "freeze_status",
+    "known_limitation"
+  ],
+  "properties": {
+    "artifact_id": {"type": "string", "minLength": 1},
+    "path": {"type": "string", "minLength": 1},
+    "artifact_class": {"type": "string", "minLength": 1},
+    "milestone": {"type": "string", "minLength": 1},
+    "paper_role": {"type": "string", "minLength": 1},
+    "authoritative_or_generated": {"enum": ["authoritative", "generated", "index-only"]},
+    "evidence_path": {"type": "string"},
+    "freeze_status": {"enum": ["frozen", "index-only"]},
+    "known_limitation": {"type": "string"}
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "K-Waay expected results TSV row",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_version", "property_id", "claim_id", "milestone", "tool",
+    "suite", "target_id", "model_path", "query_or_lemma", "formula_sha256",
+    "property_kind", "expected_status", "expected_evidence_class",
+    "execution_scope", "conditional_interface", "required",
+    "timeout_seconds", "memory_policy", "expectation_source_path",
+    "expectation_source_commit", "expectation_source_blob",
+    "regression_matrix_path", "regression_matrix_commit",
+    "regression_matrix_blob", "notes"
+  ],
+  "properties": {
+    "schema_version": {"const": "1"},
+    "property_id": {"type": "string", "minLength": 1},
+    "claim_id": {"type": "string", "minLength": 1},
+    "milestone": {"enum": ["M0", "M1", "M2", "M3", "M4"]},
+    "tool": {"enum": ["tamarin-prover", "proverif"]},
+    "suite": {"type": "string", "minLength": 1},
+    "target_id": {"type": "string", "minLength": 1},
+    "model_path": {"type": "string", "minLength": 1},
+    "query_or_lemma": {"type": "string", "minLength": 1},
+    "formula_sha256": {"pattern": "^[0-9a-f]{64}$"},
+    "property_kind": {
+      "enum": ["positive_attack_witness", "falsified_universal_property",
+        "blocked_attack_witness_regression", "direct_theorem", "non_vacuity",
+        "structural_result", "regression", "scope_declaration",
+        "conditional_C_install_v2"]
+    },
+    "expected_status": {
+      "enum": ["verified", "falsified", "true", "false", "not_run_out_of_scope"]
+    },
+    "expected_evidence_class": {"type": "string", "minLength": 1},
+    "execution_scope": {"enum": ["direct", "tamarin-only", "inherited"]},
+    "conditional_interface": {"type": "string"},
+    "required": {"enum": ["true", "false"]},
+    "timeout_seconds": {"pattern": "^[0-9]+$"},
+    "memory_policy": {"type": "string"},
+    "expectation_source_path": {"type": "string", "minLength": 1},
+    "expectation_source_commit": {"pattern": "^[0-9a-f]{40}$"},
+    "expectation_source_blob": {"pattern": "^[0-9a-f]{40}$"},
+    "regression_matrix_path": {"type": "string", "minLength": 1},
+    "regression_matrix_commit": {"pattern": "^[0-9a-f]{40}$"},
+    "regression_matrix_blob": {"pattern": "^[0-9a-f]{40}$"},
+    "notes": {"type": "string"}
+  }
+}

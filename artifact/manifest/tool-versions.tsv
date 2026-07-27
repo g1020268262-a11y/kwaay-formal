@@ -1,0 +1,14 @@
+tool	required_or_observed_version	executable	evidence_source	platform	version_command	exact_or_minimum	notes
+Tamarin Prover	1.12.0	tamarin-prover	logs/tamarin-m4-hmac-dedup/source-run1/provenance.txt	Ubuntu 24.04.4 LTS	tamarin-prover --version	exact-observed	Compatibility with other versions is untested
+Maude	3.5.1	maude	logs/tamarin-m4-hmac-dedup/source-run1/provenance.txt	Ubuntu 24.04.4 LTS	maude --version	exact-observed	Compatibility with other versions is untested
+ProVerif	2.05	/mnt/d/Proverif/proverif2.05/proverif.exe	logs/final/proverif/summary.txt	WSL invoking Windows executable	proverif.exe --version	exact-observed	Not on the current WSL PATH; compatibility with other versions is untested
+Bash	5.2.21(1)-release	/usr/bin/bash	m5-a-local-measurement	Ubuntu 24.04	bash --version	exact-observed	Runner requires Bash; compatibility floor is untested
+Git	2.43.0	/usr/bin/git	m5-a-local-measurement	Ubuntu 24.04	git --version	exact-observed	Windows Git 2.52.0.windows.1 was also observed; compatibility floor is untested
+Python	3.14.5	/usr/bin/python3	m5-a-local-measurement	Ubuntu 24.04	python3 --version	exact-observed	Windows Python 3.14.3 was also observed; standard library only; compatibility floor is untested
+cpp	13.3.0	/usr/bin/cpp	m5-a-local-measurement	Ubuntu 24.04	cpp --version	exact-observed	Compatibility with other versions is untested
+timeout	GNU coreutils 9.4	/usr/bin/timeout	m5-a-local-measurement	Ubuntu 24.04	timeout --version	exact-observed	Compatibility with other versions is untested
+sha256sum	GNU coreutils 9.4	/usr/bin/sha256sum	m5-a-local-measurement	Ubuntu 24.04	sha256sum --version	exact-observed	Compatibility with other versions is untested; formal checksum authority remains Git blob bytes
+awk/gawk	GNU Awk 5.2.1	/usr/bin/awk	m5-a-local-measurement	Ubuntu 24.04	awk -W version	exact-observed	Compatibility with mawk or other versions is untested
+systemd/systemd-run	255 (255.4-1ubuntu8.16)	/usr/bin/systemd-run	m5-a-local-measurement	Ubuntu 24.04	systemd-run --version	exact-observed	M4 source runs used user cgroups; other managers are untested
+OS	Ubuntu 24.04 and committed Ubuntu 24.04.4 LTS	/etc/os-release	m5-a-local-measurement; logs/tamarin-m4-hmac-dedup/source-run1/provenance.txt	WSL/current and Linux/committed	grep NAME/VERSION_ID /etc/os-release	exact-observed	Other operating systems are untested for formal reruns
+cgroup mechanism	cgroup v2	/sys/fs/cgroup	m5-a-local-measurement; logs/tamarin-m4-hmac-dedup/source-run1/provenance.txt	Ubuntu 24.04	stat -fc %T /sys/fs/cgroup	exact-observed	M4 used systemd-run MemoryMax and MemorySwapMax=0; alternative isolation is untested

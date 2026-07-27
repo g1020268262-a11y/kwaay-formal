@@ -1,1 +1,5 @@
 *.sh text eol=lf
+logs/** -text
+artifact/**/*.tsv text eol=lf
+artifact/**/*.json text eol=lf
+artifact/**/*.md text eol=lf

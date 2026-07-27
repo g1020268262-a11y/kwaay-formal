@@ -1,0 +1,67 @@
+artifact_id	path	artifact_class	milestone	paper_role	authoritative_or_generated	evidence_path	freeze_status	known_limitation
+pv-original-source	proverif/kwaay_core_final.cpp.pv	model	M0	paper-mainline	authoritative	logs/final/proverif/summary.txt	frozen	symbolic ProVerif abstraction
+pv-hmac-source	proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv	model	M1	paper-mainline	authoritative	logs/variants/hmac-confirmation/proverif/summary.txt	frozen	HMAC confirmation only; not AEAD
+tamarin-v6	tamarin/kwaay_splitkem_batch_dynamic_v6.spthy	model	M0	regression-only	authoritative	logs/tamarin-v6/summary.txt	frozen	symbolic fixed-two-slot scope; see indexed claim documents
+tamarin-v7	tamarin/kwaay_splitkem_batch_dynamic_v7.spthy	model	M0	regression-only	authoritative	logs/tamarin-v7/summary.txt	frozen	symbolic fixed-two-slot scope; see indexed claim documents
+replay-original	tamarin/replay/kwaay_replay_original.spthy	model	M1	paper-mainline	authoritative	logs/tamarin-replay-hmac-only/original-regression-summary.txt	frozen	symbolic fixed-two-slot scope; see indexed claim documents
+replay-hmac	tamarin/replay/kwaay_replay_hmac_only.spthy	model	M1	paper-mainline	authoritative	logs/tamarin-replay-hmac-only/summary.txt	frozen	same receiver state and exact base-message identity
+impact-original	tamarin/impact/kwaay_impact_original.spthy	model	M2	paper-mainline	authoritative	logs/tamarin-impact-original/summary.txt	frozen	C_install-v2 conditional interface
+replay-fixed	tamarin/replay/kwaay_replay_fixed.spthy	model	M3	paper-mainline	authoritative	logs/tamarin-m3-closeout/composite-result-vector.tsv	frozen	symbolic fixed-two-slot scope; see indexed claim documents
+impact-fixed	tamarin/impact/kwaay_impact_fixed.spthy	model	M3	paper-mainline	authoritative	logs/tamarin-m3-closeout/composite-result-vector.tsv	frozen	C_install-v2 conditional interface
+replay-combined	tamarin/replay/kwaay_replay_hmac_dedup.spthy	model	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/composite-result-vector.tsv	frozen	symbolic fixed-two-slot scope; see indexed claim documents
+impact-combined	tamarin/impact/kwaay_impact_hmac_dedup.spthy	model	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/composite-result-vector.tsv	frozen	C_install-v2 conditional interface
+m1-runner	tamarin/replay/run-hmac-only.sh	runner	M1	regression-only	authoritative	logs/tamarin-replay-hmac-only/summary.txt	frozen	legacy runner; not called in-place
+m2-runner	tamarin/impact/run-impact-original.sh	runner	M2	regression-only	authoritative	logs/tamarin-impact-original/summary.txt	frozen	legacy runner; not called in-place
+m3-runner	tamarin/milestones/run-m3-dedup.sh	runner	M3	regression-only	authoritative	logs/tamarin-m3-closeout/closeout-summary.txt	frozen	legacy runner; not called in-place
+m4-runner	tamarin/milestones/run-m4-hmac-dedup.sh	runner	M4	regression-only	authoritative	logs/tamarin-m4-hmac-dedup/composite-summary.txt	frozen	frozen Tamarin-only policy source
+m1-summary	logs/tamarin-replay-hmac-only/summary.txt	evidence	M1	paper-mainline	authoritative	logs/tamarin-replay-hmac-only/summary.txt	frozen	single committed historical run
+m1-raw	logs/tamarin-replay-hmac-only/raw.out	raw-evidence	M1	paper-mainline	authoritative	logs/tamarin-replay-hmac-only/summary.txt	frozen	raw HMAC-only replay result
+m1-versions	logs/tamarin-replay-hmac-only/versions.txt	provenance	M1	paper-mainline	authoritative	logs/tamarin-replay-hmac-only/summary.txt	frozen	historical tool versions
+m2-summary	logs/tamarin-impact-original/summary.txt	evidence	M2	paper-mainline	authoritative	logs/tamarin-impact-original/SHA256SUMS.txt	frozen	single committed historical run
+m2-aggregate	logs/tamarin-impact-original/aggregate-results.tsv	evidence	M2	paper-mainline	generated	logs/tamarin-impact-original/SHA256SUMS.txt	frozen	raw-to-summary index
+m2-manifest	logs/tamarin-impact-original/SHA256SUMS.txt	manifest	M2	paper-mainline	authoritative	logs/tamarin-impact-original/SHA256SUMS.txt	frozen	SHA-256 manifest
+m3-summary	logs/tamarin-m3-closeout/closeout-summary.txt	evidence	M3	paper-mainline	authoritative	logs/tamarin-m3-closeout/SHA256SUMS.txt	frozen	transparent two-run composite
+m3-selection	logs/tamarin-m3-closeout/composite-selection.tsv	evidence	M3	paper-mainline	generated	logs/tamarin-m3-closeout/composite-result-vector.tsv	frozen	Run 2 primary; Run 1 fallback
+m3-vector	logs/tamarin-m3-closeout/composite-result-vector.tsv	evidence	M3	paper-mainline	generated	logs/tamarin-m3-closeout/closeout-summary.txt	frozen	196-target transparent composite
+m3-manifest	logs/tamarin-m3-closeout/SHA256SUMS.txt	manifest	M3	paper-mainline	authoritative	logs/tamarin-m3-closeout/SHA256SUMS.txt	frozen	composite raw-to-summary binding
+m3-source-manifests	logs/tamarin-m3-closeout/source-manifests.txt	provenance	M3	paper-mainline	authoritative	logs/tamarin-m3-closeout/SHA256SUMS.txt	frozen	two source-run manifest binding
+m4-summary	logs/tamarin-m4-hmac-dedup/composite-summary.txt	evidence	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/SHA256SUMS.txt	frozen	no single 296/296 terminal source run
+m4-selection	logs/tamarin-m4-hmac-dedup/composite-selection.tsv	evidence	M4	paper-mainline	generated	logs/tamarin-m4-hmac-dedup/composite-result-vector.tsv	frozen	Run 1 primary; Run 2 fallback
+m4-vector	logs/tamarin-m4-hmac-dedup/composite-result-vector.tsv	evidence	M4	paper-mainline	generated	logs/tamarin-m4-hmac-dedup/composite-summary.txt	frozen	296-target Tamarin-only composite
+m4-manifest	logs/tamarin-m4-hmac-dedup/SHA256SUMS.txt	manifest	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/SHA256SUMS.txt	frozen	659-entry composite raw-to-summary binding
+m4-run1-aggregate	logs/tamarin-m4-hmac-dedup/source-run1/aggregate.tsv	source-evidence	M4	paper-mainline	generated	logs/tamarin-m4-hmac-dedup/source-run1/SHA256SUMS.txt	frozen	complete 296-target source invocation; 294 terminal
+m4-run1-status	logs/tamarin-m4-hmac-dedup/source-run1/source-run-status.txt	source-status	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/source-run1/SHA256SUMS.txt	frozen	VALID is structural qualification, not 296 terminal
+m4-run1-manifest	logs/tamarin-m4-hmac-dedup/source-run1/SHA256SUMS.txt	manifest	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/SHA256SUMS.txt	frozen	327-entry source-run manifest
+m4-run1-provenance	logs/tamarin-m4-hmac-dedup/source-run1/provenance.txt	provenance	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/source-run1/SHA256SUMS.txt	frozen	Commit A/tool/resource binding
+m4-run2-aggregate	logs/tamarin-m4-hmac-dedup/source-run2/aggregate.tsv	source-evidence	M4	paper-mainline	generated	logs/tamarin-m4-hmac-dedup/source-run2/SHA256SUMS.txt	frozen	complete 296-target source invocation; 291 terminal
+m4-run2-status	logs/tamarin-m4-hmac-dedup/source-run2/source-run-status.txt	source-status	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/source-run2/SHA256SUMS.txt	frozen	VALID is structural qualification, not 296 terminal
+m4-run2-manifest	logs/tamarin-m4-hmac-dedup/source-run2/SHA256SUMS.txt	manifest	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/SHA256SUMS.txt	frozen	327-entry source-run manifest
+m4-run2-provenance	logs/tamarin-m4-hmac-dedup/source-run2/provenance.txt	provenance	M4	paper-mainline	authoritative	logs/tamarin-m4-hmac-dedup/source-run2/SHA256SUMS.txt	frozen	Commit A/tool/resource binding
+v6-summary	logs/tamarin-v6/summary.txt	evidence	M0	regression-only	authoritative	logs/tamarin-v6/summary.txt	frozen	no standalone M0 completion record
+v7-summary	logs/tamarin-v7/summary.txt	evidence	M0	regression-only	authoritative	logs/tamarin-v7/summary.txt	frozen	no standalone M0 completion record
+pv-original-summary	logs/final/proverif/summary.txt	evidence	M0	paper-mainline	authoritative	logs/final/proverif/summary.txt	frozen	inherited by M4; not rerun in M4
+pv-hmac-summary	logs/variants/hmac-confirmation/proverif/summary.txt	evidence	M1	paper-mainline	authoritative	logs/variants/hmac-confirmation/proverif/summary.txt	frozen	inherited by M4; not rerun in M4
+claim-hierarchy	docs/claim-hierarchy.md	claim-source	M4	paper-mainline	authoritative	docs/claim-hierarchy.md	frozen	statement boundary authority
+threat-matrix	docs/threat-compromise-matrix.md	claim-source	M4	paper-mainline	authoritative	docs/threat-compromise-matrix.md	frozen	threat assumptions authority
+model-mapping	docs/model-mapping.md	claim-source	M4	paper-mainline	authoritative	docs/model-mapping.md	frozen	model/query/lemma mapping authority
+m1-completion	docs/milestones/M1-completion.md	completion	M1	paper-mainline	authoritative	docs/milestones/M1-completion.md	frozen	milestone record
+m2-completion	docs/milestones/M2-completion.md	completion	M2	paper-mainline	authoritative	docs/milestones/M2-completion.md	frozen	milestone record
+m3-completion	docs/milestones/M3-completion.md	completion	M3	paper-mainline	authoritative	docs/milestones/M3-completion.md	frozen	milestone record
+m4-completion	docs/milestones/M4-completion.md	completion	M4	paper-mainline	authoritative	docs/milestones/M4-completion.md	frozen	milestone record
+pv-original-baseline	logs/final/proverif/generated/BASELINE.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-component	logs/final/proverif/generated/COMPONENT.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-exception-choice	logs/final/proverif/generated/EXCEPTION_CHOICE.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-receiver-exception-classification	logs/final/proverif/generated/RECEIVER_EXCEPTION_CLASSIFICATION.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-sigsk-a	logs/final/proverif/generated/LEAK_SIGSK_A.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-sigsk-b	logs/final/proverif/generated/LEAK_SIGSK_B.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-sigsk-ab	logs/final/proverif/generated/LEAK_SIGSK_AB.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-sigsk	logs/final/proverif/generated/LEAK_SIGSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-kemsk	logs/final/proverif/generated/LEAK_KEMSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-ekemsk	logs/final/proverif/generated/LEAK_EKEMSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-rskemsk	logs/final/proverif/generated/LEAK_RSKEMSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-sskemsk	logs/final/proverif/generated/LEAK_SSKEMSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-kemsk-ekemsk	logs/final/proverif/generated/LEAK_KEMSK_EKEMSK.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-original-leak-all-receiver-secrets	logs/final/proverif/generated/LEAK_ALL_RECEIVER_SECRETS.pv	generated-model	M0	regression-only	generated	logs/final/proverif/summary.txt	frozen	exact preprocessed target model
+pv-hmac-hmac-baseline	logs/variants/hmac-confirmation/proverif/generated/HMAC_BASELINE.pv	generated-model	M1	regression-only	generated	logs/variants/hmac-confirmation/proverif/summary.txt	frozen	exact preprocessed target model
+pv-hmac-hmac-component	logs/variants/hmac-confirmation/proverif/generated/HMAC_COMPONENT.pv	generated-model	M1	regression-only	generated	logs/variants/hmac-confirmation/proverif/summary.txt	frozen	exact preprocessed target model
+pv-hmac-hmac-leak-sigsk-a	logs/variants/hmac-confirmation/proverif/generated/HMAC_LEAK_SIGSK_A.pv	generated-model	M1	regression-only	generated	logs/variants/hmac-confirmation/proverif/summary.txt	frozen	exact preprocessed target model
