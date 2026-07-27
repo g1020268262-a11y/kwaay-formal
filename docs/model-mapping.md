@@ -73,10 +73,10 @@ Tamarin:
 | batch-local dedup decision | 未建模 | 未建模 | fixed replay/impact and M4 combined replay/impact 中 `DedupPending` + `DedupDecisionToken` 在线性状态上进行一次决定 | M3/M4 fixed two-slot、同一 `B,bid,rst` |
 | duplicate decision outcome | 未建模 | 未建模 | `DuplicateDetected` 后原子产生 `BatchFail/BatchClosed/ConsumeReceiverState`，不开放 processing | exact complete base message `m` identity；不是 full `<m,tag>`，也不是全局 cache |
 | distinct decision outcome | 未建模 | 未建模 | `DedupPassed` 产生 `CheckedSlot1/2`，之后才允许 `ProcessSlot1/2` | processing 前 pre-scan；distinct 正常/失败路径均保留 |
-| accepted output occurrence | 未建模 | 未建模 | original/fixed/M4 impact artifacts 中 `aid` / `AcceptOutputCreated` / linear `AcceptedOutput`；replay-only artifacts 不含该层 | M2 original、M3 fixed impact、M4 combined impact 建模 |
-| session installation | 未建模 | 无 `InstallSession` / local handle event | original/fixed/M4 impact 中 `InstallFromAccept` + `InstallSession`；replay-only artifacts 不含该层 | 条件化建模；不代表 deployed implementation |
-| local installation handle | 未建模 | 未建模 | original/fixed impact 中 fresh `h` | 仅 symbolic composition object |
-| upper-layer consumer | 未建模 | 未建模 | original/fixed impact 中 `ConsumerStage0/1/2`, `ConsumerComplete`, `ClosedConsumer` | fixed two-output conditional abstraction |
+| accepted output occurrence | 未建模 | 未建模 | original/fixed/M4 combined impact artifacts 中 `aid` / `AcceptOutputCreated` / linear `AcceptedOutput`；replay-only artifacts 不含该层 | M2 original、M3 fixed impact、M4 combined impact 建模 |
+| session installation | 未建模 | 无 `InstallSession` / local handle event | original/fixed/M4 combined impact 中 `InstallFromAccept` + `InstallSession`；replay-only artifacts 不含该层 | 条件化建模；不代表 deployed implementation |
+| local installation handle | 未建模 | 未建模 | original/fixed/M4 combined impact 中 fresh symbolic `h` | 仅 conditional composition object；不是 protocol `sid`，也不等于真实部署 session 对象 |
+| upper-layer consumer | 未建模 | 未建模 | original/fixed/M4 combined impact 中 `ConsumerStage0/1/2`, `ConsumerComplete`, `ClosedConsumer` | fixed two-output bounded `C_install-v2` abstraction；不代表 deployed implementation |
 | deniability | 未建模 | 不在 V6/V7；由 core/malicious/negative `--diff` 独立 artifacts 建模 | 未建模 | preliminary symbolic evidence；非完整 deniability |
 | computational KIND | 未建模 | 未建模 | 未建模 | 后续 CryptoVerif / hand proof |
 
