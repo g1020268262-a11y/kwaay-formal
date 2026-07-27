@@ -1,0 +1,11 @@
+evidence_scope=tamarin-only
+canonical_target_count=296
+proverif_targets=not_run_out_of_scope
+invoked=296
+terminal=291
+nonterminal=5
+mismatch=5
+parse_failures=0
+trace_total=5
+trace_failures=0
+structural_failures=0

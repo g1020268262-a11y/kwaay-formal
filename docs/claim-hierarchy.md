@@ -163,9 +163,11 @@ Do not write:
 
 ### 2.10 Completion milestone
 
-P0's current baseline is established. M4 must regress P0-S and P0-O across the
-dedup-only and HMAC+dedup variants and record the exact compromise exceptions.
-M5 must freeze the reproducible result table.
+P0's current ProVerif baseline remains established through the previously
+committed original core and HMAC confirmation evidence. M4's new evidence is
+Tamarin-only and therefore does not rerun the five ProVerif targets. M5 must
+freeze the final reproducible result table without describing M4 Evidence Commit
+B as a ProVerif rerun.
 
 ## 3. P1: full-parameter non-injective correspondence
 
@@ -199,7 +201,10 @@ batch slot, local session handle, or implementation state.
   independent evidence for HMAC P1.
 - dedup-only fixed replay: does not model or restore the original ProVerif P1
   event/query; it establishes only its own batch-local P2 result;
-- HMAC+dedup combined P1: `not modeled`.
+- HMAC+dedup combined P1: no new ProVerif run in M4; the Tamarin combined
+  artifacts establish confirmed-send/confirmed-accept matching and occurrence
+  boundaries in their own event vocabulary, while the paper-level ProVerif P1
+  statement continues to cite the prior HMAC confirmation baseline.
 
 ### 3.3 Protocol variants
 
@@ -207,14 +212,15 @@ batch slot, local session handle, or implementation state.
 - HMAC confirmation;
 - HMAC-only two-slot replay bridge;
 - dedup-only fixed two-slot replay (P2 only, not a ProVerif P1 repair);
-- future HMAC+dedup combined fix.
+- actual HMAC+dedup combined fix.
 
 ### 3.4 Model files
 
 - `proverif/kwaay_core_final.cpp.pv`
 - `proverif/variants/hmac-confirmation/kwaay_core_hmac_confirmation.cpp.pv`
 - `tamarin/replay/kwaay_replay_hmac_only.spthy`
-- no HMAC+dedup combined model currently exists
+- `tamarin/replay/kwaay_replay_hmac_dedup.spthy`
+- `tamarin/impact/kwaay_impact_hmac_dedup.spthy`
 
 ### 3.5 Events and query
 
@@ -282,10 +288,11 @@ Do not write:
 
 M1 is complete: the HMAC-only bridge separates structural matching existence
 from falsified same-batch/same-state occurrence injectivity and preserves the
-ProVerif HMAC baseline as the main independent P1 evidence. M4 must establish
-the combined HMAC+dedup P1 result and regress the selected compromise cases.
-M3 dedup-only completion does not change this P1 status.
-M5 must freeze the final paper artifact.
+ProVerif HMAC baseline as the main independent P1 evidence. M4 is complete as a
+Tamarin-only combined HMAC+dedup result: it validates confirmed
+send/confirmed-accept matching and duplicate rejection in the combined event
+vocabulary, but it does not rerun ProVerif. M5 must freeze the final paper
+artifact and keep the ProVerif/Tamarin evidence roles distinct.
 
 ## 4. P2: injective one-send-one-accept
 
@@ -369,24 +376,24 @@ event vocabularies.
 `falsified` for both replay original and the HMAC-only replay bridge in the
 same-batch/same-receiver-state subdomain.
 
-P2 is `established` for the dedup-only fixed two-slot model, strictly within
-the same `B,bid,rst` and exact complete message `m` scope. HMAC+dedup remains
-`not modeled`.
+P2 is `established` for the dedup-only fixed two-slot model and for the M4
+HMAC+dedup combined replay model, strictly within the same `B,bid,rst` and exact
+complete base message `m` scope. This is a batch-local result, not a global or
+cross-batch replay theorem.
 
 ### 4.3 Protocol variants
 
 - original, unhardened `BatchReceive` replay abstraction;
 - HMAC-only two-slot replay bridge;
 - actual dedup-only fixed two-slot model;
-- future HMAC+dedup combined model.
+- actual HMAC+dedup combined model.
 
 ### 4.4 Model file
 
 - `tamarin/replay/kwaay_replay_original.spthy`
 - `tamarin/replay/kwaay_replay_hmac_only.spthy`
 - `tamarin/replay/kwaay_replay_fixed.spthy`
-
-No combined HMAC+dedup model currently exists.
+- `tamarin/replay/kwaay_replay_hmac_dedup.spthy`
 
 ### 4.5 Events and evidence roles
 
@@ -426,9 +433,19 @@ context is `(bid,idx,rst)`.
 | dedup-only fixed | duplicate failure non-vacuity | `duplicate_batch_fail_exists` | `verified` |
 | dedup-only fixed | duplicate has no accept | `duplicate_batch_has_no_accept` | `verified` |
 | dedup-only fixed | distinct completion non-vacuity | `normal_distinct_batch_complete` | `verified` |
+| M4 HMAC+dedup combined replay | matching existence/order | `confirmed_receiver_accept_has_sender` | `verified` |
+| M4 HMAC+dedup combined replay | sender-occurrence disambiguation | `confirmed_message_unique_send` | `verified` |
+| M4 HMAC+dedup combined replay | same-`B,bid,rst` occurrence injectivity | `injective_confirmed_receiver_accept` | `verified` |
+| M4 HMAC+dedup combined replay | confirmed-message at-most-once | `confirmed_message_accepted_at_most_once` | `verified` |
+| M4 HMAC+dedup combined replay | confirmed base-message at-most-once | `confirmed_base_message_accepted_at_most_once` | `verified` |
+| M4 HMAC+dedup combined replay | legacy duplicate witness | `one_confirmed_send_two_accepts_exists` | `falsified` |
+| M4 HMAC+dedup combined replay | same-base/different-tag duplicate rejection | `duplicate_same_base_different_tag_fail_exists` | `verified` |
+| M4 HMAC+dedup combined replay | normal distinct-message completion | `normal_two_distinct_valid_confirmed_accepts_complete` | `verified` |
 
-All three models also verify `slot_indices_distinct` and their selected
-lifecycle lemmas.
+The original, HMAC-only, dedup-only fixed, and M4 combined replay artifacts also
+verify their selected slot/lifecycle lemmas. The combined replay model is
+`tamarin/replay/kwaay_replay_hmac_dedup.spthy`, and the M4 results above come
+from Evidence Commit B's frozen Tamarin-only composite vector.
 
 ### 4.6 Actual results
 
@@ -467,6 +484,20 @@ Dedup-only fixed actual results:
 - all 30 fixed replay targets have expected terminal results in the transparent
   composite vector.
 
+M4 HMAC+dedup combined replay actual results:
+
+- `confirmed_receiver_accept_has_sender`: `verified`.
+- `confirmed_message_unique_send`: `verified`.
+- `injective_confirmed_receiver_accept`: `verified`.
+- `confirmed_message_accepted_at_most_once`: `verified`.
+- `confirmed_base_message_accepted_at_most_once`: `verified`.
+- `one_confirmed_send_two_accepts_exists`: `falsified`.
+- `duplicate_same_base_different_tag_fail_exists`: `verified`.
+- `normal_two_distinct_valid_confirmed_accepts_complete`: `verified`.
+- M4 transparent composite evidence is 296/296 terminal and 296/296 MATCH, with
+  0 terminal conflicts, 0 unresolved rows, and 0 mismatches. This 296/296 result
+  is the transparent composite result, not the result of any single source run.
+
 Evidence:
 
 - `tamarin/replay/README.md`
@@ -481,15 +512,22 @@ Evidence:
 - `tamarin/replay/README-fixed.md`
 - `logs/tamarin-m3-closeout/`
 - `docs/milestones/M3-completion.md`
+- `tamarin/replay/kwaay_replay_hmac_dedup.spthy`
+- `tamarin/replay/README-hmac-dedup.md`
+- `logs/tamarin-m4-hmac-dedup/`
+- `docs/milestones/M4-completion.md`
 
 Thus global P2 is `falsified` for original and HMAC-only because occurrence
 injectivity already fails in their same-batch/same-receiver-state subdomain. Matching
 existence/order and matching-accept executability hold; they are not the failure
 point. The HMAC bridge's `confirmed_message_unique_send` disambiguates the
 sender occurrence but does not provide P2 injectivity or replay prevention.
-No positive global injectivity theorem is present. The fixed positive result is
-only same-`B,bid,rst`, exact-complete-`m`, fixed-two-slot injectivity; it cannot
-be lifted to cross-batch, rollback, restart, or arbitrary-state replay safety.
+No positive global injectivity theorem is present. The fixed and M4 combined
+positive results are only same-`B,bid,rst`, exact-complete-base-message-`m`,
+fixed-two-slot injectivity results; they cannot be lifted to cross-batch,
+rollback, restart, arbitrary-state, or arbitrary-length replay safety. The M4
+combined result uses `ConfirmedSend` / `ConfirmedReceiverAccept` events, and
+its dedup identity is the base message `m`, not the complete `<m,tag>` wrapper.
 
 The M1 evidence bundle contains committed full raw output, a selected attack
 trace in text/JSON/DOT, exact commands and versions, and original/HMAC-baseline
@@ -499,9 +537,12 @@ with no timeout or incomplete result.
 
 ### 4.7 Assumptions
 
-- all three replay artifacts use a fixed two-slot symbolic batch;
-- original matching coordinates are `(A,B,m,sid,k)`; HMAC-only coordinates are
-  `(A,B,m,sid,k,tag)`;
+- the four main replay artifacts use a fixed two-slot symbolic batch: original
+  replay, HMAC-only replay, dedup-only fixed replay, and HMAC+dedup combined
+  replay;
+- original and dedup-only matching coordinates are `(A,B,m,sid,k)`; HMAC-only
+  and M4 combined coordinates are `(A,B,m,sid,k,tag)` and use
+  `ConfirmedSend` / `ConfirmedReceiverAccept`;
 - receiver-side occurrence context is `(bid,idx,rst)`;
 - each witness uses the same `B,bid,rst` and distinct fresh slot indices
   `idx1,idx2`;
@@ -511,8 +552,11 @@ with no timeout or incomplete result.
   `HonestSession`; in the HMAC bridge this also makes matching existence largely structural;
 - the HMAC bridge models symbolic `tag=hmac(confirm_key(k),sid)` and exact
   confirmed-message equality, but not a computational HMAC game;
-- the fixed artifact uses one linear, batch-local decision over exact complete
-  `m`; it is not a global cache and contains no HMAC confirmation;
+- the fixed and M4 combined artifacts use one linear, batch-local decision over
+  exact complete base message `m`; it is not a global cache;
+- in the M4 combined artifact, `HonestSession` remains the successful
+  reconstruction/HMAC-confirmation abstraction, and dedup is over base message
+  `m`, not the full `<m,tag>` term;
 - replay artifacts contain no session installation or application state.
 
 ### 4.8 Allowed paper statement
@@ -554,8 +598,9 @@ Do not write:
 M1 falsified the same-batch/same-receiver-state P2 condition in the HMAC-only
 bridge. M3 is complete: the dedup-only fixed model establishes the positive
 condition only for fixed two-slot, same `B,bid,rst`, exact complete `m`, with
-transparent composite evidence. This is not global P2. M4 owns the future
-combined HMAC+dedup model and regressions; M5 owns the final artifact freeze.
+transparent composite evidence. M4 is also complete for the combined
+HMAC+dedup replay model under the same fixed two-slot, batch-local base-message
+scope. Neither result is global P2. M5 owns the final artifact freeze.
 
 When a future artifact uses the current direct tuple-based matching style, it
 must disambiguate sender occurrences. Two possible approaches are:
@@ -662,6 +707,11 @@ implies h1 = h2.
 - fixed dedup duplicate-install witness: `falsified`;
 - fixed dedup unique installation under `C_install-v2`: `established`;
 - fixed dedup normal distinct consumer completion: `established`;
+- M4 combined duplicate-install witness under `C_install-v2`: `falsified`;
+- M4 combined unique installation under `C_install-v2`: `established`;
+- M4 combined duplicate accepted output: `blocked` / `verified`;
+- M4 combined duplicate installation: `blocked` / `verified`;
+- M4 combined distinct confirmed-message consumer completion: `established`;
 - deployed K-Waay per-output installation: `unknown` / unsupported by repository
   specification or implementation evidence.
 
@@ -669,10 +719,11 @@ implies h1 = h2.
 
 - actual original impact/composition model over replay original;
 - actual fixed dedup impact model;
-- future HMAC+dedup combined impact model.
+- actual HMAC+dedup combined impact model.
 
 The M2 result applies only to the first variant; the M3 result applies only to
-the second. Combined HMAC+dedup P3 remains `not modeled`.
+the second. M4 establishes the combined HMAC+dedup P3 result only under the same
+bounded `C_install-v2` consumer and fixed two-slot batch-local scope.
 
 ### 5.4 Model and evidence
 
@@ -680,12 +731,14 @@ Model:
 
 - `tamarin/impact/kwaay_impact_original.spthy`
 - `tamarin/impact/kwaay_impact_fixed.spthy`
+- `tamarin/impact/kwaay_impact_hmac_dedup.spthy`
 
 Runner and boundary description:
 
 - `tamarin/impact/run-impact-original.sh`
 - `tamarin/impact/README.md`
 - `tamarin/impact/README-fixed.md`
+- `tamarin/impact/README-hmac-dedup.md`
 
 Committed evidence:
 
@@ -693,6 +746,8 @@ Committed evidence:
 - `docs/milestones/M2-completion.md`
 - `logs/tamarin-m3-closeout/`
 - `docs/milestones/M3-completion.md`
+- `logs/tamarin-m4-hmac-dedup/`
+- `docs/milestones/M4-completion.md`
 
 ### 5.5 Events and 19 composition lemmas
 
@@ -789,6 +844,15 @@ explicit `C_install-v2` assumptions, the batch-local duplicate branch produces
 no accepted output or installation, unique installation is verified, and two
 distinct messages can still complete the consumer.
 
+For the M4 combined impact model it is permitted to report that, under the same
+explicit bounded `C_install-v2` assumptions, duplicate same-base confirmed input
+does not produce duplicate accepted output or duplicate installation, unique
+installation is verified, and two distinct valid confirmed messages can still
+complete the consumer. It is also required to preserve the boundary that slot-2
+HMAC mismatch can occur after slot-1 has already accepted; therefore M4 must not
+be summarized as proving that every failed batch has no partial lower-layer
+output.
+
 ### 5.8 Prohibited overstatements
 
 Do not write:
@@ -801,7 +865,8 @@ Do not write:
 - “Application, payment, authorization, or another business action repeats.”
 - “Arbitrary-length or cross-batch impact has been proved.”
 - “HMAC-only duplicate acceptance already proves duplicate installation.”
-- “M4 combined repair is complete.” M4 remains not modeled.
+- “M4 proves deployed upper-layer behavior.” M4 is complete only as a
+  fixed-two-slot Tamarin-only artifact under `C_install-v2`.
 - “Computational security has been proved.”
 
 ### 5.9 General inference boundary
@@ -825,8 +890,10 @@ verified 52-entry manifest covering 53 evidence files including the manifest.
 
 M3 is complete with frozen A3 models and transparent composite evidence: fixed
 P2 and fixed P3 under `C_install-v2` match their expected vectors without
-changing the completed M2 result. M4 is the current unique next task: the
-combined HMAC+dedup model and regressions. M5 remains the final artifact freeze.
+changing the completed M2 result. M4 is complete with frozen combined
+HMAC+dedup replay/impact models and Tamarin-only transparent composite evidence:
+296/296 terminal, 296/296 MATCH, 0 terminal conflicts, 0 unresolved rows, and 0
+mismatches. M5 remains the final artifact freeze.
 
 ## 6. Property and dependency rules
 
@@ -850,7 +917,7 @@ P2 => P1, only for the same artifact instantiation, event semantics,
           and matching parameter tuple.
 ```
 
-The main-line evidence state after M3 is therefore:
+The main-line evidence state after M4 is therefore:
 
 ```text
 P0 baseline: established
@@ -861,16 +928,23 @@ HMAC-only Tamarin matching existence/order: established but structurally mediate
 P2 Tamarin replay original: falsified
 P2 HMAC-only replay: falsified in the same-batch/same-state subdomain
 P2 fixed: established within fixed two-slot, same B/bid/rst, exact complete m
-P2 combined: not modeled
+P2 combined: established within fixed two-slot, same B/bid/rst,
+             exact complete base message m, batch-local scope
 P3 under C_install-v2: conditional duplicate-install witness established;
                        unique installation falsified
 P3 fixed/dedup under C_install-v2: unique installation established;
                                       duplicate-install witness falsified
-P3 combined: not modeled
+P3 combined under C_install-v2: established only under the bounded conditional
+                                consumer and the same fixed two-slot
+                                batch-local scope
 ```
 
-Accordingly, the current unique next task is M4: build the combined HMAC +
-batch-local atomic dedup model and regressions. M4 has not started. M2 and M3
-impact results may be cited only under the explicit `C_install-v2` composition
-assumptions; duplicate `ReceiverAccept` outside those impact models must not be
-relabeled as duplicate installation.
+Accordingly, the current unique next task is M5: freeze the final reproducible
+artifact/result table and paper-facing artifact bundle. M2, M3, and M4 impact
+results may be cited only under the explicit `C_install-v2` composition
+assumptions; duplicate `ConfirmedReceiverAccept` outside those impact models
+must not be relabeled as duplicate installation. M4 Evidence Commit B is
+Tamarin-only; the ProVerif 5-target story is inherited from prior committed
+evidence, not rerun in M4. The M4 combined results are not global,
+cross-batch, rollback, restart, arbitrary-state, or arbitrary-length theorems,
+and they do not establish deployed upper-layer behavior.

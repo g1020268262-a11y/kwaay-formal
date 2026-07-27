@@ -1,0 +1,6 @@
+label	model	lemma	exit_status	validation	raw	json	dot
+duplicate	tamarin/replay/kwaay_replay_hmac_dedup.spthy	duplicate_same_base_different_tag_fail_exists	0	PASS	traces/duplicate/trace.out	traces/duplicate/trace.json	traces/duplicate/trace.dot
+normal-replay	tamarin/replay/kwaay_replay_hmac_dedup.spthy	normal_two_distinct_valid_confirmed_accepts_complete	0	PASS	traces/normal-replay/trace.out	traces/normal-replay/trace.json	traces/normal-replay/trace.dot
+slot1-mismatch	tamarin/replay/kwaay_replay_hmac_dedup.spthy	hmac_failure_slot1_exists	0	PASS	traces/slot1-mismatch/trace.out	traces/slot1-mismatch/trace.json	traces/slot1-mismatch/trace.dot
+slot2-mismatch	tamarin/impact/kwaay_impact_hmac_dedup.spthy	hmac_failure_slot2_after_prior_accept_exists	0	PASS	traces/slot2-mismatch/trace.out	traces/slot2-mismatch/trace.json	traces/slot2-mismatch/trace.dot
+normal-consumer	tamarin/impact/kwaay_impact_hmac_dedup.spthy	normal_two_distinct_valid_confirmed_outputs_consumer_complete	0	PASS	traces/normal-consumer/trace.out	traces/normal-consumer/trace.json	traces/normal-consumer/trace.dot

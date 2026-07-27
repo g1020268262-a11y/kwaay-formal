@@ -1,0 +1,3 @@
+model	exit_status	raw_output
+combined-replay	0	parse/combined-replay.out
+combined-impact	0	parse/combined-impact.out

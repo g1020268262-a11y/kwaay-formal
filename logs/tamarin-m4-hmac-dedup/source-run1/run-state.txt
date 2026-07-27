@@ -1,0 +1,7 @@
+COMPLETE
+updated_at=2026-07-26T17:26:07+08:00
+memory_max_mb=16384
+memory_swap_max=0
+source_run_number=1
+final_status=VALID
+progress=296/296
