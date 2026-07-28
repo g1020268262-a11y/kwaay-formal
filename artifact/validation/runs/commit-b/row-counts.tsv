@@ -1,0 +1,16 @@
+category	count
+expected-results	405
+actual-results	405
+tamarin	296
+proverif-total	109
+inherited-proverif	89
+m4-proverif-scope	20
+claim-evidence	18
+artifact-inventory	66
+raw-to-summary	405
+claim-matrix	18
+m4-fallback	2
+terminal-conflicts	0
+unresolved	0
+mismatches	0
+provenance-invalid	0

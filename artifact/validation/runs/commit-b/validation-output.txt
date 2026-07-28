@@ -1,0 +1,24 @@
+verify_committed=PASS
+artifact_validation=PASS
+negative_fixtures=37 failures=0
+wrapper_verify_committed=PASS
+wrapper_bytecode_cleanliness=PASS
+actual_generation_reproducibility=MATCH
+actual_sha256=914acd51e1a358645dec294f8b603e789086e68fcd41738d4ac0ebf31c1cc2f1
+actual_schema=PASS
+expected_rows=405 actual_rows=405 tamarin_rows=296 inherited_proverif_rows=89 m4_scope_rows=20
+m4_fallback=2 terminal_conflicts=0 unresolved=0 mismatches=0 provenance_invalid=0
+artifact_inventory_rows=66 exact_join=PASS
+raw_to_summary_rows=405 exact_derivation=PASS
+claim_matrix_rows=18 exact_join=PASS
+claim_status_join=PASS model_path_join=PASS required_claims=PASS
+derived_view_stale_check=PASS
+frozen_checksum_entries=66 failures=0
+commit_a_infrastructure_checksum_entries=26 failures=0
+git_blob_checksum_entries=92 duplicates=0 match=100%
+checksum_stale_check=PASS
+evidence_validation=PASS
+bytecode_files=0
+formal_model_diff=UNCHANGED
+logs_diff=UNCHANGED
+prover_invoked=false

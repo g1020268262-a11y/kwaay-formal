@@ -1,0 +1,16 @@
+artifact/manifest/artifact-inventory.tsv
+artifact/manifest/git-blob-SHA256SUMS.txt
+artifact/results/actual-results.tsv
+artifact/results/claim-matrix.tsv
+artifact/results/raw-to-summary.tsv
+artifact/validation/runs/commit-b/actual-results.sha256
+artifact/validation/runs/commit-b/changed-paths.txt
+artifact/validation/runs/commit-b/commands.txt
+artifact/validation/runs/commit-b/generate-checksums.py
+artifact/validation/runs/commit-b/generate-views.py
+artifact/validation/runs/commit-b/generation-summary.txt
+artifact/validation/runs/commit-b/row-counts.tsv
+artifact/validation/runs/commit-b/validate-evidence.py
+artifact/validation/runs/commit-b/validation-output.txt
+artifact/validation/summary.md
+artifact/validation/summary.tsv

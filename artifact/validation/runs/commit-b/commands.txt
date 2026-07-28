@@ -1,0 +1,15 @@
+env -u PYTHONDONTWRITEBYTECODE bash scripts/run-paper-artifact.sh verify-committed
+env -u PYTHONDONTWRITEBYTECODE bash artifact/validation/run-tests.sh
+python -B scripts/artifact/generate_actual.py --committed-m4 --output <EXTERNAL_ACTUAL_RUN_1>
+python -B scripts/artifact/generate_actual.py --committed-m4 --output <EXTERNAL_ACTUAL_RUN_2>
+cmp <EXTERNAL_ACTUAL_RUN_1>/actual-results.tsv <EXTERNAL_ACTUAL_RUN_2>/actual-results.tsv
+sha256sum <EXTERNAL_ACTUAL_RUN_1>/actual-results.tsv <EXTERNAL_ACTUAL_RUN_2>/actual-results.tsv
+copy exact bytes from <EXTERNAL_ACTUAL_RUN_1>/actual-results.tsv to <REPOSITORY>/artifact/results/actual-results.tsv
+python -B artifact/validation/runs/commit-b/generate-views.py
+python -B artifact/validation/runs/commit-b/generate-checksums.py
+python -B artifact/validation/runs/commit-b/generate-views.py --check
+python -B artifact/validation/runs/commit-b/generate-checksums.py --check
+python -B artifact/validation/runs/commit-b/validate-evidence.py --actual-run-1 <EXTERNAL_ACTUAL_RUN_1>/actual-results.tsv --actual-run-2 <EXTERNAL_ACTUAL_RUN_2>/actual-results.tsv
+env -u PYTHONDONTWRITEBYTECODE bash scripts/run-paper-artifact.sh verify-committed
+env -u PYTHONDONTWRITEBYTECODE bash artifact/validation/run-tests.sh
+git diff --check
