@@ -131,6 +131,6 @@ output directory; see [the artifact contract](artifact/README.md).
 
 ## Project status
 
-M0-M5 implementation and artifact documentation are complete on the
-`codex/m5-paper-artifact` review branch. The branch has not yet been merged
-into `main`.
+M0-M5 implementation, reproducible artifact freeze, and documentation
+closeout are complete on main. M5 Commit A/B/C are preserved as three linear
+commits in `main` history.

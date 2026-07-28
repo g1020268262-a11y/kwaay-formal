@@ -396,9 +396,8 @@ claims still cite their prior committed evidence:
 M2 original impact/P3, M3 fixed dedup/fixed-impact, and M4 combined
 HMAC+dedup cells now contain actual conditional Tamarin results. Material-
 specific compromise cells remain `not modeled` unless an exact row above says
-otherwise. M5 is complete on the review branch; the next step is final Chat
-review and then merge of M5 A/B/C into `main`. M2/M3/M4 do not establish
-deployed upper-layer behavior.
+otherwise. M5 is complete on main; the next step is paper writing / submission
+preparation. M2/M3/M4 do not establish deployed upper-layer behavior.
 
 ## 8. M5 evidence ledger synchronization
 

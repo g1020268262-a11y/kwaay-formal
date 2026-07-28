@@ -74,12 +74,13 @@ M5 Commit A `776f757e05fd2c5e1b3d3f50ba1cef880fe21804`
 schemas、builders、validators 与统一 wrapper。M5 Commit B
 `c7f76ac7010776b1431c751ea76dca80091c9ecd`
 （tree `6792909ef3822ec4e3553eb2558a4aa468874235`）冻结机械生成的 final result
-tables、derived views、Git-blob checksums 与 validation records。Commit C 是
-包含本次 documentation closeout 的当前文档提交；其 SHA/tree 由 Git history
-标识，不在自身内容中自引用。
+tables、derived views、Git-blob checksums 与 validation records。Commit C
+`876bcfb8a4e4e03bf54d1b084963e9e6fb29d622`
+（tree `b1dcb9b3030265c4b6b455279911bbc61b60b0bd`）完成 documentation
+closeout。Commit A/B/C 作为三个线性提交保留在 `main` 历史中。
 
-M5 implementation complete on review branch。当前唯一下一步是对 Commit C
-做最终 Chat 审查；审查通过后，将完整 M5 A/B/C 分支合并到 `main`。
+M5 complete and merged into main。当前唯一下一步：开始 paper writing /
+submission preparation。
 
 ## 3. 模型总表
 
@@ -112,9 +113,9 @@ M5 implementation complete on review branch。当前唯一下一步是对 Commit
 | 6 | Malicious PoK deniability | 🟡 | executability/witness lemmas verified，但 observational equivalence TIMEOUT | replay 闭环完成后再缩减 proof search 或拆小模型 | equivalence VERIFIED，或明确降级为 limitation | 高目标强化项 |
 | 6 | Big Brother / full deniability | ⬜ | 尚未完成 | 仅在主线冻结后继续 | 明确 game、opening data、simulator 与 result | 不作为当前模型冻结前置条件 |
 | 7 | Computational proof sketch | ⬜ | 尚无 CryptoVerif / game proof | 对 AsiaCCS/ACNS 可先放 future work；若冲 USENIX/密码方向，再补最小 KDF hybrid / KIND sketch | 假设、game hop、symbolic↔computational边界成文 | 高目标加分，不替代影响闭环 |
-| 8 | 一键复现 artifact | ✅ | `scripts/run-paper-artifact.sh` 提供 committed validation 与显式 reproduction modes；工具版本和 405-row expected/actual tables 已冻结 | 合并前只做最终文档审查；formal reproduction 必须写入仓库外目录 | committed validator/run-tests PASS；37/37 negative fixtures；wrapper clean 且 bytecode=0 | 投稿硬要求 |
+| 8 | 一键复现 artifact | ✅ | `scripts/run-paper-artifact.sh` 提供 committed validation 与显式 reproduction modes；工具版本和 405-row expected/actual tables 已冻结 | formal reproduction 必须写入仓库外目录 | committed validator/run-tests PASS；37/37 negative fixtures；wrapper clean 且 bytecode=0 | 投稿硬要求 |
 | 8 | Artifact README / claim matrix | ✅ | `artifact/README.md`、66-row inventory、18-row claim matrix、405-row raw-to-summary 与根 README 已完成 | 后续论文正文从冻结 claim/evidence 索引引用 | claim、expected、actual、model 与 raw provenance 可机械 join/check | Open Science / 复现性 |
-| 8 | 最终 artifact 冻结 | ✅ | Commit A 冻结 contract/infrastructure；Commit B 冻结 result/views/checksums/validation；Commit C 完成文档收尾 | 最终 Chat 审查后合并 A/B/C；不在本提交创建 tag/release | expected=actual=405；checksum 92/92；生成 reproducibility MATCH | 开始写论文的门槛 |
+| 8 | 最终 artifact 冻结 | ✅ | Commit A 冻结 contract/infrastructure；Commit B 冻结 result/views/checksums/validation；Commit C 完成文档收尾；A/B/C 已线性合并到 `main` | 开始 paper writing / submission preparation；不在本提交创建 tag/release | expected=actual=405；checksum 92/92；生成 reproducibility MATCH | 开始写论文的门槛 |
 
 ## 4. 必须按顺序执行的里程碑
 
@@ -290,7 +291,7 @@ committed original core and HMAC confirmation summaries.
 
 ### M5：Artifact freeze ✅
 
-M5 implementation complete on review branch。实际完成依据：
+M5 complete and merged into main。实际完成依据：
 
 ```text
 canonical expected rows=405
@@ -371,19 +372,19 @@ computational proof 仍是强化项或 future work。
 
 ## 7. 当前唯一下一步
 
-M5 A/B/C 已在 review branch 上形成完整的 model/artifact/documentation
-closeout。当前仍不得把 `C_install-v2` 条件化结果提升为 deployed behavior，
-也不得把 M4 evidence 写成 full 301-target run 或 ProVerif rerun。
+M5 A/B/C 已作为三个线性提交合并到 `main`，形成完整的
+model/artifact/documentation closeout。当前仍不得把 `C_install-v2`
+条件化结果提升为 deployed behavior，也不得把 M4 evidence 写成 full
+301-target run 或 ProVerif rerun。
 
 当前唯一下一步：
 
 ```text
-对 Commit C 做最终 Chat 审查；
-审查通过后，将完整 M5 A/B/C 分支合并到 main。
+开始 paper writing / submission preparation。
 ```
 
-合并后研究工作进入 paper writing / submission preparation；这不是新的自动
-建模里程碑。更高投稿目标仍需独立补强 `C_install-v2` 的实现/规范支撑、
+这不是新的自动建模里程碑。更高投稿目标仍需独立补强 `C_install-v2`
+的实现/规范支撑、
 stronger malicious deniability、computational proof sketch，或相邻协议/实现
 比较。
 

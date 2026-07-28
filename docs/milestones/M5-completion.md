@@ -2,7 +2,7 @@
 
 完成日期：2026-07-29
 
-状态：✅ implementation complete on review branch — awaiting final review and merge
+状态：✅ complete — reviewed and merged into main
 
 ## 1. 里程碑目标
 
@@ -35,9 +35,15 @@ tree:   6792909ef3822ec4e3553eb2558a4aa468874235
 parent: 776f757e05fd2c5e1b3d3f50ba1cef880fe21804
 ```
 
-Commit C is the documentation commit containing this record. Its SHA is
-identified by Git history and is intentionally not self-embedded in the commit
-contents.
+Commit C（documentation closeout）：
+
+```text
+commit: 876bcfb8a4e4e03bf54d1b084963e9e6fb29d622
+tree:   b1dcb9b3030265c4b6b455279911bbc61b60b0bd
+parent: c7f76ac7010776b1431c751ea76dca80091c9ecd
+```
+
+Commit A, Commit B, and Commit C are preserved linearly in `main`.
 
 ## 3. 主要路径
 
@@ -231,6 +237,5 @@ M5 does not support statements that:
 | scope/limitation documentation | PASS |
 | README/roadmap synchronization | PASS |
 
-M5 is complete on `codex/m5-paper-artifact`, pending final Chat review and
-merge. This record does not claim that the branch has already been merged into
-`main`.
+M5 is complete, reviewed, and merged into `main`. Commit A, Commit B, and
+Commit C remain three distinct linear commits in `main` history.

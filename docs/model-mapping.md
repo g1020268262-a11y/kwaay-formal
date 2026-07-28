@@ -451,7 +451,7 @@ M1: ✅ HMAC-only replay bridge completed with raw evidence
 M2: ✅ original conditional impact/composition evidence
 M3: ✅ fixed two-slot batch-local atomic dedup with transparent composite evidence
 M4: ✅ HMAC + dedup combined Tamarin-only transparent composite evidence
-M5: ✅ final paper artifact/result freeze on the review branch
+M5: ✅ final paper artifact/result freeze complete on main
 ```
 
 ## M5 machine-readable mapping index
