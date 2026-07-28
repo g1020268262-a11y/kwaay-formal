@@ -391,10 +391,29 @@ claims still cite their prior committed evidence:
 | M2 | ✅ actual original P3 under `C_install-v2`: conditional duplicate-install witness, falsified unique installation, interface assumptions, regressions, traces, and committed evidence. |
 | M3 | ✅ fixed two-slot batch-local dedup P2 and fixed-impact P3 under `C_install-v2`, with transparent composite evidence. |
 | M4 | ✅ combined HMAC+dedup fixed two-slot Tamarin replay/impact evidence, under `C_install-v2` for impact; ProVerif inherited from prior evidence and not rerun. |
-| M5 | Final reproducible artifact/result table and paper-facing evidence freeze. |
+| M5 | ✅ Final reproducible artifact/result tables and paper-facing evidence freeze; no new attacker capability, compromise timing, or formal result. |
 
 M2 original impact/P3, M3 fixed dedup/fixed-impact, and M4 combined
 HMAC+dedup cells now contain actual conditional Tamarin results. Material-
 specific compromise cells remain `not modeled` unless an exact row above says
-otherwise. The current unique next task is M5. M2/M3/M4 do not establish
+otherwise. M5 is complete on the review branch; the next step is final Chat
+review and then merge of M5 A/B/C into `main`. M2/M3/M4 do not establish
 deployed upper-layer behavior.
+
+## 8. M5 evidence ledger synchronization
+
+The final machine-readable evidence ledger is:
+
+- `artifact/results/actual-results.tsv`;
+- `artifact/results/claim-matrix.tsv`;
+- `artifact/manifest/property-semantics.tsv`;
+- `artifact/validation/summary.tsv`.
+
+M5 adds no attacker capability, compromise material, or compromise timing and
+does not alter the no-compromise baseline. Inherited ProVerif compromise
+experiments continue to cite the historical original-core and HMAC evidence.
+The M4 Tamarin-only evidence did not execute the ProVerif compromise targets;
+its `not_run_out_of_scope` rows are scope declarations, not theorems,
+counterexamples, or new experiment results. No experiment row in this matrix
+may be generalized into a theorem without an exact artifact and property that
+establishes it.

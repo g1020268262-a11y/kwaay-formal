@@ -165,9 +165,10 @@ Do not write:
 
 P0's current ProVerif baseline remains established through the previously
 committed original core and HMAC confirmation evidence. M4's new evidence is
-Tamarin-only and therefore does not rerun the five ProVerif targets. M5 must
-freeze the final reproducible result table without describing M4 Evidence Commit
-B as a ProVerif rerun.
+Tamarin-only and therefore does not rerun the five ProVerif targets. M5 now
+freezes the final reproducible tables in `artifact/results/actual-results.tsv`
+and `artifact/results/claim-matrix.tsv` without describing M4 Evidence Commit B
+as a ProVerif rerun.
 
 ## 3. P1: full-parameter non-injective correspondence
 
@@ -291,8 +292,8 @@ from falsified same-batch/same-state occurrence injectivity and preserves the
 ProVerif HMAC baseline as the main independent P1 evidence. M4 is complete as a
 Tamarin-only combined HMAC+dedup result: it validates confirmed
 send/confirmed-accept matching and duplicate rejection in the combined event
-vocabulary, but it does not rerun ProVerif. M5 must freeze the final paper
-artifact and keep the ProVerif/Tamarin evidence roles distinct.
+vocabulary, but it does not rerun ProVerif. M5 has frozen the final paper
+artifact while keeping the ProVerif/Tamarin evidence roles distinct.
 
 ## 4. P2: injective one-send-one-accept
 
@@ -600,7 +601,8 @@ bridge. M3 is complete: the dedup-only fixed model establishes the positive
 condition only for fixed two-slot, same `B,bid,rst`, exact complete `m`, with
 transparent composite evidence. M4 is also complete for the combined
 HMAC+dedup replay model under the same fixed two-slot, batch-local base-message
-scope. Neither result is global P2. M5 owns the final artifact freeze.
+scope. Neither result is global P2. M5 has completed the final artifact freeze
+without changing either result.
 
 When a future artifact uses the current direct tuple-based matching style, it
 must disambiguate sender occurrences. Two possible approaches are:
@@ -893,7 +895,8 @@ P2 and fixed P3 under `C_install-v2` match their expected vectors without
 changing the completed M2 result. M4 is complete with frozen combined
 HMAC+dedup replay/impact models and Tamarin-only transparent composite evidence:
 296/296 terminal, 296/296 MATCH, 0 terminal conflicts, 0 unresolved rows, and 0
-mismatches. M5 remains the final artifact freeze.
+mismatches. M5 has completed the final artifact freeze without changing the P3
+status or its bounded conditional-composition scope.
 
 ## 6. Property and dependency rules
 
@@ -939,12 +942,30 @@ P3 combined under C_install-v2: established only under the bounded conditional
                                 batch-local scope
 ```
 
-Accordingly, the current unique next task is M5: freeze the final reproducible
-artifact/result table and paper-facing artifact bundle. M2, M3, and M4 impact
-results may be cited only under the explicit `C_install-v2` composition
-assumptions; duplicate `ConfirmedReceiverAccept` outside those impact models
-must not be relabeled as duplicate installation. M4 Evidence Commit B is
-Tamarin-only; the ProVerif 5-target story is inherited from prior committed
-evidence, not rerun in M4. The M4 combined results are not global,
-cross-batch, rollback, restart, arbitrary-state, or arbitrary-length theorems,
-and they do not establish deployed upper-layer behavior.
+M5 has frozen the reproducible artifact/result tables and paper-facing bundle.
+M2, M3, and M4 impact results may still be cited only under the explicit
+`C_install-v2` composition assumptions; duplicate `ConfirmedReceiverAccept`
+outside those impact models must not be relabeled as duplicate installation.
+M4 Evidence Commit B is Tamarin-only; the ProVerif 5-target story is inherited
+from prior committed evidence, not rerun in M4. The M4 combined results are not
+global, cross-batch, rollback, restart, arbitrary-state, or arbitrary-length
+theorems, and they do not establish deployed upper-layer behavior.
+
+## 7. M5 evidence index
+
+- `artifact/results/claim-evidence.tsv` is the frozen claim index.
+- `artifact/results/claim-matrix.tsv` is the mechanical join of each indexed
+  claim with its expected and actual result.
+- `artifact/results/actual-results.tsv` distinguishes direct Tamarin results,
+  inherited committed ProVerif results, and M4
+  `not_run_out_of_scope` scope declarations.
+- `artifact/results/raw-to-summary.tsv` maps every actual property to its raw
+  and summary provenance.
+- `artifact/manifest/artifact-inventory.tsv` joins the paper-mainline index to
+  frozen Git-blob identities.
+
+M5 does not change any P0-S, P0-O, P1, P2, or P3 established/falsified/partial
+status. In the claim matrix, a verified attack witness means the modeled attack
+is reachable. A falsified blocked-attack witness means that particular attack
+is unreachable in the corresponding repair model; it does not mean the repair
+failed.

@@ -451,39 +451,44 @@ M1: ✅ HMAC-only replay bridge completed with raw evidence
 M2: ✅ original conditional impact/composition evidence
 M3: ✅ fixed two-slot batch-local atomic dedup with transparent composite evidence
 M4: ✅ HMAC + dedup combined Tamarin-only transparent composite evidence
-M5: current unique next — final artifact/result freeze
+M5: ✅ final paper artifact/result freeze on the review branch
 ```
 
-## 根 README 同步建议（本轮未修改）
+## M5 machine-readable mapping index
 
-根 `README.md` 仍把仓库描述为“first symbolic ProVerif model ... without
-batching”，不能反映当前 ProVerif、HMAC、Tamarin lifecycle、replay 和
-deniability 分支。为避免在未确认信息架构前大幅重写，本轮只冻结以下建议：
+最终 paper-facing mapping 由以下冻结文件承载：
 
-1. 将仓库定位改为 K-Waay Figure 7 core 的多模型 symbolic formal analysis，
-   而不是单一早期 no-batch ProVerif 模型。
-2. 列出真实入口：ProVerif final core、HMAC variant、Tamarin V6/V7、replay
-   original、HMAC-only replay bridge、M2 original impact/composition artifact、
-   M3 fixed replay/impact artifacts、M4 HMAC+dedup replay/impact artifacts，
-   以及 preliminary deniability diff models；模型索引至少加入：
+```text
+paper artifact:
+artifact/manifest/artifact-inventory.tsv
 
-   ```text
-   tamarin/replay/kwaay_replay_hmac_only.spthy
-   tamarin/impact/kwaay_impact_original.spthy
-   tamarin/replay/kwaay_replay_hmac_dedup.spthy
-   tamarin/impact/kwaay_impact_hmac_dedup.spthy
-   ```
+property semantics:
+artifact/manifest/property-semantics.tsv
 
-3. 用 P0-S/P0-O/P1/P2/P3 under `C_install-v2` 的性质图链接到
-   `docs/claim-hierarchy.md` 和 `docs/threat-compromise-matrix.md`，并标明
-   M2/M3/M4 impact 都只有 conditional consumer result，不是 deployed behavior。
-4. 明确 symbolic/computational 边界与已知 timeout；
-   replay original 尚缺独立、专用的 standalone evidence bundle；
-   不过 M2 evidence 已提交完整 original regression raw output：
+expected results:
+artifact/results/expected-results.tsv
 
-   ```text
-   logs/tamarin-impact-original/original-regression.out
-   ```
+actual results:
+artifact/results/actual-results.tsv
 
-在确认 README 的目标读者、安装说明和统一运行入口之前，不应把上述建议扩写
-成完整 artifact README。
+paper claims:
+artifact/results/claim-matrix.tsv
+
+raw evidence mapping:
+artifact/results/raw-to-summary.tsv
+```
+
+`actual-results.tsv` 明确区分三类 provenance：
+
+1. direct Tamarin result；
+2. inherited committed ProVerif result；
+3. M4 `not_run_out_of_scope` declaration。
+
+第三类是执行范围声明，不是安全证明或攻击结果。89 个 inherited ProVerif rows
+和 20 个 M4 scope rows 也不是 109 次 M4 ProVerif 执行。
+
+不同 artifact 的事件、对象和参数映射继续保持分离。ProVerif
+`SendDone/RecvDone` 不能直接等同于 Tamarin
+`ConfirmedSend/ConfirmedReceiverAccept`。Replay model 的 accept occurrence
+也不能等同于 impact model 中通过 `C_install-v2` 产生的 installed handle；
+两者之间只有显式 composition rules 所定义的条件化映射。

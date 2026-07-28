@@ -1,10 +1,12 @@
 # K-Waay：从当前仓库到可投稿模型的路线图
 
-更新时间：2026-07-27
+更新时间：2026-07-29
 
 ## 1. 总判断
 
-当前项目已经完成了“基础模型与若干独立结果”，但还没有完成“单一、闭环、可投稿的安全故事”。
+当前项目已经完成计划内的 symbolic model 与 reproducible artifact freeze，
+具备开始论文写作的闭环证据基础。更高投稿目标所需的实现映射、deniability、
+computational proof sketch 和相邻协议/实现比较仍是独立强化项。
 
 最适合把现有成果收束起来的主线如下。这里的 P0-S、P0-O、P1 与 P2
 是性质与依赖结构，不是全局线性安全等级；actual M2 的 P3 under
@@ -48,7 +50,7 @@ HMAC confirmation + batch-local duplicate rejection
 - ⬜：尚未完成，是后续任务。
 - ⛔：有意冻结或移出论文主贡献，不再继续扩展。
 
-当前冻结快照（2026-07-19）：M0/M0.1 已合并至 `main`（commit `b196fda`）；
+当前冻结快照（2026-07-29）：M0/M0.1 已合并至 `main`（commit `b196fda`）；
 M1 HMAC-only replay bridge 的 evidence commit 为
 `aeb66939af5e4b229f14f1444e19b559a4f98181`，最终合并后的 `main` 快照为
 `0858252d787b4c61956be583ffdade58e01655f2`。M1 模型、脚本、summary、raw logs、
@@ -67,7 +69,17 @@ mismatches. ProVerif 的 5 个 full-mode targets 本轮明确
 `not_run_out_of_scope`，只引用此前已提交和审查的 original core/HMAC
 confirmation evidence。
 
-当前唯一下一步是 M5：冻结最终可复现 artifact/result table。M5 尚未开始。
+M5 Commit A `776f757e05fd2c5e1b3d3f50ba1cef880fe21804`
+（tree `caa3c5558001f57995a14553a6089b19772dabbe`）冻结 artifact contracts、
+schemas、builders、validators 与统一 wrapper。M5 Commit B
+`c7f76ac7010776b1431c751ea76dca80091c9ecd`
+（tree `6792909ef3822ec4e3553eb2558a4aa468874235`）冻结机械生成的 final result
+tables、derived views、Git-blob checksums 与 validation records。Commit C 是
+包含本次 documentation closeout 的当前文档提交；其 SHA/tree 由 Git history
+标识，不在自身内容中自引用。
+
+M5 implementation complete on review branch。当前唯一下一步是对 Commit C
+做最终 Chat 审查；审查通过后，将完整 M5 A/B/C 分支合并到 `main`。
 
 ## 3. 模型总表
 
@@ -79,7 +91,7 @@ confirmation evidence。
 | 1 | Tamarin receiver/batch lifecycle | ✅ | V6/V7 已覆盖 compromise、slot、abort、state consumption、fixed 4-slot terminal lifecycle | 将 V6 与 V7 的职责写清，不再追求任意长度 batch | 所有选定 lemma 一键复现，论文不夸称 arbitrary-length | 状态语义支撑 |
 | 1 | Paper ↔ model mapping | ✅ | 已纳入 ProVerif final core、HMAC confirmation、Tamarin V6/V7、replay original、HMAC-only replay bridge、M2 original impact/composition、M3 fixed replay/impact、M4 HMAC+dedup replay/impact 和 preliminary deniability artifacts；M4 映射记录 confirmed base message、accepted output 与 conditional install 边界 | 后续只随新增 artifact/result 同步 | 每个 claim 指向唯一模型和 lemma/query；不同 Tamarin artifact 不共用错误的对象映射；ProVerif inherited evidence 与 M4 Tamarin-only evidence 不混写 | 审稿可信度 |
 | 1 | Threat / compromise matrix | ✅ | material 与 timing 已拆为正交维度；实验 ledger 记录 exact target、方向和 baseline；M4 只新增 no-compromise combined baseline 与 state/timing 边界，不扩写 material compromise | 后续里程碑只更新实际新增的 artifact/result | 每个 theorem 有明确前提；experiment 不被推广为 theorem | 防止过度声称 |
-| 1 | 清理 model drift | 🟡 | `LEAK_SIGSK` 当前实际结果已按 `LEAK_SIGSK_AB` alias 记录；根 README 仍描述为早期 no-batch 模型 | M0 文档以 committed summary 为准；README 同步另行确认 | M0 无未解释结果漂移；README 更新仍为独立文档任务 | artifact 基线质量 |
+| 1 | 清理 model drift | ✅ | `LEAK_SIGSK` 当前实际结果已按 `LEAK_SIGSK_AB` alias 记录；根 README 已同步为多模型 symbolic analysis 与 M5 artifact 入口 | 后续仅随实际模型/evidence 变化同步 | M0 无未解释结果漂移；README 不再把仓库描述为单一早期 ProVerif 模型 | artifact 基线质量 |
 | 2 | K-Waay 专用 Q1 诊断 | ✅ | `KWAAY_LIKE / ATTACKER_KEY_BAD / AUTHZ_BAD / CONFIRMED_FIX` 已运行 | 仅作为理解和回归材料；主论文使用 final core/HMAC 的真实查询 | 不再依赖模板结果支撑 K-Waay 主 claim | 辅助解释危害边界 |
 | 2 | 原始 core 的 non-injective agreement gap | ✅ | final core 中带 A/B/sid/key 的 `RecvDone ==> SendDone` 为 false | 导出并人工解释最小 trace，确认事件位置和会话绑定 | trace 中每个攻击步骤都能对应 Figure 7 对象 | 既有安全边界 |
 | 2 | HMAC confirmation 修复 non-injective correspondence | ✅ | HMAC baseline 中 correspondence、secrecy、component authenticity 为 true | 保留为“confirmation 修复 Q1”，不要称为 replay 修复 | baseline 与至少必要 compromise case 可复现 | 第一层修复 |
@@ -100,9 +112,9 @@ confirmation evidence。
 | 6 | Malicious PoK deniability | 🟡 | executability/witness lemmas verified，但 observational equivalence TIMEOUT | replay 闭环完成后再缩减 proof search 或拆小模型 | equivalence VERIFIED，或明确降级为 limitation | 高目标强化项 |
 | 6 | Big Brother / full deniability | ⬜ | 尚未完成 | 仅在主线冻结后继续 | 明确 game、opening data、simulator 与 result | 不作为当前模型冻结前置条件 |
 | 7 | Computational proof sketch | ⬜ | 尚无 CryptoVerif / game proof | 对 AsiaCCS/ACNS 可先放 future work；若冲 USENIX/密码方向，再补最小 KDF hybrid / KIND sketch | 假设、game hop、symbolic↔computational边界成文 | 高目标加分，不替代影响闭环 |
-| 8 | 一键复现 artifact | 🟡 | 各分支有脚本和日志，但缺一个统一入口与总结果清单 | 新增 `scripts/run-paper-artifact.sh`，固定工具版本、timeout、预期 true/false/trace | 干净环境一条命令得到完整表；失败有非零退出码 | 投稿硬要求 |
-| 8 | Artifact README / claim matrix | ⬜ | 根 README 过时，结果散在多个 docs/logs | 写 installation、模型索引、预计时间、结果表、限制、论文 claim 对应 | 陌生审稿人 15 分钟内能运行一个核心结果 | Open Science / 复现性 |
-| 8 | 最终模型冻结 | ⬜ | 仍有新增分支和陈旧文档 | 打 tag/commit；主模型只保留 original、hmac-only、impact、fixed/combined；历史实验归档 | 冻结后只修 bug，不再改变事件定义/安全目标 | 开始写论文的门槛 |
+| 8 | 一键复现 artifact | ✅ | `scripts/run-paper-artifact.sh` 提供 committed validation 与显式 reproduction modes；工具版本和 405-row expected/actual tables 已冻结 | 合并前只做最终文档审查；formal reproduction 必须写入仓库外目录 | committed validator/run-tests PASS；37/37 negative fixtures；wrapper clean 且 bytecode=0 | 投稿硬要求 |
+| 8 | Artifact README / claim matrix | ✅ | `artifact/README.md`、66-row inventory、18-row claim matrix、405-row raw-to-summary 与根 README 已完成 | 后续论文正文从冻结 claim/evidence 索引引用 | claim、expected、actual、model 与 raw provenance 可机械 join/check | Open Science / 复现性 |
+| 8 | 最终 artifact 冻结 | ✅ | Commit A 冻结 contract/infrastructure；Commit B 冻结 result/views/checksums/validation；Commit C 完成文档收尾 | 最终 Chat 审查后合并 A/B/C；不在本提交创建 tag/release | expected=actual=405；checksum 92/92；生成 reproducibility MATCH | 开始写论文的门槛 |
 
 ## 4. 必须按顺序执行的里程碑
 
@@ -276,32 +288,50 @@ are both `VALID` complete invocations, and the transparent composite result is
 run in this evidence round; the ProVerif story continues to cite the previously
 committed original core and HMAC confirmation summaries.
 
-### M5：Artifact freeze
+### M5：Artifact freeze ✅
 
-必须具备：
+M5 implementation complete on review branch。实际完成依据：
 
 ```text
-一个总入口脚本
-一个工具版本文件
-一个 expected-results 表
-original/impact/fixed 的自动 trace 或 lemma 结果
-paper ↔ model ↔ query 映射
-所有 known timeout / limitation 的显式记录
+canonical expected rows=405
+committed actual rows=405
+
+Tamarin=296
+inherited ProVerif=89
+M4 ProVerif scope declarations=20
+
+artifact inventory=66
+raw-to-summary=405
+claim matrix=18
+
+frozen Git-blob checksums=66
+Commit A infrastructure checksums=26
+total checksum entries=92
+
+actual generation reproducibility=MATCH
+negative fixtures=37/37
+M4 fallback=2
+M4 verified=281
+M4 falsified=15
+terminal conflict=0
+unresolved=0
+mismatch=0
+provenance invalid=0
 ```
 
-达到 M5 后，模型才算“可以开始写投稿论文”。
+Commit A owns the contracts, schemas, builders, validators, and wrapper.
+Commit B owns mechanically generated final tables, derived views, Git-blob
+checksums, and validation records. Commit C owns documentation closeout and
+does not self-embed its own SHA.
 
 ## 5. 投稿门槛
 
 ### AsiaCCS / ACNS / Journal of Computer Security 等现实目标
 
-不可缺少：
-
-```text
-M0 + M1 + M2 + M3 + M4 + M5
-```
-
-即：原问题、条件化影响、最小修复、修复证明、回归和可复现 artifact 必须闭环。Deniability 与 computational proof 可作为强化或 future work。
+The repository now satisfies the planned symbolic-model and artifact-freeze
+gate for beginning paper writing：M0 + M1 + M2 + M3 + M4 + M5 已形成原问题、
+条件化影响、最小修复、修复证明、回归和可复现 artifact 闭环。Deniability 与
+computational proof 仍是强化项或 future work。
 
 ### USENIX Security / 更高目标
 
@@ -341,18 +371,21 @@ M0 + M1 + M2 + M3 + M4 + M5
 
 ## 7. 当前唯一下一步
 
-M4 已完成并登记 Tamarin-only transparent composite evidence。当前不要把
-`C_install-v2` 条件化结果提升为 deployed behavior，也不要把本轮 evidence 写成
-full 301-target run 或 ProVerif rerun。
+M5 A/B/C 已在 review branch 上形成完整的 model/artifact/documentation
+closeout。当前仍不得把 `C_install-v2` 条件化结果提升为 deployed behavior，
+也不得把 M4 evidence 写成 full 301-target run 或 ProVerif rerun。
 
-当前唯一下一步是 M5：
+当前唯一下一步：
 
 ```text
-冻结最终可复现 artifact/result table 与 paper-facing artifact bundle。
+对 Commit C 做最终 Chat 审查；
+审查通过后，将完整 M5 A/B/C 分支合并到 main。
 ```
 
-M5 尚未开始。M4 的 Tamarin-only 296-target evidence 已完成；ProVerif 5 个
-targets 本轮未运行，仍引用既有 original core/HMAC confirmation evidence。
+合并后研究工作进入 paper writing / submission preparation；这不是新的自动
+建模里程碑。更高投稿目标仍需独立补强 `C_install-v2` 的实现/规范支撑、
+stronger malicious deniability、computational proof sketch，或相邻协议/实现
+比较。
 
 ## 8. Venue 规格依据
 
