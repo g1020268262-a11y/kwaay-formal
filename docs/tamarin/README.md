@@ -1,42 +1,45 @@
-# Tamarin Docs
+# Tamarin Documentation
 
-这个目录用于后续 K-Waay Tamarin 阶段。
+This directory indexes historical Tamarin documentation. The repository now
+contains completed and frozen Tamarin models and evidence; the earlier planning
+statement that no formal Tamarin model existed is obsolete.
 
-## 目标
+## Current status
 
-Tamarin 阶段用于补充 ProVerif 不自然表达的状态和时间顺序问题。
+M0–M5 Tamarin models, milestone records, raw logs, result tables, and artifact
+bindings are preserved as a reproducible legacy evidence snapshot. They must be
+read through the current transition notice in [`../../README.md`](../../README.md).
 
-重点包括：
+In particular, the frozen duplicate-input model is now interpreted as a
+relaxed-input / integration-contract experiment because it permits the same
+modeled sender identity `A` and the same complete message in multiple batch
+entries. The exact mapping from `A` to the specification-level notion of party
+remains a Stage-0 modeling question. No distinct-party model or RQ-v2 theorem
+has been created during this cleanup.
 
-- partnered / unpartnered session；
-- BatchReceive；
-- batch slot；
-- receiver vector identifiers；
-- state consumption；
-- one-time prekey use；
-- compromise ordering；
-- receiver-side exception theorem candidate。
+## Retained documentation
 
-## 当前状态
+- [`tamarin-v7-results.md`](tamarin-v7-results.md): fixed-slot lifecycle result
+  record.
+- [`tamarin-deniability-results.md`](tamarin-deniability-results.md): historical
+  deniability experiment results.
+- [`../kwaay-tamarin-deniability-review.md`](../kwaay-tamarin-deniability-review.md):
+  historical review and scope assessment.
+- [`../../tamarin/replay/README.md`](../../tamarin/replay/README.md): frozen
+  relaxed duplicate-input model interpretation.
+- [`../../tamarin/replay/README-fixed.md`](../../tamarin/replay/README-fixed.md):
+  legacy exact-message dedup hardening.
+- [`../../tamarin/impact/README.md`](../../tamarin/impact/README.md): conditional
+  `C_install-v2` impact model.
+- [`../milestones/`](../milestones/): immutable M1–M5 completion records.
 
-当前还没有正式 Tamarin 模型。
+## Superseded planning documents
 
-下一步建议先写：
+The earlier Tamarin model plan and stage summary are retained under
+[`../../archive/pre-rq-v2/docs/tamarin/`](../../archive/pre-rq-v2/docs/tamarin/).
+They are historical provenance, not current research direction.
 
-```text
-tamarin-prestudy-plan.md
-```
+## Boundary
 
-不要直接开始完整 K-Waay `.spthy` 模型。
-
-## 推荐第一阶段
-
-先做 toy model：
-
-- 生成 state；
-- 使用 state；
-- 消耗 state；
-- 泄露 state；
-- 区分 compromise before / after accept。
-
-然后再迁移到 K-Waay BatchReceive。
+This index does not define Stage 0, the RQ-v2 invariant, a new model, a new
+lemma, or a new theorem.

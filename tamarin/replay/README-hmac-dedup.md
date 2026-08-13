@@ -1,4 +1,10 @@
-# M4 combined replay: HMAC confirmation and batch-local atomic dedup
+# M4 legacy combined regression: HMAC confirmation and exact-message dedup
+
+> **Current interpretation notice.** This frozen artifact is retained as a
+> legacy combined regression. HMAC supplies agreement/key-confirmation
+> semantics; the dedup component supplies exact-complete-message admission
+> hardening. Neither component, alone or in combination here, establishes the
+> K-Waay distinct-party-per-`BatchReceive` invariant.
 
 This artifact is the fixed two-slot Commit A model for the M4 combination.  It
 uses `kwaay_replay_hmac_only.spthy` as the confirmed-event/HMAC vocabulary and

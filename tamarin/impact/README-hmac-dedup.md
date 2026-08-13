@@ -1,5 +1,11 @@
 # M4 combined impact: confirmed outputs under C_install-v2
 
+> **Current interpretation notice.** This is a legacy combined regression
+> artifact. HMAC contributes agreement/key-confirmation semantics, exact-
+> message dedup contributes narrower message-level admission hardening, and
+> `C_install-v2` remains a conditional bounded consumer assumption. The model
+> does not establish distinct-party admission or deployed upper-layer behavior.
+
 This theory derives the M4 impact model from the combined replay model and
 adds the frozen bounded `C_install-v2` consumer. It keeps only the lower-layer
 events `ConfirmedSend` and `ConfirmedReceiverAccept`; it does not emit

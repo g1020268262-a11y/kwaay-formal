@@ -1,136 +1,100 @@
-# K-Waay symbolic formal analysis
+# K-Waay symbolic formal-analysis repository
 
-This repository contains a symbolic formal analysis of the K-Waay Figure 7
-core using ProVerif and Tamarin Prover. It is a collection of scoped protocol
-models and reproducible evidence, not a verification of a complete K-Waay
-implementation.
+This repository contains scoped ProVerif and Tamarin models for K-Waay,
+together with the frozen M0–M5 evidence, result tables, raw logs, provenance,
+checksums, and reproducibility contract.
 
-## Analysis scope
+It is a symbolic formal-analysis repository. It is not a verification of a
+complete K-Waay implementation or evidence about a deployed system.
 
-The ProVerif artifacts cover:
+## Current transition status
 
-- symbolic session-key secrecy;
-- split-KEM component origin;
-- exact-parameter non-injective correspondence;
-- selected compromise experiments.
+M0–M5 remain frozen as a reproducible legacy evidence snapshot. The project is
+currently undergoing a research-question transition before starting a new
+RQ-v2 analysis. This transition changes repository navigation and the current
+interpretation of historical experiments; it does not change their models,
+lemmas, queries, results, or evidence.
 
-The Tamarin artifacts cover:
+Next step: **Stage 0 — freeze the RQ-v2 research question and invariant.**
 
-- receiver and batch-state lifecycle;
-- duplicate receiver acceptance and occurrence injectivity;
-- conditional installation impact;
-- batch-local atomic duplicate rejection;
-- the combined HMAC-confirmation and dedup regression.
+No RQ-v2 question or theorem is defined by this README.
 
-The repository does not provide an arbitrary-length batch proof, a
-computational security proof, or a deployed-code security audit.
+## Important interpretation update
 
-## Research main line
+The frozen duplicate-input Tamarin model permits the same modeled sender
+identity `A` and the same complete message to occur in multiple entries within
+one `BatchReceive` instance. K-Waay's full specification states a distinct-
+party-per-`BatchReceive` precondition. The exact mapping from modeled sender
+identity `A` to the specification-level notion of party remains a Stage-0
+modeling question.
 
-```text
-Original core
-  ↓
-HMAC confirmation
-  ↓
-duplicate acceptance remains
-  ↓
-conditional duplicate-install impact under C_install-v2
-  ↓
-batch-local atomic dedup
-  ↓
-HMAC + dedup combined model
-  ↓
-M5 reproducible artifact freeze
-```
+The frozen duplicate-acceptance result is therefore currently interpreted as a
+**relaxed-input / integration-robustness result**: it records what the bounded
+symbolic model permits when that admission invariant is not enforced. It is not
+a counterexample to executions satisfying the specification's stated distinct-
+party `BatchReceive` precondition or evidence of a deployed implementation
+flaw.
 
-## Core results
+The current repository contains no evidence of a complete, publicly auditable
+K-Waay caller/server/batching implementation. The repository consequently does
+not claim that a real server omits a distinct-party check.
 
-For the named no-compromise original ProVerif baseline, P0-S symbolic secrecy
-and P0-O component origin are established. The original core's exact-parameter
-non-injective P1 correspondence is falsified. In the HMAC-confirmation
-no-compromise baseline, the ProVerif P1 correspondence is established, but
-confirmation alone does not provide replay prevention or duplicate rejection.
+## Historical evidence roles
 
-In the fixed two-slot, same-batch and same-receiver-state original replay
-model, one sender message can produce two receiver-accept occurrences. Under
-the bounded `C_install-v2` consumer, those duplicate accepted outputs can lead
-to two symbolic local installation handles. This is a conditional composition
-result, not a deployed session-cloning claim.
+### HMAC confirmation
 
-The fixed repair performs batch-local atomic duplicate rejection before
-processing. Within the modeled same `B,bid,rst` scope, an exact duplicate
-complete message cannot produce two receiver accepts.
+HMAC confirmation is retained as evidence about agreement and explicit key
+confirmation. It is not treated as a proposed solution to `BatchReceive`
+admission uniqueness. HMAC confirmation addresses agreement/key confirmation;
+it is not an admission-uniqueness mechanism.
 
-M4 combines HMAC confirmation with that batch-local repair. Its canonical
-Tamarin-only matrix contains 296 targets. The transparent composite result is:
+### Exact-message dedup
 
-```text
-terminal:                    296/296
-MATCH:                       296/296
-verified:                    281
-falsified:                   15
-selected Run 2 fallbacks:    2
-terminal conflicts:          0
-unresolved:                  0
-mismatches:                  0
-```
+The frozen M3 exact-message dedup model is retained as historical message-level
+hardening. It rejects identical complete-message duplication within the
+modeled batch. It is not equivalent to the specification's broader distinct-
+party invariant: the same modeled sender identity `A` may be associated with
+two different messages. The mapping from `A` to the specification-level notion
+of party remains a Stage-0 modeling question.
 
-M4 did not rerun ProVerif. Paper-facing ProVerif conclusions use the previously
-committed original-core and HMAC-confirmation evidence.
+### Conditional installation impact
 
-## Quick artifact validation
+`C_install-v2` remains conditional composition evidence only. It models a
+bounded consumer that independently installs accepted outputs; it is not an
+observed K-Waay consumer, deployed session cloning, or Double Ratchet evidence.
 
-Validate the committed artifact contract and evidence without running a formal
-prover:
+## Validate the frozen artifact
+
+Validate the committed M0–M5 artifact without running a formal prover:
 
 ```bash
 bash scripts/run-paper-artifact.sh verify-committed
 bash artifact/validation/run-tests.sh
 ```
 
-These commands validate committed result tables, Git blobs, provenance,
-composite selection, and negative tamper fixtures. They are not full formal
-proof reruns. Both entrypoints should leave the worktree clean and are
-configured not to generate Python bytecode.
+These commands validate committed tables, Git blobs, provenance, composite
+selection, and negative fixtures. Formal reproduction modes require an
+explicit repository-external output directory; see the
+[artifact contract](artifact/README.md).
 
-List the available validation and reproduction modes:
+## Repository entry points
 
-```bash
-bash scripts/run-paper-artifact.sh list
-```
-
-Modes that execute formal targets require an explicit repository-external
-output directory; see [the artifact contract](artifact/README.md).
-
-## Important paths
-
-- [Artifact contract and usage](artifact/README.md)
-- [Committed actual results](artifact/results/actual-results.tsv)
-- [Paper claim matrix](artifact/results/claim-matrix.tsv)
-- [Raw-to-summary provenance](artifact/results/raw-to-summary.tsv)
-- [Paper artifact inventory](artifact/manifest/artifact-inventory.tsv)
-- [Git-blob SHA-256 manifest](artifact/manifest/git-blob-SHA256SUMS.txt)
-- [Claim hierarchy](docs/claim-hierarchy.md)
-- [Paper/model mapping](docs/model-mapping.md)
-- [Threat and compromise matrix](docs/threat-compromise-matrix.md)
-- [Model roadmap](docs/K-Waay投稿模型路线图.md)
+- [Documentation index](docs/README.md)
+- [Artifact contract](artifact/README.md)
+- [M5 completion record](docs/milestones/M5-completion.md)
+- [Frozen claim hierarchy](docs/claim-hierarchy.md)
+- [Frozen model mapping](docs/model-mapping.md)
+- [Frozen threat/compromise matrix](docs/threat-compromise-matrix.md)
+- [Relaxed duplicate-input model notes](tamarin/replay/README.md)
 - [Milestone records](docs/milestones/)
+- [Pre-RQ-v2 historical archive](archive/pre-rq-v2/)
 
-## Known boundaries
+## Scope boundaries
 
-- Dolev-Yao symbolic analysis;
-- fixed two-slot scope for the replay, repair, and combined models;
-- batch-local, same-`B,bid,rst` duplicate reasoning;
-- exact complete-message identity for the frozen dedup result;
-- bounded conditional `C_install-v2` consumer interface;
-- no deployed upper-layer implementation evidence;
+- Dolev–Yao symbolic analysis;
+- fixed two-slot scope for the frozen replay, dedup, and combined models;
+- exact complete-message identity for the frozen M3 dedup result;
+- no new distinct-party model or theorem yet;
 - no arbitrary-length, global, cross-batch, rollback, or restart theorem;
-- no computational KEM, KDF, HMAC, signature, or full-protocol proof;
-- M4 ProVerif rows are inherited evidence or explicit scope declarations, not
-  an M4 ProVerif rerun.
-
-## Project status
-
-M0-M5 implementation, reproducible artifact freeze, and documentation
-closeout are complete on main. M5 Commit A/B/C are preserved as three linear
-commits in `main` history.
+- no computational proof or complete implementation audit;
+- no deployed upper-layer evidence.

@@ -1,18 +1,25 @@
-# M2 original impact/composition model
+# M2 conditional impact over the frozen relaxed duplicate-input model
 
-This directory contains the bounded original-protocol impact model for
-**P3 under `C_install-v2`**.  It is derived from the frozen original replay
-model but is a separate theory; the frozen original and HMAC-only replay files
-must not be edited by this milestone.
+This directory contains the bounded conditional impact model for **P3 under
+`C_install-v2`**. It is derived from the frozen relaxed duplicate-input replay
+model but is a separate theory.
 
-The intended result is a **conditional duplicate-install witness** and
+> **Current interpretation notice.** The lower-layer model permits the same
+> modeled sender identity `A` and the same complete message in multiple slots.
+> The K-Waay full specification states a distinct-party-per-`BatchReceive`
+> precondition. The exact mapping from `A` to the specification-level notion of
+> party remains a Stage-0 modeling question. The result is conditional
+> integration-impact evidence over that relaxed input domain, not an original-
+> protocol or deployed-implementation duplicate-install claim.
+
+The recorded result is a **conditional duplicate-install witness** and
 **conditional local-handle duplication**.  The model does not establish two
 real sessions, real session cloning, Double Ratchet duplication, an application
 exploit, or that deployed K-Waay necessarily behaves this way.
 
 ## Baseline and scope
 
-The canonical lower-layer baseline is:
+The frozen relaxed lower-layer baseline is:
 
 ```text
 tamarin/replay/kwaay_replay_original.spthy
@@ -193,7 +200,7 @@ that all wellformedness checks succeeded.
 ## Explicitly out of scope
 
 - batch-local deduplication, `SeenSid`, or `SeenMessage`;
-- duplicate rejection or atomic batch-failure repair;
+- duplicate rejection or atomic batch-failure hardening;
 - HMAC+dedup or HMAC impact counterparts;
 - Double Ratchet or application state/actions;
 - payment, authorization, or deployed exploit claims;

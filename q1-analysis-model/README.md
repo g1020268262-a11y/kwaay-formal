@@ -1,5 +1,13 @@
 # Q1 分层诊断模型
 
+> **LEGACY / INTERNAL DIAGNOSTIC**
+>
+> This reusable Q1 triage template is retained in place for historical
+> diagnostic provenance and because its runner and committed logs use this
+> path. It is not part of the active RQ-v2 main line. Its `.pv` model, runner,
+> results, and historical interpretations are unchanged by the pre-RQ-v2
+> cleanup.
+
 这个文件夹给出一个可复用的 ProVerif 模板，用来回答两个层次的问题：
 
 1. 协议是否存在 Q1 问题：接收方完成是否一定对应同一个 `sid` 和 `key` 的发送方完成。
@@ -115,4 +123,3 @@ query A: agent, B: agent, s: sid_t, k: session_key;
 - 但如果最终密钥包含发送方认证分量，攻击者不能计算该 key。
 - 如果接收方只把该 key 用作后续受认证/加密通道的密钥，且没有额外授权副作用，那么这个 Q1 缺口可以被论证为无害。
 - 如果接收方把接受事件本身当成发送方授权，那么同样的 Q1 缺口就不再无害。
-

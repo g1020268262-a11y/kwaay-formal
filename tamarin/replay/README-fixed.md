@@ -1,4 +1,14 @@
-# M3 fixed replay model
+# M3 legacy exact-message dedup model
+
+> **Current interpretation notice.** This is a legacy M3 message-level
+> admission-hardening artifact. Exact-message dedup prevents identical complete
+> messages from occupying both slots in the modeled batch. It does **not**
+> enforce the broader K-Waay specification condition that all entries
+> correspond to distinct parties. In particular, the condition “same modeled
+> sender identity `A`, but `m1 != m2`” is outside this frozen experiment and
+> must not be claimed as already tested. The exact mapping from modeled sender
+> identity `A` to the specification-level notion of party remains a Stage-0
+> modeling question.
 
 [`kwaay_replay_fixed.spthy`](kwaay_replay_fixed.spthy) is the M3 dedup-only
 variant of the frozen two-slot original replay model. It does not modify or
@@ -8,9 +18,9 @@ The model is frozen in Commit A3. Actual M3 results are recorded in the
 transparent composite evidence at `logs/tamarin-m3-closeout/` and in
 `docs/milestones/M3-completion.md`.
 
-## Repair boundary
+## Exact-message hardening boundary
 
-The repair is deliberately narrow:
+The historical hardening is deliberately narrow:
 
 ```text
 scope:          same B, bid, rst
@@ -132,8 +142,9 @@ The frozen reproduction entry point remains:
 ```
 
 That command identifies the A3 runner; the committed closeout evidence must not
-be described as one clean 196/196 successful invocation. M4 will separately
-model HMAC confirmation combined with this batch-local dedup repair.
+be described as one clean 196/196 successful invocation. M4 separately records
+the legacy combination of HMAC confirmation and this exact-message dedup
+hardening.
 
 ## Modeling boundary
 

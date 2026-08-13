@@ -1,4 +1,9 @@
-# M3 fixed impact model
+# M3 legacy exact-message dedup impact model
+
+> **Current interpretation notice.** This is conditional `C_install-v2`
+> evidence over the legacy M3 exact-message admission hardening. It does not
+> enforce or prove the broader distinct-party-per-`BatchReceive` invariant and
+> is not deployed implementation evidence.
 
 [`kwaay_impact_fixed.spthy`](kwaay_impact_fixed.spthy) combines the M3
 batch-local pre-scan with the frozen M2 `C_install-v2` composition boundary.
@@ -9,9 +14,9 @@ The model is frozen in Commit A3. Actual M3 results are recorded in the
 transparent composite evidence at `logs/tamarin-m3-closeout/` and in
 `docs/milestones/M3-completion.md`.
 
-## Lower-layer repair
+## Lower-layer exact-message hardening
 
-The lower-layer state flow is the same as the fixed replay model:
+The lower-layer state flow is the same as the legacy exact-message dedup model:
 
 ```text
 AddSlot1 -> AddSlot2 -> SealBatch -> DedupPending
@@ -59,8 +64,8 @@ complete the bounded consumer.
 
 The duplicate branch terminates before either `ProcessSlotN`, so it creates no
 accepted output and cannot start or complete a consumer. The disappearance of
-the duplicate-install witness is therefore attributed to the repaired
-BatchReceive boundary, not to removal or weakening of `C_install-v2`.
+the duplicate-install witness is therefore attributed to the modeled exact-
+message admission boundary, not to removal or weakening of `C_install-v2`.
 
 ## Frozen legacy formulas
 
@@ -134,6 +139,6 @@ The frozen reproduction entry point remains:
 ```
 
 This identifies the A3 runner; it is not a claim that the committed closeout
-evidence came from one clean 196/196 successful invocation. M4 will separately
-model HMAC confirmation combined with the dedup repair and its conditional
-impact.
+evidence came from one clean 196/196 successful invocation. M4 separately
+records HMAC confirmation combined with this exact-message hardening and its
+conditional impact.

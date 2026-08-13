@@ -1,5 +1,15 @@
 # HMAC-only two-slot replay bridge
 
+> **Current interpretation notice.** This bridge is retained as agreement /
+> explicit key-confirmation evidence connected to the historical bounded batch
+> model. HMAC confirmation addresses agreement/key confirmation; it is not an
+> admission-uniqueness mechanism. The duplicate-input result must not be framed
+> as “HMAC fails to fix replay.” This model permits the same modeled sender
+> identity `A` and the same complete message in multiple slots, while the full
+> specification states a distinct-party precondition. The exact mapping from
+> `A` to the specification-level notion of party remains a Stage-0 modeling
+> question.
+
 ## Objective
 
 [`kwaay_replay_hmac_only.spthy`](kwaay_replay_hmac_only.spthy) connects the

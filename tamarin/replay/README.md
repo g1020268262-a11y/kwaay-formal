@@ -1,15 +1,26 @@
-# Original BatchReceive duplicate-input model
+# Frozen relaxed duplicate-input BatchReceive model
+
+> **Current interpretation notice.** This frozen model deliberately permits
+> the same modeled sender identity `A` and the same complete message to populate
+> multiple slots of one `(B,bid,rst)` batch. The K-Waay full specification
+> states that elements of one `BatchReceive` input correspond to different
+> parties. The exact mapping from modeled sender identity `A` to the
+> specification-level notion of party remains a Stage-0 modeling question. The
+> artifact is therefore a relaxed-input / integration-contract experiment. Its
+> one-send-two-accept trace demonstrates the consequence of relaxing that
+> admission invariant; it is not a counterexample to executions satisfying the
+> specification's stated distinct-party `BatchReceive` precondition or evidence
+> about a deployed implementation.
 
 ## Model objective
 
 [`kwaay_replay_original.spthy`](kwaay_replay_original.spthy) checks whether the
-original, unhardened K-Waay Figure 7 `BatchReceive` behavior can accept one
-complete honest message in two different slots of the same batch, while using
-the same receiver state.
+frozen relaxed-input abstraction can accept one complete honest message in two
+different slots of the same batch while using the same receiver state.
 
 The model deliberately contains no `SeenSid`, replay cache, duplicate
 rejection, HMAC/key confirmation, session installation, Double Ratchet,
-application state, resource counter, or protocol repair.
+application state, resource counter, or admission hardening.
 
 ## Relationship to the existing models
 
@@ -43,7 +54,7 @@ k   = session_key(K_l,K_k,K_s,sid)
 `ReceiverAccept(B,A,bid,idx,rst,m,sid,k)` records a successful receiver output
 and additionally exposes `rst` so same-state replay is stated directly.
 
-## Attack represented
+## Relaxed-input witness represented
 
 The intended trace is:
 
@@ -139,9 +150,9 @@ sender forgery, concrete implementation session cloning, Double Ratchet
 failure, or an exploitable vulnerability in a deployed K-Waay implementation.
 Those questions belong to a later impact/composition model.
 
-For a later impact model, the reusable interface should remain
+For the historical impact model, the reusable interface remains
 `SenderSession`, `ReceiverAccept`, `BatchCreated`, `SlotAdded`,
 `SlotProcessed`, `BatchComplete`, `ConsumeReceiverState`, and the shared
 `bid,rst,m,sid,k` coordinates. An impact extension can connect duplicate
 `ReceiverAccept` events to session installation or application effects without
-changing this original-protocol replay model.
+changing this frozen relaxed-input model.

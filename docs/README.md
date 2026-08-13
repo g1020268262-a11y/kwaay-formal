@@ -1,79 +1,84 @@
-# Docs Index
+# Documentation Index
 
-这个目录记录 K-Waay 形式化分析相关文档。
+This index separates the current pre-RQ-v2 transition from the immutable M0–M5
+historical evidence. A document being preserved does not make it authority for
+the future RQ-v2 research question.
 
-当前文档按阶段和工具分开：
+## Active transition documents
 
-```text
-docs/proverif/
-docs/tamarin/
-docs/cryptoverif/
-docs/roadmap/
-```
+- [`../README.md`](../README.md): current repository identity, interpretation,
+  and transition status.
+- [`maintenance/pre-rq-v2-cleanup.md`](maintenance/pre-rq-v2-cleanup.md):
+  maintenance-only record of the navigation and interpretation cleanup.
+- [`../tamarin/replay/README.md`](../tamarin/replay/README.md): current
+  interpretation notice for the frozen relaxed duplicate-input model.
+- [`../tamarin/replay/README-fixed.md`](../tamarin/replay/README-fixed.md):
+  message-level exact-dedup interpretation.
+- [`../tamarin/replay/README-hmac-only.md`](../tamarin/replay/README-hmac-only.md)
+  and [`../tamarin/replay/README-hmac-dedup.md`](../tamarin/replay/README-hmac-dedup.md):
+  HMAC confirmation and legacy combined-regression interpretation.
+- [`../tamarin/impact/README.md`](../tamarin/impact/README.md): conditional
+  `C_install-v2` impact boundary.
 
-## ProVerif
+These documents do not define a new RQ-v2 theorem or contribution.
 
-`docs/proverif/` 记录已经完成的 K-Waay Figure 7 core ProVerif symbolic analysis。
+## Frozen M0–M5 claim/evidence documents
 
-核心入口：
+The following are the **M5 frozen claim/evidence snapshot**, not the authority
+for a future RQ-v2 claim vocabulary:
 
-- `proverif/current-stage-report.md`: ProVerif 阶段最终汇报稿。
-- `proverif/formal-decision-memo.md`: ProVerif 阶段 query 分类、建模边界和工具分工。
-- `proverif/paper-definition-alignment.md`: K-Waay 论文定义与 ProVerif query 的对齐说明。
-- `proverif/proverif-file-inventory.md`: `proverif/` 目录下 `.pv` 文件用途清单。
-- `proverif/protocol-map.md`: K-Waay Figure 7 core 对象地图。
-- `proverif/threat-model.md`: 当前 public-channel attacker 和 compromise 假设。
+- [`claim-hierarchy.md`](claim-hierarchy.md)
+- [`model-mapping.md`](model-mapping.md)
+- [`threat-compromise-matrix.md`](threat-compromise-matrix.md)
+- [`milestones/`](milestones/)
+- [`../artifact/README.md`](../artifact/README.md) and the complete
+  [`../artifact/`](../artifact/) contract
+- committed evidence under [`../logs/`](../logs/)
 
-实验记录：
+Their historical wording and result mappings are preserved verbatim. Read them
+through the transition notice in the root README.
 
-- `proverif/ledgers/secrecy-trace-ledger.md`: session-key secrecy 和 compromise 实验记录。
-- `proverif/ledgers/authentication-query-ledger.md`: authentication / correspondence 查询记录。
+## Model documentation
 
-历史过程：
+- [`proverif-final-results.md`](proverif-final-results.md) and
+  [`proverif-final-targets.md`](proverif-final-targets.md): completed ProVerif
+  records.
+- [`tamarin/tamarin-v7-results.md`](tamarin/tamarin-v7-results.md) and
+  [`tamarin/tamarin-deniability-results.md`](tamarin/tamarin-deniability-results.md):
+  historical Tamarin result documentation.
+- [`kwaay-tamarin-deniability-review.md`](kwaay-tamarin-deniability-review.md):
+  historical review record.
+- [`paper/threat-model.md`](paper/threat-model.md): existing scoped threat-model
+  notes; it is not a new RQ-v2 document.
+- [`cryptoverif/README.md`](cryptoverif/README.md): historical computational-
+  proof planning status.
 
-- `proverif/archive/`: 已被当前核心文档覆盖的早期计划、旧实验计划和历史 trace 记录。
+## Historical roadmaps
 
-## Tamarin
+Superseded roadmaps, model plans, stage summaries, and the old paper outline are
+preserved under [`../archive/pre-rq-v2/docs/`](../archive/pre-rq-v2/docs/).
+They document earlier research decisions and are not the current main line.
 
-`docs/tamarin/` 用于后续 Tamarin 阶段。
+## Milestone records
 
-Tamarin 主要负责：
+[`milestones/`](milestones/) contains the immutable M1–M5 completion records.
+They remain authoritative for what was run and frozen at each milestone, even
+where their historical research framing has since been superseded.
 
-- partnered / unpartnered session；
-- BatchReceive；
-- state consumption；
-- compromise ordering；
-- receiver-side exception theorem candidate。
+## Archive
 
-当前还没有正式 Tamarin 模型。
+- [`../archive/pre-rq-v2/`](../archive/pre-rq-v2/): documents superseded during
+  the pre-RQ-v2 cleanup.
+- [`../archive/old-doc/`](../archive/old-doc/): earlier tool documentation.
+- [`../archive/aead-confirmation/`](../archive/aead-confirmation/): historical
+  AEAD-confirmation branch material.
+- [`../archive/proverif-experiments/`](../archive/proverif-experiments/) and
+  [`../archive/tamarin-experiments/`](../archive/tamarin-experiments/): retained
+  experimental models.
 
-## CryptoVerif
+## Maintenance rule
 
-`docs/cryptoverif/` 用于后续 CryptoVerif 或 computational proof 阶段。
-
-CryptoVerif / computational proof 主要负责：
-
-- computational KIND game；
-- real-or-random indistinguishability；
-- KDF 3PRF hybrid；
-- UNF-1KMA；
-- IND-1BatchCCA；
-- advantage bound。
-
-当前还没有正式 CryptoVerif 模型。
-
-## Roadmap
-
-`docs/roadmap/` 记录跨工具路线计划。
-
-- `roadmap/next-tool-plan.md`: ProVerif 阶段之后的 Tamarin / CryptoVerif 后续计划。
-
-## 当前维护规则
-
-- ProVerif 已完成内容写入 `docs/proverif/`。
-- Tamarin 新内容写入 `docs/tamarin/`。
-- CryptoVerif / computational proof 新内容写入 `docs/cryptoverif/`。
-- 跨工具路线写入 `docs/roadmap/`。
-- 不要把 Tamarin 或 CryptoVerif 文档继续混入 `docs/proverif/`。
-- 新实验结果优先写入对应 ledger。
-- 阶段性汇报写入对应工具目录下的 report。
+Do not edit frozen models, raw evidence, result tables, manifests, checksums,
+claim sources, or milestone records to retrofit the future RQ-v2 narrative.
+Stage 0 must create its own authority only after the transition baseline has
+been reviewed.

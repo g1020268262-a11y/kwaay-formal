@@ -1,5 +1,10 @@
 # K-Waay HMAC Confirmation ProVerif Variant
 
+> **Current role.** This frozen variant is retained as agreement and explicit
+> key-confirmation evidence. HMAC confirmation addresses agreement/key
+> confirmation; it is not an admission-uniqueness mechanism and is not
+> presented as enforcing the specification's distinct-party input invariant.
+
 This directory contains an explicit key-confirmation variant derived from the
 core final ProVerif model:
 

@@ -53,7 +53,7 @@ docs/paper/threat-model.md
 docs/tamarin/tamarin-v6-results.md
 docs/tamarin/tamarin-v7-results.md
 docs/tamarin/tamarin-deniability-results.md
-docs/tamarin/tamarin-stage-summary.md
+archive/pre-rq-v2/docs/tamarin/tamarin-stage-summary.md
 logs/tamarin-v6/summary.txt
 logs/tamarin-v6/*.out
 logs/tamarin-v7/summary.txt
