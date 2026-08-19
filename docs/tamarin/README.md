@@ -4,7 +4,30 @@ This directory indexes historical Tamarin documentation. The repository now
 contains completed and frozen Tamarin models and evidence; the earlier planning
 statement that no formal Tamarin model existed is obsolete.
 
-## Current status
+## Current RQ-v2 status
+
+The current RQ-v2 semantic and result authority is
+[`../rq-v2/`](../rq-v2/). In this research line, `A` is the modeled
+protocol-principal identity coordinate. This model-level coordinate is not a
+claim that `A` equals a deployed real-world party identifier or implementation
+object.
+
+The current bounded exploratory prototypes are:
+
+- [`rqv2_relaxed.spthy`](../../tamarin/rq-v2-minimal/rqv2_relaxed.spthy):
+  relaxed admission model used to expose the consequence of removing
+  `DistinctPartyPerBatch`;
+- [`rqv2_message_dedup.spthy`](../../tamarin/rq-v2-minimal/rqv2_message_dedup.spthy):
+  exact-message dedup auxiliary comparison, not a replacement for party
+  admission;
+- [`rqv2_party_admission.spthy`](../../tamarin/rq-v2-minimal/rqv2_party_admission.spthy):
+  party-admission model of the identity-level invariant.
+
+Their semantics and limitations are defined in
+[`g2-admission-semantics.md`](../rq-v2/g2-admission-semantics.md) and
+[`prototype-execution-report.md`](../rq-v2/prototype-execution-report.md).
+
+## Historical M0-M5 status
 
 M0–M5 Tamarin models, milestone records, raw logs, result tables, and artifact
 bindings are preserved as a reproducible legacy evidence snapshot. They must be
@@ -13,9 +36,8 @@ read through the current transition notice in [`../../README.md`](../../README.m
 In particular, the frozen duplicate-input model is now interpreted as a
 relaxed-input / integration-contract experiment because it permits the same
 modeled sender identity `A` and the same complete message in multiple batch
-entries. The exact mapping from `A` to the specification-level notion of party
-remains a Stage-0 modeling question. No distinct-party model or RQ-v2 theorem
-has been created during this cleanup.
+entries. It is a historical predecessor, not the current RQ-v2 relaxed
+prototype or the current party-admission invariant model.
 
 ## Retained documentation
 
@@ -41,5 +63,5 @@ They are historical provenance, not current research direction.
 
 ## Boundary
 
-This index does not define Stage 0, the RQ-v2 invariant, a new model, a new
-lemma, or a new theorem.
+This index does not modify any model, lemma, theorem, or frozen result. Current
+RQ-v2 definitions and claims remain under [`../rq-v2/`](../rq-v2/).

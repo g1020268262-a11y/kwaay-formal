@@ -1,10 +1,15 @@
 # K-Waay 模型映射说明
 
+> **Authority notice.** This document describes frozen M0-M5 model mappings.
+> It preserves the historical model, event, query, lemma, and evidence
+> interpretations. Current RQ-v2 model authority is
+> [`docs/rq-v2/`](rq-v2/).
+
 ## 目的
 
-本文档用于说明 K-Waay 论文中的协议对象，当前如何被抽象到 ProVerif 和 Tamarin 模型中。
+本文档用于说明冻结的 M0-M5 formal exploration 中，K-Waay 协议对象如何被抽象到 ProVerif 和 Tamarin 模型中。
 
-这个文件属于 WP1：最终模型整理阶段。
+这个文件属于历史 WP1/M0-M5 最终模型整理阶段。
 
 它主要回答：
 
@@ -15,11 +20,11 @@
 哪些地方还没有建模
 ```
 
-## 当前分析范围
+## 冻结的 M0-M5 分析范围
 
-当前形式化分析覆盖的是 K-Waay Figure 7 core 的部分 symbolic properties。
+冻结的 M0-M5 形式化分析覆盖的是 K-Waay Figure 7 core 的部分 symbolic properties。
 
-当前范围：
+历史 artifact 范围：
 
 ```text
 ProVerif:
@@ -352,9 +357,9 @@ receiver output → symbolic local installation 已在 M2 original、M3 fixed im
 和 M4 combined impact artifacts 中条件化建模，但没有真实 session database、
 Double Ratchet、application action 或 deployed implementation mapping。
 
-## 当前主要解释
+## 冻结的 M0-M5 主要解释
 
-当前形式化分析支持下面这个解释：
+冻结的 M0-M5 形式化分析支持下面这个历史解释：
 
 ```text
 K-Waay Figure 7 core 可以满足 symbolic secrecy-style properties，
@@ -395,9 +400,9 @@ KIND-style secrecy 和 explicit key confirmation / exact agreement 之间的安�
 但 receiver accept 不一定对应完整 exact sender session。
 ```
 
-## 当前不能声称的内容
+## 冻结的 M0-M5 artifact 不能声称的内容
 
-当前模型不能证明：
+这些冻结的 M0-M5 模型不能证明：
 
 ```text
 full K-Waay security
@@ -428,7 +433,7 @@ docs/claim-hierarchy.md
 docs/threat-compromise-matrix.md
 ```
 
-当前真实模型入口是：
+冻结的 M0-M5 模型入口是：
 
 ```text
 proverif/kwaay_core_final.cpp.pv
@@ -456,7 +461,7 @@ M5: ✅ final paper artifact/result freeze complete on main
 
 ## M5 machine-readable mapping index
 
-最终 paper-facing mapping 由以下冻结文件承载：
+冻结的 M5 paper-facing mapping 由以下文件承载：
 
 ```text
 paper artifact:

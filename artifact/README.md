@@ -1,18 +1,49 @@
-# K-Waay paper artifact contract
+# K-Waay artifact authority contract
 
-This directory is the machine-readable contract for the paper-facing formal
-artifact. It indexes frozen repository objects; it does not replace the
-milestone runners, maps, completion records, or raw evidence that originally
-defined the results.
+This directory has two authority layers. The current paper research authority
+is `docs/rq-v2/`, centered on the necessity of `DistinctPartyPerBatch`. The
+RQ-v2 machine-readable overlay is indexed by
+`manifest/rqv2-current-authority.tsv` and
+`results/rqv2-claim-matrix.tsv`.
 
-## Scope and authority
+The existing M0-M5 paper-mainline manifests and result tables describe frozen
+historical artifacts only. Their HMAC, replay, exact-message deduplication, and
+combined-variant records remain intact for provenance and reproduction; they
+are not the current paper claim authority. Historical labels such as
+`paper-mainline` are preserved as frozen record vocabulary and do not override
+the RQ-v2 overlay.
 
-`manifest/paper-mainline.tsv` separates paper-mainline inputs and evidence from
-regression-only support. Optional, historical, diagnostic, deprecated, and
-future-work material is outside this manifest unless an entry explicitly says
-otherwise. `manifest/frozen-inputs.tsv` binds every indexed frozen file to a
-source commit, Git blob OID, and SHA-256 of the Git blob bytes. Worktree bytes
-are never the authoritative checksum source.
+## Current RQ-v2 authority
+
+The current research chain is:
+
+```text
+DistinctPartyPerBatch removed
+        -> same-batch repeated-party admission
+        -> invalid batch composition
+        -> duplicate receiver acceptance
+        -> conditional upper-layer impact
+```
+
+`docs/rq-v2/g2-admission-semantics.md` is the semantic authority for the
+identity-level invariant and the R-, M-, and P-semantics comparison.
+`docs/rq-v2/prototype-execution-report.md` records the bounded prototype
+results and their limitations. Message deduplication is an auxiliary
+comparison; HMAC/message-authentication evidence belongs to the frozen M0-M5
+history and does not establish party uniqueness.
+
+The RQ-v2 overlay does not mutate, reinterpret, or replace frozen result bytes.
+It identifies which documents and supporting prototypes govern current claims.
+
+## Frozen M0-M5 scope and integrity
+
+`manifest/paper-mainline.tsv` separates the historical M0-M5 paper-mainline
+inputs and evidence from regression-only support. Optional, historical,
+diagnostic, deprecated, and future-work material is outside that frozen
+manifest unless an entry explicitly says otherwise.
+`manifest/frozen-inputs.tsv` binds every indexed frozen file to a source commit,
+Git blob OID, and SHA-256 of the Git blob bytes. Worktree bytes are never the
+authoritative checksum source.
 
 Committed evidence under `logs/` is immutable input. New reproductions must use
 a new caller-provided output directory and are not committed evidence merely
@@ -40,7 +71,7 @@ separate `regression_matrix_*` columns bind the same property to the complete
 296-row M4 canonical matrix. The regression matrix is an independent closeout
 check, not a replacement for historical expectation provenance.
 
-## Entry points
+## Frozen M0-M5 reproduction entry points
 
 Run `scripts/run-paper-artifact.sh` with one of these modes:
 
@@ -78,7 +109,7 @@ checks a clean worktree/index by default, validates frozen inputs as
 name, exact Commit A SHA, and single-parent checks are intentionally confined
 to the separate review helper and are not release verification conditions.
 
-## Result boundary
+## Frozen M0-M5 result boundary
 
 M4 is a transparent, Tamarin-only composite over 296 canonical targets. Run 1
 is primary and Run 2 is used only for a nonterminal Run 1 target. Run 1 ended
@@ -92,14 +123,14 @@ M4 did not rerun ProVerif. Its five ProVerif target groups are recorded as
 the separately indexed, previously committed original-core and HMAC
 confirmation evidence.
 
-## Claim limitations
+## Frozen M0-M5 claim limitations
 
 The models are symbolic and use a fixed two-slot batch. Replay/dedup claims are
 for the same `(B,bid,rst)` receiver state and exact base-message identity.
 Consumer installation results are conditional on the documented
 `C_install-v2` interface. The artifact makes no global, cross-batch, rollback,
 restart, arbitrary-length, deployed-system, or computational-security claim.
-Allowed and prohibited paper statements remain authoritative only in
-`docs/claim-hierarchy.md`, `docs/threat-compromise-matrix.md`, and
-`docs/model-mapping.md`; the claim-evidence table is an index, not a second
-claim narrative.
+Allowed and prohibited M0-M5 statements remain authoritative only for
+interpreting the frozen historical record in `docs/claim-hierarchy.md`,
+`docs/threat-compromise-matrix.md`, and `docs/model-mapping.md`; the historical
+claim-evidence table is an index, not a current RQ-v2 claim narrative.

@@ -1,8 +1,14 @@
 # K-Waay Threat and Compromise Matrix
 
+> **Authority notice.** This is the historical M0-M5 threat/evidence matrix.
+> It preserves the frozen M0-M5 compromise and evidence classifications. It
+> is not the current RQ-v2 authority and does not cover the RQ-v2
+> `DistinctPartyPerBatch` necessity analysis. Current RQ-v2 authority is
+> [`docs/rq-v2/`](rq-v2/).
+
 ## 1. Purpose and status vocabulary
 
-This document freezes the repository's current threat/compromise evidence
+This document freezes the historical M0-M5 threat/compromise evidence
 without turning isolated experiments into general compromise theorems. A row
 always names one exact artifact and one exact property.
 
@@ -383,7 +389,7 @@ claims still cite their prior committed evidence:
 - `logs/final/proverif/summary.txt`
 - `logs/variants/hmac-confirmation/proverif/summary.txt`
 
-## 7. Milestone ownership
+## 7. Historical M0-M5 milestone ownership
 
 | Milestone | Evidence it may add |
 |---|---|
@@ -396,8 +402,9 @@ claims still cite their prior committed evidence:
 M2 original impact/P3, M3 fixed dedup/fixed-impact, and M4 combined
 HMAC+dedup cells now contain actual conditional Tamarin results. Material-
 specific compromise cells remain `not modeled` unless an exact row above says
-otherwise. M5 is complete on main; the next step is paper writing / submission
-preparation. M2/M3/M4 do not establish deployed upper-layer behavior.
+otherwise. These rows record the completed historical M0-M5 evidence state.
+M2/M3/M4 do not establish deployed upper-layer behavior. This matrix defines
+no post-M5 paper-submission roadmap and no RQ-v2 claim.
 
 ## 8. M5 evidence ledger synchronization
 

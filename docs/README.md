@@ -1,31 +1,30 @@
 # Documentation Index
 
-This index separates the current pre-RQ-v2 transition from the immutable M0–M5
-historical evidence. A document being preserved does not make it authority for
-the future RQ-v2 research question.
+This index separates the current RQ-v2 research authority from the immutable
+M0–M5 historical evidence. A document being preserved does not make it
+authority for the current research question.
 
-## Active transition documents
+## Current authority: RQ-v2
 
-- [`../README.md`](../README.md): current repository identity, interpretation,
-  and transition status.
-- [`maintenance/pre-rq-v2-cleanup.md`](maintenance/pre-rq-v2-cleanup.md):
-  maintenance-only record of the navigation and interpretation cleanup.
-- [`../tamarin/replay/README.md`](../tamarin/replay/README.md): current
-  interpretation notice for the frozen relaxed duplicate-input model.
-- [`../tamarin/replay/README-fixed.md`](../tamarin/replay/README-fixed.md):
-  message-level exact-dedup interpretation.
-- [`../tamarin/replay/README-hmac-only.md`](../tamarin/replay/README-hmac-only.md)
-  and [`../tamarin/replay/README-hmac-dedup.md`](../tamarin/replay/README-hmac-dedup.md):
-  HMAC confirmation and legacy combined-regression interpretation.
-- [`../tamarin/impact/README.md`](../tamarin/impact/README.md): conditional
-  `C_install-v2` impact boundary.
+- [`../README.md`](../README.md): repository entry point and current research
+  status.
+- [`rq-v2/g2-admission-semantics.md`](rq-v2/g2-admission-semantics.md): active
+  semantic authority for `DistinctPartyPerBatch`, the identity hierarchy, and
+  relaxed/message-level/party-level admission.
+- [`rq-v2/prototype-execution-report.md`](rq-v2/prototype-execution-report.md):
+  active report for the bounded exploratory RQ-v2 prototypes.
 
-These documents do not define a new RQ-v2 theorem or contribution.
+RQ-v2 treats exact-message deduplication as an auxiliary comparison and HMAC as
+message-authenticity/integrity/confirmation background. The contribution
+target is the necessity of the `DistinctPartyPerBatch` identity invariant for
+the intended batch identity semantics, not message identity versus party
+identity, a uniquely necessary admission mechanism, or scoped occurrence
+injectivity by itself.
 
-## Frozen M0–M5 claim/evidence documents
+## Historical: frozen M0–M5 claim/evidence documents
 
 The following are the **M5 frozen claim/evidence snapshot**, not the authority
-for a future RQ-v2 claim vocabulary:
+for the current RQ-v2 claim vocabulary:
 
 - [`claim-hierarchy.md`](claim-hierarchy.md)
 - [`model-mapping.md`](model-mapping.md)
@@ -36,7 +35,19 @@ for a future RQ-v2 claim vocabulary:
 - committed evidence under [`../logs/`](../logs/)
 
 Their historical wording and result mappings are preserved verbatim. Read them
-through the transition notice in the root README.
+as historical artifacts through the current-status notice in the root README.
+
+Historical model-specific interpretation records include:
+
+- [`../tamarin/replay/README.md`](../tamarin/replay/README.md): frozen relaxed
+  duplicate-input model;
+- [`../tamarin/replay/README-fixed.md`](../tamarin/replay/README-fixed.md):
+  legacy exact-message dedup hardening;
+- [`../tamarin/replay/README-hmac-only.md`](../tamarin/replay/README-hmac-only.md)
+  and [`../tamarin/replay/README-hmac-dedup.md`](../tamarin/replay/README-hmac-dedup.md):
+  HMAC confirmation and legacy combined-regression records;
+- [`../tamarin/impact/README.md`](../tamarin/impact/README.md): conditional
+  `C_install-v2` impact boundary.
 
 ## Model documentation
 
@@ -53,17 +64,19 @@ through the transition notice in the root README.
 - [`cryptoverif/README.md`](cryptoverif/README.md): historical computational-
   proof planning status.
 
-## Historical roadmaps
+## Historical: milestones and archives
 
 Superseded roadmaps, model plans, stage summaries, and the old paper outline are
 preserved under [`../archive/pre-rq-v2/docs/`](../archive/pre-rq-v2/docs/).
 They document earlier research decisions and are not the current main line.
 
-## Milestone records
-
 [`milestones/`](milestones/) contains the immutable M1–M5 completion records.
 They remain authoritative for what was run and frozen at each milestone, even
 where their historical research framing has since been superseded.
+
+[`maintenance/pre-rq-v2-cleanup.md`](maintenance/pre-rq-v2-cleanup.md) is the
+dated maintenance record for the earlier navigation cleanup. Its stage-status
+statements are historical rather than current RQ-v2 status.
 
 ## Archive
 
@@ -79,6 +92,6 @@ where their historical research framing has since been superseded.
 ## Maintenance rule
 
 Do not edit frozen models, raw evidence, result tables, manifests, checksums,
-claim sources, or milestone records to retrofit the future RQ-v2 narrative.
-Stage 0 must create its own authority only after the transition baseline has
-been reviewed.
+claim sources, or milestone records to retrofit the current RQ-v2 narrative.
+Current RQ-v2 claims must be defined under [`rq-v2/`](rq-v2/); frozen historical
+files must not be rewritten to retrofit the new narrative.

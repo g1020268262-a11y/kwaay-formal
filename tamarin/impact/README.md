@@ -7,10 +7,18 @@ model but is a separate theory.
 > **Current interpretation notice.** The lower-layer model permits the same
 > modeled sender identity `A` and the same complete message in multiple slots.
 > The K-Waay full specification states a distinct-party-per-`BatchReceive`
-> precondition. The exact mapping from `A` to the specification-level notion of
-> party remains a Stage-0 modeling question. The result is conditional
+> precondition. `A` is the modeled protocol-principal identity coordinate. This
+> model-level coordinate is not a claim that `A` equals a deployed real-world
+> party identifier or implementation object. The result is conditional
 > integration-impact evidence over that relaxed input domain, not an original-
 > protocol or deployed-implementation duplicate-install claim.
+
+Under the current RQ-v2 role separation, HMAC addresses message authenticity,
+integrity, or confirmation; exact-message deduplication is an auxiliary
+comparison and does not replace party admission; and the party-admission
+prototype models the identity-level invariant. Current authority is under
+[`docs/rq-v2/`](../../docs/rq-v2/). This M2 impact model remains frozen
+historical evidence under the conditional `C_install-v2` boundary.
 
 The recorded result is a **conditional duplicate-install witness** and
 **conditional local-handle duplication**.  The model does not establish two

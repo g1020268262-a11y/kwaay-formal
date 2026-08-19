@@ -6,9 +6,18 @@
 > admission-uniqueness mechanism. The duplicate-input result must not be framed
 > as “HMAC fails to fix replay.” This model permits the same modeled sender
 > identity `A` and the same complete message in multiple slots, while the full
-> specification states a distinct-party precondition. The exact mapping from
-> `A` to the specification-level notion of party remains a Stage-0 modeling
-> question.
+> specification states a distinct-party precondition. `A` is the modeled
+> protocol-principal identity coordinate. This model-level coordinate is not a
+> claim that `A` equals a deployed real-world party identifier or
+> implementation object.
+
+Under the current RQ-v2 role separation, HMAC addresses message authenticity,
+integrity, or confirmation and does not provide replay prevention or party
+admission. Exact-message deduplication is an auxiliary comparison and does not
+replace party admission; the party-admission prototype models the identity-
+level invariant. Current authority is under
+[`docs/rq-v2/`](../../docs/rq-v2/). This bridge remains frozen historical
+evidence.
 
 ## Objective
 

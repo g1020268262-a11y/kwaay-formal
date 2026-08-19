@@ -4,13 +4,21 @@
 > the same modeled sender identity `A` and the same complete message to populate
 > multiple slots of one `(B,bid,rst)` batch. The K-Waay full specification
 > states that elements of one `BatchReceive` input correspond to different
-> parties. The exact mapping from modeled sender identity `A` to the
-> specification-level notion of party remains a Stage-0 modeling question. The
-> artifact is therefore a relaxed-input / integration-contract experiment. Its
+> parties. `A` is the modeled protocol-principal identity coordinate. This
+> model-level coordinate is not a claim that `A` equals a deployed real-world
+> party identifier or implementation object. The artifact is therefore a
+> relaxed-input / integration-contract experiment. Its
 > one-send-two-accept trace demonstrates the consequence of relaxing that
 > admission invariant; it is not a counterexample to executions satisfying the
 > specification's stated distinct-party `BatchReceive` precondition or evidence
 > about a deployed implementation.
+
+Under the current RQ-v2 role separation, HMAC addresses message authenticity,
+integrity, or confirmation; exact-message deduplication is an auxiliary
+comparison and does not replace party admission; and the party-admission
+prototype models the identity-level invariant. Current authority is under
+[`docs/rq-v2/`](../../docs/rq-v2/). This frozen replay artifact remains
+historical evidence and is not the current RQ-v2 relaxed prototype.
 
 ## Model objective
 

@@ -1,0 +1,111 @@
+theory RQv2_Relaxed
+begin
+
+/*
+  RQ-v2 exploratory two-slot prototype: relaxed admission.
+
+  Entry = (party identity A, message m, session coordinate sid).
+  Party creation is separate from session/message creation. Batch admission
+  performs no party- or message-uniqueness check.
+*/
+
+rule CreateParty:
+  [ Fr(~a) ]
+  --[ ]->
+  [ !Party(~a) ]
+
+rule SendMessage:
+  [
+    !Party(A),
+    Fr(~sid),
+    Fr(~m)
+  ]
+  --[ Send(A,~sid,~m) ]->
+  [
+    Out(<A,~sid,~m>),
+    !Sent(A,~sid,~m)
+  ]
+
+rule CreateBatch:
+  [
+    Fr(~bid),
+    Fr(~rst)
+  ]
+  --[ ]->
+  [ OpenSlot1(~bid,~rst) ]
+
+rule CollectSlot1:
+  [
+    OpenSlot1(bid,rst),
+    In(<A,sid,m>)
+  ]
+  --[ ]->
+  [ OpenSlot2(bid,rst,A,sid,m) ]
+
+rule CollectSlot2:
+  [
+    OpenSlot2(bid,rst,A1,sid1,m1),
+    In(<A2,sid2,m2>)
+  ]
+  --[ ]->
+  [ Collected(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+
+rule AdmitRelaxedBatch:
+  [ Collected(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+  --[ BatchReceive(bid,rst) ]->
+  [ AdmittedSlot1(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+
+rule ProcessSlot1:
+  [
+    AdmittedSlot1(bid,rst,A1,sid1,m1,A2,sid2,m2),
+    !Sent(A1,sid1,m1)
+  ]
+  --[ ReceiverAccept(A1,sid1,m1,bid,rst) ]->
+  [ AdmittedSlot2(bid,rst,A2,sid2,m2) ]
+
+rule ProcessSlot2:
+  [
+    AdmittedSlot2(bid,rst,A2,sid2,m2),
+    !Sent(A2,sid2,m2)
+  ]
+  --[ ReceiverAccept(A2,sid2,m2,bid,rst) ]->
+  [ BatchComplete(bid,rst) ]
+
+lemma normal_relaxed_batch_exists:
+  exists-trace
+  "Ex A sid m bid rst #s #b #r.
+       Send(A,sid,m) @ #s
+     & BatchReceive(bid,rst) @ #b
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r
+     & #s < #b
+     & #b < #r"
+
+lemma one_send_two_accepts_exists:
+  exists-trace
+  "Ex A sid m bid rst #s #b #r1 #r2.
+       Send(A,sid,m) @ #s
+     & BatchReceive(bid,rst) @ #b
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r1
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r2
+     & #s < #b
+     & #b < #r1
+     & #r1 < #r2
+     & (All #s2. Send(A,sid,m) @ #s2 ==> #s2 = #s)"
+
+lemma receiver_accept_has_send:
+  "All A sid m bid rst #r.
+       ReceiverAccept(A,sid,m,bid,rst) @ #r
+     ==> Ex #s.
+         Send(A,sid,m) @ #s
+       & #s < #r"
+
+lemma receiver_accept_injective:
+  "All A sid m bid rst #s #r1 #r2.
+       Send(A,sid,m) @ #s
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r1
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r2
+     & #s < #r1
+     & #s < #r2
+     ==> #r1 = #r2"
+
+end

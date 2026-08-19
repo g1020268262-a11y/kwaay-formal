@@ -1,0 +1,133 @@
+theory RQv2_Party_Admission
+begin
+
+/*
+  RQ-v2 exploratory two-slot prototype: party-level admission.
+
+  Entry = (party identity A, message m, session coordinate sid).
+  Equal party identities reject the whole batch. Message, session, and prekey
+  identity are not used as substitutes for party identity.
+*/
+
+restriction Inequality:
+  "All x #i. Neq(x,x) @ #i ==> F"
+
+rule CreateParty:
+  [ Fr(~a) ]
+  --[ ]->
+  [ !Party(~a) ]
+
+rule SendMessage:
+  [
+    !Party(A),
+    Fr(~sid),
+    Fr(~m)
+  ]
+  --[ Send(A,~sid,~m) ]->
+  [
+    Out(<A,~sid,~m>),
+    !Sent(A,~sid,~m)
+  ]
+
+rule CreateBatch:
+  [
+    Fr(~bid),
+    Fr(~rst)
+  ]
+  --[ ]->
+  [ OpenSlot1(~bid,~rst) ]
+
+rule CollectSlot1:
+  [
+    OpenSlot1(bid,rst),
+    In(<A,sid,m>)
+  ]
+  --[ ]->
+  [ OpenSlot2(bid,rst,A,sid,m) ]
+
+rule CollectSlot2:
+  [
+    OpenSlot2(bid,rst,A1,sid1,m1),
+    In(<A2,sid2,m2>)
+  ]
+  --[ ]->
+  [ Collected(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+
+rule RejectRepeatedParty:
+  [ Collected(bid,rst,A,sid1,m1,A,sid2,m2) ]
+  --[ Reject(bid,rst) ]->
+  [ BatchRejected(bid,rst) ]
+
+rule AdmitDistinctParties:
+  [ Collected(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+  --[
+    Neq(A1,A2),
+    BatchReceive(bid,rst)
+  ]->
+  [ AdmittedSlot1(bid,rst,A1,sid1,m1,A2,sid2,m2) ]
+
+rule ProcessSlot1:
+  [
+    AdmittedSlot1(bid,rst,A1,sid1,m1,A2,sid2,m2),
+    !Sent(A1,sid1,m1)
+  ]
+  --[ ReceiverAccept(A1,sid1,m1,bid,rst) ]->
+  [ AdmittedSlot2(bid,rst,A2,sid2,m2) ]
+
+rule ProcessSlot2:
+  [
+    AdmittedSlot2(bid,rst,A2,sid2,m2),
+    !Sent(A2,sid2,m2)
+  ]
+  --[ ReceiverAccept(A2,sid2,m2,bid,rst) ]->
+  [ BatchComplete(bid,rst) ]
+
+lemma same_party_rejection_exists:
+  exists-trace
+  "Ex A sid1 sid2 m1 m2 bid rst #s1 #s2 #rj.
+       Send(A,sid1,m1) @ #s1
+     & Send(A,sid2,m2) @ #s2
+     & Reject(bid,rst) @ #rj
+     & not(sid1 = sid2)
+     & not(m1 = m2)
+     & #s1 < #rj
+     & #s2 < #rj"
+
+lemma distinct_party_batch_exists:
+  exists-trace
+  "Ex A1 A2 sid1 sid2 m1 m2 bid rst #s1 #s2 #b #r1 #r2.
+       Send(A1,sid1,m1) @ #s1
+     & Send(A2,sid2,m2) @ #s2
+     & BatchReceive(bid,rst) @ #b
+     & ReceiverAccept(A1,sid1,m1,bid,rst) @ #r1
+     & ReceiverAccept(A2,sid2,m2,bid,rst) @ #r2
+     & not(A1 = A2)
+     & #s1 < #b
+     & #s2 < #b
+     & #b < #r1
+     & #r1 < #r2"
+
+lemma accepted_batch_has_distinct_parties:
+  "All A1 A2 sid1 sid2 m1 m2 bid rst #r1 #r2.
+       ReceiverAccept(A1,sid1,m1,bid,rst) @ #r1
+     & ReceiverAccept(A2,sid2,m2,bid,rst) @ #r2
+     & not(#r1 = #r2)
+     ==> not(A1 = A2)"
+
+lemma receiver_accept_has_send:
+  "All A sid m bid rst #r.
+       ReceiverAccept(A,sid,m,bid,rst) @ #r
+     ==> Ex #s.
+         Send(A,sid,m) @ #s
+       & #s < #r"
+
+lemma receiver_accept_injective:
+  "All A sid m bid rst #s #r1 #r2.
+       Send(A,sid,m) @ #s
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r1
+     & ReceiverAccept(A,sid,m,bid,rst) @ #r2
+     & #s < #r1
+     & #s < #r2
+     ==> #r1 = #r2"
+
+end

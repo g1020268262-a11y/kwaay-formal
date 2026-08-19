@@ -1,11 +1,17 @@
 # K-Waay Claim Hierarchy
 
+> **Authority notice.** This document is the frozen M0-M5 historical claim
+> hierarchy. It records the historical M0-M5 formal exploration and is not
+> the current RQ-v2 claim authority. Current RQ-v2 authority is
+> [`docs/rq-v2/`](rq-v2/).
+
 ## 1. Purpose and status vocabulary
 
 This document freezes the names, scope, evidence, and non-claims used by the
-K-Waay formal-analysis main line. It distinguishes protocol properties from
+historical M0-M5 formal exploration. It distinguishes protocol properties from
 conditional composition properties and records actual tool results separately
-from roadmap expectations.
+from historical roadmap expectations. Every status and allowed/prohibited
+statement below is scoped to that frozen historical artifact.
 
 Status terms in this document have the following meanings:
 
@@ -75,7 +81,7 @@ BatchSlotAccept(B,bid,idx,A,rst,cts,Ks)
 P0-S is secrecy, while P0-O is component authenticity. Neither property is
 full-message agreement, replay prevention, or injective authentication.
 
-### 2.2 Current status
+### 2.2 Historical artifact status
 
 - P0-S: `established` for the named ProVerif and HMAC no-compromise baselines.
 - P0-O: `established` for the named ProVerif/HMAC component targets and the
@@ -188,7 +194,7 @@ long-term public keys, both prekey bundles, and the complete
 `(A,B,sid,k)` in this symbolic model; it does not include an occurrence number,
 batch slot, local session handle, or implementation state.
 
-### 3.2 Current status
+### 3.2 Historical artifact status
 
 `partially modeled` across the paper main line:
 
@@ -372,7 +378,7 @@ only that at least one honest `SenderSession` and one later matching
 implies P1. No such implication is inferred across the ProVerif and replay
 event vocabularies.
 
-### 4.2 Current status
+### 4.2 Historical artifact status
 
 `falsified` for both replay original and the HMAC-only replay bridge in the
 same-batch/same-receiver-state subdomain.
@@ -701,7 +707,7 @@ same matching SenderSession
 implies h1 = h2.
 ```
 
-### 5.2 Current status
+### 5.2 Historical artifact status
 
 - original conditional duplicate-install witness under `C_install-v2`:
   `established`;

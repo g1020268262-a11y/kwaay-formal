@@ -6,9 +6,16 @@
 > enforce the broader K-Waay specification condition that all entries
 > correspond to distinct parties. In particular, the condition “same modeled
 > sender identity `A`, but `m1 != m2`” is outside this frozen experiment and
-> must not be claimed as already tested. The exact mapping from modeled sender
-> identity `A` to the specification-level notion of party remains a Stage-0
-> modeling question.
+> must not be claimed as already tested. `A` is the modeled protocol-principal
+> identity coordinate. This model-level coordinate is not a claim that `A`
+> equals a deployed real-world party identifier or implementation object.
+
+Under the current RQ-v2 role separation, HMAC addresses message authenticity,
+integrity, or confirmation; this exact-message dedup model is an auxiliary
+comparison and does not replace party admission; and the party-admission
+prototype models the identity-level invariant. Current authority is under
+[`docs/rq-v2/`](../../docs/rq-v2/). This M3 model remains a frozen historical
+artifact.
 
 [`kwaay_replay_fixed.spthy`](kwaay_replay_fixed.spthy) is the M3 dedup-only
 variant of the frozen two-slot original replay model. It does not modify or

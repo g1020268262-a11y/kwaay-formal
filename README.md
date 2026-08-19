@@ -7,26 +7,49 @@ checksums, and reproducibility contract.
 It is a symbolic formal-analysis repository. It is not a verification of a
 complete K-Waay implementation or evidence about a deployed system.
 
-## Current transition status
+## Current research status
 
-M0–M5 remain frozen as a reproducible legacy evidence snapshot. The project is
-currently undergoing a research-question transition before starting a new
-RQ-v2 analysis. This transition changes repository navigation and the current
-interpretation of historical experiments; it does not change their models,
-lemmas, queries, results, or evidence.
+M0–M5 remain frozen as a reproducible historical evidence snapshot. They
+record the earlier symbolic-analysis milestones, models, lemmas, queries,
+results, and evidence; they are not the current research direction.
 
-Next step: **Stage 0 — freeze the RQ-v2 research question and invariant.**
+The current research direction is **RQ-v2: DistinctPartyPerBatch necessity
+analysis**. RQ-v2 studies the identity-level invariant that two distinct slots
+of one `BatchReceive` batch must not carry the same party. It compares relaxed,
+message-level, and party-level admission semantics in order to determine the
+formal consequences of removing that invariant.
 
-No RQ-v2 question or theorem is defined by this README.
+The active RQ-v2 authority is under [`docs/rq-v2/`](docs/rq-v2/):
+
+- [`g2-admission-semantics.md`](docs/rq-v2/g2-admission-semantics.md) defines
+  the party, message, session, and batch-admission semantics;
+- [`prototype-execution-report.md`](docs/rq-v2/prototype-execution-report.md)
+  records the bounded exploratory comparison.
+
+The current research chain is:
+
+```text
+DistinctPartyPerBatch removed
+        -> same-batch repeated-party admission
+        -> invalid batch composition
+        -> duplicate receiver acceptance
+        -> conditional upper-layer duplicate consumption/install impact
+```
+
+The final contribution target is the necessity of
+`DistinctPartyPerBatch` for the intended batch identity semantics. Scoped
+occurrence injectivity and exact-message deduplication are supporting analyses,
+not the final contribution.
 
 ## Important interpretation update
 
 The frozen duplicate-input Tamarin model permits the same modeled sender
 identity `A` and the same complete message to occur in multiple entries within
 one `BatchReceive` instance. K-Waay's full specification states a distinct-
-party-per-`BatchReceive` precondition. The exact mapping from modeled sender
-identity `A` to the specification-level notion of party remains a Stage-0
-modeling question.
+party-per-`BatchReceive` precondition. For the current RQ-v2 formal identity
+coordinate, modeled `A` denotes the specification-level protocol principal;
+this does not identify `A` with an application account, public-key byte string,
+prekey, message, session identifier, or sender occurrence.
 
 The frozen duplicate-acceptance result is therefore currently interpreted as a
 **relaxed-input / integration-robustness result**: it records what the bounded
@@ -54,8 +77,8 @@ The frozen M3 exact-message dedup model is retained as historical message-level
 hardening. It rejects identical complete-message duplication within the
 modeled batch. It is not equivalent to the specification's broader distinct-
 party invariant: the same modeled sender identity `A` may be associated with
-two different messages. The mapping from `A` to the specification-level notion
-of party remains a Stage-0 modeling question.
+two different messages. RQ-v2 retains this model only as an auxiliary
+comparison showing that message identity is not party identity.
 
 ### Conditional installation impact
 
@@ -80,6 +103,7 @@ explicit repository-external output directory; see the
 ## Repository entry points
 
 - [Documentation index](docs/README.md)
+- [Current RQ-v2 authority](docs/rq-v2/)
 - [Artifact contract](artifact/README.md)
 - [M5 completion record](docs/milestones/M5-completion.md)
 - [Frozen claim hierarchy](docs/claim-hierarchy.md)
@@ -94,7 +118,8 @@ explicit repository-external output directory; see the
 - Dolev–Yao symbolic analysis;
 - fixed two-slot scope for the frozen replay, dedup, and combined models;
 - exact complete-message identity for the frozen M3 dedup result;
-- no new distinct-party model or theorem yet;
+- exploratory fixed-two-slot RQ-v2 admission prototypes, not a deployed-system
+  or arbitrary-length theorem;
 - no arbitrary-length, global, cross-batch, rollback, or restart theorem;
 - no computational proof or complete implementation audit;
 - no deployed upper-layer evidence.
