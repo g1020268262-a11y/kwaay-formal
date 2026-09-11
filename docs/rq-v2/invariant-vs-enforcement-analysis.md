@@ -2,7 +2,8 @@
 
 ## Status
 
-Frozen RQ-v2 supporting analysis.
+Frozen RQ-v2 **Supporting Analysis**. This document is not primary RQ-v2
+authority.
 
 This document analyzes the difference between:
 
@@ -180,12 +181,12 @@ The current evidence supports:
 because removing it changes:
 
 -   batch composition semantics;
--   party-output interpretation;
+-   intended party-level interpretation;
 -   reachable acceptance behavior.
 
 The current evidence does not prove:
 
-    Party admission is the only possible solution.
+    One party-admission mechanism is uniquely required.
 
 Nor does it prove:
 
@@ -212,15 +213,12 @@ of protocol objects:
 
     batch component
 
-            ↓
+The original K-Waay interface conceptually extends this relationship to
+party-indexed output and security references. The current RQ-v2 prototypes do
+not formalize those output objects or references.
 
-    output key
-
-            ↓
-
-    security-model reference
-
-Removing it creates ambiguity in how outputs are attributed to parties.
+Removing the invariant creates ambiguous party-level attribution among the
+modeled accepted components.
 
 Therefore the issue is semantic consistency, not only input validation.
 
@@ -231,11 +229,11 @@ Therefore the issue is semantic consistency, not only input validation.
 This analysis does not claim:
 
 -   a deployed K-Waay implementation fails to enforce the invariant;
--   party admission is the only implementation solution;
+-   a unique implementation solution based on party admission;
 -   removal directly breaks the original K-Waay theorem.
 
 The supported claim is:
 
 > `DistinctPartyPerBatch` is a necessary semantic property for
 > maintaining the intended party-level interpretation of batch
-> components and outputs within the modeled boundary.
+> components within the modeled boundary.

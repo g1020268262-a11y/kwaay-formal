@@ -2,15 +2,24 @@
 
 ## Status
 
-Frozen RQ-v2 supporting analysis.
+Frozen RQ-v2 **Supporting Analysis**: conceptual motivation analysis.
+
+This document uses the original K-Waay security interface to motivate and
+explain a semantic dependency between party identity and party-indexed
+interpretation. It is not formal evidence from the current RQ-v2 prototypes.
+
+The current RQ-v2 prototypes do not formalize `KEY` queries, do not formalize
+`TEST` queries, do not contain output-key objects, and do not prove a
+correctness failure. Their direct formal evidence ends at admission,
+rejection, and receiver-acceptance behavior.
 
 This document analyzes why `DistinctPartyPerBatch` should be understood
 as a protocol semantic invariant rather than a simple input
 precondition.
 
-This analysis is based on the current RQ-v2 semantic documents and
-prototype results. It does not claim that a deployed K-Waay
-implementation is vulnerable.
+This conceptual analysis is informed by the current RQ-v2 semantic documents
+and prototype results. It does not extend those results or claim that a
+deployed K-Waay implementation is vulnerable.
 
 ------------------------------------------------------------------------
 
@@ -22,7 +31,7 @@ more than an ordinary input restriction?
 The analysis studies whether this condition preserves a meaningful
 semantic relationship inside `BatchReceive`.
 
-The target relationship is:
+The conceptually motivated relationship is:
 
     Party Identity
 
@@ -32,7 +41,7 @@ The target relationship is:
 
             ↓
 
-    Output Key / Security Reference
+    Conceptual Output-Key / Security-Reference Interpretation
 
 ------------------------------------------------------------------------
 
@@ -66,7 +75,8 @@ internal meaning of batch components.
 
 # 3. What the Invariant Protects
 
-The intended batch semantics are:
+Under the original interface interpretation, the intended batch semantics can
+be conceptualized as:
 
     slot 1:
 
@@ -83,13 +93,14 @@ The intended batch semantics are:
        v
     output k_B
 
-Each component has a unique party attribution.
+Each component has a unique party attribution at the modeled boundary.
 
-The receiver can interpret each component as belonging to one specific
-party.
+The receiver can interpret each accepted component as belonging to one
+specific party.
 
-This matches the party-indexed security interfaces used by the protocol
-model.
+The original K-Waay security interface motivates extending this interpretation
+to party-indexed objects. That extension is conceptual and is not encoded in
+the current prototypes.
 
 ------------------------------------------------------------------------
 
@@ -116,17 +127,19 @@ The issue is not necessarily that:
 
     k_1 = k_2
 
-The issue is:
+The conceptual interface question is:
 
-    Party A -> multiple output components
+    Party A -> multiple conceptually indexed output components
 
-The party-to-output interpretation is no longer unique.
+Under that conceptual interface interpretation, the party-to-output relation
+would no longer be unique unless another selection rule were supplied. The
+current prototypes do not contain these output components.
 
 ------------------------------------------------------------------------
 
-# 5. Identity Binding Failure
+# 5. Conceptual Identity-Binding Motivation
 
-The removed invariant causes:
+The original interface interpretation motivates the following dependency:
 
     Multiple batch positions
 
@@ -136,42 +149,48 @@ The removed invariant causes:
 
             ↓
 
-    Ambiguous output attribution
+    Potentially non-unique conceptual output attribution
 
-This is an identity binding failure.
+This explains a conceptual identity-binding dependency. It is not a formally
+proved output-key or security-interface failure.
 
-The failure occurs because:
+The conceptual concern arises because:
 
--   the batch structure no longer represents distinct contributors;
--   output ownership cannot be uniquely interpreted;
--   party-indexed references lose a unique target.
+-   the modeled batch structure no longer represents distinct contributors;
+-   a conceptual output-ownership interpretation would require an additional
+    selection rule; and
+-   party-indexed references would require a clarified target interpretation.
 
 ------------------------------------------------------------------------
 
 # 6. Connection to Security Interfaces
 
-Party-indexed references such as:
+The original K-Waay interface contains party-indexed references such as:
 
     KEY(i,s,j)
 
     TEST(i,s,j)
 
-assume that party `j` identifies one component.
+Under a conceptual reading, party `j` may be intended to identify one
+corresponding component.
 
 With repeated-party admission:
 
     Party A -> k_1
     Party A -> k_2
 
-the party identifier no longer selects one unique output.
+the party identifier would not select one unique output without an additional
+selection rule.
 
-This demonstrates why the invariant is connected to protocol semantics.
+This motivates and explains why the invariant is connected to party-indexed
+protocol semantics. It does not prove `KEY` failure, `TEST` failure, output-key
+ambiguity, or correctness failure.
 
 ------------------------------------------------------------------------
 
 # 7. Relation to Duplicate Acceptance
 
-The RQ-v2 relaxed prototype demonstrates:
+The RQ-v2 relaxed prototype formally records:
 
     DistinctPartyPerBatch removed
 
@@ -253,17 +272,21 @@ Current evidence does not claim:
 
 -   deployed K-Waay implementations are affected;
 -   this invariant is the only possible implementation solution;
--   confidentiality or key secrecy are directly broken.
+-   confidentiality or key secrecy are directly broken;
+-   `KEY` or `TEST` queries fail;
+-   output-key objects are ambiguous; or
+-   a correctness relation over keys fails.
 
 ------------------------------------------------------------------------
 
 # 11. Final Research Position
 
-`DistinctPartyPerBatch` is a protocol identity invariant that preserves
-the unique interpretation between party identity, batch components, and
-derived outputs.
+`DistinctPartyPerBatch` is a protocol identity invariant that preserves the
+intended relationship between party identity and batch components. The
+original K-Waay interface conceptually motivates why that relationship may
+matter to party-indexed derived outputs.
 
-Removing this invariant does not merely allow an invalid input. It
-changes the semantic structure assumed by party-indexed protocol
-reasoning and can lead to identity ambiguity and duplicate acceptance
-consequences.
+Removing this invariant does not merely allow an invalid input. It changes the
+modeled batch identity structure and permits duplicate acceptance. Any further
+interpretation involving party-indexed outputs is conceptual motivation, not a
+formal claim of the current RQ-v2 prototypes.

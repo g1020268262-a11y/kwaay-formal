@@ -1,0 +1,13 @@
+RQ-v2 static evidence freeze environment
+
+provenance_source=docs/rq-v2/prototype-execution-report.md
+packaging_mode=existing-report-only
+prover_rerun=no
+tamarin_version=1.12.0
+maude_version=3.5.1
+os=WSL Ubuntu 24.04
+tamarin_path=/home/linuxbrew/.linuxbrew/bin/tamarin-prover
+execution_path=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin
+
+This file transcribes the environment reported by the existing prototype
+execution report. It is not evidence of a new execution.

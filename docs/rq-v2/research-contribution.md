@@ -2,6 +2,9 @@
 
 **Status:** Frozen current RQ-v2 research statement.
 
+**Authority role:** Primary Authority for the research question, contribution,
+claim boundary, and non-claims.
+
 K-Waay's `BatchReceive` semantics require the entries admitted into one batch
 to correspond to distinct parties. RQ-v2 names this identity-level invariant
 `DistinctPartyPerBatch` and studies whether it is necessary for the intended
@@ -21,8 +24,12 @@ DistinctPartyPerBatch removed
         -> same-batch repeated-party admission
         -> invalid batch composition
         -> duplicate receiver acceptance
-        -> conditional upper-layer duplicate consumption/install impact
+        -> loss of intended party-level identity interpretation
 ```
+
+Conditional upper-layer duplicate consumption or installation is a separate
+discussion/extension boundary. It is not part of the core argument chain and
+requires an explicit composition interface such as `C_install-v2`.
 
 # Research Question
 
@@ -92,11 +99,11 @@ as a semantically empty input restriction.
 
 This research statement does **not** claim any of the following:
 
-- "K-Waay is broken" or that a deployed K-Waay implementation omits the
-  invariant;
-- HMAC solves or prevents replay;
-- exact-message deduplication replaces party admission;
-- party admission uniquely restores occurrence injectivity;
+- a blanket deployed-system break claim or an assertion that a deployed
+  K-Waay implementation omits the invariant;
+- general replay prevention from HMAC alone;
+- exact-message deduplication as a substitute for party admission;
+- a unique party-admission route to occurrence injectivity;
 - occurrence injectivity is the final research contribution;
 - every same-party pair across sessions, messages, or different batches is a
   violation;

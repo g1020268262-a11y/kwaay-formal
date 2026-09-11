@@ -1,5 +1,9 @@
 # RQ-v2 Prototype Execution Report
 
+## Status
+
+Frozen RQ-v2 **Primary Authority** for the recorded bounded prototype evidence.
+
 ## Environment
 
 The prototypes were executed in the existing WSL Ubuntu 24.04 verification

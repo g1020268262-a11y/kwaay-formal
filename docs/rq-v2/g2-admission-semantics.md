@@ -6,8 +6,8 @@
 
 **Baseline commit:** `930820d8db1e101fb4cb377fb0887f6c004c02a9`
 
-**Document role:** Current semantic authority for `DistinctPartyPerBatch`
-necessity analysis
+**Document role:** Primary Authority for `DistinctPartyPerBatch` semantics and
+the R/M/P necessity comparison
 
 This document freezes the executable semantics for the RQ-v2 admission
 comparison. It defines the identity-level invariant, the relaxed comparison,
@@ -41,13 +41,17 @@ DistinctPartyPerBatch removed
         -> same-batch repeated-party admission
         -> invalid batch composition
         -> duplicate receiver acceptance
-        -> conditional upper-layer duplicate consumption/install impact
+        -> loss of intended party-level identity interpretation
 ```
 
 The arrows denote a consequence chain to test in explicitly scoped models; they
 do not claim that every invalid batch must produce every later consequence.
 The final contribution target is the identity-level batch invariant, not
 message identity versus party identity and not occurrence injectivity alone.
+
+Conditional upper-layer duplicate consumption or installation is a separate
+discussion/extension boundary. It requires an explicit composition assumption
+and is not a final step of the core chain.
 
 The G1 identity result used here is:
 

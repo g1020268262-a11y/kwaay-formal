@@ -1,22 +1,29 @@
-# Identity Binding Analysis for DistinctPartyPerBatch
+# Party-Level Attribution Analysis for DistinctPartyPerBatch
 
 ## Status
 
-Frozen RQ-v2 supporting analysis.
+Frozen RQ-v2 **Supporting Analysis**. This document is not primary RQ-v2
+authority.
 
-This document explains the semantic role of the `DistinctPartyPerBatch`
-invariant in K-Waay `BatchReceive` semantics.
+The retained `-final` filename is a legacy document name only. It does not
+identify a separate final research version or override the canonical primary
+authority documents.
 
-The goal is not to claim that deployed K-Waay implementations are
-vulnerable, but to analyze why the identity-level constraint is
-meaningful and what semantic consequences arise when it is removed.
+This document explains the semantic role of `DistinctPartyPerBatch` at the
+modeled `BatchReceive` boundary and separates that formal result from the
+original K-Waay interface interpretation.
 
-This document does not claim:
+The evidence boundary is:
 
--   that `DistinctPartyPerBatch` is the only possible enforcement
-    mechanism;
--   that duplicate acceptance alone proves a deployed security failure;
--   that cryptographic primitives such as HMAC or encryption are broken.
+- **Formal evidence:** the relaxed, message-dedup, and party-admission
+  prototypes model party coordinates, slots, admission, rejection, `Send`, and
+  `ReceiverAccept` events.
+- **Conceptual analysis:** the original K-Waay interface motivates how a
+  party-indexed interpretation could extend from an accepted component to an
+  output object.
+
+The current prototypes do not model output keys, `KEY`, `TEST`, or application
+consumers.
 
 ------------------------------------------------------------------------
 
@@ -27,213 +34,64 @@ The central question is:
 > Why does K-Waay require entries in one `BatchReceive` execution to
 > correspond to distinct parties?
 
-The RQ-v2 analysis identifies `DistinctPartyPerBatch` as an
-identity-level invariant that maintains the intended relationship:
+At the formal evidence boundary, `DistinctPartyPerBatch` maintains the
+intended relationship:
 
-    Party Identity
-
-            ↓
-
-    Batch Slot
+    Party identity
 
             ↓
 
-    Output Key
+    Batch slot
 
-Without this invariant, the receiver may still compute outputs, but the
-meaning of those outputs with respect to party identity becomes
-ambiguous.
+            ↓
+
+    Accepted occurrence
+
+Removing the invariant permits two slots to carry the same modeled party,
+causing ambiguous party-level attribution across those accepted occurrences.
 
 ------------------------------------------------------------------------
 
-# 2. Identity Binding Semantics
+# 2. Identity Semantics
 
-A batch entry represents a claimed sender party.
+A batch entry carries a modeled party coordinate. This coordinate is neither a
+permanent party-to-key mapping nor an assertion about a deployed identity
+representation.
 
-Conceptually:
+With the invariant:
 
-    (pk_j, prek_j, m_j)
+    slot 1 → Party A → accepted occurrence 1
+    slot 2 → Party B → accepted occurrence 2
 
-            ↓
+Without the invariant:
 
-    party P_j
+    slot 1 → Party A → accepted occurrence 1
+    slot 2 → Party A → accepted occurrence 2
 
-            ↓
-
-    output key k_j
-
-The intended receiver-session-local relationship is:
-
-    P_j → k_j
-
-This does not represent a permanent global mapping between a party and a
-key.
-
-It represents that, within one receiver session, a party coordinate
-identifies one corresponding output component.
+The latter is a loss of the intended party-level interpretation: one modeled
+party is attributed to multiple positions in the same batch. It does not by
+itself prove equality, ambiguity, exposure, or compromise of derived keys.
 
 ------------------------------------------------------------------------
 
-# 3. Why DistinctPartyPerBatch Exists
+# 3. Why DistinctPartyPerBatch Matters
 
-The invariant requires:
-
-    for every i != j:
+The invariant requires, for every two distinct slots `i` and `j` in one batch:
 
     party_i != party_j
 
-Therefore a valid batch has:
+It therefore preserves the intended participant structure of that batch. A
+batch containing `Party A, Party A, Party C` does not have the same identity
+composition as a batch containing `Party A, Party B, Party C`.
 
-    slot 1:
-
-    Party A
-       |
-       v
-     k_A
-
-
-    slot 2:
-
-    Party B
-       |
-       v
-     k_B
-
-Each party corresponds to one batch component.
-
-As a result, party-indexed operations such as:
-
-    KEY(i,s,j)
-
-    TEST(i,s,j)
-
-    correctness checks
-
-have a unique interpretation.
+This is a semantic property of the batch, not a claim that one particular
+party-admission algorithm is mandatory.
 
 ------------------------------------------------------------------------
 
-# 4. Removing the Identity Constraint
+# 4. Duplicate Acceptance Consequence
 
-After removing `DistinctPartyPerBatch`, a batch may contain:
-
-    slot 1:
-
-    Party A
-       |
-       v
-     k_1
-
-
-    slot 2:
-
-    Party A
-       |
-       v
-     k_2
-
-The problem is not necessarily:
-
-    k_1 = k_2
-
-The problem is:
-
-    Party A → {k_1, k_2}
-
-The original one-party-one-component interpretation is lost.
-
-This creates an identity binding failure:
-
-    multiple logical batch positions
-
-            ↓
-
-    same modeled identity
-
-            ↓
-
-    ambiguous component attribution
-
-------------------------------------------------------------------------
-
-# 5. Impact on Security Interfaces
-
-K-Waay security interfaces reference components using party coordinates.
-
-For example:
-
-    KEY(i,s,j)
-
-    TEST(i,s,j)
-
-These interfaces assume that a party identifier selects one unique
-output.
-
-However, after repeated-party admission:
-
-    Party A → k_1
-
-    Party A → k_2
-
-the reference:
-
-    KEY(i,s,A)
-
-no longer identifies a unique component.
-
-The same ambiguity affects:
-
--   key exposure queries;
--   test queries;
--   correctness relationships;
--   partner/output correspondence.
-
-Therefore, `DistinctPartyPerBatch` preserves the uniqueness of
-party-indexed output interpretation.
-
-------------------------------------------------------------------------
-
-# 6. Batch Composition Integrity
-
-A batch does not only contain messages.
-
-It also represents a participant structure.
-
-The intended meaning is:
-
-    Batch structure
-
-    =
-
-    actual participant structure
-
-For example:
-
-Expected:
-
-    [
-     Party A,
-     Party B,
-     Party C
-    ]
-
-After identity constraint removal:
-
-    [
-     Party A,
-     Party A,
-     Party C
-    ]
-
-The batch no longer represents the intended set of contributors.
-
-This is a semantic integrity failure of the batch composition.
-
-------------------------------------------------------------------------
-
-# 7. Duplicate Acceptance Consequence
-
-The relaxed RQ-v2 prototype demonstrates:
+The relaxed RQ-v2 prototype establishes:
 
     DistinctPartyPerBatch removed
 
@@ -249,120 +107,64 @@ The relaxed RQ-v2 prototype demonstrates:
 
     duplicate receiver acceptance
 
-The duplicate acceptance trace is an operational consequence of losing
-the identity-level invariant.
-
-The deeper issue is that one modeled party identity can correspond to
-multiple accepted batch components.
-
-------------------------------------------------------------------------
-
-# 8. Output Attribution Ambiguity
-
-If outputs are later consumed according to their batch component:
-
-    Output1 ← Slot1
-
-    Output2 ← Slot2
-
-the system assumes:
-
-    Output1 belongs to Party A
-
-    Output2 belongs to Party B
-
-However, with repeated-party admission:
-
-    Slot1 = Party A
-
-    Slot2 = Party A
-
-both outputs originate from the same modeled identity.
-
-Therefore, the protocol loses a unique attribution relationship between:
-
-    party identity
-
-            ↓
-
-    output component
+The witness contains one `Send` occurrence and two `ReceiverAccept`
+occurrences for the same modeled sender identity and receiver batch context.
+This is direct symbolic evidence of reachable admission and acceptance
+behavior; it is not a proof about keys or upper-layer output objects.
 
 ------------------------------------------------------------------------
 
-# 9. Comparison with Message Deduplication
+# 5. Conceptual Security-Interface Motivation
 
-Message deduplication constrains message identity.
+The original K-Waay interface interpretation uses party-indexed references
+such as `KEY(i,s,j)` and `TEST(i,s,j)`. If a party coordinate is intended to
+select one corresponding output component, the distinct-party invariant
+provides the semantic basis for that interpretation.
 
-It can reject:
+With repeated-party admission, the same party coordinate labels more than one
+batch position. Under the conceptual interface interpretation, this creates
+ambiguous party-level attribution unless another selection rule is supplied.
 
-    Party A, Message M
-
-    Party A, Message M
-
-However, it does not enforce party uniqueness:
-
-    Party A, Message M1
-
-    Party A, Message M2
-
-may still be admitted.
-
-Therefore:
-
-    message uniqueness
-
-    !=
-
-    party identity uniqueness
-
-Message deduplication is an auxiliary comparison mechanism, not a
-replacement for identity-level admission.
+The current RQ-v2 prototypes do not directly formalize `KEY`, `TEST`, output
+keys, or correctness relations over keys. They therefore do not prove output-
+key confusion, failure of the security experiment, or key compromise.
 
 ------------------------------------------------------------------------
 
-# 10. Relation to HMAC
+# 6. Conditional Upper-Layer Impact
 
-HMAC addresses:
-
--   message authenticity;
--   message integrity;
--   confirmation.
-
-It does not establish:
-
--   party uniqueness;
--   batch admission rules;
--   identity-to-slot binding.
-
-Therefore HMAC and `DistinctPartyPerBatch` operate on different semantic
-dimensions.
+If a separate upper layer independently consumes every accepted occurrence,
+duplicate receiver acceptance can lead to duplicate consumption or
+installation under that explicit composition assumption. The current RQ-v2
+prototypes do not model this consumer, so such impact remains conditional.
 
 ------------------------------------------------------------------------
 
-# 11. Research Contribution
+# 7. Comparison Mechanisms
 
-The contribution is not simply that removing a protocol condition allows
-invalid executions.
+Message deduplication constrains message identity. It can reject an exact
+message repetition but can still admit two different messages carrying the
+same party coordinate. It is an auxiliary comparison and does not enforce
+party uniqueness.
 
-The contribution is:
-
-> `DistinctPartyPerBatch` preserves a unique identity-level
-> interpretation between batch components and derived outputs. Removing
-> this invariant changes the semantic structure assumed by party-indexed
-> security interfaces.
-
-This explains why the condition is meaningful beyond a simple input
-restriction.
+HMAC concerns message authenticity, integrity, or confirmation. It does not
+establish party uniqueness, batch admission, or identity-to-slot semantics.
 
 ------------------------------------------------------------------------
 
-# 12. Scope Boundary
+# 8. Research Contribution and Scope
 
-This analysis does not determine:
+The supported contribution is:
 
--   where a deployed implementation enforces the invariant;
--   whether existing implementations perform such checking;
--   whether all applications require identical enforcement;
--   arbitrary-size batch behavior beyond the bounded prototype.
+> `DistinctPartyPerBatch` preserves the intended party-level interpretation
+> between admitted slots and accepted occurrences. Removing the invariant
+> permits invalid repeated-party composition and duplicate acceptance in the
+> bounded symbolic model.
 
-These remain future implementation and composition questions.
+The original K-Waay interface motivates why this identity dependency may
+matter to party-indexed outputs. That motivation is conceptual and is not a
+formal claim about an output-key component.
+
+This analysis does not determine where a deployed implementation enforces the
+invariant, whether existing implementations perform such checking, or how the
+fixed two-slot result generalizes to arbitrary batch sizes.

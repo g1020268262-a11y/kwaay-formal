@@ -1,0 +1,13 @@
+RQ-v2 recorded verification commands
+
+These commands document the parse and proof invocations represented by the
+existing prototype execution report. They were not executed during final freeze
+cleanup.
+
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --parse-only tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --parse-only tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --parse-only tamarin/rq-v2-minimal/rqv2_party_admission.spthy
+
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --prove tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --prove tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin tamarin-prover --prove tamarin/rq-v2-minimal/rqv2_party_admission.spthy

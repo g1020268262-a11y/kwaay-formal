@@ -22,18 +22,39 @@ DistinctPartyPerBatch removed
         -> same-batch repeated-party admission
         -> invalid batch composition
         -> duplicate receiver acceptance
-        -> conditional upper-layer impact
+        -> loss of intended party-level identity interpretation
 ```
 
-`docs/rq-v2/g2-admission-semantics.md` is the semantic authority for the
-identity-level invariant and the R-, M-, and P-semantics comparison.
-`docs/rq-v2/prototype-execution-report.md` records the bounded prototype
-results and their limitations. Message deduplication is an auxiliary
-comparison; HMAC/message-authentication evidence belongs to the frozen M0-M5
-history and does not establish party uniqueness.
+Conditional upper-layer consumption or installation is a separate discussion
+boundary requiring an explicit composition assumption. It is not part of the
+core RQ-v2 argument chain.
+
+The current authority document set is:
+
+- `docs/rq-v2/research-contribution.md` for the frozen research claim and
+  non-claims;
+- `docs/rq-v2/g2-admission-semantics.md` for the identity-level invariant and
+  R-, M-, and P-semantics;
+- `docs/rq-v2/prototype-execution-report.md` for bounded prototype results and
+  limitations;
+- `docs/rq-v2/rq-v2-threat-model.md` for the batch-composition adversary; and
+- `docs/rq-v2/rq-v2-complete-argument-map.md` for the complete
+  evidence-bounded argument-map artifact.
+
+`invariant-necessity-analysis.md`, `invariant-vs-enforcement-analysis.md`,
+`party-output-binding-analysis-final.md`, and
+`security-interface-dependency-analysis.md` are Supporting Analysis, not
+primary authority.
+
+Message deduplication is an auxiliary comparison; HMAC/message-authentication
+evidence belongs to the frozen M0-M5 history and does not establish party
+uniqueness.
 
 The RQ-v2 overlay does not mutate, reinterpret, or replace frozen result bytes.
 It identifies which documents and supporting prototypes govern current claims.
+The static provenance package under `artifact/rqv2-freeze/` records the existing
+reported environment, model hashes, verification commands, and freeze roles;
+it does not represent a new prover run.
 
 ## Frozen M0-M5 scope and integrity
 

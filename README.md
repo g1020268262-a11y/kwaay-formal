@@ -21,10 +21,21 @@ formal consequences of removing that invariant.
 
 The active RQ-v2 authority is under [`docs/rq-v2/`](docs/rq-v2/):
 
+- [`research-contribution.md`](docs/rq-v2/research-contribution.md) freezes the
+  current research question, contribution, non-claims, and evidence boundary;
 - [`g2-admission-semantics.md`](docs/rq-v2/g2-admission-semantics.md) defines
   the party, message, session, and batch-admission semantics;
 - [`prototype-execution-report.md`](docs/rq-v2/prototype-execution-report.md)
-  records the bounded exploratory comparison.
+  records the bounded exploratory comparison;
+- [`rq-v2-threat-model.md`](docs/rq-v2/rq-v2-threat-model.md) defines the
+  batch-composition adversary and cryptographic boundary; and
+- [`rq-v2-complete-argument-map.md`](docs/rq-v2/rq-v2-complete-argument-map.md)
+  is the canonical argument-map artifact for the complete evidence-bounded
+  argument chain.
+
+Supporting analyses under `docs/rq-v2/` explain invariant necessity versus
+enforcement and the conceptual security-interface motivation. They do not
+override the primary authority above.
 
 The current research chain is:
 
@@ -33,8 +44,12 @@ DistinctPartyPerBatch removed
         -> same-batch repeated-party admission
         -> invalid batch composition
         -> duplicate receiver acceptance
-        -> conditional upper-layer duplicate consumption/install impact
+        -> loss of intended party-level identity interpretation
 ```
+
+Conditional upper-layer duplicate consumption or installation is a separate
+discussion/extension boundary. It requires an explicit composition assumption
+such as `C_install-v2` and is not part of the core RQ-v2 argument chain.
 
 The final contribution target is the necessity of
 `DistinctPartyPerBatch` for the intended batch identity semantics. Scoped

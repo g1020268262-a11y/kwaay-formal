@@ -1,0 +1,13 @@
+document	model	result	role
+docs/rq-v2/research-contribution.md	-	frozen claim and non-claim boundary	primary claim authority
+docs/rq-v2/g2-admission-semantics.md	-	DistinctPartyPerBatch and R/M/P semantics	primary semantic authority
+docs/rq-v2/prototype-execution-report.md	tamarin/rq-v2-minimal/	recorded bounded prototype results	primary evidence authority
+docs/rq-v2/rq-v2-threat-model.md	tamarin/rq-v2-minimal/rqv2_relaxed.spthy	batch-composition adversary boundary	primary threat-model authority
+docs/rq-v2/rq-v2-complete-argument-map.md	tamarin/rq-v2-minimal/	canonical evidence-bounded chain	primary argument-map artifact
+docs/rq-v2/invariant-necessity-analysis.md	-	conceptual motivation only	supporting analysis
+docs/rq-v2/invariant-vs-enforcement-analysis.md	tamarin/rq-v2-minimal/rqv2_party_admission.spthy	invariant versus mechanism distinction	supporting analysis
+docs/rq-v2/party-output-binding-analysis-final.md	-	conceptual party-attribution interpretation	supporting analysis
+docs/rq-v2/security-interface-dependency-analysis.md	-	conceptual security-interface dependency	supporting analysis
+docs/rq-v2/prototype-execution-report.md	tamarin/rq-v2-minimal/rqv2_relaxed.spthy	normal_relaxed_batch_exists=verified; one_send_two_accepts_exists=verified; receiver_accept_has_send=verified; receiver_accept_injective=falsified	relaxed formal evidence
+docs/rq-v2/prototype-execution-report.md	tamarin/rq-v2-minimal/rqv2_message_dedup.spthy	repeated_message_rejection_exists=verified; same_party_different_messages_batch_exists=verified; accepted_batch_has_distinct_messages=verified; receiver_accept_has_send=verified; receiver_accept_injective=verified	message-dedup auxiliary evidence
+docs/rq-v2/prototype-execution-report.md	tamarin/rq-v2-minimal/rqv2_party_admission.spthy	same_party_rejection_exists=verified; distinct_party_batch_exists=verified; accepted_batch_has_distinct_parties=verified; receiver_accept_has_send=verified; receiver_accept_injective=verified	party-admission formal evidence

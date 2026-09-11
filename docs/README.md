@@ -8,11 +8,45 @@ authority for the current research question.
 
 - [`../README.md`](../README.md): repository entry point and current research
   status.
+- [`rq-v2/research-contribution.md`](rq-v2/research-contribution.md): frozen
+  current research question, contribution, non-claims, and evidence boundary.
 - [`rq-v2/g2-admission-semantics.md`](rq-v2/g2-admission-semantics.md): active
   semantic authority for `DistinctPartyPerBatch`, the identity hierarchy, and
   relaxed/message-level/party-level admission.
 - [`rq-v2/prototype-execution-report.md`](rq-v2/prototype-execution-report.md):
   active report for the bounded exploratory RQ-v2 prototypes.
+- [`rq-v2/rq-v2-threat-model.md`](rq-v2/rq-v2-threat-model.md): current
+  batch-composition adversary and threat-model boundary.
+- [`rq-v2/rq-v2-complete-argument-map.md`](rq-v2/rq-v2-complete-argument-map.md):
+  canonical argument-map artifact and formal/conceptual evidence boundary.
+
+The canonical chain is:
+
+```text
+DistinctPartyPerBatch removed
+        -> same-batch repeated-party admission
+        -> invalid batch composition
+        -> duplicate receiver acceptance
+        -> loss of intended party-level identity interpretation
+```
+
+Conditional upper-layer consumption or installation is a separate discussion
+boundary and is not a final step of the canonical chain.
+
+## Supporting Analysis
+
+The following documents provide supporting interpretation and do not override
+the primary authority above:
+
+- [`rq-v2/invariant-necessity-analysis.md`](rq-v2/invariant-necessity-analysis.md):
+  conceptual motivation from the original K-Waay security interface.
+- [`rq-v2/invariant-vs-enforcement-analysis.md`](rq-v2/invariant-vs-enforcement-analysis.md):
+  distinction between invariant necessity and implementation enforcement.
+- [`rq-v2/party-output-binding-analysis-final.md`](rq-v2/party-output-binding-analysis-final.md):
+  supporting party-attribution analysis; the legacy `-final` filename does not
+  denote primary authority.
+- [`rq-v2/security-interface-dependency-analysis.md`](rq-v2/security-interface-dependency-analysis.md):
+  conceptual security-interface dependency analysis.
 
 RQ-v2 treats exact-message deduplication as an auxiliary comparison and HMAC as
 message-authenticity/integrity/confirmation background. The contribution
