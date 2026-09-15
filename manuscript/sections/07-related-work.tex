@@ -1,21 +1,167 @@
 % Sources:
+% - docs/paper/literature/citation-verification.tsv
+% - docs/paper/literature/literature-corpus.md
+% - docs/paper/literature/novelty-positioning.md
+% - docs/paper/literature/related-work-revision-plan.md
 % - docs/paper/related-work-draft.md
-% - docs/paper/literature/
+% - docs/paper/related-work-revision-report.md
 
 \subsection{K-Waay and Post-Quantum Asynchronous Key Exchange}
-% TODO: Preserve verified literature positioning.
 
-\subsection{Formal Analyses of Secure Messaging}
-% TODO.
+\kwaay is the direct protocol source for this work. Collins et al. construct a
+post-quantum, X3DH-like deniable authenticated key exchange using split-KEM
+techniques, introduce \batchreceive for receiver-side processing with reused
+ephemeral material, and provide computational security definitions and proofs
+for their construction \cite{collins2024kwaay}. The same specification states
+that the elements of one \batchreceive call correspond to different parties
+\cite[Sec.~5.1]{collins2024kwaay}. Thus, the distinct-party condition is prior
+work: this paper neither discovers it nor proposes a repair for an omitted
+check. Our question is instead what party-level relation the stated condition
+preserves when isolated at the batch-admission boundary.
 
-\subsection{Session- and Composition-Layer Security}
-% TODO.
+Formal analyses of asynchronous secure messaging establish a broader but
+different context. The analysis of Signal models X3DH and the Double Ratchet
+as a multi-stage authenticated key-exchange system and proves scoped
+cryptographic-session guarantees \cite{cohngordon2020signal}. Bhargavan et al.
+translate the PQXDH specification into ProVerif and CryptoVerif models,
+clarifying specification assumptions while analyzing authentication,
+confidentiality, post-quantum forward secrecy, and co-deployment
+\cite{bhargavan2024pqxdh}. The X3DH specification separately discusses
+authentication, replay, key reuse, and identity binding
+\cite{marlinspike2016x3dh}. These works show the importance of precise
+identity and session modeling, but their principal objects are two-party
+handshakes, ratcheting sessions, and cryptographic key security. Our model does
+not reverify those constructions; it isolates a same-batch party relation and
+ends at a symbolic receiver-acceptance event.
 
-\subsection{Identity, Names, and Membership Semantics}
-% TODO.
+\subsection{Formal Analysis of Secure-Messaging Composition}
 
-\subsection{Replay, Deduplication, and Injectivity}
-% TODO.
+Prior work has already established that composition layers can carry security
+obligations not implied by the guarantees of their components. Cremers,
+Jacomme, and Naska analyze an application that manages and merges multiple
+ratcheting sessions into a conversation, showing why conversation-level
+post-compromise security must be studied separately from the security of an
+individual chain \cite{cremers2023session}. This is the closest methodological
+precedent for treating an interface above a secure-messaging primitive as an
+independent formal object. The composition object is nevertheless different:
+their work concerns session-to-conversation management, whereas ours concerns
+party projections among entries of one receiver batch.
+
+Group-messaging research gives further examples of identity-bearing
+composition without defining the invariant studied here. TreeSync provides an
+executable formal account of authenticated MLS group-management state and its
+consistency and integrity properties \cite{wallez2023treesync}. Cryptographic
+administration formalizes authorization and membership consistency for group
+updates \cite{balbas2023administration}, while modular MLS analysis derives
+secure-group-messaging guarantees from explicitly separated cryptographic
+components \cite{alwen2021modular}. Cross-group work additionally shows that
+healing properties depend on how users and compromise effects are represented
+across groups \cite{cremers2021healing}. These results concern evolving group
+state, membership authorization, cryptographic component composition, or
+cross-group compromise. None is equivalent to requiring two positions in one
+\batchreceive batch to project to different modeled parties.
+
+The broader secure-messaging taxonomy likewise distinguishes participant
+consistency from speaker, destination, authentication, and message-oriented
+properties \cite{unger2015sok}. General compositional-verification frameworks
+formalize conditions under which component properties are preserved when
+protocols are combined \cite{andova2008compositional}. Together, this
+literature makes composition-level reasoning established prior art. Our use of
+Tamarin's multiset-rewriting trace framework is also inherited methodology
+\cite{meier2013tamarin}; the tool does not by itself enlarge the fixed
+two-slot abstraction. The present contribution is limited to a different
+composition object and property: same-batch party distinctness at a specific
+\kwaay interface.
+
+\subsection{Identity Semantics and Misbinding}
+
+The security relevance of principal names and identity interpretation is also
+well established. Lupetti, Dillema, and Stabell-Kul\o{} argue that names must
+remain unique in an appropriate correlated-session scope to retain their
+intended protocol meaning, and discuss local and global ways to verify that
+assumption \cite{lupetti2006names}. Chosen-name analysis shows, from another
+direction, that an adversary's ability to select or assign agent names changes
+the formal attack surface \cite{ceelen2008chosenname}. These works preclude a
+broad novelty claim for identity uniqueness or for treating identity
+representation as a modeling decision.
+
+Our property uses a narrower relation. It assumes an explicit party coordinate
+and asks whether the same coordinate may occupy two slots of one admitted
+batch. It does not analyze whether two principals share an ambiguous name, nor
+does it study adversarial synthesis of party identifiers. Applying the
+party/message/session/slot distinction to \batchreceive is therefore a
+protocol-specific use of established identity semantics, not a new general
+theory of identity.
+
+Misbinding and unknown key-share work is conceptually adjacent but defines a
+different failure. Formal misbinding analyses study cases in which an endpoint,
+device, user, or protocol run becomes associated with the wrong identity
+\cite{sethi2019misbinding}. The TLS/SDP unknown key-share analysis similarly
+concerns binding an external identity to another endpoint's key, fingerprint,
+or session \cite{thomson2021uks}. Our repeated-party composition instead uses
+the same modeled party coordinate twice; the current model proves neither an
+incorrect endpoint-to-identity association nor peer disagreement about a
+shared key. We therefore do not classify its witness as a misbinding, device
+pairing attack, or unknown key-share attack.
+
+\subsection{Injectivity, Replay, and Coordinate-Level Controls}
+
+Injective agreement is an established authentication notion. Lowe's hierarchy
+distinguishes aliveness, weak agreement, non-injective agreement, and
+injective agreement, with injectivity adding a one-to-one relation between the
+relevant protocol runs \cite{lowe1997hierarchy}. Sattarzadeh and Fallah give an
+automated type-based treatment of injective agreement and use unique matching
+begin/end resources to exclude duplicated receiver occurrences supported by
+one transmitted message \cite{sattarzadeh2015injective}. Replay and repeated
+acceptance are likewise explicit protocol concerns in the X3DH specification
+\cite{marlinspike2016x3dh}. Neither injectivity nor replay-sensitive
+correspondence is introduced by this paper.
+
+We use scoped occurrence injectivity only as a diagnostic control. As reported
+in Section~5, the message-level variant can maintain a one-to-one relation
+between the modeled sender and receiver occurrences while still admitting two
+different messages from the same party. This does not show that existing
+injectivity notions are inadequate; it shows that occurrence correspondence
+and party distinctness state different relations. Similarly, exact-message
+deduplication addresses equality of the message coordinate. The controlled
+model supports only the narrower conclusion that such a restriction does not
+imply the party-level objective under the encoded lifecycle. It does not imply
+that replay protection or deduplication is ineffective for its own purpose.
 
 \subsection{Positioning of This Work}
-% TODO: Cite selectively; do not force every verified source into this section.
+
+Within the verified literature corpus and search scope used for this paper, we
+found no prior analysis that isolates \kwaay's stated different-party
+\batchreceive condition and subjects it to the same controlled
+removal/message-level/party-level comparison. This statement is intentionally
+bounded: absence of a direct collision in the examined corpus is not an
+exhaustive priority claim. The closest work supplies the protocol and condition
+itself \cite{collins2024kwaay}, the composition-layer precedent
+\cite{cremers2023session}, the established semantics of scoped name uniqueness
+\cite{lupetti2006names}, and the occurrence-level injectivity vocabulary
+\cite{sattarzadeh2015injective}.
+
+Against that background, two aspects of the present analysis have direct
+support within the stated boundary. First, it gives a bounded symbolic
+necessity analysis of an already stated \batchreceive condition through
+relaxation and non-vacuous party-level restoration. Second, its message-level
+control exhibits the protocol-specific separation in which scoped occurrence
+injectivity holds while a same-party/different-message composition remains
+reachable. Both claims concern the fixed two-slot admission abstraction and
+its recorded properties, not arbitrary batch lengths or complete \kwaay
+executions.
+
+Other aspects require correspondingly modest positioning. The distinction
+between messages and identities, the general significance of name binding,
+injective correspondence, and composition-level reasoning all predate this
+work. Likewise, separating a semantic invariant from one possible enforcement
+mechanism is not presented as a new general framework. The contribution is to
+apply those established distinctions to the specific \batchreceive
+party-admission question and to compare a plausible coordinate-level control
+with direct preservation of the stated party relation.
+
+This positioning makes no claim that the original protocol omits its stated
+condition, that its computational theorem is invalid, or that a deployed
+implementation violates the invariant. It also does not infer a cryptographic
+break, misbinding, unknown key-share attack, application-level consequence, or
+an arbitrary-size theorem from the bounded receiver-event evidence.
