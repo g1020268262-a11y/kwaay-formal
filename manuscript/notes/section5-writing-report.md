@@ -165,9 +165,11 @@ execution report. This validates transcription, not a new prover execution.
 - TikZ failures: 0
 - Overfull/underfull box warnings: 0
 - Final PDF pages 8-14 visually checked: PASS; no clipping or overlap
-- Section 5 ends on page 13; the scoped float flush starts Section 6 on
-  page 14. This explicit review-format boundary leaves space at the end of
-  page 13 and prevents result floats from drifting into the back matter.
+- Section 5 ends and Section 6 begins on page 13. A scoped `\FloatBarrier`
+  keeps the Section 5 result floats before the discussion without forcing a
+  new page; Figure 2 and Table 3 remain on page 12.
+- After the boundary revision, PDF pages 12–17 were visually rechecked with
+  no clipping, overlap, orphaned heading, or cross-section float.
 - The build launcher reports a non-fatal Perl locale fallback; the final
   LaTeX log contains no compilation or reference warnings.
 - QA page images remain in `tmp/pdfs/section5-revision/` as untracked scratch

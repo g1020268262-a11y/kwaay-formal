@@ -1,31 +1,217 @@
-% Source: docs/paper/discussion-draft.md
+% Sources:
+% - manuscript/sections/02-batchreceive-identity-problem.tex
+% - manuscript/sections/03-security-objective-threat-model.tex
+% - manuscript/sections/04-formal-modeling.tex
+% - manuscript/sections/05-formal-analysis.tex
+% - docs/paper/discussion-draft.md
+% - docs/paper/limitations-draft.md
+% - docs/paper/contribution-evidence-map.md
+% - docs/rq-v2/rq-v2-complete-argument-map.md
+% - docs/rq-v2/g2-admission-semantics.md
+% - docs/rq-v2/rq-v2-threat-model.md
+% Supporting invariant/enforcement and interface analyses were consulted only
+% for interpretation; they supply no additional machine-checked result.
 
-\subsection{Why the Result Is Not Just Guard Removal}
-% TODO: Identify the message-level controlled comparison as the non-tautological
-% evidence.
+\subsection{Why the Result Is More Than Guard Removal}
 
-\subsection{Message Identity vs. Party Identity}
-% TODO: Develop the core conceptual distinction.
+Removing a condition \(A_1\neq A_2\) unsurprisingly permits the variables to
+be equal. A comparison that stopped at this syntactic observation would say
+little about the role of the condition. The question addressed by the
+controlled analysis is instead which identity relation must be preserved to
+maintain the intended interpretation of one admitted batch.
 
-\subsection{Invariant vs. Enforcement}
-% TODO: Separate the semantic obligation from one modeled enforcement.
+Section~5 connects this question to three complementary observations. In the
+relaxed model, repeated input participates in a complete reachable lifecycle:
+one matching modeled \(\mathsf{Send}\) origin precedes one admitted batch and
+two distinct \receiveraccept occurrences for the same tuple and batch
+context. This connects structural relaxation to receiver-event multiplicity,
+rather than merely to a possible assignment of party variables. The
+observable endpoint remains a modeled receiver event, not an application
+action.
 
-\subsection{Relation to Authentication and Replay}
-% TODO: Keep authentication, HMAC, replay, deduplication, and admission identity
-% as distinct analysis dimensions.
+The message-level variant supplies the decisive control. It excludes the
+exact duplicate-acceptance pattern and satisfies message distinction and
+scoped occurrence injectivity, yet permits two different messages from the
+same party to be accepted together. Those acceptances have different modeled
+sender origins. Thus, success at preventing repeated acceptance of one exact
+origin does not resolve the party-composition question. Finally, the
+party-level variant preserves the target relation while a valid distinct-party
+batch remains reachable; the resulting safety property is therefore
+non-vacuous.
+
+The comparison in Figure~\ref{fig:identity-control-comparison} consequently
+distinguishes the target semantic relation from plausible substitutes over
+other coordinates. It is a protocol-specific analysis of the stated
+\batchreceive condition, not a new general verification methodology. Its
+value lies in identifying what the modeled controls preserve and what their
+success leaves undecided.
+
+\subsection{Party Identity, Message Identity, and Occurrence Injectivity}
+
+The three dimensions answer different questions. Party identity determines
+which modeled principal an entry projects to. Message identity compares its
+symbolic message coordinate with that of another entry. Scoped occurrence
+injectivity concerns whether one matching sender occurrence can support more
+than one matching acceptance occurrence in the same batch and receiver
+context. The last relation is about event multiplicity, not the number of
+distinct principals represented by different messages.
+
+One party \(A\) may originate tuples with
+\(\mathit{sid}_1\neq\mathit{sid}_2\) and \(m_1\neq m_2\). Accepting each of
+these tuples once does not repeat either exact sender origin, but placing
+both in one batch repeats the party projection. Equation~\eqref{eq:message-not-party}
+expresses the specific non-implication exposed by the message-level control:
+message distinction together with scoped occurrence injectivity does not
+entail party distinction.
+
+These properties should therefore not be read as successive guarantees in a
+hierarchy culminating in party uniqueness. Nor does this comparison establish
+every possible logical independence among them; relationships can depend on
+the modeled freshness, matching, and scope assumptions. Occurrence
+injectivity serves here as a diagnostic and comparison property. It separates
+reuse of one exact origin from legitimate multiple origins belonging to one
+party. The primary objective remains the party-level composition invariant,
+not injectivity as a newly introduced notion.
+
+\subsection{Invariant and Enforcement}
+
+\distinctparty states what relationship holds among entries of one admitted
+batch, as defined in Equation~\eqref{eq:distinct-party-objective}. An
+enforcement mechanism determines how that relationship is maintained. The
+party-level rule directly compares \(A_1\) and \(A_2\), providing one
+executable realization of the invariant in the symbolic abstraction. This
+realization makes the comparison concrete; it does not turn that particular
+check into the only permissible implementation.
+
+In principle, a trusted caller could construct only party-distinct batches,
+a batch builder could maintain the relation during composition, or a
+receiver-side admission layer could check it before processing. Another
+component with the relevant party attribution could also be responsible.
+These are architectural possibilities, not evaluated alternatives or findings
+about where a deployed \kwaay implementation performs enforcement.
+
+The design obligation is conditional on the intended semantics: if different
+batch positions are interpreted as contributions from different parties, the
+component responsible for construction or admission must preserve that
+party-level relationship. Necessity here concerns preserving this
+interpretation at the modeled boundary, not every cryptographic property of
+\kwaay or one mandatory checking algorithm.
+
+The representation used for that obligation also needs to be explicit. The
+symbol \(A\) is a protocol-principal coordinate, not automatically an account
+identifier, public-key encoding, username, or database record. A concrete
+integration needs a justified mapping to that coordinate before comparing
+representations. Neither that mapping nor the trust placed in the component
+that supplies it is validated by the present model.
+
+\subsection{Relation to Authentication, Replay, and Deduplication}
+
+An entry-level origin relation and a relation among batch participants are
+different obligations. In the current abstraction, sender-origin
+correspondence says that an accepted tuple has a prior matching
+\(\mathsf{Send}(A,\mathit{sid},m)\). It does not establish full \kwaay
+authentication. Even this correspondence can hold for both entries while
+their joint composition repeats a party, as the message-level example
+demonstrates. Entry validity, in this modeled origin sense, does not imply
+composition validity. More generally, an authentication contract that only
+relates each item to its origin does not additionally state pairwise party
+inequality across batch positions.
+
+The relaxed witness has a replay interpretation because the same exposed
+tuple is supplied to two positions. The identity question is nevertheless
+not exhausted by that pattern. The message-level witness uses different
+messages and sender occurrences, so its party repetition does not depend on
+replaying one exact message. Removing the first pattern therefore leaves a
+separate composition case to consider.
+
+Exact-message deduplication succeeds at the purpose encoded in the control:
+the equal-message rejection branch is reachable, accepted messages are
+distinct within the modeled context, and the scoped occurrence-injectivity
+property holds. Its insufficiency for party uniqueness is not evidence that
+deduplication is useless. It reflects a difference between the coordinate
+being compared and the relation being sought. Individual-entry properties,
+exact-repeat controls, and batch-composition properties consequently warrant
+separate analysis rather than treatment as interchangeable solutions.
 
 \subsection{Design Implications}
-% TODO: Use conservative integration-layer language; do not claim a deployed
-% implementation omits the check.
 
-\subsection{Conditional Upper-Layer Interpretation}
-% TODO: If C_install-v2 is included, label it as conditional historical
-% composition evidence.
+\paragraph{Treat composition as a semantic boundary.}
+When several individually legitimate entries are combined into one protocol
+action, their joint arrangement can be subject to an additional condition.
+For the interface studied here, checking origins does not discharge the
+distinct-party obligation. A specification or integration contract should
+state the admissible participant relationship as well as the conditions on
+individual entries.
 
-\subsection{Scope and Limitations}
-% Source: docs/paper/limitations-draft.md
-% TODO: Concentrate the principal modeling and interpretation limitations here:
-% fixed two-slot admission abstraction; no arbitrary-n theorem; no full
-% cryptographic model; no deployment vulnerability, KEY/TEST failure, or
-% unconditional application consequence. Keep reproducibility mechanics in
-% Section 5 and the appendix.
+\paragraph{Constrain the coordinate used by the interpretation.}
+If the required interpretation is distinct parties, inequality of messages,
+sender sessions, or slot indices cannot stand in for party inequality merely
+because each distinguishes some aspect of an entry. A proposed substitute
+needs an argument connecting its representation and comparison to the target
+relation. The message-level control supplies a concrete case where that
+connection does not hold.
+
+\paragraph{Assign responsibility for preserving the relation.}
+An integration should make explicit which component maintains the stated
+condition and what party attribution that component relies on. The condition
+reported in Section~2 is not evidence that a deployed implementation omits
+enforcement, and the present analysis does not prescribe adding a particular
+check to \kwaay. It identifies an obligation whose realization may belong to
+the caller, batch builder, or admission layer.
+
+Together, these implications suggest a discipline for this interface:
+identify the semantic coordinate on which composition depends, state its
+invariant, and assign responsibility for preserving it. Any propagation from
+duplicate acceptance to application state would additionally require an
+explicit consumer model; it is outside the direct evidence presented here.
+
+\subsection{Limitations}
+
+\paragraph{Fixed two-slot evidence.}
+The semantic definition allows arbitrary finite batch size, but the
+machine-checked evidence fixes \(n=2\). Two slots represent the smallest
+violating pair; this does not establish how larger batches behave or prove
+the comparison for arbitrary \(n\). The claims are batch-local and do not
+supply cross-batch, rollback, or restart guarantees.
+
+\paragraph{Admission-level abstraction.}
+The model isolates composition, admission, and origin-matched receiver
+events rather than the complete symbolic \kwaay construction. KEM and
+signature computations, prekey cryptography, key derivation, ratcheting, and
+compromise behavior are omitted. Fresh sender-session and message coordinates
+and persistent origin facts are explicit prototype choices, not a
+reconstruction of all concrete message behavior. The analysis therefore
+provides neither a full-protocol security proof nor evidence of a
+cryptographic secrecy or authentication failure.
+
+\paragraph{Receiver-event endpoint.}
+Direct evidence ends at \receiveraccept. The prototypes contain no output-key
+objects, \textsc{Key}/\textsc{Test} interfaces, or application consumer.
+Duplicate acceptance alone consequently establishes neither failure of a
+key interface nor duplicate installation, state corruption, or application
+compromise. Conceptual motivations involving downstream interpretation do
+not extend this evidence boundary.
+
+\paragraph{Rejection evidence.}
+The rejection properties establish existence of a trace, not eventual
+rejection of every invalid collected batch. Moreover,
+\path{same_party_rejection_exists} does not bind its two \(\mathsf{Send}\)
+tuples to the rejected batch. As distinguished in Section~5, rejection of a
+collected same-party/different-message pair follows from the rule semantics,
+not from a tuple-bound witness supplied by that lemma.
+The prototype records an abstract batch-rejected state. It does not establish
+whether a concrete integration would discard one entry, reject the whole
+batch, return an error, or expose another failure behavior.
+
+\paragraph{Representation and enforcement.}
+The model treats party coordinates as explicit symbolic values. It does not
+validate identity resolution, key-to-party or database mappings, enforcement
+by a caller, or distributed maintenance of the relation. The proposed
+placement options are therefore design considerations rather than verified
+implementation choices or evidence of a deployed defect.
+
+Finally, the artifact records model hashes, commands, environment, and
+outcomes, but contains no raw prover transcripts; manuscript preparation did
+not include an independent prover rerun. Larger-batch analyses and explicit
+protocol or consumer refinements would be needed to assess extensions beyond
+the present boundary.
