@@ -1,0 +1,214 @@
+\subsection{K-Waay and BatchReceive}
+
+\kwaay is a post-quantum, X3DH-like deniable authenticated key-exchange
+protocol constructed from KEMs, signatures, and a split-KEM
+\cite{collins2024kwaay}. Its complete construction contains substantially
+more cryptographic structure than is required for the question studied here.
+We therefore focus on the receiver-side operation that processes several
+sender-associated inputs within a single protocol action: \batchreceive.
+
+In the protocol interface, a sender invokes \textsf{Send} using its local
+state and a receiver prekey bundle, obtaining a session key and a protocol
+message. When receiver ephemeral key material is reused, several sender
+messages may correspond to the same receiver ephemeral state. The receiver
+then invokes \batchreceive for that state with a vector of inputs
+\cite[Sec.~4.1]{collins2024kwaay}. Writing the vector as
+
+\begin{equation}
+  S = \bigl((\mathit{pk}_{j_1},\mathit{prek}_{j_1},m_{j_1}),\ldots,
+             (\mathit{pk}_{j_d},\mathit{prek}_{j_d},m_{j_d})\bigr),
+  \qquad d \geq 1,
+  \label{eq:kwaay-batch-input}
+\end{equation}
+
+each component contains the public key of the claimed sender, the claimed
+sender prekey bundle, and the corresponding protocol message. For each
+component, \batchreceive verifies the relevant prekey information and performs
+the required decapsulation operations using the receiver's long-term and
+ephemeral secret material. If a split-KEM decapsulation fails, the construction
+rejects the batch as a whole by returning an all-$\bot$ result vector;
+otherwise it returns the corresponding vector of derived-key results,
+individual elements of which may still be $\bot$
+\cite[Sec.~5.1, Fig.~10]{collins2024kwaay}.
+
+The purpose of this description is not to reproduce the complete handshake or
+its computational security proof. Rather, it identifies the protocol object
+relevant to this work: one receiver-side invocation may process multiple
+sender-associated components using a shared receiver-side state.
+
+This grouping makes relations among components relevant to the execution.
+Each position is associated with a claimed sender, a message, and a
+receiver-side key result. Our analysis focuses on the boundary at which such
+a collection of components is treated as one admissible batch. We use the
+term \emph{batch admission} for this analytical boundary. It is terminology
+introduced in this work and does not denote a separate algorithm in the
+original \kwaay specification.
+
+\subsection{The Stated Distinct-Party Condition}
+
+The full version of the \kwaay construction explicitly states that, for a
+given \batchreceive call, each element of $S$ is assumed to correspond to a
+different party \cite[Sec.~5.1, after Fig.~10]{collins2024kwaay}. This is a
+same-batch condition: it constrains the relationship among components
+appearing within one \batchreceive invocation. It does not state that a party
+participates only once globally, runs only one session, or produces only one
+protocol message.
+
+We refer to this condition as \distinctparty. This name is introduced by this
+work; the original \kwaay paper states the condition in natural language. The
+condition identifies a same-batch party relation but does not prescribe a
+particular implementation mechanism for enforcing it. In particular, the
+statement itself does not specify whether enforcement is performed by a
+client, server, caller, or other batching component. Nor do we infer that a
+deployed implementation necessarily omits such a check. Section~3 formally
+defines the relation and the adversarial and evidentiary boundary under which
+it is studied.
+
+\subsection{Identity Coordinates}
+
+To distinguish the party-level condition from other forms of uniqueness, we
+represent the information relevant to batch admission using the abstract entry
+
+\begin{equation}
+  E_i=(A_i,\mathit{sid}_i,m_i),
+  \label{eq:abstract-entry}
+\end{equation}
+
+where $A_i$ denotes a modeled protocol principal, $\mathit{sid}_i$ denotes the
+sender-session/occurrence coordinate used in the analysis, and $m_i$ denotes
+sender-produced protocol content. This tuple is an analytical abstraction
+rather than the wire representation of a \kwaay input.
+
+The notation $\mathit{sid}_i$ follows the corresponding coordinate in the
+symbolic model and does not import session semantics beyond that encoding.
+Likewise, $A_i$ should not be interpreted as an account record, public-key byte
+string, prekey, or implementation object. It represents the protocol-principal
+coordinate over which the distinct-party assumption is interpreted.
+
+The analysis keeps the following coordinates separate.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Identity coordinates relevant to batch admission.}
+  \label{tab:identity-coordinates}
+  \small
+  \begin{tabularx}{\linewidth}{@{}lXX@{}}
+    \toprule
+    Coordinate & What it distinguishes & What distinctness does not imply \\
+    \midrule
+    Party $A$ & A modeled protocol principal & A distinct message, occurrence,
+      prekey, or key encoding \\
+    Message $m$ & Sender-produced protocol content & A different originating party \\
+    Occurrence $\mathit{sid}$ & A sender-session/occurrence used in the analysis
+      & A different party \\
+    Slot $i$ & A position within one batch & A different party or message \\
+    Batch $B$ & One grouped receiver-side execution & Global uniqueness of its
+      participants \\
+    Receiver state $r$ & Receiver state shared by the grouped execution & The
+      identity or number of contributing parties \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+These coordinates induce different equivalence relations. A single party may
+participate through multiple protocol occurrences and produce distinct
+messages. Consequently,
+
+\begin{equation}
+  A_i=A_j
+  \quad\text{is consistent with}\quad
+  \mathit{sid}_i\neq\mathit{sid}_j
+  \ \land\ 
+  m_i\neq m_j.
+  \label{eq:same-party-different-message}
+\end{equation}
+
+Likewise, $i\neq j$ establishes only that two components occupy distinct batch
+positions; it does not imply $A_i\neq A_j$. Batch identity and receiver state
+establish a common processing context but do not determine the number of
+distinct parties represented inside that context.
+
+This distinction is also important when interpreting authentication evidence.
+Evidence binding one protocol component to party $A$ can establish the origin
+associated with that component. It does not, by itself, establish that $A$
+occurs at most once among all components of the batch. Similarly, inequality
+between two messages distinguishes protocol content but does not establish
+inequality between their originating party coordinates.
+
+\subsection{Motivating Identity Problem}
+
+Consider the candidate two-position batch
+
+\begin{equation}
+  B^{\star}
+  =\bigl((A,\mathit{sid}_1,m_1),
+          (A,\mathit{sid}_2,m_2)\bigr),
+  \qquad
+  \mathit{sid}_1\neq\mathit{sid}_2,
+  \quad m_1\neq m_2.
+  \label{eq:motivating-composition}
+\end{equation}
+
+The two components occupy different positions, arise from different modeled
+occurrences, and contain different messages, yet both are associated with the
+same party coordinate $A$. A restriction that excludes only duplicate
+messages therefore does not exclude this composition merely from
+$m_1\neq m_2$. In contrast, the distinct-party condition excludes it because
+both entries have the same party coordinate.
+
+The example exposes the logical non-implication
+
+\begin{equation}
+  m_1\neq m_2
+  \ \not\Longrightarrow\ 
+  \mathsf{party}(E_1)\neq\mathsf{party}(E_2).
+  \label{eq:message-does-not-imply-party}
+\end{equation}
+
+Composition~\eqref{eq:motivating-composition} is a motivating analytical
+example rather than a machine-checked attack trace. In particular, it lies
+outside executions satisfying \kwaay's stated distinct-party assumption.
+Its purpose is to identify the semantic question studied in this work: what
+changes when the same-batch relation over party identities is relaxed, and
+whether a restriction defined over another coordinate can substitute for that
+relation.
+
+The threat model and formal variants used to answer these questions are
+defined in Sections~3 and~4.
+
+\subsection{Research Questions}
+
+The preceding distinction motivates three research questions.
+
+\paragraph{RQ1: invariant removal.}
+Which same-batch party compositions become reachable when the
+\distinctparty requirement is removed from an otherwise comparable admission
+model?
+
+\paragraph{RQ2: component-level consequence.}
+Within the receiver-side abstraction used in the formal model, can relaxation
+of the distinct-party condition result in multiple accepted components
+associated, through the modeled origin relation, with one matching sender
+occurrence?
+
+Here, an accepted component denotes an event in our symbolic abstraction and
+should not be confused with the single accept/reject status assigned to a
+receiver session in the original \kwaay security model.
+
+\paragraph{RQ3: coordinate substitution.}
+Is a restriction defined only over message identity sufficient to imply the
+same-batch party relation imposed by \distinctparty under the modeled
+lifecycle, or can message-distinct components still share a party coordinate?
+
+The explicit party-coordinate restriction used later is a positive control,
+not a separate unknown: it provides a controlled comparison for the target
+relation while the message-coordinate restriction tests the proposed
+substitution.
+
+These questions distinguish the primary party-level property from the
+component-level behavior used to observe its consequences. They do not
+presuppose a break of \kwaay's cryptographic primitives, a vulnerability in a
+particular deployed implementation, or a unique mechanism by which the
+distinct-party condition must be enforced. Section~3 defines the corresponding
+attacker capabilities, assumptions, and non-goals; Section~4 describes their
+realization in the symbolic model.

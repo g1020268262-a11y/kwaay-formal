@@ -1,0 +1,28 @@
+\begin{table}[p]
+  \centering
+  \caption{Recorded outcomes for the three two-slot admission variants.}
+  \label{tab:verification-results}
+  \small
+  \begin{tabularx}{\linewidth}{@{}lXlr@{}}
+    \toprule
+    Variant & Property & Outcome & Steps \\
+    \midrule
+    Relaxed & \texttt{normal\_relaxed\_batch\_exists} & verified & 10 \\
+    Relaxed & \texttt{one\_send\_two\_accepts\_exists} & verified & 13 \\
+    Relaxed & \texttt{receiver\_accept\_has\_send} & verified & 8 \\
+    Relaxed & \texttt{receiver\_accept\_injective} & falsified & 13 \\
+    \midrule
+    Message-level & \texttt{repeated\_message\_rejection\_exists} & verified & 4 \\
+    Message-level & \texttt{same\_party\_different\_messages\_batch\_exists} & verified & 16 \\
+    Message-level & \texttt{accepted\_batch\_has\_distinct\_messages} & verified & 31 \\
+    Message-level & \texttt{receiver\_accept\_has\_send} & verified & 8 \\
+    Message-level & \texttt{receiver\_accept\_injective} & verified & 33 \\
+    \midrule
+    Party-level & \texttt{same\_party\_rejection\_exists} & verified & 5 \\
+    Party-level & \texttt{distinct\_party\_batch\_exists} & verified & 17 \\
+    Party-level & \texttt{accepted\_batch\_has\_distinct\_parties} & verified & 31 \\
+    Party-level & \texttt{receiver\_accept\_has\_send} & verified & 8 \\
+    Party-level & \texttt{receiver\_accept\_injective} & verified & 33 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}

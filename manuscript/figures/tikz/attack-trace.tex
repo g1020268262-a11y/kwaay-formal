@@ -1,0 +1,23 @@
+\begin{figure}[p]
+  \centering
+  \begin{tikzpicture}[
+      node distance=5mm,
+      >=Latex,
+      every node/.style={font=\small,align=center},
+      tracebox/.style={draw,rounded corners,minimum width=.82\linewidth,
+        minimum height=8mm,inner sep=3pt}
+    ]
+    \node[tracebox] (send) {Valid modeled $\mathsf{Send}(A,\mathit{sid},m)$};
+    \node[tracebox,below=of send] (compose)
+      {Adversary places the same valid entry/party in two batch slots};
+    \node[tracebox,below=of compose] (admit)
+      {\batchreceive without a party-distinctness admission condition};
+    \node[tracebox,below=of admit] (accept)
+      {\receiveraccept~\#1 \qquad \receiveraccept~\#2};
+    \draw[->] (send) -- (compose);
+    \draw[->] (compose) -- (admit);
+    \draw[->] (admit) -- (accept);
+  \end{tikzpicture}
+  \caption{Counterexample trace in the relaxed admission model.}
+  \label{fig:relaxed-counterexample}
+\end{figure}

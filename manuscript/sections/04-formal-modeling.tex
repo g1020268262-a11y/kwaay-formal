@@ -1,0 +1,206 @@
+% Sources:
+% - tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+% - tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+% - tamarin/rq-v2-minimal/rqv2_party_admission.spthy
+% - docs/paper/formal-model-draft.md
+% - docs/rq-v2/g2-admission-semantics.md
+% - docs/rq-v2/rq-v2-threat-model.md
+
+\subsection{Modeling Objective and Abstraction}
+
+Our model is not a symbolic verification of the complete \kwaay construction.
+It isolates the identity relation applied when two sender-associated entries
+are composed and admitted for one abstract \batchreceive execution. This
+choice removes cryptographic and application-layer detail that is orthogonal
+to the question in Section~3: which identity coordinate is constrained at the
+batch-admission boundary? The model therefore retains explicit party,
+sender-session, message, batch, and receiver-context coordinates while
+abstracting the cryptographic computations that produce and process concrete
+K-Waay messages.
+
+We encode the abstraction in Tamarin, which represents executions by
+multiset-rewriting rules and records trace-relevant action facts
+\cite{meier2013tamarin}. The action facts let us state reachability,
+correspondence, injectivity, and identity-distinction properties without
+treating the model as executable K-Waay pseudocode. Rules model only the
+lifecycle needed to expose the admission decision and its component-level
+acceptance boundary.
+
+The batch size is fixed at two. Since \distinctparty is a pairwise relation,
+any violation in a larger batch contains at least one pair of positions with
+equal party projections. Two slots therefore form the smallest batch
+configuration in which the violating relation can be represented. This
+justifies the witness shape, but it does not establish full-protocol behavior
+or interactions among entries for arbitrary batch sizes.
+
+We compare three controlled variants of one abstraction: relaxed admission,
+a message-level restriction, and party-level admission. They share the same
+sender-origin mechanism, symbolic network, two-slot collection, fresh batch
+and receiver-context coordinates, and sequential component-processing path.
+The principal analytical variation is the predicate applied after collection.
+The guarded variants also contain their corresponding rejection branches and
+inequality actions, so we do not claim that the theory files differ in only a
+single line. Table~\ref{tab:admission-model-design} summarizes the design
+without reporting any analysis outcome.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Controlled design of the batch-admission variants.}
+  \label{tab:admission-model-design}
+  \small
+  \begin{tabularx}{\linewidth}{@{}
+    >{\raggedright\arraybackslash}p{0.20\linewidth}
+    >{\raggedright\arraybackslash}p{0.43\linewidth}
+    >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Variant & Admission decision & Analytical role \\
+    \midrule
+    Relaxed admission & No inequality guard and no rejection branch &
+      Invariant-removed baseline \\
+    Message-level restriction & Admit if $m_1\neq m_2$; provide an
+      equal-message rejection branch & Coordinate-surrogate control \\
+    Party-level admission & Admit if $A_1\neq A_2$; provide an equal-party
+      rejection branch & Two-slot realization of \distinctparty \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\subsection{Common Two-Slot Lifecycle}
+
+Each entry is represented by the tuple
+\begin{equation}
+  E=(A,\mathit{sid},m),
+  \label{eq:model-entry-tuple}
+\end{equation}
+where $A$ is a modeled protocol principal, $\mathit{sid}$ is a fresh
+sender-session or sender-occurrence coordinate, and $m$ is a fresh message
+coordinate. Party creation records a persistent principal fact. A sender
+occurrence then generates fresh $\mathit{sid}$ and $m$, emits the action
+\(\mathsf{Send}(A,\mathit{sid},m)\), exposes
+\(\langle A,\mathit{sid},m\rangle\) to the symbolic adversarial network, and
+stores a persistent origin fact for exactly that tuple. Reuse of the party
+fact permits one modeled principal to originate multiple tuples without
+identifying the party with a session or message.
+
+The symbolic adversary may later supply exposed tuples to the collection
+rules. A fresh batch is scoped by a batch identifier $\mathit{bid}$ and a
+receiver-context coordinate $\mathit{rst}$. The latter is a symbolic identity
+for the shared receiver-side context; it is not a representation of the full
+K-Waay receiver state. Collection advances through two linear states: the
+first stores \(E_1\) and opens the second position, while the second stores
+\(E_2\) and produces one collected pair under the same
+\((\mathit{bid},\mathit{rst})\) context.
+
+After collection, the selected variant either rejects the pair or creates the
+state for processing the first component. An admitted path emits
+\(\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})\). Processing is sequential:
+the first component can emit
+\(\receiveraccept(A_1,\mathit{sid}_1,m_1,\mathit{bid},\mathit{rst})\) and then
+opens the second component; the second can emit the analogous event for
+\(E_2\) and reaches a completed-batch state. This is the symbolic lifecycle of
+our abstraction, not a reconstruction of the complete K-Waay control flow.
+
+Each processing step requires the persistent origin fact matching the full
+tuple \((A_i,\mathit{sid}_i,m_i)\). Knowledge of the same party coordinate is
+therefore insufficient to justify a receiver event for a different tuple.
+Conversely, persistence permits the same exact origin fact to support more
+than one processing step if the corresponding tuple is collected more than
+once. The \receiveraccept action does not carry an explicit slot index; its
+event occurrence and the linear processing state distinguish the two steps,
+while $\mathit{bid}$ and $\mathit{rst}$ keep them in the same modeled context.
+
+\subsection{Relaxed Admission Model}
+
+The relaxed admission model is the invariant-removed baseline. Once both
+entries have been collected, its admission rule emits
+\(\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})\) and starts component
+processing without requiring either $A_1\neq A_2$ or $m_1\neq m_2$. It has no
+post-collection rejection branch.
+
+Accordingly, the admission rule itself does not rule out an exact repeated
+tuple, nor does it rule out two distinct tuples that share a party coordinate.
+This statement describes the rule's syntactic guard only. Whether either
+composition participates in a complete trace satisfying a later analysis
+property is deferred to Section~5. The model is not presented as ``broken
+K-Waay'' and does not assert how the real protocol or a deployed caller handles
+such inputs.
+
+\subsection{Message-Level Restriction Model}
+
+The message-level restriction model changes the post-collection decision by
+comparing $m_1$ and $m_2$. For a collected pair with syntactically equal
+messages, the model provides a rejection branch that emits
+\(\mathsf{Reject}(\mathit{bid},\mathit{rst})\) and reaches a modeled
+batch-rejected state. The admitted branch records
+\(\mathsf{Neq}(m_1,m_2)\) together with
+\(\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})\). A global restriction
+excludes any trace containing \(\mathsf{Neq}(x,x)\), giving the action its
+intended symbolic inequality meaning.
+
+The admitted branch therefore requires $m_1\neq m_2$, but contains no
+predicate requiring $A_1\neq A_2$. This variant is a controlled surrogate: it
+constrains the message coordinate while leaving party equality unconstrained.
+The logical non-implication
+\[
+  m_1\neq m_2
+  \ \not\Longrightarrow\ 
+  A_1\neq A_2
+\]
+motivates the comparison, but is not itself a model outcome. Nor is this
+variant proposed as a concrete mitigation for K-Waay; it exists to test
+whether a restriction over one identity coordinate can stand in for the
+party-level objective.
+
+\subsection{Party-Level Admission Model}
+
+The party-level admission model applies the corresponding decision to
+$A_1$ and $A_2$. For a collected pair with the same party coordinate, the
+model provides a rejection branch that emits
+\(\mathsf{Reject}(\mathit{bid},\mathit{rst})\) and reaches the rejected state.
+The admitted branch records \(\mathsf{Neq}(A_1,A_2)\) and
+\(\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})\), subject to the same
+global inequality restriction used by the message-level model. Message and
+session coordinates are not substituted for the party comparison.
+
+This rule is one executable realization of \distinctparty for the two-slot
+abstraction: it directly constrains the coordinate named by the invariant.
+It does not identify a unique enforcement mechanism for an implementation;
+the same relation might instead be maintained by a caller, batch builder, or
+another trusted component. Those deployment choices are outside the model.
+Section~5 evaluates the properties and non-vacuity obligations produced by
+this modeled realization rather than assuming them here.
+
+\subsection{Events and Analysis Properties}
+
+Five action-fact forms expose the common observation interface. The action
+\(\mathsf{Send}(A,\mathit{sid},m)\) records one modeled sender origin.
+\(\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})\) records passage through
+the admitted branch for one batch context; it is not the full protocol
+implementation. A component-level
+\(\receiveraccept(A,\mathit{sid},m,\mathit{bid},\mathit{rst})\) records
+processing under an exact persistent sender-origin fact. The guarded variants
+add \(\mathsf{Reject}(\mathit{bid},\mathit{rst})\) for their modeled
+post-collection rejection decision and \(\mathsf{Neq}(x,y)\) for the
+restricted inequality encoding. The completed and rejected batch markers are
+state facts rather than action events.
+
+Section~5 uses these observations for four property classes. First,
+\emph{reachability} obligations ask whether representative admitted or
+rejected behaviors, including normal distinct-party behavior and candidate
+repetition patterns, have a trace. Such obligations are also needed to rule
+out vacuous safety caused by admitting no batch. Second,
+\emph{sender-origin correspondence} requires every \receiveraccept event to
+have an earlier \(\mathsf{Send}\) event for the same complete
+\((A,\mathit{sid},m)\) tuple.
+
+Third, \emph{scoped occurrence injectivity} asks whether, in the presence of
+a prior matching \(\mathsf{Send}\), two \receiveraccept occurrences agreeing
+on \((A,\mathit{sid},m,\mathit{bid},\mathit{rst})\) must be the same event
+occurrence. This property concerns one exact sender-origin tuple within one
+batch and receiver context; it is not equivalent to party uniqueness.
+Finally, \emph{identity-coordinate safety} asks whether different accepted
+occurrences from one batch carry different messages in the message-restricted
+variant or different parties in the party-restricted variant. These property
+classes deliberately separate message identity, sender-occurrence
+injectivity, and party identity. Their machine-checked outcomes, witness
+traces, and comparative interpretation appear only in Section~5.

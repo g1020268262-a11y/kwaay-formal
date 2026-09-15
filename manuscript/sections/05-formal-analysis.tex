@@ -1,0 +1,36 @@
+% Sources:
+% - docs/paper/security-analysis-draft.md
+% - docs/paper/evaluation-draft.md
+% - docs/rq-v2/prototype-execution-report.md
+
+\subsection{Relaxed Admission: What Becomes Reachable?}
+% TODO: Report the recorded relaxed-admission outcomes and explain the bounded
+% counterexample as batch composition rather than forgery.
+\input{figures/tikz/attack-trace}
+% Scaffold-only float flush: remove once surrounding prose provides stable
+% float placement.
+\clearpage
+
+\subsection{Message-Level Control: What Does It Repair?}
+% TODO: Explain why occurrence injectivity can hold while party uniqueness
+% still fails.
+
+\subsection{Party-Level Admission: What Restores the Intended Semantics?}
+% TODO: Report restoration and non-vacuity without claiming a unique mechanism.
+
+\subsection{Controlled Comparison}
+\input{figures/tikz/identity-control-comparison}
+\input{tables/model-comparison}
+% Scaffold-only float flush: remove once surrounding prose provides stable
+% float placement.
+\clearpage
+
+\subsection{Verification Summary}
+\input{tables/verification-results}
+% Scaffold-only float flush: remove once surrounding prose provides stable
+% float placement.
+\clearpage
+
+\subsection{Verification Environment}
+% TODO: State verified Tamarin/Maude versions and concise commands. Keep full
+% environment, hashes, and command transcripts in the appendix.

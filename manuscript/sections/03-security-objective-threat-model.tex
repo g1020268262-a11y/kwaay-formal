@@ -1,0 +1,123 @@
+% Sources:
+% - docs/paper/threat-model-draft.md
+% - docs/paper/problem-statement-draft.md
+% - docs/paper/contribution-evidence-map.md
+% - docs/rq-v2/rq-v2-threat-model.md
+% - docs/rq-v2/g2-admission-semantics.md
+% - docs/rq-v2/rq-v2-complete-argument-map.md
+
+\subsection{Party-Level Batch Identity Objective}
+
+Section~2 identified K-Waay's stated distinct-party condition and separated
+party identity from message, occurrence, slot, and batch coordinates. We now
+formalize the same-batch relation used as the analysis objective. Let
+\(B=(E_1,\ldots,E_n)\) be an ordered batch and let
+\(\mathsf{party}(E_i)\) denote the modeled principal associated with entry
+\(E_i\). We define
+\begin{equation}
+  \distinctparty(B)
+  \mathrel{\triangleq}
+  \forall\,1 \leq i < j \leq n,\;
+  \mathsf{party}(E_i)\neq\mathsf{party}(E_j).
+  \label{eq:distinct-party-objective}
+\end{equation}
+Every pair of distinct positions in one admitted batch must therefore project
+to distinct modeled principals. This is a relation over party coordinates; it
+is not obtained by comparing message contents, occurrence identifiers, or slot
+indices.
+
+The objective is local to one batch. It does not require a party to occur only
+once throughout the protocol, across batches, or across sessions, and it does
+not impose global uniqueness on messages or sender occurrences. We describe a
+composition that fails Equation~\eqref{eq:distinct-party-objective} only as
+violating the party-level batch invariant. Such a violation does not by itself
+imply malformed cryptographic material, authentication failure, or a break of
+an underlying primitive.
+
+The invariant is therefore a structural predicate on the composition admitted
+as one batch, rather than a cryptographic authenticity predicate for an
+individual entry. It states which party projections may coexist, while leaving
+the mechanism that obtains and checks those projections outside the objective
+itself.
+
+Equation~\eqref{eq:distinct-party-objective} is stated for arbitrary finite
+\(n\) to define the intended relation independently of the model bound. The
+machine-checked analysis fixes \(n=2\), where the objective reduces to
+\(\mathsf{party}(E_1)\neq\mathsf{party}(E_2)\). We claim no full-protocol proof
+for arbitrary batch sizes. At this point we also do not assume that violating
+the invariant has an observable receiver-side consequence; Sections~4 and~5
+define and evaluate that question.
+
+\subsection{Batch-Composition Adversary}
+
+We consider a symbolic network adversary whose relevant capability in this
+analysis is control over batch composition. It acts at the interface between
+the availability of sender-associated candidate entries and the decision to
+admit their composition as one batch. Candidate tuples are produced by the
+modeled sender lifecycle and exposed on the symbolic network. The adversary may
+retain and replay an exposed tuple, select among exposed tuples, arrange
+selected tuples in either batch position, and present the resulting
+composition to the admission step. These capabilities concern input
+composition; they do not grant control over the creation of honest-party
+state.
+
+The threat model distinguishes two forms of repeated input. First, the
+adversary may present the same exposed tuple twice, so that \(E_1=E_2\).
+Second, it may select two distinct sender-origin tuples
+\begin{equation}
+  E_1=(A,\mathit{sid}_1,m_1),
+  \qquad
+  E_2=(A,\mathit{sid}_2,m_2),
+  \qquad
+  E_1\neq E_2,
+  \label{eq:repeated-party-capability}
+\end{equation}
+that nevertheless share the party projection \(A\). In the second case, the
+tuples may differ in occurrence, message, or both. The capability is therefore
+one of batch composition rather than identity forgery: it does not require the
+adversary to impersonate or invent a second modeled principal.
+
+For claims about an accepted component, sender--receiver matching is defined
+over the complete modeled origin tuple \((A,\mathit{sid},m)\), not over \(A\)
+alone.
+Although an adversary may syntactically recombine values learned from the
+network, a recombined tuple does not have a matching sender origin unless that
+exact tuple was produced by the modeled sender lifecycle. Party equality by
+itself therefore supplies no origin evidence. Section~4 gives the concrete
+event and state encoding of this relation.
+
+The analyzed composition does not rely on key recovery, a break of the
+underlying KEM or signature mechanisms, or forgery of cryptographic material
+abstracted away by the model. These exclusions bound the abstraction rather
+than proving the omitted mechanisms secure. The model also does not determine
+how a concrete implementation exposes, buffers, or schedules corresponding
+wire-format inputs. Whether an available composition passes an admission
+predicate or leads to later receiver events is a verification question, not an
+assumption of this threat model. Section~4 compares admission predicates
+expressed over different identity coordinates.
+
+\subsection{Analysis Boundary}
+
+The direct formal object contains the sender lifecycle needed to produce
+origin tuples, symbolic network composition, batch admission or rejection,
+the sender-origin relation, and component-level \receiveraccept events. The
+origin relation used in correspondence and injectivity properties matches the
+full \((A,\mathit{sid},m)\) tuple. Each \receiveraccept event is a modeling
+event local to our admission abstraction and should not be read as a
+protocol-level acceptance event defined by K-Waay. Introducing it assumes no
+verification outcome.
+
+Direct machine-checked evidence ends at \receiveraccept. The model omits
+K-Waay's cryptographic computations, compromise behavior, downstream key
+interfaces, ratcheting state, and application consumers. In particular, it
+contains no formal \textsc{Key} or \textsc{Test} objects and does not directly
+establish confidentiality, key indistinguishability, or full-protocol
+authentication failure.
+
+Consequences for upper-layer state installation would require an additional
+composition assumption connecting each modeled acceptance occurrence to that
+consumer and are not asserted here. The analysis likewise makes no claim about
+a deployed implementation, an exploitable wire-level vulnerability, or the
+validity of K-Waay's original cryptographic theorem. Under this boundary, we
+study the research questions stated earlier; Section~4 defines their symbolic
+realization.
