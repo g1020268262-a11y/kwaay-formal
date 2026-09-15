@@ -44,6 +44,19 @@
 - Theories claimed to differ in only one line: NO
 - Party admission described as the unique implementation mechanism: NO
 
+## Review-Revision Audit
+
+- Internal-sounding `Coordinate-surrogate control` replaced with
+  `Message-level comparison control`: YES
+- `sid` described as a symbolic sender-session coordinate distinguishing
+  sender occurrences: YES
+- `m` described as a symbolic message coordinate in the abstraction: YES
+- Reachability wording separated representative behavior, repeated-input
+  compositions, and the distinct-party batch obligation where relevant: YES
+- Repeated defensive `broken K-Waay` disclaimer removed: YES
+- Two-slot justification, full-tuple origin matching, and scoped injectivity
+  explanation retained: YES
+
 ## Events and Property Classes
 
 - `Send`, `BatchReceive`, `ReceiverAccept`, `Reject`, and `Neq` checked: YES
@@ -74,7 +87,7 @@
 
 ## Approximate Word Count
 
-- `texcount` sum: 1,239 words/units (1,168 prose words, 20 heading words,
+- `texcount` sum: 1,225 words/units (1,154 prose words, 20 heading words,
   and 6 caption words; mathematical tokens are counted separately by the
   tool).
 - This is within the accepted compact range for a complete modeling section.
@@ -96,4 +109,4 @@
 
 ## Verdict
 
-`SECTION_4_READY_FOR_REVIEW`
+`SECTION_4_READY_FOR_FREEZE`

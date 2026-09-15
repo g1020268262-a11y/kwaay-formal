@@ -1,36 +1,275 @@
 % Sources:
-% - docs/paper/security-analysis-draft.md
-% - docs/paper/evaluation-draft.md
+% - tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+% - tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+% - tamarin/rq-v2-minimal/rqv2_party_admission.spthy
 % - docs/rq-v2/prototype-execution-report.md
+% - docs/rq-v2/rq-v2-complete-argument-map.md
 
-\subsection{Relaxed Admission: What Becomes Reachable?}
-% TODO: Report the recorded relaxed-admission outcomes and explain the bounded
-% counterexample as batch composition rather than forgery.
+\subsection{Relaxed Admission: Repeated-Party Counterexample}
+
+We first examine the model in which admission does not compare either the
+party or message coordinates. The existence lemma
+\path{normal_relaxed_batch_exists} is verified. It supplies a
+basic non-vacuity check: the relaxed lifecycle can reach an admitted batch and
+a subsequent component acceptance. The lemma does not require a
+distinct-party batch and is not used as evidence for the target invariant.
+
+The central relaxed-model result is
+\path{one_send_two_accepts_exists}, which is verified. Its witness
+contains coordinates $A,\mathit{sid},m,\mathit{bid},\mathit{rst}$ and ordered
+event occurrences satisfying
+\begin{equation}
+  \begin{aligned}
+    &\mathsf{Send}(A,\mathit{sid},m)@s, \\
+    &\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})@b, \\
+    &\receiveraccept(A,\mathit{sid},m,
+       \mathit{bid},\mathit{rst})@r_1, \\
+    &\receiveraccept(A,\mathit{sid},m,
+       \mathit{bid},\mathit{rst})@r_2, \\
+    &s < b < r_1 < r_2.
+  \end{aligned}
+  \label{eq:relaxed-duplicate-witness}
+\end{equation}
+The two acceptance occurrences are distinct because $r_1<r_2$, yet they
+agree on the complete party, sender-session, message, batch, and receiver-
+context tuple. The lemma additionally requires that every matching
+\(\mathsf{Send}(A,\mathit{sid},m)\) occurrence is the displayed occurrence
+at $s$. Thus, the claim is one matching modeled sender origin for this exact
+tuple followed by two receiver-acceptance occurrences; it does not exclude
+unrelated sends carrying other coordinates.
+
+Figure~\ref{fig:relaxed-counterexample} presents the corresponding abstract
+trace. The same exposed tuple is supplied to both positions of the two-slot
+batch. After one \(\mathsf{BatchReceive}\) event, sequential component
+processing emits the two acceptance occurrences shown in
+Equation~\eqref{eq:relaxed-duplicate-witness}.
+
 \input{figures/tikz/attack-trace}
-% Scaffold-only float flush: remove once surrounding prose provides stable
-% float placement.
-\clearpage
 
-\subsection{Message-Level Control: What Does It Repair?}
-% TODO: Explain why occurrence injectivity can hold while party uniqueness
-% still fails.
+The universal diagnostic property gives the matching negative result:
+\path{receiver_accept_injective} is falsified, with a counterexample found.
+This falsifies only the scoped occurrence-injectivity property
+defined in Section~4. In contrast,
+\path{receiver_accept_has_send} is verified, so each accepted
+tuple in the model retains a prior matching \(\mathsf{Send}\) event. The
+counterexample is therefore not produced by accepting an originless tuple;
+one persistent legitimate origin supports both processing occurrences.
 
-\subsection{Party-Level Admission: What Restores the Intended Semantics?}
-% TODO: Report restoration and non-vacuity without claiming a unique mechanism.
+The injectivity lemma is diagnostic because it relates event multiplicity to
+one exact sender-origin tuple. Its conclusion requires two matching acceptance
+occurrences to coincide whenever both follow a matching Send. The recorded
+counterexample satisfies those premises but has $r_1\neq r_2$, which is why
+the universal property is falsified rather than merely left unproved. Taken
+together, the normal-execution lemma and the origin-correspondence lemma rule
+out two uninformative explanations for the result: a dead model and receiver
+acceptance without a modeled sender origin. Neither supporting lemma, however,
+imposes any relation between the party projections of the two batch positions.
+
+These statements separate the formal result from its immediate semantic
+interpretation. Formally, the relaxed two-slot model admits the duplicate-
+acceptance witness above. Semantically, placing that exact tuple in both
+positions also repeats its party projection, so the admitted composition does
+not satisfy \distinctparty. This is a counterexample in the relaxed admission
+model, not an execution satisfying K-Waay's retained distinct-party condition
+and not a claim of full-protocol authentication failure.
+
+\subsection{Message-Level Restriction as a Control}
+
+The message-level model asks whether constraining a different identity
+coordinate removes the relaxed witness and whether that suffices for the
+party-level objective. The lemma
+\path{repeated_message_rejection_exists} is verified, showing
+that the equal-message rejection branch has a reachable trace. This is an
+existence result, not a liveness guarantee that every collected equal-message
+pair must eventually take that branch.
+
+The corresponding universal message property,
+\path{accepted_batch_has_distinct_messages}, is verified.
+For two distinct \receiveraccept occurrences sharing the modeled batch and
+receiver context, the accepted message coordinates must differ. The scoped
+\path{receiver_accept_injective} property is also verified.
+Consequently, the one-matching-Send/two-matching-acceptances pattern tested in
+the relaxed model is excluded by this universal property. The supporting
+\path{receiver_accept_has_send} correspondence remains verified.
+These results concern message distinction, exact-tuple occurrence
+injectivity, and modeled sender origin; none is by itself a party-uniqueness
+property.
+
+The message-distinction property is local to two different acceptance
+occurrences in one \((\mathit{bid},\mathit{rst})\) context. It permits the
+other coordinates to vary and concludes only that their messages differ; it
+does not impose global uniqueness on $m$ across batches or executions.
+Because collecting the exact same tuple twice necessarily repeats its message
+coordinate, this property excludes the precise relaxed witness shape from an
+admitted message-restricted execution. It says nothing, however, about whether
+two distinct messages project to the same party.
+
+The decisive control result is
+\path{same_party_different_messages_batch_exists}, which is verified.
+Its witness contains two legitimate sender origins
+\[
+  \mathsf{Send}(A,\mathit{sid}_1,m_1)
+  \qquad\text{and}\qquad
+  \mathsf{Send}(A,\mathit{sid}_2,m_2),
+\]
+where \(\mathit{sid}_1\neq\mathit{sid}_2\) and \(m_1\neq m_2\). Both entries
+are admitted into the same \((\mathit{bid},\mathit{rst})\) context and produce
+distinct \receiveraccept occurrences. Unlike the relaxed witness, this trace
+does not reuse one exact sender tuple: it uses two different sender
+occurrences and two different symbolic messages belonging to the same modeled
+party.
+
+More precisely, both matching Send events precede the batch-admission event,
+which in turn precedes the two ordered acceptance occurrences. Each accepted
+tuple therefore has its own modeled sender origin. The witness does not depend
+on reusing the persistent origin fact for one exact tuple: equality is retained
+only at the party coordinate. This distinction makes the message-level model
+a stronger analytical control than simply rerunning the relaxed trace under a
+new guard.
+
+The message-level restriction therefore succeeds at the coordinates it
+constrains. It makes the equal-message rejection branch reachable, establishes
+message distinction for accepted occurrences, and satisfies the scoped
+occurrence-injectivity property. Nevertheless, the positive same-party trace
+shows that
+\begin{equation}
+  m_1\neq m_2
+  \quad\text{and scoped occurrence injectivity}
+  \quad\not\Longrightarrow\quad
+  A_1\neq A_2.
+  \label{eq:message-not-party}
+\end{equation}
+Message-level restriction is thus an analytical control rather than a proposed
+repair: it removes the exact duplicate pattern at this modeled level while
+leaving party repetition possible through distinct, legitimately originated
+tuples.
+
+\subsection{Party-Level Restoration}
+
+The party-level model constrains the coordinate named by \distinctparty. The
+existence lemma \path{same_party_rejection_exists} is verified and establishes
+rejection-branch reachability. Its formula requires two different sender-origin
+tuples from the same party before a \(\mathsf{Reject}(\mathit{bid},\mathit{rst})\)
+event, but does not bind those tuples to the rejected batch. We therefore do
+not use this result as evidence that those particular entries were rejected.
+As with the message-level rejection lemma, reachability also does not imply
+that every invalid collected pair eventually progresses to rejection.
+
+\path{RejectRepeatedParty} provides a separate rule-level explanation.
+It matches a collected pair with equal party coordinates, regardless of
+equality or inequality between its
+sender-session and message coordinates. A collected same-party,
+different-message pair therefore enables this rejection rule. This explains
+how party-level admission addresses the composition class left open by the
+message-level control; it is a rule-level observation, not a tuple-bound
+rejection witness established by the existence lemma.
+
+The primary safety property,
+\path{accepted_batch_has_distinct_parties}, is verified.
+Within the fixed two-slot model, two distinct \receiveraccept occurrences in
+one \((\mathit{bid},\mathit{rst})\) context must carry distinct party
+coordinates. This is the coordinate-specific property corresponding to the
+batch identity objective, rather than a statement about global party
+uniqueness or complete K-Waay executions.
+
+Concretely, the universal property ranges over two different acceptance
+occurrences carrying the same \(\mathit{bid}\) and \(\mathit{rst}\) and
+concludes $A_1\neq A_2$. It does not require their messages or sender-session
+coordinates to be equal. The result consequently matches the projection used
+by \distinctparty: distinction is evaluated at the party coordinate while the
+remaining entry coordinates retain their separate meanings.
+
+The safety result is non-vacuous. The lemma
+\path{distinct_party_batch_exists} is verified and exhibits
+two distinct modeled parties, two legitimate sender origins, one admitted
+batch, and two receiver-acceptance occurrences. Party-level admission
+therefore does not establish the property merely by rejecting every batch.
+The supporting results are consistent with this behavior:
+\path{receiver_accept_has_send} and
+\path{receiver_accept_injective} are both verified.
+
+Together, the universal party-distinction property and valid-batch witness
+show a non-vacuous restoration of \distinctparty within the modeled two-slot
+admission boundary. They establish one direct realization of the invariant;
+they do not identify a uniquely required implementation algorithm or
+enforcement location.
 
 \subsection{Controlled Comparison}
+
+The comparison contributes more than the syntactic observation that omitting
+\(A_1\neq A_2\) permits equal party variables. In relaxed admission, the
+absence of an identity guard participates in a complete trace where the same
+origin tuple occupies both positions, one modeled Send precedes two matching
+acceptances, and scoped occurrence injectivity is falsified. The
+message-level variant then changes only the constrained identity dimension:
+exact-message repetition is rejected on a reachable branch and occurrence
+injectivity is verified, but a same-party pair remains reachable when its
+messages and sender-session coordinates differ. Finally, party-level
+admission checks the target coordinate, verifies party distinction between
+accepted occurrences, and retains a reachable valid distinct-party batch.
+
 \input{figures/tikz/identity-control-comparison}
-\input{tables/model-comparison}
-% Scaffold-only float flush: remove once surrounding prose provides stable
-% float placement.
-\clearpage
+
+The message-level model supplies the crucial separation. A model may satisfy
+message distinction and scoped occurrence injectivity while failing to
+establish party distinction. Message equality, event-occurrence injectivity,
+and party identity are therefore separate analysis dimensions, as summarized
+in Figure~\ref{fig:identity-control-comparison}; success for the first two
+does not entail the third.
+
+The attribution to the admission coordinate is controlled by the common model
+structure described in Section~4. Sender creation, symbolic-network exposure,
+two-slot collection, origin matching, batch and receiver-context coordinates,
+and sequential processing are held constant. The guarded models add their
+coordinate-specific admission and rejection branches, but do not obtain their
+different conclusions by changing how accepted components are processed.
+
+This controlled comparison supports a deliberately scoped necessity argument.
+Removing \distinctparty makes repeated-party composition admissible and, in
+the relaxed model, yields the duplicate-acceptance witness. Restricting only
+messages removes that exact occurrence-level duplication but not the
+same-party/different-message composition. Directly constraining the party
+coordinate restores the target relation non-vacuously. Hence, within the
+modeled two-slot admission boundary, preserving a constraint on party
+coexistence is necessary for preserving the intended party-level batch
+identity semantics. The result does not make that constraint necessary for
+all K-Waay security properties, nor does it select a unique enforcement
+mechanism.
 
 \subsection{Verification Summary}
+
+Table~\ref{tab:verification-results} lists the complete set of 14 recorded
+outcomes used in this analysis. The step counts are verification metadata and
+are not part of the comparative security claim.
+
 \input{tables/verification-results}
-% Scaffold-only float flush: remove once surrounding prose provides stable
-% float placement.
-\clearpage
+
+The existence lemmas provide witness reachability, whereas the unqualified
+all-traces lemmas express safety, correspondence, or scoped injectivity. In
+particular, \path{repeated_message_rejection_exists} and
+\path{same_party_rejection_exists} show that the corresponding rejection
+branches are reachable; they do not establish that every invalid input
+eventually reaches rejection. Similarly, the three
+\path{receiver_accept_has_send} results establish modeled sender-origin
+correspondence for the exact tuple and should not be read as full-protocol
+authentication theorems.
 
 \subsection{Verification Environment}
-% TODO: State verified Tamarin/Maude versions and concise commands. Keep full
-% environment, hashes, and command transcripts in the appendix.
+
+We report the recorded executions of the three model versions rather than a
+new prover run during manuscript preparation. The recorded environment used
+Tamarin 1.12.0 with Maude 3.5.1 under WSL Ubuntu 24.04. The reported results
+correspond to the model versions identified by SHA-256 hashes in the artifact.
+Full lemma definitions are supplied in the accompanying model files under
+\path{tamarin/rq-v2-minimal/}. The static evidence package under
+\path{artifact/rqv2-freeze/} contains the recorded commands, environment
+metadata, and model hashes; it does not contain raw prover transcripts.
+
+Taken together, the three models separate message equality, acceptance-
+occurrence injectivity, and party identity. The message-level control shows
+that satisfying the first two does not imply the third, while party-level
+admission directly constrains the coordinate named by \distinctparty. The
+broader design interpretation of this separation is developed in Section~6.
+
+% Keep Section 5 floats before the subsequent discussion and back matter.
+\clearpage

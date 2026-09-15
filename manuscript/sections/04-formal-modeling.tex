@@ -58,7 +58,7 @@ without reporting any analysis outcome.
     Relaxed admission & No inequality guard and no rejection branch &
       Invariant-removed baseline \\
     Message-level restriction & Admit if $m_1\neq m_2$; provide an
-      equal-message rejection branch & Coordinate-surrogate control \\
+      equal-message rejection branch & Message-level comparison control \\
     Party-level admission & Admit if $A_1\neq A_2$; provide an equal-party
       rejection branch & Two-slot realization of \distinctparty \\
     \bottomrule
@@ -73,8 +73,9 @@ Each entry is represented by the tuple
   \label{eq:model-entry-tuple}
 \end{equation}
 where $A$ is a modeled protocol principal, $\mathit{sid}$ is a fresh
-sender-session or sender-occurrence coordinate, and $m$ is a fresh message
-coordinate. Party creation records a persistent principal fact. A sender
+symbolic sender-session coordinate used to distinguish sender occurrences,
+and $m$ is a fresh symbolic message coordinate in the abstraction. Party
+creation records a persistent principal fact. A sender
 occurrence then generates fresh $\mathit{sid}$ and $m$, emits the action
 \(\mathsf{Send}(A,\mathit{sid},m)\), exposes
 \(\langle A,\mathit{sid},m\rangle\) to the symbolic adversarial network, and
@@ -121,9 +122,7 @@ Accordingly, the admission rule itself does not rule out an exact repeated
 tuple, nor does it rule out two distinct tuples that share a party coordinate.
 This statement describes the rule's syntactic guard only. Whether either
 composition participates in a complete trace satisfying a later analysis
-property is deferred to Section~5. The model is not presented as ``broken
-K-Waay'' and does not assert how the real protocol or a deployed caller handles
-such inputs.
+property is deferred to Section~5.
 
 \subsection{Message-Level Restriction Model}
 
@@ -185,10 +184,10 @@ restricted inequality encoding. The completed and rejected batch markers are
 state facts rather than action events.
 
 Section~5 uses these observations for four property classes. First,
-\emph{reachability} obligations ask whether representative admitted or
-rejected behaviors, including normal distinct-party behavior and candidate
-repetition patterns, have a trace. Such obligations are also needed to rule
-out vacuous safety caused by admitting no batch. Second,
+\emph{reachability} obligations ask whether representative admitted and
+rejected behaviors, repeated-input compositions, and, where relevant, a valid
+distinct-party batch have a trace. Such obligations are also needed to rule out
+vacuous safety caused by admitting no batch. Second,
 \emph{sender-origin correspondence} requires every \receiveraccept event to
 have an earlier \(\mathsf{Send}\) event for the same complete
 \((A,\mathit{sid},m)\) tuple.

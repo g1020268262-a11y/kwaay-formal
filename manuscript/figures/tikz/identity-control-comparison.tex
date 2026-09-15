@@ -1,4 +1,4 @@
-\begin{figure}[p]
+\begin{figure}[!htbp]
   \centering
   \begin{tikzpicture}[
       >=Latex,
@@ -12,13 +12,17 @@
     ]
     \node[root] (goal) {Party-level batch identity requirement};
     \node[variant,below=10mm of goal] (message)
-      {\textbf{Message-level restriction}\\Occurrence injectivity restored; party uniqueness not restored};
+      {\textbf{Message-level restriction}\\$m_1\neq m_2$\\
+       Scoped injectivity verified; same-party/different-message batch reachable};
     \node[variant,left=4mm of message] (relaxed)
-      {\textbf{Relaxed admission}\\Repeated-party composition; duplicate acceptance};
+      {\textbf{Relaxed admission}\\No coordinate restriction\\
+       Duplicate acceptance reachable};
     \node[variant,right=4mm of message] (party)
-      {\textbf{Party-level restriction}\\Party uniqueness restored; valid batch reachable};
+      {\textbf{Party-level admission}\\$A_1\neq A_2$\\
+       Party distinction verified; valid batch reachable};
     \node[conclusion,below=9mm of message] (distinction)
-      {Message identity, occurrence injectivity, and party identity are distinct analysis dimensions.};
+      {Message identity $\neq$ occurrence injectivity $\neq$ party identity\\
+       (analytical distinction, not value inequality)};
     \draw[->] (goal) -- (relaxed);
     \draw[->] (goal) -- (message);
     \draw[->] (goal) -- (party);
@@ -26,6 +30,6 @@
     \draw[->] (message) -- (distinction);
     \draw[->] (party) -- (distinction);
   \end{tikzpicture}
-  \caption{Controlled comparison of admission identity coordinates.}
+  \caption{Controlled comparison of the three admission variants.}
   \label{fig:identity-control-comparison}
 \end{figure}
