@@ -1,3 +1,104 @@
 \section{Exact Model Properties}
 \label{app:model-properties}
-% TODO: Add exact lemma formulations and their model association.
+
+The source files below are authoritative for the formulas. Listings are
+included directly from those files, without rewriting quantifiers or event
+arguments. The two common lemmas have identical text in all three models and
+are printed once; together with the eight variant-specific lemmas, they
+account for all 14 model--property instances in
+Table~\ref{tab:verification-results}. The model hashes in
+Appendix~\ref{app:reproducibility} identify this source version.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Model files and property-instance counts.}
+  \label{tab:appendix-model-files}
+  \small
+  \begin{tabularx}{\linewidth}{@{}lXrr@{}}
+    \toprule
+    Variant & File under \path{tamarin/rq-v2-minimal/} & Common & Specific \\
+    \midrule
+    Relaxed & \path{rqv2_relaxed.spthy} & 2 & 2 \\
+    Message-level & \path{rqv2_message_dedup.spthy} & 2 & 3 \\
+    Party-level & \path{rqv2_party_admission.spthy} & 2 & 3 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+The source-to-abstraction mapping is given in
+Table~\ref{tab:source-abstraction}. Each file has the common creation,
+collection, and processing rules described in Section~4; its admission
+rules select the relaxed, message, or party predicate. The guarded files
+also contain the following restriction:
+\begin{lstlisting}[style=modelcode]
+restriction Inequality:
+  "All x #i. Neq(x,x) @ #i ==> F"
+\end{lstlisting}
+This restricts traces containing inequality actions. It does not require a
+collected pair to make progress, so it contributes no liveness guarantee.
+
+% Keep each lemma intact across page boundaries; first blocks also keep
+% their subsection heading and explanation with the first formula.
+\medskip
+\noindent\begin{minipage}{\linewidth}
+\subsection{Common correspondence and scoped injectivity}
+These all-traces formulas occur in each of the three theories. The first
+requires a prior exact sender origin. The second fixes both \texttt{bid} and
+\texttt{rst}; it does not forbid reuse in another batch or require every Send
+to have a matching acceptance.
+\lstinputlisting[style=modelcode,firstline=95,
+  lastline=100]{../tamarin/rq-v2-minimal/rqv2_relaxed.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=102,
+  lastline=109]{../tamarin/rq-v2-minimal/rqv2_relaxed.spthy}
+\end{minipage}\par\medskip
+
+\noindent\begin{minipage}{\linewidth}
+\subsection{Relaxed reachability}
+The first existence lemma requires only one acceptance after admission. The
+second requires two and a unique matching Send, without excluding unrelated
+Send events.
+\lstinputlisting[style=modelcode,firstline=74,
+  lastline=81]{../tamarin/rq-v2-minimal/rqv2_relaxed.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=83,
+  lastline=93]{../tamarin/rq-v2-minimal/rqv2_relaxed.spthy}
+\end{minipage}\par\medskip
+
+\noindent\begin{minipage}{\linewidth}
+\subsection{Message-level properties}
+The rejection query does not bind its Send to the rejected batch. In contrast,
+the same-party existence formula binds both accepted tuples and their two
+origins to the same batch context. The final all-traces formula states
+message distinction between different acceptance occurrences.
+\lstinputlisting[style=modelcode,firstline=85,
+  lastline=90]{../tamarin/rq-v2-minimal/rqv2_message_dedup.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=92,
+  lastline=105]{../tamarin/rq-v2-minimal/rqv2_message_dedup.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=107,
+  lastline=112]{../tamarin/rq-v2-minimal/rqv2_message_dedup.spthy}
+\end{minipage}\par\medskip
+
+\noindent\begin{minipage}{\linewidth}
+\subsection{Party-level properties}
+The first formula does not bind its two Sends to the rejected pair. The
+second is the distinct-party non-vacuity query. The final safety formula
+observes accepted occurrences; the admission-level requirement itself comes
+from \texttt{AdmitDistinctParties} and the inequality restriction.
+\lstinputlisting[style=modelcode,firstline=85,
+  lastline=94]{../tamarin/rq-v2-minimal/rqv2_party_admission.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=96,
+  lastline=108]{../tamarin/rq-v2-minimal/rqv2_party_admission.spthy}
+\end{minipage}\par\medskip
+\noindent\begin{minipage}{\linewidth}
+\lstinputlisting[style=modelcode,firstline=110,
+  lastline=115]{../tamarin/rq-v2-minimal/rqv2_party_admission.spthy}
+\end{minipage}\par\medskip

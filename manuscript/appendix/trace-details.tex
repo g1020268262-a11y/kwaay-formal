@@ -1,3 +1,80 @@
 \section{Detailed Counterexample Traces}
 \label{app:trace-details}
-% TODO: Add detailed Tamarin traces without expanding the main-text claim scope.
+
+\subsection{Provenance and reading convention}
+
+The sequences below reconstruct the witness shapes reported in Section~5
+from the frozen rules and the accompanying execution report:
+\begin{center}
+  \small\path{docs/rq-v2/prototype-execution-report.md}
+\end{center}
+They are not exported Tamarin proof graphs,
+raw transcripts, or additional prover runs. Network deduction transitions
+are suppressed. A displayed rule sequence is one admissible scheduling of
+the relevant transitions, not a claim that every execution has that order.
+Fresh identifiers may be consistently renamed.
+
+All three variants create parties separately from messages. A Send stores
+\texttt{!Sent(A,sid,m)} and exposes the tuple on the network. The batch
+rules then collect two tuples under one fresh $(\mathit{bid},\mathit{rst})$.
+Admission is distinct from processing: each processing rule requires the
+exact persistent origin fact for its own tuple. These facts are reusable,
+whereas the slot-processing states are linear.
+
+\subsection{Relaxed exact-origin repetition}
+
+Let $E=(A,\mathit{sid},m)$ be produced by one sender occurrence. The following
+sequence explains Figure~\ref{fig:relaxed-counterexample}:
+
+\begin{enumerate}
+  \item \texttt{CreateParty} creates $A$; \texttt{SendMessage} emits
+    $\mathsf{Send}(A,\mathit{sid},m)@s$, exposes $E$, and stores its origin.
+  \item \texttt{CreateBatch} creates $(\mathit{bid},\mathit{rst})$.
+    \texttt{CollectSlot1} and \texttt{CollectSlot2} both take the exposed $E$.
+  \item \texttt{AdmitRelaxedBatch} emits
+    $\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})@b$ with no inequality
+    requirement.
+  \item \texttt{ProcessSlot1} uses the origin fact and emits
+    $\receiveraccept(A,\mathit{sid},m,\mathit{bid},\mathit{rst})@r_1$.
+  \item \texttt{ProcessSlot2} reuses that same persistent fact and emits the
+    matching event at $r_2$, then reaches \texttt{BatchComplete}.
+\end{enumerate}
+
+The recorded existence property requires $s<b<r_1<r_2$ and uniqueness of the
+matching Send occurrence for this tuple. It does not exclude unrelated Send
+events elsewhere in the trace. The two acceptance occurrences have identical
+coordinates but different timepoints. This is the negative instance of the
+scoped injectivity property, not a trace satisfying the retained different-party
+condition of the source protocol.
+
+\subsection{Message-level separation}
+
+Let one party $A$ originate $E_1=(A,\mathit{sid}_1,m_1)$ and
+$E_2=(A,\mathit{sid}_2,m_2)$ in two Send occurrences. Fresh generation gives
+$\mathit{sid}_1\neq\mathit{sid}_2$ and $m_1\neq m_2$. After batch creation,
+the two collection rules take $E_1$ and $E_2$. The
+\texttt{AdmitDistinctMessages} transition emits $\mathsf{Neq}(m_1,m_2)$ and
+the batch event. The processing rules use the two corresponding origin facts
+and emit ordered acceptance occurrences in the same batch context.
+
+The existence lemma requires both Sends before admission and both accepts
+after it; it does not order the two Sends relative to each other. Each exact
+origin is accepted once in this batch, while the party coordinate is repeated.
+Thus this is a witness against same-batch party distinction, not against the
+message-level model's scoped occurrence injectivity.
+
+\subsection{Party-level positive control and rejection limits}
+
+For the positive control, two created parties $A_1\neq A_2$ each originate
+one tuple. The same collection and processing sequence now takes
+\texttt{AdmitDistinctParties}, emitting $\mathsf{Neq}(A_1,A_2)$.
+The recorded \path{distinct_party_batch_exists} property binds both Sends
+and both accepts to the displayed entries and one batch context. This is the
+non-vacuity witness, not a guarantee that all admitted inputs complete.
+
+The rejection branches are different evidence. A collected pair with equal
+messages enables \texttt{RejectRepeatedMessage}; a pair with equal parties
+enables \texttt{RejectRepeatedParty}. The recorded existence lemmas show that
+these branches are reachable. Neither rejection lemma binds its preceding
+Send tuple(s) to the rejected pair, and neither proves eventual rejection of
+every invalid input. No more specific raw rejection witness is claimed here.

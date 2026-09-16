@@ -12,7 +12,7 @@ state and a receiver prekey bundle, obtaining a session key and a protocol
 message. When receiver ephemeral key material is reused, several sender
 messages may correspond to the same receiver ephemeral state. The receiver
 then invokes \batchreceive for that state with a vector of inputs
-\cite[Sec.~4.1]{collins2024kwaay}. Writing the vector as
+\cite[Sec.~4.1]{collins2024kwaayfull}. Writing the vector as
 
 \begin{equation}
   S = \bigl((\mathit{pk}_{j_1},\mathit{prek}_{j_1},m_{j_1}),\ldots,
@@ -29,7 +29,7 @@ ephemeral secret material. If a split-KEM decapsulation fails, the construction
 rejects the batch as a whole by returning an all-$\bot$ result vector;
 otherwise it returns the corresponding vector of derived-key results,
 individual elements of which may still be $\bot$
-\cite[Sec.~5.1, Fig.~10]{collins2024kwaay}.
+\cite[Sec.~5.1, Fig.~10]{collins2024kwaayfull}.
 
 The purpose of this description is not to reproduce the complete handshake or
 its computational security proof. Rather, it identifies the protocol object
@@ -48,7 +48,7 @@ original \kwaay specification.
 
 The full version of the \kwaay construction explicitly states that, for a
 given \batchreceive call, each element of $S$ is assumed to correspond to a
-different party \cite[Sec.~5.1, after Fig.~10]{collins2024kwaay}. This is a
+different party \cite[Sec.~5.1, p.~21, after Fig.~10]{collins2024kwaayfull}. This is a
 same-batch condition: it constrains the relationship among components
 appearing within one \batchreceive invocation. It does not state that a party
 participates only once globally, runs only one session, or produces only one
@@ -94,23 +94,30 @@ The analysis keeps the following coordinates separate.
   \small
   \begin{tabularx}{\linewidth}{@{}lXX@{}}
     \toprule
-    Coordinate & What it distinguishes & What distinctness does not imply \\
+    Coordinate & What it distinguishes & Interpretation boundary \\
     \midrule
-    Party $A$ & A modeled protocol principal & A distinct message, occurrence,
-      prekey, or key encoding \\
-    Message $m$ & Sender-produced protocol content & A different originating party \\
+    Party $A$ & A modeled protocol principal & Not identified with a prekey
+      or a key encoding \\
+    Message $m$ & Sender-produced protocol content & Different messages need not
+      have different originating parties \\
     Occurrence $\mathit{sid}$ & A sender-session/occurrence used in the analysis
-      & A different party \\
-    Slot $i$ & A position within one batch & A different party or message \\
-    Batch $B$ & One grouped receiver-side execution & Global uniqueness of its
-      participants \\
+      & Different occurrences need not have different parties \\
+    Slot $i$ & A position within one batch & Different positions need not have
+      different parties or messages \\
+    Batch $B$ & One grouped receiver-side execution & Does not require global
+      uniqueness of its participants \\
     Receiver state $r$ & Receiver state shared by the grouped execution & The
-      identity or number of contributing parties \\
+      identity or number of contributing parties is not determined by this coordinate \\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-These coordinates induce different equivalence relations. A single party may
+Table~\ref{tab:identity-coordinates} distinguishes conceptual roles, not a
+claim that every combination of equalities is realizable in the prototype.
+In Section~4, fresh $\mathit{sid}$ and $m$ are generated for every sender
+occurrence. Under that assumption, legitimate origin tuples from different
+parties also have different occurrence and message coordinates. The converse
+does not follow: a single party may
 participate through multiple protocol occurrences and produce distinct
 messages. Consequently,
 

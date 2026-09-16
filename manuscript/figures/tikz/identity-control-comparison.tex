@@ -13,16 +13,17 @@
     \node[root] (goal) {Party-level batch identity requirement};
     \node[variant,below=10mm of goal] (message)
       {\textbf{Message-level restriction}\\$m_1\neq m_2$\\
-       Scoped injectivity verified; same-party/different-message batch reachable};
+       Scoped injectivity holds;\\
+       same-party batch reachable\\with different messages};
     \node[variant,left=4mm of message] (relaxed)
       {\textbf{Relaxed admission}\\No coordinate restriction\\
        Duplicate acceptance reachable};
     \node[variant,right=4mm of message] (party)
       {\textbf{Party-level admission}\\$A_1\neq A_2$\\
-       Party distinction verified; valid batch reachable};
+       Party distinction verified;\\valid batch reachable};
     \node[conclusion,below=9mm of message] (distinction)
-      {Message identity $\neq$ occurrence injectivity $\neq$ party identity\\
-       (analytical distinction, not value inequality)};
+      {Message distinction and scoped occurrence injectivity\\
+       do not imply same-batch party distinction};
     \draw[->] (goal) -- (relaxed);
     \draw[->] (goal) -- (message);
     \draw[->] (goal) -- (party);

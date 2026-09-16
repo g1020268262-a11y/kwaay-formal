@@ -50,8 +50,10 @@ define and evaluate that question.
 
 \subsection{Batch-Composition Adversary}
 
-We consider a symbolic network adversary whose relevant capability in this
-analysis is control over batch composition. It acts at the interface between
+We consider a symbolic batch-composition adversary. Control over the selection
+and placement of entries is an analytical capability assumption at the modeled
+composition boundary, not a claim that a deployed network attacker controls
+the corresponding batching component. The adversary acts at the interface between
 the availability of sender-associated candidate entries and the decision to
 admit their composition as one batch. Candidate tuples are produced by the
 modeled sender lifecycle and exposed on the symbolic network. The adversary may
@@ -73,7 +75,8 @@ Second, it may select two distinct sender-origin tuples
   \label{eq:repeated-party-capability}
 \end{equation}
 that nevertheless share the party projection \(A\). In the second case, the
-tuples may differ in occurrence, message, or both. The capability is therefore
+tuples differ in both occurrence and message under the prototype's fresh-value
+assumption. The capability is therefore
 one of batch composition rather than identity forgery: it does not require the
 adversary to impersonate or invent a second modeled principal.
 

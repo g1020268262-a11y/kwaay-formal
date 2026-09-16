@@ -65,7 +65,7 @@ message distinction together with scoped occurrence injectivity does not
 entail party distinction.
 
 These properties should therefore not be read as successive guarantees in a
-hierarchy culminating in party uniqueness. Nor does this comparison establish
+hierarchy culminating in same-batch party distinction. Nor does this comparison establish
 every possible logical independence among them; relationships can depend on
 the modeled freshness, matching, and scope assumptions. Occurrence
 injectivity serves here as a diagnostic and comparison property. It separates
@@ -127,11 +127,14 @@ separate composition case to consider.
 Exact-message deduplication succeeds at the purpose encoded in the control:
 the equal-message rejection branch is reachable, accepted messages are
 distinct within the modeled context, and the scoped occurrence-injectivity
-property holds. Its insufficiency for party uniqueness is not evidence that
+property holds. Its insufficiency for same-batch party distinction is not evidence that
 deduplication is useless. It reflects a difference between the coordinate
 being compared and the relation being sought. Individual-entry properties,
 exact-repeat controls, and batch-composition properties consequently warrant
-separate analysis rather than treatment as interchangeable solutions.
+separate analysis rather than treatment as interchangeable solutions. Here
+that comparison uses fresh symbolic messages, which associate distinct sender
+occurrences with distinct message coordinates. It is not an evaluation of a
+wire-format deduplication algorithm or a cross-batch replay cache.
 
 \subsection{Design Implications}
 
@@ -182,7 +185,11 @@ compromise behavior are omitted. Fresh sender-session and message coordinates
 and persistent origin facts are explicit prototype choices, not a
 reconstruction of all concrete message behavior. The analysis therefore
 provides neither a full-protocol security proof nor evidence of a
-cryptographic secrecy or authentication failure.
+cryptographic secrecy or authentication failure. Table~\ref{tab:source-abstraction}
+separates source-derived roles from these assumptions; no refinement theorem
+connects the abstract receiver events to concrete output keys. Adversarial
+control over composition is an analysis assumption, not an established
+capability against a deployed batch builder.
 
 \paragraph{Receiver-event endpoint.}
 Direct evidence ends at \receiveraccept. The prototypes contain no output-key

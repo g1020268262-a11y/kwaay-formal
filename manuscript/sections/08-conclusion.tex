@@ -1,5 +1,18 @@
-% Source: docs/paper/conclusion-draft.md
-% TODO: Close only four points: the condition studied; what becomes reachable
-% without it; why message-level control cannot substitute for party-level
-% identity; and the bounded batch-admission design implication. Do not enumerate
-% every lemma.
+We analyzed K-Waay's stated different-party condition for one \batchreceive
+call through a minimal two-slot admission abstraction. Relaxing the condition
+permits a receiver-event witness in which one exact sender origin supports
+two acceptance occurrences in the same batch context. The auxiliary
+message-level control excludes that pattern and satisfies scoped occurrence
+injectivity, yet two distinct messages from the same party remain admissible
+and accepted. Message distinction and occurrence injectivity therefore do not
+substitute for same-batch party distinction under the encoded lifecycle.
+
+The party-level realization supplies the complementary control: its admission
+rule constrains the collected party coordinates, its recorded safety result
+establishes their distinction at the receiver-event boundary, and a valid
+distinct-party batch remains reachable. The resulting design implication is
+to state the participant relation required by a batch and assign responsibility
+for preserving it, rather than infer that relation from message-level checks.
+The evidence ends at model-local \receiveraccept events; extending it to
+concrete K-Waay outputs or deployed batching behavior requires additional
+justification beyond this analysis.

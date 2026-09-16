@@ -14,7 +14,7 @@ techniques, introduce \batchreceive for receiver-side processing with reused
 ephemeral material, and provide computational security definitions and proofs
 for their construction \cite{collins2024kwaay}. The same specification states
 that the elements of one \batchreceive call correspond to different parties
-\cite[Sec.~5.1]{collins2024kwaay}. Thus, the distinct-party condition is prior
+\cite[Sec.~5.1, p.~21]{collins2024kwaayfull}. Thus, the distinct-party condition is prior
 work: this paper neither discovers it nor proposes a repair for an omitted
 check. Our question is instead what party-level relation the stated condition
 preserves when isolated at the batch-admission boundary.
@@ -63,7 +63,10 @@ cross-group compromise. None is equivalent to requiring two positions in one
 
 The broader secure-messaging taxonomy likewise distinguishes participant
 consistency from speaker, destination, authentication, and message-oriented
-properties \cite{unger2015sok}. General compositional-verification frameworks
+properties \cite{unger2015sok}. Participant consistency concerns agreement
+among honest parties on their view of the participant list; our predicate
+instead concerns party projections at different positions inside one batch.
+These are different relations. General compositional-verification frameworks
 formalize conditions under which component properties are preserved when
 protocols are combined \cite{andova2008compositional}. Together, this
 literature makes composition-level reasoning established prior art. Our use of
@@ -96,7 +99,7 @@ theory of identity.
 Misbinding and unknown key-share work is conceptually adjacent but defines a
 different failure. Formal misbinding analyses study cases in which an endpoint,
 device, user, or protocol run becomes associated with the wrong identity
-\cite{sethi2019misbinding}. The TLS/SDP unknown key-share analysis similarly
+\cite{peltonen2020misbinding}. The TLS/SDP unknown key-share analysis similarly
 concerns binding an external identity to another endpoint's key, fingerprint,
 or session \cite{thomson2021uks}. Our repeated-party composition instead uses
 the same modeled party coordinate twice; the current model proves neither an
@@ -118,9 +121,11 @@ acceptance are likewise explicit protocol concerns in the X3DH specification
 correspondence is introduced by this paper.
 
 We use scoped occurrence injectivity only as a diagnostic control. As reported
-in Section~5, the message-level variant can maintain a one-to-one relation
-between the modeled sender and receiver occurrences while still admitting two
-different messages from the same party. This does not show that existing
+in Section~5, within one batch and receiver context the message-level variant
+permits at most one acceptance occurrence for each exact sender-origin tuple,
+while still admitting two different messages from the same party. This does
+not guarantee delivery of every Send or exclude reuse across batches. It does
+not show that existing
 injectivity notions are inadequate; it shows that occurrence correspondence
 and party distinctness state different relations. Similarly, exact-message
 deduplication addresses equality of the message coordinate. The controlled
@@ -130,24 +135,22 @@ that replay protection or deduplication is ineffective for its own purpose.
 
 \subsection{Positioning of This Work}
 
-Within the verified literature corpus and search scope used for this paper, we
-found no prior analysis that isolates \kwaay's stated different-party
-\batchreceive condition and subjects it to the same controlled
-removal/message-level/party-level comparison. This statement is intentionally
-bounded: absence of a direct collision in the examined corpus is not an
-exhaustive priority claim. The closest work supplies the protocol and condition
-itself \cite{collins2024kwaay}, the composition-layer precedent
+The closest works discussed above address the protocol condition itself
+\cite{collins2024kwaayfull}, the composition-layer precedent
 \cite{cremers2023session}, the established semantics of scoped name uniqueness
 \cite{lupetti2006names}, and the occurrence-level injectivity vocabulary
-\cite{sattarzadeh2015injective}.
+\cite{sattarzadeh2015injective}. Their analysis objects differ from the
+specific K-Waay batch-admission comparison studied here. This comparison,
+rather than a global priority claim for identity or composition reasoning,
+defines the scope of our contribution.
 
 Against that background, two aspects of the present analysis have direct
-support within the stated boundary. First, it gives a bounded symbolic
-necessity analysis of an already stated \batchreceive condition through
-relaxation and non-vacuous party-level restoration. Second, its message-level
-control exhibits the protocol-specific separation in which scoped occurrence
-injectivity holds while a same-party/different-message composition remains
-reachable. Both claims concern the fixed two-slot admission abstraction and
+support within the stated boundary. First, its auxiliary message-level
+control exhibits a separation in which message distinction and scoped
+occurrence injectivity hold while a same-party/different-message composition
+remains reachable. Second, it places this separation between a relaxed
+receiver-event witness and a non-vacuous party-level realization of the stated
+\batchreceive condition. Both claims concern the fixed two-slot admission abstraction and
 its recorded properties, not arbitrary batch lengths or complete \kwaay
 executions.
 

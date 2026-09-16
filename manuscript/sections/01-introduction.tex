@@ -1,10 +1,75 @@
-% TODO: Write this section after the technical core is stable.
-% Reader flow: context; stated party-level condition; semantic gap; research
-% questions; controlled formal comparison; key result; contributions; scope.
-% Do not frame the story merely as removing and restoring A1 != A2.
-% Sources:
-% - docs/paper/introduction-draft.md
-% - docs/paper/contribution-section-draft.md
-% Supporting outlines:
-% - docs/paper/contribution-outline.md
-% - docs/paper/contribution-evidence-map.md
+Security properties of individual protocol entries do not, by themselves,
+specify which entries may be processed together. This distinction matters
+when a receiver groups several sender-associated inputs into one operation:
+an entry may have a legitimate origin while the collection repeats a party
+that the interface expects to occur only once. Work on secure-messaging
+session handling illustrates the broader need to examine composition
+boundaries separately from their components
+\cite{cremers2023session}. Here we study a different boundary, inside one
+receiver batch rather than between sessions and conversations.
+
+\kwaay is a post-quantum, X3DH-like deniable authenticated key-exchange
+protocol \cite{collins2024kwaay}. Its \batchreceive operation groups inputs
+under receiver-side state, and its full construction states that the elements
+of one call correspond to different parties
+\cite[Sec.~5.1, p.~21]{collins2024kwaayfull}. The condition is already part of
+the source protocol. Our question is what relation it preserves, and whether
+a restriction over a different coordinate could preserve the same relation.
+We call the same-batch party relation \distinctparty; this analytical name is
+ours, not an additional condition discovered to be missing from K-Waay.
+
+The distinction is concrete. One modeled party can originate two messages in
+different sender occurrences. A batch containing those entries can have
+different messages and no repeated acceptance of either exact origin, yet
+still contain the same party twice. Conversely, supplying one exact entry to
+two positions creates a different question about acceptance multiplicity.
+Party identity, message identity, and sender-occurrence matching must
+therefore be distinguished before deciding what an admission control achieves.
+The individual notions of identity and injective correspondence are
+established concepts \cite{lupetti2006names,lowe1997hierarchy}; our concern is
+their relationship at this particular source-motivated interface.
+
+\paragraph{Questions and approach.}
+We study three questions, stated precisely in Section~2: which repeated-party
+compositions become reachable when the condition is relaxed (RQ1), whether
+one matching sender origin can support two receiver-acceptance occurrences in
+that abstraction (RQ2), and whether a message-level restriction is sufficient
+for same-batch party distinction (RQ3). We compare three fixed-two-slot
+Tamarin models \cite{meier2013tamarin}: relaxed admission, message-level
+restriction, and party-level admission. They share sender generation, input
+collection, origin matching, and sequential processing. The guarded variants
+constrain different coordinates and add their corresponding rejection
+branches. The party-level variant is a positive control, not an assertion
+that a direct comparison is the only way to maintain the source condition.
+
+\paragraph{Results and contribution.}
+The contribution is a formal semantic analysis of the stated condition and a
+controlled separation of message-, occurrence-, and party-level properties
+under explicit modeling assumptions. The recorded results support three
+parts of that argument. Relaxed admission has a trace with one matching Send
+and two matching \receiveraccept occurrences in one batch context. The
+message-level variant satisfies message distinction and scoped occurrence
+injectivity, but still admits and processes two different messages from one
+party. Finally, party-level admission constrains the collected pair itself;
+the recorded safety result confirms party distinction between accepted
+occurrences, and a valid distinct-party batch remains reachable. The middle
+result is the central separation: success for message distinction and scoped
+injectivity does not entail same-batch party distinction.
+
+\paragraph{Scope.}
+The analysis assumes adversarial control over composition at the modeled
+boundary. It does not establish that a network attacker controls a deployed
+batch builder. Fresh symbolic messages and sender-session coordinates, an
+idealized persistent origin relation, and model-local receiver events keep
+the comparison small and explicit. We provide a source-to-abstraction mapping
+but no refinement theorem for complete K-Waay executions. Thus the results
+are not a cryptographic attack, a deployed vulnerability, or a theorem for
+arbitrary batch sizes. We report existing model executions; the accompanying
+material records exact properties, hashes, and commands but does not contain
+raw prover transcripts. These limits qualify both the contribution and its
+reproducibility claims.
+
+Section~2 introduces the protocol interface and identity problem, and
+Section~3 defines the objective and adversarial boundary. Sections~4 and~5
+present the abstraction and its analysis. Sections~6 and~7 discuss design
+implications, limitations, and related work; Section~8 concludes.

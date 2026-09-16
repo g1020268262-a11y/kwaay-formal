@@ -1,4 +1,23 @@
 \begin{abstract}
-% TODO: final manuscript abstract.
-% Source material: docs/paper/abstract-draft.md
+K-Waay's \batchreceive construction states that different inputs in one call
+correspond to different parties. We study the semantic role of this condition
+through a controlled comparison of three fixed-two-slot symbolic Tamarin
+models: relaxed admission, message-level restriction, and party-level
+admission. The models share a sender-origin and sequential processing
+lifecycle, while their admission predicates constrain different identity
+coordinates. In the recorded executions, relaxed admission has a witness in
+which one matching sender origin supports two receiver-acceptance occurrences
+in the same batch context. The message-level control satisfies message
+distinction and scoped occurrence injectivity, yet two different messages
+from one party remain accepted together. Party-level admission constrains the
+collected party coordinates, establishes their distinction at the modeled
+receiver-event boundary, and retains a reachable valid distinct-party batch.
+The comparison separates message distinction and occurrence injectivity from
+same-batch party distinction. It motivates an explicit participant relation
+at the batch-composition boundary rather than treating message-level checks
+as substitutes. The analysis assumes composition control, fresh symbolic
+messages, and idealized origin matching. It provides no refinement theorem
+for full K-Waay executions and establishes neither a cryptographic break nor
+a deployed vulnerability. Results are drawn from existing execution records;
+raw prover transcripts are not included.
 \end{abstract}

@@ -10,13 +10,62 @@
 
 Our model is not a symbolic verification of the complete \kwaay construction.
 It isolates the identity relation applied when two sender-associated entries
-are composed and admitted for one abstract \batchreceive execution. This
-choice removes cryptographic and application-layer detail that is orthogonal
-to the question in Section~3: which identity coordinate is constrained at the
-batch-admission boundary? The model therefore retains explicit party,
+are composed and admitted for one abstract \batchreceive execution. We choose
+to omit cryptographic and application-layer detail in order to compare
+admission predicates under explicit origin and freshness assumptions. This
+choice does not establish that omitted computations cannot affect concrete
+receiver behavior. The model retains explicit party,
 sender-session, message, batch, and receiver-context coordinates while
 abstracting the cryptographic computations that produce and process concrete
 K-Waay messages.
+
+The source interface associates each batch element with a party and groups
+elements within one receiver invocation
+\cite[Secs.~4.1 and~5.1]{collins2024kwaayfull}.
+Table~\ref{tab:source-abstraction} separates these source-level relationships
+from the assumptions used to encode them. The purpose of the reduction is to
+keep party projection, repeated input, and batch membership visible while
+varying the admission coordinate. It is not a derivation of the receiver's
+cryptographic success conditions.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Source-to-abstraction mapping and its status.}
+  \label{tab:source-abstraction}
+  \small
+  \begin{tabularx}{\linewidth}{@{}
+    >{\raggedright\arraybackslash}X
+    >{\raggedright\arraybackslash}X
+    >{\raggedright\arraybackslash}X@{}}
+    \toprule
+    Source concept & Symbolic representation & Status \\
+    \midrule
+    Party associated with an input & Party coordinate $A$ &
+      Source-derived semantic role; identity resolution is assumed \\
+    Sender-associated batch input & Entry $(A,\mathit{sid},m)$ &
+      Reduced tuple, not the wire format \\
+    Elements in one receiver invocation & Shared
+      $(\mathit{bid},\mathit{rst})$ & Model-local context identifiers \\
+    Stated different-party condition & $A_1\neq A_2$ &
+      Two-slot instance of the target relation \\
+    Sender occurrence and message & Fresh $\mathit{sid}$ and $m$ &
+      Prototype assumption, not concrete session-ID or message construction \\
+    Component processing & \receiveraccept under an exact origin fact &
+      Model-local observation, not a derived-key output \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+Public keys, prekey bundles, signatures, decapsulation, and batch-wide
+cryptographic failure have no operational encoding here. The persistent
+\texttt{!Sent} fact supplies an idealized origin relation rather than an
+implementation of those checks. An admitted pair may fail to produce two
+receiver events if an exact origin is absent; the abstraction does not
+translate such a stalled path into a concrete failure result. We do not prove
+a refinement theorem from full K-Waay executions to this abstraction, nor
+that an abstract witness can be realized as a concrete K-Waay execution.
+Our claims therefore concern the source-motivated admission relation under
+the stated assumptions, not preservation of all protocol behavior.
 
 We encode the abstraction in Tamarin, which represents executions by
 multiset-rewriting rules and records trace-relevant action facts
@@ -150,6 +199,15 @@ variant proposed as a concrete mitigation for K-Waay; it exists to test
 whether a restriction over one identity coordinate can stand in for the
 party-level objective.
 
+This is an auxiliary control under the prototype's fresh-message abstraction,
+not a general formalization of deployed deduplication. Among legitimate
+sender-origin tuples, each fresh $m$ identifies one sender occurrence; message
+equality therefore detects reuse of that origin in this encoding. Real-world
+message encodings, collision behavior, normalization, and repeated sends with
+identical content are not modeled. The control deliberately gives exact-message
+comparison this favorable interpretation while leaving the party coordinate
+separate.
+
 \subsection{Party-Level Admission Model}
 
 The party-level admission model applies the corresponding decision to
@@ -196,7 +254,7 @@ Third, \emph{scoped occurrence injectivity} asks whether, in the presence of
 a prior matching \(\mathsf{Send}\), two \receiveraccept occurrences agreeing
 on \((A,\mathit{sid},m,\mathit{bid},\mathit{rst})\) must be the same event
 occurrence. This property concerns one exact sender-origin tuple within one
-batch and receiver context; it is not equivalent to party uniqueness.
+batch and receiver context; it is not equivalent to same-batch party distinction.
 Finally, \emph{identity-coordinate safety} asks whether different accepted
 occurrences from one batch carry different messages in the message-restricted
 variant or different parties in the party-restricted variant. These property

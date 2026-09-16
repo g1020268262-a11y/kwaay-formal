@@ -1,7 +1,6 @@
-% Generated only from rows marked source_verified=yes in
-% docs/paper/literature/citation-verification.tsv.
-% TODO comments identify source rows that need a final venue-specific metadata
-% decision; no missing metadata has been guessed.
+% Seeded from docs/paper/literature/citation-verification.tsv.
+% Version-specific corrections were checked against primary sources during
+% the 2026-09-16 revision; see notes/combined-review-revision-report.md.
 
 @inproceedings{collins2024kwaay,
   author    = {Daniel Collins and Lo{\"i}s Huguenin-Dumittan and Ngoc Khanh Nguyen and Nicolas Rolin and Serge Vaudenay},
@@ -12,9 +11,18 @@
   url       = {https://www.usenix.org/conference/usenixsecurity24/presentation/collins}
 }
 
+@misc{collins2024kwaayfull,
+  author       = {Daniel Collins and Lo{\"i}s Huguenin-Dumittan and Ngoc Khanh Nguyen and Nicolas Rolin and Serge Vaudenay},
+  title        = {{K-Waay}: Fast and Deniable Post-Quantum {X3DH} without Ring Signatures},
+  howpublished = {Cryptology ePrint Archive, Paper 2024/120},
+  year         = {2024},
+  note         = {Full version of the USENIX Security 2024 paper. \url{https://eprint.iacr.org/2024/120}},
+  url          = {https://eprint.iacr.org/2024/120}
+}
+
 @article{cohngordon2020signal,
   author  = {Katriel Cohn-Gordon and Cas Cremers and Benjamin Dowling and Luke Garratt and Douglas Stebila},
-  title   = {A Formal Security Analysis of the Signal Messaging Protocol},
+  title   = {A Formal Security Analysis of the {Signal} Messaging Protocol},
   journal = {Journal of Cryptology},
   volume  = {33},
   year    = {2020},
@@ -79,16 +87,15 @@
   url       = {https://crypto.ethz.ch/publications/ACJM20.html}
 }
 
-% TODO: The verified source row combines the 2019 conference paper and its
-% 2020 journal extension. Split or select the cited version during formal prose
-% migration, after checking the intended citation against the source.
-@misc{sethi2019misbinding,
-  author       = {Mohit Sethi and Aleksi Peltonen and Tuomas Aura},
-  title        = {Misbinding Attacks on Secure Device Pairing and Bootstrapping; extended as Formal Verification of Misbinding Attacks on Secure Device Pairing and Bootstrapping},
-  howpublished = {AsiaCCS 2019; Journal of Information Security and Applications 51},
-  year         = {2019--2020},
-  note         = {Pages 453--464; journal article 102461. DOIs 10.1145/3321705.3329813 and 10.1016/j.jisa.2020.102461},
-  url          = {https://acris.aalto.fi/ws/portalfiles/portal/36903088/Sethi_Peltonen_Aura_Misbinding_Attacks_on_Secure_Device.pdf}
+@article{peltonen2020misbinding,
+  author  = {Aleksi Peltonen and Mohit Sethi and Tuomas Aura},
+  title   = {Formal Verification of Misbinding Attacks on Secure Device Pairing and Bootstrapping},
+  journal = {Journal of Information Security and Applications},
+  volume  = {51},
+  year    = {2020},
+  pages   = {102461},
+  doi     = {10.1016/j.jisa.2020.102461},
+  url     = {https://doi.org/10.1016/j.jisa.2020.102461}
 }
 
 @inproceedings{lowe1997hierarchy,
@@ -129,13 +136,12 @@
   url          = {https://signal.org/docs/specifications/x3dh/}
 }
 
-% TODO: The verified source row records the revision period as 2023--2024.
-% Confirm the precise revision date before final submission.
 @misc{kret2024pqxdh,
   author       = {Ehren Kret and Rolfe Schmidt},
   title        = {The {PQXDH} Key Agreement Protocol},
   howpublished = {Signal protocol specification; Revision 3},
-  year         = {2023--2024},
+  year         = {2024},
+  note         = {Revision 3 dated May 24, 2023; last updated January 23, 2024},
   url          = {https://signal.org/docs/specifications/pqxdh/}
 }
 

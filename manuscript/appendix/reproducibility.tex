@@ -1,4 +1,99 @@
 \section{Reproducibility Details}
 \label{app:reproducibility}
-% TODO: Add commands, environment versions, commit/model/runner/evidence hashes,
-% and provenance checks from the frozen artifact.
+
+\subsection{Evidence package and provenance}
+The result authority is
+\path{docs/rq-v2/prototype-execution-report.md}.
+The package \path{artifact/rqv2-freeze/} contains
+\path{environment.txt}, \path{verification-commands.txt},
+\path{models-sha256.txt}, and \path{freeze-manifest.tsv}. Its packaging mode
+is \texttt{existing-report-only}, with \texttt{prover\_rerun=no}.
+These files transcribe a previous execution record; neither the freeze nor
+this manuscript revision is an independent prover execution.
+
+The models themselves are under \path{tamarin/rq-v2-minimal/}. Appendix~\ref{app:model-properties}
+includes their exact properties, and Appendix~\ref{app:trace-details} explains
+the reconstructed witness sequences. Table~\ref{tab:verification-results}
+transcribes the 14 outcomes and step counts. There are no raw prover
+transcripts or exported proof graphs in this package. The records do not
+identify an original execution commit or a separate runner hash, so none is
+inferred here.
+
+For locating the source snapshot used in this manuscript revision, the
+repository baseline was commit
+\path{5eb05981971b20fb7248792037e64647f3b8a6fb}.
+This is a manuscript-review reference, not an asserted proof-run commit.
+The three model hashes below match the execution report; this identifies
+the recorded inputs, but does not independently authenticate or reproduce
+the reported outcomes.
+
+\subsection{Recorded environment and commands}
+The execution report records Tamarin~1.12.0 and Maude~3.5.1 under WSL
+Ubuntu~24.04, with the prover at
+\path{/home/linuxbrew/.linuxbrew/bin/tamarin-prover}.
+The recorded search path was
+\path{/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin}.
+The following equivalent shell sequence exposes that environment setting
+once and preserves the six recorded program invocations. Run it from the
+repository root in the recorded WSL environment; these are reproduction
+instructions, not commands executed during manuscript preparation.
+
+\begin{lstlisting}[style=modelcode]
+export PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin
+
+tamarin-prover --parse-only \
+  tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+tamarin-prover --parse-only \
+  tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+tamarin-prover --parse-only \
+  tamarin/rq-v2-minimal/rqv2_party_admission.spthy
+
+tamarin-prover --prove \
+  tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+tamarin-prover --prove \
+  tamarin/rq-v2-minimal/rqv2_message_dedup.spthy
+tamarin-prover --prove \
+  tamarin/rq-v2-minimal/rqv2_party_admission.spthy
+\end{lstlisting}
+
+A reproduction should check the inputs before execution and compare each
+model--lemma outcome with Table~\ref{tab:verification-results}. The recorded
+proof-step counts are metadata, not runtime benchmarks or semantic parts
+of the claims. To create new execution evidence, separately retain tool
+versions, the execution commit and working-tree state, commands, exit codes,
+stdout/stderr, and any exported traces, then hash the retained files. Such
+a future run must be distinguished from the existing record.
+
+\subsection{Model input hashes}
+These SHA-256 values are recorded in the execution report and were checked
+against the model files during manuscript revision.
+
+\noindent\path{rqv2_relaxed.spthy}\\
+{\footnotesize\texttt{E5129575720020AA3F509782C2052FBF2114A540D013126F5A75D316CBABAF9D}}\par\smallskip
+
+\noindent\path{rqv2_message_dedup.spthy}\\
+{\footnotesize\texttt{90A196F5DA5C244026596283D001376427880CD64C5BEA3C6CFDFD4CCBA99184}}\par\smallskip
+
+\noindent\path{rqv2_party_admission.spthy}\\
+{\footnotesize\texttt{C35AF64CAC7F01182418CB999EA105214B8DA4F2295B670A9B3733F0BD976BBA}}\par\smallskip
+
+\subsection{Document-snapshot checksums}
+The following SHA-256 values were calculated on 2026-09-16 for the existing
+report and freeze files. They identify the documentation inspected for this
+revision; they are not hashes of raw prover outputs and are not claimed to
+have been recorded at the original execution time.
+
+\noindent\path{docs/rq-v2/prototype-execution-report.md}\\
+{\footnotesize\texttt{E0C2520FC8D789EAF8E1B61BA7715E869A674FD5E58A14F880F0391F26B330BF}}\par\smallskip
+
+\noindent\path{artifact/rqv2-freeze/environment.txt}\\
+{\footnotesize\texttt{FECB8F64059FF26977A01A31DEF7FF30760F275C36B934099092DAA640FE9723}}\par\smallskip
+
+\noindent\path{artifact/rqv2-freeze/verification-commands.txt}\\
+{\footnotesize\texttt{7EFC03548DEEE1F0CE9FA406A190339D38D1CFB516C4F5988FE05DB6F93FDC06}}\par\smallskip
+
+\noindent\path{artifact/rqv2-freeze/models-sha256.txt}\\
+{\footnotesize\texttt{FC33C77398F974CD8BCB3CDA5DDF1303F300D9BEC2330D5395511FA6B4243D98}}\par\smallskip
+
+\noindent\path{artifact/rqv2-freeze/freeze-manifest.tsv}\\
+{\footnotesize\texttt{21DBD3ED028EFCCCECC120E791DFF08A4EA38ACF2C23C33809CD2BE859FC57B3}}\par\smallskip
