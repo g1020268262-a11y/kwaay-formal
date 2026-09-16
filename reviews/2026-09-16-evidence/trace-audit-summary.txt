@@ -1,0 +1,51 @@
+rqv2_message_dedup-traces.json graphs=2
+GRAPH trace_RQv2_Message_Dedup_SL2-AS0-CL0-A1-C1-NB_repeated_message_rejection_exists-CreateParty-CollectSlot2
+#rj RejectRepeatedMessage | Reject( ~bid, ~rst ); Collected( ~bid, ~rst, A1, sid1, m, A2, sid2, m )
+#s SendMessage | Send( ~a, ~sid, ~m.1 )
+#vr.1 CollectSlot2 | In( <A2, sid2, m> )
+#vr.2 CollectSlot1 | In( <A1, sid1, m> )
+GRAPH trace_RQv2_Message_Dedup_SL2-AS0-CL0-A1-C1-NB_same_party_different_messages_batch_exists-CreateParty-CreateParty-CollectSlot2-ProcessSlot1-AdmitDistinctMessages-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage
+#r1 ProcessSlot1 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#r2 ProcessSlot2 | ReceiverAccept( ~a, ~sid.1, ~m.1, ~bid, ~rst )
+#s1 SendMessage | Send( ~a, ~sid, ~m )
+#s2 SendMessage | Send( ~a, ~sid.1, ~m.1 )
+#vr.1 CollectSlot2 | In( <~a, ~sid.1, ~m.1> )
+#vr.2 CollectSlot1 | In( <~a, ~sid, ~m> )
+#vr.4 SendMessage | Send( ~a, ~sid.2, ~m.2 )
+rqv2_party_admission-traces.json graphs=2
+GRAPH trace_RQv2_Party_Admission_SL2-AS0-CL0-A1-C1-NB_same_party_rejection_exists-CreateParty-CreateParty-CollectSlot2
+#rj RejectRepeatedParty | Reject( ~bid, ~rst ); Collected( ~bid, ~rst, A, sid1, m1, A, sid2, m2 )
+#s1 SendMessage | Send( ~a, ~sid, ~m )
+#s2 SendMessage | Send( ~a, ~sid.1, ~m.1 )
+#vr.1 CollectSlot2 | In( <A, sid2, m2> )
+#vr.2 CollectSlot1 | In( <A, sid1, m1> )
+GRAPH trace_RQv2_Party_Admission_SL2-AS0-CL0-A1-C1-NB_distinct_party_batch_exists-CreateParty-CreateParty-CollectSlot2-ProcessSlot1-AdmitDistinctParties-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage
+#r1 ProcessSlot1 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#r2 ProcessSlot2 | ReceiverAccept( ~a.1, ~sid.1, ~m.1, ~bid, ~rst )
+#s1 SendMessage | Send( ~a, ~sid, ~m )
+#s2 SendMessage | Send( ~a.1, ~sid.1, ~m.1 )
+#vr.2 CollectSlot2 | In( <~a.1, ~sid.1, ~m.1> )
+#vr.3 CollectSlot1 | In( <~a, ~sid, ~m> )
+#vr.5 SendMessage | Send( ~a, ~sid.2, ~m.2 )
+#vr.10 SendMessage | Send( ~a.1, ~sid.3, ~m.3 )
+rqv2_relaxed-traces.json graphs=3
+GRAPH trace_RQv2_Relaxed_SL2-AS0-CL0-A1-C1-NB_normal_relaxed_batch_exists-CreateParty-CollectSlot2-ProcessSlot1-AdmitRelaxedBatch-SendMessage-SendMessage-SendMessage-SendMessage
+#r ProcessSlot1 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#s SendMessage | Send( ~a, ~sid, ~m )
+#vr.1 CollectSlot2 | In( <A2, sid2, m2> )
+#vr.2 CollectSlot1 | In( <~a, ~sid, ~m> )
+#vr.4 SendMessage | Send( ~a, ~sid.1, ~m.1 )
+GRAPH trace_RQv2_Relaxed_SL2-AS0-CL0-A1-C1-NB_one_send_two_accepts_exists-CreateParty-CollectSlot2-ProcessSlot1-AdmitRelaxedBatch-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage
+#r1 ProcessSlot1 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#r2 ProcessSlot2 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#s SendMessage | Send( ~a, ~sid, ~m )
+#vr.1 CollectSlot2 | In( <~a, ~sid, ~m> )
+#vr.2 CollectSlot1 | In( <~a, ~sid, ~m> )
+#vr.4 SendMessage | Send( ~a, ~sid.1, ~m.1 )
+GRAPH trace_RQv2_Relaxed_SL2-AS0-CL0-A1-C1-NB_receiver_accept_injective-case_1-CreateParty-ProcessSlot1-AdmitRelaxedBatch-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage
+#r1 ProcessSlot1 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#r2 ProcessSlot2 | ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )
+#s SendMessage | Send( ~a, ~sid, ~m )
+#vr.2 CollectSlot2 | In( <~a, ~sid, ~m> )
+#vr.3 CollectSlot1 | In( <~a, ~sid, ~m> )
+#vr.5 SendMessage | Send( ~a, ~sid.1, ~m.1 )

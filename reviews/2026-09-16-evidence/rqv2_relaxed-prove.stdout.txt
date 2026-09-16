@@ -1,0 +1,280 @@
+theory RQv2_Relaxed
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, snd/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+rule (modulo E) CreateParty:
+   [ Fr( ~a ) ] --> [ !Party( ~a ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) SendMessage:
+   [ !Party( A ), Fr( ~sid ), Fr( ~m ) ]
+  --[ Send( A, ~sid, ~m ) ]->
+   [ Out( <A, ~sid, ~m> ), !Sent( A, ~sid, ~m ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CreateBatch:
+   [ Fr( ~bid ), Fr( ~rst ) ] --> [ OpenSlot1( ~bid, ~rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CollectSlot1:
+   [ OpenSlot1( bid, rst ), In( <A, sid, m> ) ]
+  -->
+   [ OpenSlot2( bid, rst, A, sid, m ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) CollectSlot2:
+   [ OpenSlot2( bid, rst, A1, sid1, m1 ), In( <A2, sid2, m2> ) ]
+  -->
+   [ Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) AdmitRelaxedBatch:
+   [ Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+  --[ BatchReceive( bid, rst ) ]->
+   [ AdmittedSlot1( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ProcessSlot1:
+   [
+   AdmittedSlot1( bid, rst, A1, sid1, m1, A2, sid2, m2 ),
+   !Sent( A1, sid1, m1 )
+   ]
+  --[ ReceiverAccept( A1, sid1, m1, bid, rst ) ]->
+   [ AdmittedSlot2( bid, rst, A2, sid2, m2 ) ]
+
+  /* has exactly the trivial AC variant */
+
+rule (modulo E) ProcessSlot2:
+   [ AdmittedSlot2( bid, rst, A2, sid2, m2 ), !Sent( A2, sid2, m2 ) ]
+  --[ ReceiverAccept( A2, sid2, m2, bid, rst ) ]->
+   [ BatchComplete( bid, rst ) ]
+
+  /* has exactly the trivial AC variant */
+
+lemma normal_relaxed_batch_exists:
+  exists-trace
+  "∃ A sid m bid rst #s #b #r.
+    ((((Send( A, sid, m ) @ #s) ∧ (BatchReceive( bid, rst ) @ #b)) ∧
+      (ReceiverAccept( A, sid, m, bid, rst ) @ #r)) ∧
+     (#s < #b)) ∧
+    (#b < #r)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A sid m bid rst #s #b #r.
+  (Send( A, sid, m ) @ #s) ∧
+  (BatchReceive( bid, rst ) @ #b) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r)
+ ∧
+  (#s < #b) ∧ (#b < #r)"
+*/
+simplify
+solve( !Party( A ) ▶₀ #s )
+  case CreateParty
+  solve( Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ▶₀ #b )
+    case CollectSlot2
+    solve( ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst ) @ #r )
+      case ProcessSlot1
+      solve( AdmittedSlot1( ~bid, ~rst, ~a, ~sid, ~m, A2.1, sid2.1, m2.1
+             ) ▶₀ #r )
+        case AdmitRelaxedBatch
+        solve( !Sent( ~a, ~sid, ~m ) ▶₁ #r )
+          case SendMessage
+          solve( !KU( ~a ) @ #vk.6 )
+            case SendMessage
+            solve( !KU( ~sid ) @ #vk.8 )
+              case SendMessage
+              solve( !KU( ~m ) @ #vk.9 )
+                case SendMessage
+                SOLVED // trace found
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma one_send_two_accepts_exists:
+  exists-trace
+  "∃ A sid m bid rst #s #b #r1 #r2.
+    (((((((Send( A, sid, m ) @ #s) ∧ (BatchReceive( bid, rst ) @ #b)) ∧
+         (ReceiverAccept( A, sid, m, bid, rst ) @ #r1)) ∧
+        (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)) ∧
+       (#s < #b)) ∧
+      (#b < #r1)) ∧
+     (#r1 < #r2)) ∧
+    (∀ #s2. (Send( A, sid, m ) @ #s2) ⇒ (#s2 = #s))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A sid m bid rst #s #b #r1 #r2.
+  (Send( A, sid, m ) @ #s) ∧
+  (BatchReceive( bid, rst ) @ #b) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r1) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)
+ ∧
+  (#s < #b) ∧
+  (#b < #r1) ∧
+  (#r1 < #r2) ∧
+  (∀ #s2. (Send( A, sid, m ) @ #s2) ⇒ #s2 = #s)"
+*/
+simplify
+solve( !Party( A ) ▶₀ #s )
+  case CreateParty
+  solve( Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ▶₀ #b )
+    case CollectSlot2
+    solve( ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst ) @ #r1 )
+      case ProcessSlot1
+      solve( AdmittedSlot1( ~bid, ~rst, ~a, ~sid, ~m, A2.1, sid2.1, m2.1
+             ) ▶₀ #r1 )
+        case AdmitRelaxedBatch
+        solve( !Sent( ~a, ~sid, ~m ) ▶₁ #r1 )
+          case SendMessage
+          solve( ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst ) @ #r2 )
+            case ProcessSlot2
+            solve( AdmittedSlot2( ~bid, ~rst, ~a, ~sid, ~m ) ▶₀ #r2 )
+              case ProcessSlot1
+              solve( !Sent( ~a, ~sid, ~m ) ▶₁ #r2 )
+                case SendMessage
+                solve( !KU( ~a ) @ #vk.1 )
+                  case SendMessage
+                  solve( !KU( ~sid ) @ #vk.3 )
+                    case SendMessage
+                    solve( !KU( ~m ) @ #vk.4 )
+                      case SendMessage
+                      SOLVED // trace found
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+lemma receiver_accept_has_send:
+  all-traces
+  "∀ A sid m bid rst #r.
+    (ReceiverAccept( A, sid, m, bid, rst ) @ #r) ⇒
+    (∃ #s. (Send( A, sid, m ) @ #s) ∧ (#s < #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A sid m bid rst #r.
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r)
+ ∧
+  ∀ #s. (Send( A, sid, m ) @ #s) ⇒ ¬(#s < #r)"
+*/
+simplify
+solve( ReceiverAccept( A, sid, m, bid, rst ) @ #r )
+  case ProcessSlot1
+  solve( AdmittedSlot1( bid, rst, A, sid, m, A2, sid2, m2 ) ▶₀ #r )
+    case AdmitRelaxedBatch
+    solve( !Sent( A, sid, m ) ▶₁ #r )
+      case SendMessage
+      by contradiction /* from formulas */
+    qed
+  qed
+next
+  case ProcessSlot2
+  solve( AdmittedSlot2( bid, rst, A, sid, m ) ▶₀ #r )
+    case ProcessSlot1
+    solve( !Sent( A, sid, m ) ▶₁ #r )
+      case SendMessage
+      by contradiction /* from formulas */
+    qed
+  qed
+qed
+
+lemma receiver_accept_injective:
+  all-traces
+  "∀ A sid m bid rst #s #r1 #r2.
+    (((((Send( A, sid, m ) @ #s) ∧
+        (ReceiverAccept( A, sid, m, bid, rst ) @ #r1)) ∧
+       (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)) ∧
+      (#s < #r1)) ∧
+     (#s < #r2)) ⇒
+    (#r1 = #r2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A sid m bid rst #s #r1 #r2.
+  (Send( A, sid, m ) @ #s) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r1) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)
+ ∧
+  (#s < #r1) ∧ (#s < #r2) ∧ (¬(#r1 = #r2))"
+*/
+simplify
+solve( (#r1 < #r2)  ∥ (#r2 < #r1) )
+  case case_1
+  solve( !Party( A ) ▶₀ #s )
+    case CreateParty
+    solve( ReceiverAccept( ~a, ~sid, ~m, bid, rst ) @ #r1 )
+      case ProcessSlot1
+      solve( AdmittedSlot1( bid, rst, ~a, ~sid, ~m, A2, sid2, m2 ) ▶₀ #r1 )
+        case AdmitRelaxedBatch
+        solve( !Sent( ~a, ~sid, ~m ) ▶₁ #r1 )
+          case SendMessage
+          solve( ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst ) @ #r2 )
+            case ProcessSlot2
+            solve( AdmittedSlot2( ~bid, ~rst, ~a, ~sid, ~m ) ▶₀ #r2 )
+              case ProcessSlot1
+              solve( !Sent( ~a, ~sid, ~m ) ▶₁ #r2 )
+                case SendMessage
+                solve( !KU( ~a ) @ #vk.1 )
+                  case SendMessage
+                  solve( !KU( ~sid ) @ #vk.3 )
+                    case SendMessage
+                    solve( !KU( ~m ) @ #vk.4 )
+                      case SendMessage
+                      SOLVED // trace found
+                    qed
+                  qed
+                qed
+              qed
+            qed
+          qed
+        qed
+      qed
+    qed
+  qed
+qed
+
+/* All wellformedness checks were successful. */
+
+/*
+Generated from:
+Tamarin version 1.12.0
+Maude version 3.5.1
+Git revision: UNKNOWN, branch: UNKNOWN
+Compiled at: 2026-03-08 10:05:47.616272992 UTC
+*/
+
+end
+
+==============================================================================
+summary of summaries:
+
+analyzed: tamarin/rq-v2-minimal/rqv2_relaxed.spthy
+
+  processing time: 2.63s
+  
+  normal_relaxed_batch_exists (exists-trace): verified (10 steps)
+  one_send_two_accepts_exists (exists-trace): verified (13 steps)
+  receiver_accept_has_send (all-traces): verified (8 steps)
+  receiver_accept_injective (all-traces): falsified - found trace (13 steps)
+
+==============================================================================

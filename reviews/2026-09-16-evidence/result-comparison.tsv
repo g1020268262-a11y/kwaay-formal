@@ -1,0 +1,15 @@
+model	lemma	status	steps	comparison
+rqv2_relaxed	normal_relaxed_batch_exists	verified	10	MATCH
+rqv2_relaxed	one_send_two_accepts_exists	verified	13	MATCH
+rqv2_relaxed	receiver_accept_has_send	verified	8	MATCH
+rqv2_relaxed	receiver_accept_injective	falsified	13	MATCH
+rqv2_message_dedup	repeated_message_rejection_exists	verified	4	MATCH
+rqv2_message_dedup	same_party_different_messages_batch_exists	verified	16	MATCH
+rqv2_message_dedup	accepted_batch_has_distinct_messages	verified	31	MATCH
+rqv2_message_dedup	receiver_accept_has_send	verified	8	MATCH
+rqv2_message_dedup	receiver_accept_injective	verified	33	MATCH
+rqv2_party_admission	same_party_rejection_exists	verified	5	MATCH
+rqv2_party_admission	distinct_party_batch_exists	verified	17	MATCH
+rqv2_party_admission	accepted_batch_has_distinct_parties	verified	31	MATCH
+rqv2_party_admission	receiver_accept_has_send	verified	8	MATCH
+rqv2_party_admission	receiver_accept_injective	verified	33	MATCH

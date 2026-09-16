@@ -1,0 +1,3008 @@
+{
+    "graphs": [
+        {
+            "jgAbbrevs": [],
+            "jgClusters": [],
+            "jgDirected": true,
+            "jgEdges": [
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr:c0",
+                    "jgeTarget": "#s1:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr:c0",
+                    "jgeTarget": "#s2:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.1:c0",
+                    "jgeTarget": "#rj:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.2:c0",
+                    "jgeTarget": "#vr.1:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.3:c0",
+                    "jgeTarget": "#vr.2:p0"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#vf.5:c0",
+                    "jgeTarget": "#vr.1:p1"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#vf.6:c0",
+                    "jgeTarget": "#vr.2:p1"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#s1",
+                    "jgeTarget": "#rj"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#s2",
+                    "jgeTarget": "#rj"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.1",
+                    "jgeTarget": "#vf.5"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.1",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.4",
+                    "jgeTarget": "#vf.5"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.5",
+                    "jgeTarget": "#vf.5"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.7",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.8",
+                    "jgeTarget": "#vf.6"
+                }
+            ],
+            "jgLabel": "trace_RQv2_Party_Admission_SL2-AS0-CL0-A1-C1-NB_same_party_rejection_exists-CreateParty-CreateParty-CollectSlot2",
+            "jgNodes": [
+                {
+                    "jgnId": "#rj",
+                    "jgnLabel": "RejectRepeatedParty",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Reject",
+                                "jgnFactShow": "Reject( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#rj:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "BatchRejected",
+                                "jgnFactShow": "BatchRejected( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#rj:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Collected",
+                                "jgnFactShow": "Collected( ~bid, ~rst, A, sid1, m1, A, sid2, m2 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid1"
+                                    },
+                                    {
+                                        "jgnConst": "m1"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid2"
+                                    },
+                                    {
+                                        "jgnConst": "m2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#s1",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#s1:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#s1:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#s2",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#s2:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#s2:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid.1 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m.1 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vr",
+                    "jgnLabel": "CreateParty",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~a )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vr.1",
+                    "jgnLabel": "CollectSlot2",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.1:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Collected",
+                                "jgnFactShow": "Collected( ~bid, ~rst, A, sid1, m1, A, sid2, m2 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid1"
+                                    },
+                                    {
+                                        "jgnConst": "m1"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid2"
+                                    },
+                                    {
+                                        "jgnConst": "m2"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.1:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot2",
+                                "jgnFactShow": "OpenSlot2( ~bid, ~rst, A, sid1, m1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid1"
+                                    },
+                                    {
+                                        "jgnConst": "m1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.1:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <A, sid2, m2> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid2"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m2"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid2,m2)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid2,m2))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vr.2",
+                    "jgnLabel": "CollectSlot1",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.2:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot2",
+                                "jgnFactShow": "OpenSlot2( ~bid, ~rst, A, sid1, m1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "A"
+                                    },
+                                    {
+                                        "jgnConst": "sid1"
+                                    },
+                                    {
+                                        "jgnConst": "m1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.2:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot1",
+                                "jgnFactShow": "OpenSlot1( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.2:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <A, sid1, m1> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid1,m1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid1,m1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vr.3",
+                    "jgnLabel": "CreateBatch",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.3:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot1",
+                                "jgnFactShow": "OpenSlot1( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.3:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~bid )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.3:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~rst )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vf.5",
+                    "jgnLabel": "Send",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "K",
+                                "jgnFactShow": "K( <A, sid2, m2> )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid2"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m2"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid2,m2)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid2,m2))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vf.5:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <A, sid2, m2> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid2"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m2"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid2,m2)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid2,m2))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vf.5:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( <A, sid2, m2> )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid2"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m2"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid2,m2)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid2,m2))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vf.6",
+                    "jgnLabel": "Send",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "K",
+                                "jgnFactShow": "K( <A, sid1, m1> )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid1,m1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid1,m1))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vf.6:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <A, sid1, m1> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid1,m1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid1,m1))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vf.6:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( <A, sid1, m1> )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "A"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "sid1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "m1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(sid1,m1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(A,pair(sid1,m1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vk.1",
+                    "jgnLabel": "!KU( A )",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( A )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "A"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [],
+                        "jgnPrems": []
+                    },
+                    "jgnType": "unsolvedActionAtom"
+                },
+                {
+                    "jgnId": "#vk.4",
+                    "jgnLabel": "!KU( sid2 )",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( sid2 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "sid2"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [],
+                        "jgnPrems": []
+                    },
+                    "jgnType": "unsolvedActionAtom"
+                },
+                {
+                    "jgnId": "#vk.5",
+                    "jgnLabel": "!KU( m2 )",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( m2 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "m2"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [],
+                        "jgnPrems": []
+                    },
+                    "jgnType": "unsolvedActionAtom"
+                },
+                {
+                    "jgnId": "#vk.7",
+                    "jgnLabel": "!KU( sid1 )",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( sid1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "sid1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [],
+                        "jgnPrems": []
+                    },
+                    "jgnType": "unsolvedActionAtom"
+                },
+                {
+                    "jgnId": "#vk.8",
+                    "jgnLabel": "!KU( m1 )",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( m1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "m1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [],
+                        "jgnPrems": []
+                    },
+                    "jgnType": "unsolvedActionAtom"
+                }
+            ],
+            "jgType": "Tamarin prover constraint system"
+        },
+        {
+            "jgAbbrevs": [],
+            "jgClusters": [],
+            "jgDirected": true,
+            "jgEdges": [
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#b:c0",
+                    "jgeTarget": "#r1:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#r1:c0",
+                    "jgeTarget": "#r2:p0"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#s1:c0",
+                    "jgeTarget": "#vl.1:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#s1:c1",
+                    "jgeTarget": "#r1:p1"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#s2:c0",
+                    "jgeTarget": "#vl.3:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#s2:c1",
+                    "jgeTarget": "#r2:p1"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr:c0",
+                    "jgeTarget": "#s1:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr:c0",
+                    "jgeTarget": "#vr.5:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vl.1:c0",
+                    "jgeTarget": "#vr.7:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr.1:c0",
+                    "jgeTarget": "#s2:p0"
+                },
+                {
+                    "jgeRelation": "PersistentFact",
+                    "jgeSource": "#vr.1:c0",
+                    "jgeTarget": "#vr.10:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.2:c0",
+                    "jgeTarget": "#b:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vl.3:c0",
+                    "jgeTarget": "#vr.12:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.3:c0",
+                    "jgeTarget": "#vr.2:p0"
+                },
+                {
+                    "jgeRelation": "ProtoFact",
+                    "jgeSource": "#vr.4:c0",
+                    "jgeTarget": "#vr.3:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.5:c0",
+                    "jgeTarget": "#vk:p0"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#vf.6:c0",
+                    "jgeTarget": "#vr.2:p1"
+                },
+                {
+                    "jgeRelation": "default",
+                    "jgeSource": "#vf.7:c0",
+                    "jgeTarget": "#vr.3:p1"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.7:c0",
+                    "jgeTarget": "#vk.1:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.7:c0",
+                    "jgeTarget": "#vk.2:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.10:c0",
+                    "jgeTarget": "#vk.3:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.12:c0",
+                    "jgeTarget": "#vk.4:p0"
+                },
+                {
+                    "jgeRelation": "KFact",
+                    "jgeSource": "#vr.12:c0",
+                    "jgeTarget": "#vk.5:p0"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk",
+                    "jgeTarget": "#vf.7"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.1",
+                    "jgeTarget": "#vf.7"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vl.1",
+                    "jgeTarget": "#vf.7"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.2",
+                    "jgeTarget": "#vf.7"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.3",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vl.3",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.4",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vk.5",
+                    "jgeTarget": "#vf.6"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vr.7",
+                    "jgeTarget": "#vf.7"
+                },
+                {
+                    "jgeRelation": "LessAtoms",
+                    "jgeSource": "#vr.12",
+                    "jgeTarget": "#vf.6"
+                }
+            ],
+            "jgLabel": "trace_RQv2_Party_Admission_SL2-AS0-CL0-A1-C1-NB_distinct_party_batch_exists-CreateParty-CreateParty-CollectSlot2-ProcessSlot1-AdmitDistinctParties-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage-SendMessage",
+            "jgNodes": [
+                {
+                    "jgnId": "#b",
+                    "jgnLabel": "AdmitDistinctParties",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Neq",
+                                "jgnFactShow": "Neq( ~a, ~a.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "BatchReceive",
+                                "jgnFactShow": "BatchReceive( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#b:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "AdmittedSlot1",
+                                "jgnFactShow": "AdmittedSlot1( ~bid, ~rst, ~a, ~sid, ~m, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#b:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Collected",
+                                "jgnFactShow": "Collected( ~bid, ~rst, ~a, ~sid, ~m, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#r1",
+                    "jgnLabel": "ProcessSlot1",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "ReceiverAccept",
+                                "jgnFactShow": "ReceiverAccept( ~a, ~sid, ~m, ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    },
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#r1:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "AdmittedSlot2",
+                                "jgnFactShow": "AdmittedSlot2( ~bid, ~rst, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#r1:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "AdmittedSlot1",
+                                "jgnFactShow": "AdmittedSlot1( ~bid, ~rst, ~a, ~sid, ~m, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#r1:p1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#r2",
+                    "jgnLabel": "ProcessSlot2",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "ReceiverAccept",
+                                "jgnFactShow": "ReceiverAccept( ~a.1, ~sid.1, ~m.1, ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    },
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#r2:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "BatchComplete",
+                                "jgnFactShow": "BatchComplete( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#r2:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "AdmittedSlot2",
+                                "jgnFactShow": "AdmittedSlot2( ~bid, ~rst, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#r2:p1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#s1",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#s1:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#s1:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s1:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#s2",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#s2:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#s2:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid.1 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#s2:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m.1 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~a )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~a )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~a )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr",
+                    "jgnLabel": "CreateParty",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~a )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk.1",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~sid )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk.1:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~sid )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk.1:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~sid )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vl.1",
+                    "jgnLabel": "Recv",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vl.1:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vl.1:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.1",
+                    "jgnLabel": "CreateParty",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.1:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.1:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~a.1 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk.2",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~m )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk.2:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~m )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk.2:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~m )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.2",
+                    "jgnLabel": "CollectSlot2",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.2:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Collected",
+                                "jgnFactShow": "Collected( ~bid, ~rst, ~a, ~sid, ~m, ~a.1, ~sid.1, ~m.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    },
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    },
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.2:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot2",
+                                "jgnFactShow": "OpenSlot2( ~bid, ~rst, ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.2:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk.3",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~a.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk.3:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~a.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk.3:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~a.1 )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vl.3",
+                    "jgnLabel": "Recv",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vl.3:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vl.3:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.3",
+                    "jgnLabel": "CollectSlot1",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.3:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot2",
+                                "jgnFactShow": "OpenSlot2( ~bid, ~rst, ~a, ~sid, ~m )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    },
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid"
+                                    },
+                                    {
+                                        "jgnConst": "~m"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.3:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot1",
+                                "jgnFactShow": "OpenSlot1( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.3:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk.4",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~sid.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk.4:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~sid.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk.4:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~sid.1 )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.4",
+                    "jgnLabel": "CreateBatch",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.4:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "OpenSlot1",
+                                "jgnFactShow": "OpenSlot1( ~bid, ~rst )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    },
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.4:p0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~bid )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~bid"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.4:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~rst )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~rst"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vk.5",
+                    "jgnLabel": "Coerce",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~m.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vk.5:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( ~m.1 )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vk.5:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( ~m.1 )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.1"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.5",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a, ~sid.2, ~m.2 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.2"
+                                    },
+                                    {
+                                        "jgnConst": "~m.2"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.5:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a, ~sid.2, ~m.2> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.2"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.2"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.2,~m.2)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid.2,~m.2))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.5:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a, ~sid.2, ~m.2 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.2"
+                                    },
+                                    {
+                                        "jgnConst": "~m.2"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.5:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.5:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid.2 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.2"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.5:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m.2 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.2"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vf.6",
+                    "jgnLabel": "Send",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "K",
+                                "jgnFactShow": "K( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vf.6:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vf.6:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vf.7",
+                    "jgnLabel": "Send",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "K",
+                                "jgnFactShow": "K( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vf.7:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "In",
+                                "jgnFactShow": "In( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "InFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vf.7:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KU",
+                                "jgnFactShow": "!KU( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "KUFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.7",
+                    "jgnLabel": "Destrd_0_snd",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.7:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~sid, ~m> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~sid"
+                                            },
+                                            {
+                                                "jgnConst": "~m"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~sid,~m)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.7:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~a, ~sid, ~m> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid,~m)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a,pair(~sid,~m))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                },
+                {
+                    "jgnId": "#vr.10",
+                    "jgnLabel": "SendMessage",
+                    "jgnMetadata": {
+                        "jgnActs": [
+                            {
+                                "jgnFactId": "action",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Send",
+                                "jgnFactShow": "Send( ~a.1, ~sid.3, ~m.3 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.3"
+                                    },
+                                    {
+                                        "jgnConst": "~m.3"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.10:c0",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Out",
+                                "jgnFactShow": "Out( <~a.1, ~sid.3, ~m.3> )",
+                                "jgnFactTag": "OutFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.3"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.3"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.3,~m.3)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.3,~m.3))"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.10:c1",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Sent",
+                                "jgnFactShow": "!Sent( ~a.1, ~sid.3, ~m.3 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    },
+                                    {
+                                        "jgnConst": "~sid.3"
+                                    },
+                                    {
+                                        "jgnConst": "~m.3"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.10:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!Party",
+                                "jgnFactShow": "!Party( ~a.1 )",
+                                "jgnFactTag": "ProtoFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~a.1"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.10:p1",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~sid.3 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~sid.3"
+                                    }
+                                ]
+                            },
+                            {
+                                "jgnFactId": "#vr.10:p2",
+                                "jgnFactMult": "",
+                                "jgnFactName": "Fr",
+                                "jgnFactShow": "Fr( ~m.3 )",
+                                "jgnFactTag": "FreshFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnConst": "~m.3"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isProtocolRule"
+                },
+                {
+                    "jgnId": "#vr.12",
+                    "jgnLabel": "Destrd_0_snd",
+                    "jgnMetadata": {
+                        "jgnActs": [],
+                        "jgnConcs": [
+                            {
+                                "jgnFactId": "#vr.12:c0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~sid.1, ~m.1> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~sid.1"
+                                            },
+                                            {
+                                                "jgnConst": "~m.1"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~sid.1,~m.1)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "jgnPrems": [
+                            {
+                                "jgnFactId": "#vr.12:p0",
+                                "jgnFactMult": "!",
+                                "jgnFactName": "!KD",
+                                "jgnFactShow": "!KD( <~a.1, ~sid.1, ~m.1> )",
+                                "jgnFactTag": "KDFact",
+                                "jgnFactTerms": [
+                                    {
+                                        "jgnFunct": "pair",
+                                        "jgnParams": [
+                                            {
+                                                "jgnConst": "~a.1"
+                                            },
+                                            {
+                                                "jgnFunct": "pair",
+                                                "jgnParams": [
+                                                    {
+                                                        "jgnConst": "~sid.1"
+                                                    },
+                                                    {
+                                                        "jgnConst": "~m.1"
+                                                    }
+                                                ],
+                                                "jgnShow": "pair(~sid.1,~m.1)"
+                                            }
+                                        ],
+                                        "jgnShow": "pair(~a.1,pair(~sid.1,~m.1))"
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    "jgnType": "isIntruderRule"
+                }
+            ],
+            "jgType": "Tamarin prover constraint system"
+        }
+    ]
+}

@@ -1,0 +1,10 @@
+maude tool: 'maude'
+ checking version: 3.5.1. OK.
+ checking installation: OK.
+[Theory RQv2_Relaxed] Theory loaded
+[Theory RQv2_Relaxed] Theory translated
+[Theory RQv2_Relaxed] Derivation checks started
+[Theory RQv2_Relaxed] Derivation checks ended
+[Theory RQv2_Relaxed] Theory closed
+[Saturating Sources] Step 1 (Max 5)
+[Saturating Sources] Done

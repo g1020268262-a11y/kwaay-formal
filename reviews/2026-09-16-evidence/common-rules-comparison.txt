@@ -1,0 +1,8 @@
+All seven common rule bodies match exactly after boundary whitespace normalization.
+CollectSlot1
+CollectSlot2
+CreateBatch
+CreateParty
+ProcessSlot1
+ProcessSlot2
+SendMessage

@@ -1,0 +1,160 @@
+{
+  "audit_kind": "independent-review-rerun; not recovery of original run",
+  "utc_start": "2026-09-16T08:56:55.634818+00:00",
+  "commit": "3ebf8855f6226d7ebef8a78f2a7fae4a27679d57",
+  "branch": "main",
+  "pre_status": "",
+  "runner_sha256": "711cafbd112b1ab0722f79b14a50e95ac2223e650a2841a81e85e46fa552a275",
+  "runs": [
+    {
+      "id": "version",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--version"
+      ],
+      "exit_code": 0,
+      "elapsed_seconds": 0.312,
+      "stdout_sha256": "7aa557e0db5dcb9094e33308fbb0253bcde6178eb5e0b2a75a788c5ef38539db",
+      "stderr_sha256": "4e856bdda95ff243a080b71fb24088436156f1d6d575746d60607657e3ba2290"
+    },
+    {
+      "id": "rqv2_relaxed-parse",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--parse-only",
+        "tamarin/rq-v2-minimal/rqv2_relaxed.spthy"
+      ],
+      "model_sha256": "e5129575720020aa3f509782c2052fbf2114a540d013126f5a75d316cbabaf9d",
+      "exit_code": 0,
+      "elapsed_seconds": 0.281,
+      "stdout_sha256": "31cb06c9a0ad40237c9ebcd825b25f388666f05853426c6d3a755a4001c73dea",
+      "stderr_sha256": "337cf91b2a08e21ff148816255f4758557f57c83c001df42607f54270171ddf6"
+    },
+    {
+      "id": "rqv2_relaxed-prove",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--prove",
+        "tamarin/rq-v2-minimal/rqv2_relaxed.spthy",
+        "--output-json=/mnt/c/Users/10202/.codex/visualizations/2026/09/16/01a0a96b-d0fd-72f0-adcd-7cd964edcdf4/review-evidence/rqv2_relaxed-traces.json"
+      ],
+      "model_sha256": "e5129575720020aa3f509782c2052fbf2114a540d013126f5a75d316cbabaf9d",
+      "exit_code": 0,
+      "elapsed_seconds": 3.094,
+      "stdout_sha256": "4378f2a6a458b04846a8ab8473ff3baa0b1ca9a4e493fbd886fb466596cd877f",
+      "stderr_sha256": "94cdb5356eeae1a741fa332237112556d0efd1316ec51ba5fabe5d208c718968"
+    },
+    {
+      "id": "rqv2_message_dedup-parse",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--parse-only",
+        "tamarin/rq-v2-minimal/rqv2_message_dedup.spthy"
+      ],
+      "model_sha256": "90a196f5da5c244026596283d001376427880cd64c5bea3c6cfdfd4ccba99184",
+      "exit_code": 0,
+      "elapsed_seconds": 0.219,
+      "stdout_sha256": "1652eb32939fc20ffa1467e2b769e3a11e31669a0b9898fab7a3d651ff92f4a3",
+      "stderr_sha256": "653edaca9308ddb32add8b5f06be774e2b855927564f0c34cc8b2e085e638485"
+    },
+    {
+      "id": "rqv2_message_dedup-prove",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--prove",
+        "tamarin/rq-v2-minimal/rqv2_message_dedup.spthy",
+        "--output-json=/mnt/c/Users/10202/.codex/visualizations/2026/09/16/01a0a96b-d0fd-72f0-adcd-7cd964edcdf4/review-evidence/rqv2_message_dedup-traces.json"
+      ],
+      "model_sha256": "90a196f5da5c244026596283d001376427880cd64c5bea3c6cfdfd4ccba99184",
+      "exit_code": 0,
+      "elapsed_seconds": 2.25,
+      "stdout_sha256": "1caaba03ff2b40b5492e68b9ac714b6027135c56d61b13e38156433bae827ed9",
+      "stderr_sha256": "16ef784700fd5c501e2b93acbd67a916865b4d4047bf78852a02b4af3c12a3db"
+    },
+    {
+      "id": "rqv2_party_admission-parse",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--parse-only",
+        "tamarin/rq-v2-minimal/rqv2_party_admission.spthy"
+      ],
+      "model_sha256": "c35af64cac7f01182418cb999ea105214b8da4f2295b670a9b3733f0bd976bba",
+      "exit_code": 0,
+      "elapsed_seconds": 0.204,
+      "stdout_sha256": "1c540d94bf3b5c292a0df805cf4ae54d04d8a7645a9bc34637d4ac22b09704d8",
+      "stderr_sha256": "fca70eddc0423f5e63a76fe8af6be5fd345b2794767054a62d9a2c7b292a9184"
+    },
+    {
+      "id": "rqv2_party_admission-prove",
+      "command": [
+        "wsl",
+        "-d",
+        "Ubuntu-24.04",
+        "--cd",
+        "/mnt/d/kwaay-formal",
+        "--",
+        "env",
+        "PATH=/home/linuxbrew/.linuxbrew/bin:/usr/bin:/bin",
+        "/home/linuxbrew/.linuxbrew/bin/tamarin-prover",
+        "--prove",
+        "tamarin/rq-v2-minimal/rqv2_party_admission.spthy",
+        "--output-json=/mnt/c/Users/10202/.codex/visualizations/2026/09/16/01a0a96b-d0fd-72f0-adcd-7cd964edcdf4/review-evidence/rqv2_party_admission-traces.json"
+      ],
+      "model_sha256": "c35af64cac7f01182418cb999ea105214b8da4f2295b670a9b3733f0bd976bba",
+      "exit_code": 0,
+      "elapsed_seconds": 2.985,
+      "stdout_sha256": "f501638aaa733a39046ef4fb2a3f0c31effee76b3fad5b3f9baa8c640a4398ce",
+      "stderr_sha256": "e527f778bac4cb5606c5db4a0b0275d9db7b6d82c6bcaec874a9427fab3c29de"
+    }
+  ],
+  "post_status": "",
+  "utc_end": "2026-09-16T08:57:05.750441+00:00"
+}

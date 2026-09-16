@@ -1,0 +1,126 @@
+theory RQv2_Relaxed
+
+begin
+
+// Function signature and definition of the equational theory E
+
+functions: fst/1, pair/2, snd/1
+equations: fst(<x.1, x.2>) = x.1, snd(<x.1, x.2>) = x.2
+
+rule (modulo E) CreateParty:
+   [ Fr( ~a ) ] --> [ !Party( ~a ) ]
+
+rule (modulo E) SendMessage:
+   [ !Party( A ), Fr( ~sid ), Fr( ~m ) ]
+  --[ Send( A, ~sid, ~m ) ]->
+   [ Out( <A, ~sid, ~m> ), !Sent( A, ~sid, ~m ) ]
+
+rule (modulo E) CreateBatch:
+   [ Fr( ~bid ), Fr( ~rst ) ] --> [ OpenSlot1( ~bid, ~rst ) ]
+
+rule (modulo E) CollectSlot1:
+   [ OpenSlot1( bid, rst ), In( <A, sid, m> ) ]
+  -->
+   [ OpenSlot2( bid, rst, A, sid, m ) ]
+
+rule (modulo E) CollectSlot2:
+   [ OpenSlot2( bid, rst, A1, sid1, m1 ), In( <A2, sid2, m2> ) ]
+  -->
+   [ Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+
+rule (modulo E) AdmitRelaxedBatch:
+   [ Collected( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+  --[ BatchReceive( bid, rst ) ]->
+   [ AdmittedSlot1( bid, rst, A1, sid1, m1, A2, sid2, m2 ) ]
+
+rule (modulo E) ProcessSlot1:
+   [
+   AdmittedSlot1( bid, rst, A1, sid1, m1, A2, sid2, m2 ),
+   !Sent( A1, sid1, m1 )
+   ]
+  --[ ReceiverAccept( A1, sid1, m1, bid, rst ) ]->
+   [ AdmittedSlot2( bid, rst, A2, sid2, m2 ) ]
+
+rule (modulo E) ProcessSlot2:
+   [ AdmittedSlot2( bid, rst, A2, sid2, m2 ), !Sent( A2, sid2, m2 ) ]
+  --[ ReceiverAccept( A2, sid2, m2, bid, rst ) ]->
+   [ BatchComplete( bid, rst ) ]
+
+lemma normal_relaxed_batch_exists:
+  exists-trace
+  "∃ A sid m bid rst #s #b #r.
+    ((((Send( A, sid, m ) @ #s) ∧ (BatchReceive( bid, rst ) @ #b)) ∧
+      (ReceiverAccept( A, sid, m, bid, rst ) @ #r)) ∧
+     (#s < #b)) ∧
+    (#b < #r)"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A sid m bid rst #s #b #r.
+  (Send( A, sid, m ) @ #s) ∧
+  (BatchReceive( bid, rst ) @ #b) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r)
+ ∧
+  (#s < #b) ∧ (#b < #r)"
+*/
+by sorry
+
+lemma one_send_two_accepts_exists:
+  exists-trace
+  "∃ A sid m bid rst #s #b #r1 #r2.
+    (((((((Send( A, sid, m ) @ #s) ∧ (BatchReceive( bid, rst ) @ #b)) ∧
+         (ReceiverAccept( A, sid, m, bid, rst ) @ #r1)) ∧
+        (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)) ∧
+       (#s < #b)) ∧
+      (#b < #r1)) ∧
+     (#r1 < #r2)) ∧
+    (∀ #s2. (Send( A, sid, m ) @ #s2) ⇒ (#s2 = #s))"
+/*
+guarded formula characterizing all satisfying traces:
+"∃ A sid m bid rst #s #b #r1 #r2.
+  (Send( A, sid, m ) @ #s) ∧
+  (BatchReceive( bid, rst ) @ #b) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r1) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)
+ ∧
+  (#s < #b) ∧
+  (#b < #r1) ∧
+  (#r1 < #r2) ∧
+  (∀ #s2. (Send( A, sid, m ) @ #s2) ⇒ #s2 = #s)"
+*/
+by sorry
+
+lemma receiver_accept_has_send:
+  all-traces
+  "∀ A sid m bid rst #r.
+    (ReceiverAccept( A, sid, m, bid, rst ) @ #r) ⇒
+    (∃ #s. (Send( A, sid, m ) @ #s) ∧ (#s < #r))"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A sid m bid rst #r.
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r)
+ ∧
+  ∀ #s. (Send( A, sid, m ) @ #s) ⇒ ¬(#s < #r)"
+*/
+by sorry
+
+lemma receiver_accept_injective:
+  all-traces
+  "∀ A sid m bid rst #s #r1 #r2.
+    (((((Send( A, sid, m ) @ #s) ∧
+        (ReceiverAccept( A, sid, m, bid, rst ) @ #r1)) ∧
+       (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)) ∧
+      (#s < #r1)) ∧
+     (#s < #r2)) ⇒
+    (#r1 = #r2)"
+/*
+guarded formula characterizing all counter-examples:
+"∃ A sid m bid rst #s #r1 #r2.
+  (Send( A, sid, m ) @ #s) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r1) ∧
+  (ReceiverAccept( A, sid, m, bid, rst ) @ #r2)
+ ∧
+  (#s < #r1) ∧ (#s < #r2) ∧ (¬(#r1 = #r2))"
+*/
+by sorry
+
+end
