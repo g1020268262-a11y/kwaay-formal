@@ -1,0 +1,22 @@
+# Locally generated LaTeX outputs; source figures are TikZ.
+*.pdf
+*.aux
+*.log
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.out
+*.toc
+*.lof
+*.lot
+*.xdv
+*.nav
+*.snm
+*.vrb
+*.run.xml
+*.bcf
+tmp/
+build-review/
+__pycache__/

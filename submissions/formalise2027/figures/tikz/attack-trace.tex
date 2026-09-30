@@ -1,0 +1,33 @@
+\begin{figure*}[!htbp]
+  \centering
+  \begin{tikzpicture}[
+      node distance=5mm,
+      >=Latex,
+      every node/.style={font=\small,align=center},
+      tracebox/.style={draw,rounded corners,minimum width=.82\linewidth,
+        minimum height=8mm,inner sep=3pt}
+    ]
+    \node[tracebox] (send)
+      {One modeled origin: $\mathsf{Send}(A,\mathit{sid},m)$};
+    \node[tracebox,below=of send] (compose)
+      {Repeated-input composition:\
+       slot 1 $=\langle A,\mathit{sid},m\rangle$,\quad
+       slot 2 $=\langle A,\mathit{sid},m\rangle$};
+    \node[tracebox,below=of compose] (admit)
+      {$\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})$};
+    \node[tracebox,below=of admit] (accept1)
+      {$\receiveraccept(A,\mathit{sid},m,\mathit{bid},\mathit{rst})@r_1$};
+    \node[tracebox,below=of accept1] (accept2)
+      {$\receiveraccept(A,\mathit{sid},m,\mathit{bid},\mathit{rst})@r_2$,
+       with $r_1<r_2$};
+    \draw[->] (send) -- (compose);
+    \draw[->] (compose) -- (admit);
+    \draw[->] (admit) -- (accept1);
+    \draw[->] (accept1) -- (accept2);
+  \end{tikzpicture}
+  \caption{Reconstructed abstract counterexample in the relaxed admission model
+    (not a raw prover export). One matching
+    modeled sender origin supports two distinct acceptance occurrences with
+    the same $A$, $\mathit{sid}$, $m$, $\mathit{bid}$, and $\mathit{rst}$.}
+  \label{fig:relaxed-counterexample}
+\end{figure*}
