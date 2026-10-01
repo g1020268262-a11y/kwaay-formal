@@ -1,0 +1,161 @@
+Title: 关于《计算机应用研究》 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/about/journal
+Accessed: 2026-10-01T12:51:28.984086+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+关于《计算机应用研究》
+关于《计算机应用研究》
+2024-10-09
+《计算机应用研究》创刊于1984年，是由四川省科技厅所属四川省计算机研究院主办的计算技术类学术刊物。
+办刊理念
+《计算机应用研究》瞄准本学科领域迫切需要的前沿技术，及时反映国内外计算机应用研究的主流技术、热点技术及最新发展趋势。主要刊载内容包括本学科领域高水平的学术论文、本学科最新科研成果和重大应用成果。
+栏目内容涉及计算机学科新理论、计算机基础理论、算法理论研究、算法设计与分析、区块链技术、系统软件与软件工程技术、模式识别与人工智能、体系结构、先进计算、并行处理、数据库技术、计算机网络与通信技术、信息安全技术、计算机图像图形学及其最新热点应用技术。
+读作者群体
+《计算机应用研究》拥有众多高层次读者、作者，读者对象主要为从事计算机学科领域高、中级研究人员及工程技术人员，各高等院校计算机专业及相关专业的师生。
+多年来《计算机应用研究》的总被引频次及Web下载率一直名列本学科同类学术刊物前茅，所刊发的学术论文以其新颖性、学术性、前瞻性、导向性、实用性而备受广大读者的喜爱。
+郑重声明
+《计算机应用研究》自创刊以来：
+从未委托过任何单位和或个人进行过任何形式的组稿、征稿工作；
+任何投稿代理、代发、中介等组织和个人均与本编辑部无任何关系；
+不存在任何快捷投稿、绿色通道、内部通道等，谨防上当受骗；
+本刊稿件均通过我编辑部网络投稿系统
+https://www.arocmag.cn
+进行投稿；
+编辑部业务网站域名均为
+arocmag.cn
+；编辑事务联系邮箱的域名均为
+arocmag.cn
+，且不接受邮件投稿。
+《计算机应用研究》刊号
+国际标准连续出版物号：ISSN 1001-3695
+国内统一连续出版物号：CN 51-1196/TP
+《计算机应用研究》发行代号
+国内邮发代号：62-68
+国外发行代号：MO4408
+联系方式
+网址：https://www.arocmag.cn
+邮件：journal@arocmag.cn
+电话：028-85249567 028-85210177
+地址：四川省成都市武候区成科西路3号
+相关内容
+关于《计算机应用研究》
+编委会/董事会
+开放获取声明
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fabout%2Fjournal"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fabout%2Fjournal"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "关于《计算机应用研究》",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "开放获取声明",
+    "url": "https://www.arocmag.cn/info/about/OpenAccess"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

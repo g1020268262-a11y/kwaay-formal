@@ -1,0 +1,5549 @@
+[
+  {
+    "source_id": "P01",
+    "title": "投稿须知 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/instructions",
+    "final_url": "https://www.arocmag.cn/info/instruction/instructions",
+    "page_updated_date": "2024-06-26",
+    "accessed_date": "2026-10-01T12:47:15.796052+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P01.html",
+    "sha256": "1a1ec0b1154ad591f79fa7b5a33300bc5b1b8c9d51aea695bf146200526ace27",
+    "bytes": 18712,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:14 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:14 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Finstructions"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Finstructions"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "网站系统",
+        "url": "https://www.arocmag.com/login/author"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.com/info/instruction/template"
+      },
+      {
+        "text": "作者变更申请书",
+        "url": "https://www.arocmag.com/info/instruction/requistion"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-06-26"
+  },
+  {
+    "source_id": "P02",
+    "title": "投稿模板 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/template",
+    "final_url": "https://www.arocmag.cn/info/instruction/template",
+    "page_updated_date": "2024-06-26",
+    "accessed_date": "2026-10-01T12:47:15.796052+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P02.html",
+    "sha256": "6589437774e2c1b876d089265ce8f306d69ed8c6295976030f3640a080715cf5",
+    "bytes": 15125,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:14 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:14 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ftemplate"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ftemplate"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "下载 投稿模板(doc)",
+        "url": "http://go.arocmag.com/?LinkId=468801"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-06-26"
+  },
+  {
+    "source_id": "P03",
+    "title": "常用文档下载 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/download",
+    "final_url": "https://www.arocmag.cn/download",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:47:15.796052+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P03.html",
+    "sha256": "37c341d06d23355da7a942b0906464f5b11a793cfb7f8001921a1b71c5da8e24",
+    "bytes": 17738,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:14 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:14 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fdownload"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fdownload"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "下载",
+        "url": "https://www.arocmag.cn/download/agreement"
+      },
+      {
+        "text": "下载",
+        "url": "https://www.arocmag.cn/download/requisition"
+      },
+      {
+        "text": "下载",
+        "url": "https://www.arocmag.cn/download/template"
+      },
+      {
+        "text": "下载",
+        "url": "https://www.arocmag.cn/download/cite-tutorial"
+      },
+      {
+        "text": "下载",
+        "url": "https://www.arocmag.cn/download/cite-regulations"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "保密审查证明 及 著作权转让承诺书",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024/5/17 16:57:32; 2023/10/13 16:38:02; 2023/10/13 16:41:40; 2023/10/13 16:45:05; 2023/10/13 16:47:27"
+  },
+  {
+    "source_id": "P04",
+    "title": "摘要编写要求 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/abstract-instruction",
+    "final_url": "https://www.arocmag.cn/info/instruction/abstract-instruction",
+    "page_updated_date": "2022-07-24",
+    "accessed_date": "2026-10-01T12:47:15.796052+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P04.html",
+    "sha256": "4efd93ccef22f9d04271e80d01bd7e4321ae02ef0c17aa1273e5573dd9795d08",
+    "bytes": 22689,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:15 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:14 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fabstract-instruction"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fabstract-instruction"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-07-24"
+  },
+  {
+    "source_id": "P05",
+    "title": "常见问题及解答 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/faq",
+    "final_url": "https://www.arocmag.cn/info/instruction/faq",
+    "page_updated_date": "2022-08-19",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P05.html",
+    "sha256": "f503d4addeff17b31afd26896ebce4704012dae4af8eeb64e3b5701c66ab14d6",
+    "bytes": 23322,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:25 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:25 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ffaq"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ffaq"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "Q： 《计算机应用研究》接受英文稿件吗？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q1"
+      },
+      {
+        "text": "Q： 《计算机应用研究》增刊是否算核心期刊，是否有国内国际刊号？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q2"
+      },
+      {
+        "text": "Q： 怎样向《计算机应用研究》投稿？审稿周期多长？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q3"
+      },
+      {
+        "text": "Q： 我已投稿成功，需要交纳审稿费吗？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q4"
+      },
+      {
+        "text": "Q： 如何在汇出版面费后查询款项是否已收到？并且什么时候能收到发票？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q5"
+      },
+      {
+        "text": "Q： 文章出版后，是否向作者邮寄样刊？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q6"
+      },
+      {
+        "text": "Q： 我只想转让印刷版，不想转让网络版，怎么办？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q7"
+      },
+      {
+        "text": "Q： 可以提供一个《计算机应用研究》的稿件格式吗？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q8"
+      },
+      {
+        "text": "Q： 如何查询稿件的处理状态？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q9"
+      },
+      {
+        "text": "Q： 我已成功注册了账号，但却不能正确登录，怎么办？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q10"
+      },
+      {
+        "text": "Q： 在使用在线投稿系统上传稿件的时，总是不能完成上传，出现错误提示甚至无任何提示，如何处理？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q11"
+      },
+      {
+        "text": "Q： 完成投稿之后，作者的联系方式可否自由改动？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q12"
+      },
+      {
+        "text": "Q： 完成投稿之后发现稿件还有疏漏之处，能否再修改？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q13"
+      },
+      {
+        "text": "Q： 我投稿时所选栏目错误，应该为“算法研究”，是否需要修改？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q14"
+      },
+      {
+        "text": "Q： 稿件录用后，文章的作者能否自由改动（包括增减、调整顺序）？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q15"
+      },
+      {
+        "text": "Q： 不变更作者，只是变更作者单位或者添加基金项目；或者已通过网站上传了修改稿，但某些问题还需要再修改，怎么提交？",
+        "url": "https://www.arocmag.cn/info/instruction/faq#q16"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/html/requirement/201405168.html"
+      },
+      {
+        "text": "作者变更申请书",
+        "url": "https://www.arocmag.cn/html/requirement/201405153.html"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-08-19"
+  },
+  {
+    "source_id": "P06",
+    "title": "计算机应用研究",
+    "official_url": "https://www.arocmag.cn/",
+    "final_url": "https://www.arocmag.cn/",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P06.html",
+    "sha256": "b823119d1a3a65006ccd282ebe9a27c29f384c9a574af0d790ba6ae6a97f7bfd",
+    "bytes": 71447,
+    "headers": {
+      "Cache-Control": "no-cache,no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Expires": "-1",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:25 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:25 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2F"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "2026 第43卷 第9期",
+        "url": "https://www.arocmag.cn/issue/202609"
+      },
+      {
+        "text": "已出版刊期",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "优先出版文章",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "查看更多",
+        "url": "https://www.arocmag.cn/#intro-index"
+      },
+      {
+        "text": "注册成为投稿作者",
+        "url": "https://www.arocmag.cn/signup"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "招聘审稿专家启事",
+        "url": "https://www.arocmag.cn/info/others/recruitment"
+      },
+      {
+        "text": "关于征集编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+      },
+      {
+        "text": "关于征集青年编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+      },
+      {
+        "text": "2025年度优秀审稿人名单",
+        "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+      },
+      {
+        "text": "本刊投稿优先采用条件",
+        "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+      },
+      {
+        "text": "关于样刊和稿费邮寄的说明",
+        "url": "https://www.arocmag.cn/info/announce/post-info"
+      },
+      {
+        "text": "查看更多",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "Agent安全与可解释性",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20260603"
+      },
+      {
+        "text": "AI+X:人工智能交叉应用",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20250808"
+      },
+      {
+        "text": "AI模型中的知识产权保护",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20250711"
+      },
+      {
+        "text": "AI时代的数据智能治理",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20250603"
+      },
+      {
+        "text": "生成式AI模型研究与发展",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20250114"
+      },
+      {
+        "text": "具身智能技术应用",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20240614"
+      },
+      {
+        "text": "多模态大模型发展与应用",
+        "url": "https://www.arocmag.cn/info/callforpaper/callforpaper-20240312"
+      },
+      {
+        "text": "基于多尺度时空频融合的自监督交通流预测模型",
+        "url": "https://www.arocmag.cn/abs/2026.03.0049"
+      },
+      {
+        "text": "基于边缘感知模型与特征增强的自监督单目深度估计网络",
+        "url": "https://www.arocmag.cn/abs/2025.12.0542"
+      },
+      {
+        "text": "面向孤岛状态的远程控制木马两阶段检测方法",
+        "url": "https://www.arocmag.cn/abs/2026.03.0096"
+      },
+      {
+        "text": "基于双重全局-局部引导的提示驱动一体化图像恢复模型",
+        "url": "https://www.arocmag.cn/abs/2026.04.0087"
+      },
+      {
+        "text": "查看所有优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "面向无信号交叉口机非交互的多智能体强化学习方法",
+        "url": "https://www.arocmag.cn/abs/2026.06.0151"
+      },
+      {
+        "text": "医学视觉大语言模型幻觉分类与治理综述",
+        "url": "https://www.arocmag.cn/abs/2026.05.0146"
+      },
+      {
+        "text": "基于CLIP语义空间与双向跨模态注意力的多模态图推荐方法",
+        "url": "https://www.arocmag.cn/abs/2026.05.0148"
+      },
+      {
+        "text": "融合全局感知与动态时序对齐的跨模态情绪识别",
+        "url": "https://www.arocmag.cn/abs/2026.05.0149"
+      },
+      {
+        "text": "结合融合注意力与自监督重构的多模态情感分析方法",
+        "url": "https://www.arocmag.cn/abs/2026.05.0152"
+      },
+      {
+        "text": "面向中文新闻播报场景的渐进式语音合成微调方法",
+        "url": "https://www.arocmag.cn/abs/2026.05.0136"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "适应不同场景的交通流量长时预测方法",
+        "url": "https://www.arocmag.cn/abs/2026.01.0016"
+      },
+      {
+        "text": "基于扩散增强与可逆密度变换流的视频异常检测方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0489"
+      },
+      {
+        "text": "扫视抑制感受野重映射的视觉错位感知神经网络",
+        "url": "https://www.arocmag.cn/abs/2026.01.0022"
+      },
+      {
+        "text": "基于双流指数平滑分解与多尺度特征混合的瓦斯浓度预测",
+        "url": "https://www.arocmag.cn/abs/2026.01.0012"
+      },
+      {
+        "text": "融合轻量化时空建模的学习行为指标预测模型",
+        "url": "https://www.arocmag.cn/abs/2026.01.0007"
+      },
+      {
+        "text": "一种面向嵌入式场景的五级流水线RISC-V处理器设计",
+        "url": "https://www.arocmag.cn/abs/2026.02.0028"
+      },
+      {
+        "text": "面向RISC-V向量架构的寄存器自适应分组分配机制与编译优化",
+        "url": "https://www.arocmag.cn/abs/2026.01.0020"
+      },
+      {
+        "text": "面向林下环境监测的无人机自适应安全轨迹规划",
+        "url": "https://www.arocmag.cn/abs/2026.01.0015"
+      },
+      {
+        "text": "查看所有印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "忘记密码？",
+        "url": "https://www.arocmag.cn/getpassword"
+      },
+      {
+        "text": "注册成为投稿作者",
+        "url": "https://www.arocmag.cn/signup"
+      },
+      {
+        "text": "投稿须知\r\n                                                投稿必读",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "更多…",
+        "url": "https://www.arocmag.cn/info/instruction"
+      },
+      {
+        "text": "忘记密码？",
+        "url": "https://www.arocmag.cn/getpassword"
+      },
+      {
+        "text": "了解更多",
+        "url": "https://www.arocmag.cn/info/others/recruitment"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://dcp.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "P07",
+    "title": "稿件处理流程 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/procedure",
+    "final_url": "https://www.arocmag.cn/info/instruction/procedure",
+    "page_updated_date": "2026-08-04",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P07.html",
+    "sha256": "95f14714a7b391f46c864ff71664ac6a3e03a244ed95fd122bf593b63b6426eb",
+    "bytes": 16248,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:26 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:25 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fprocedure"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fprocedure"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2026-08-04"
+  },
+  {
+    "source_id": "P08",
+    "title": "TP类中图分类号 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/clc",
+    "final_url": "https://www.arocmag.cn/info/instruction/clc",
+    "page_updated_date": "2022-07-24",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P08.html",
+    "sha256": "9daa4bd46843b29042fa57fe61034409b3b4611dbb5c778c3d22a0b75555b12c",
+    "bytes": 50088,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:26 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:25 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fclc"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fclc"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-07-24"
+  },
+  {
+    "source_id": "F01",
+    "title": "投稿编辑模板-计算机应用研究.doc",
+    "official_url": "https://www.arocmag.cn/download/template",
+    "final_url": "https://www.arocmag.cn/download/template",
+    "page_updated_date": "2023-10-13 16:41:40",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "templates",
+    "download_filename": "投稿编辑模板-计算机应用研究.doc",
+    "local_path": "official/templates/投稿编辑模板-计算机应用研究.doc",
+    "sha256": "baf9fce8b2bc56f2320c8bf4541546e43f48a8f3a1c773b40667d7b2a7b872cb",
+    "bytes": 169984,
+    "headers": {
+      "Content-Length": "169984",
+      "Content-Type": "application/octet-stream",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:26 GMT; path=/; secure; samesite=strict; httponly",
+      "Content-Disposition": "attachment; filename=______-_______.doc; filename*=UTF-8''%E6%8A%95%E7%A8%BF%E7%BC%96%E8%BE%91%E6%A8%A1%E6%9D%BF-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%BA%94%E7%94%A8%E7%A0%94%E7%A9%B6.doc",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:26 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "F02",
+    "title": "参考文献编写规则-计算机应用研究.pdf",
+    "official_url": "https://www.arocmag.cn/download/cite-regulations",
+    "final_url": "https://www.arocmag.cn/download/cite-regulations",
+    "page_updated_date": "2023-10-13 16:47:27",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "guidelines",
+    "download_filename": "参考文献编写规则-计算机应用研究.pdf",
+    "local_path": "official/guidelines/参考文献编写规则-计算机应用研究.pdf",
+    "sha256": "1e508db2e0ed56077fd7478537e760b6d7eac04beddf32ccf5e78f2467fb0d3d",
+    "bytes": 1243294,
+    "headers": {
+      "Content-Length": "1243294",
+      "Content-Type": "application/octet-stream",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:27 GMT; path=/; secure; samesite=strict; httponly",
+      "Content-Disposition": "attachment; filename=________-_______.pdf; filename*=UTF-8''%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E7%BC%96%E5%86%99%E8%A7%84%E5%88%99-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%BA%94%E7%94%A8%E7%A0%94%E7%A9%B6.pdf",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:26 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "F03",
+    "title": "参考文献编写快速指南-计算机应用研究.pdf",
+    "official_url": "https://www.arocmag.cn/download/cite-tutorial",
+    "final_url": "https://www.arocmag.cn/download/cite-tutorial",
+    "page_updated_date": "2023-10-13 16:45:05",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "guidelines",
+    "download_filename": "参考文献编写快速指南-计算机应用研究.pdf",
+    "local_path": "official/guidelines/参考文献编写快速指南-计算机应用研究.pdf",
+    "sha256": "e904ca4a4395dc5bbd2493a22c88126b3238690042b9dcd22ecaee4d2bfbd8f0",
+    "bytes": 1130131,
+    "headers": {
+      "Content-Length": "1130131",
+      "Content-Type": "application/octet-stream",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:27 GMT; path=/; secure; samesite=strict; httponly",
+      "Content-Disposition": "attachment; filename=__________-_______.pdf; filename*=UTF-8''%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE%E7%BC%96%E5%86%99%E5%BF%AB%E9%80%9F%E6%8C%87%E5%8D%97-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%BA%94%E7%94%A8%E7%A0%94%E7%A9%B6.pdf",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:27 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "F04",
+    "title": "著作权转让承诺书及保密审查证明-计算机应用研究.dotx",
+    "official_url": "https://www.arocmag.cn/download/agreement",
+    "final_url": "https://www.arocmag.cn/download/agreement",
+    "page_updated_date": "2024-05-17 16:57:32",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "forms",
+    "download_filename": "著作权转让承诺书及保密审查证明-计算机应用研究.dotx",
+    "local_path": "official/forms/著作权转让承诺书及保密审查证明-计算机应用研究.dotx",
+    "sha256": "e5030fc86b15c7b7cd55570fee9d2dfe7a299c959383360ca2521f6242eb1778",
+    "bytes": 25213,
+    "headers": {
+      "Content-Length": "25213",
+      "Content-Type": "application/octet-stream",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:28 GMT; path=/; secure; samesite=strict; httponly",
+      "Content-Disposition": "attachment; filename=_______________-_______.dotx; filename*=UTF-8''%E8%91%97%E4%BD%9C%E6%9D%83%E8%BD%AC%E8%AE%A9%E6%89%BF%E8%AF%BA%E4%B9%A6%E5%8F%8A%E4%BF%9D%E5%AF%86%E5%AE%A1%E6%9F%A5%E8%AF%81%E6%98%8E-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%BA%94%E7%94%A8%E7%A0%94%E7%A9%B6.dotx",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:27 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "F05",
+    "title": "题目及作者变更申请书-计算机应用研究.doc",
+    "official_url": "https://www.arocmag.cn/download/requisition",
+    "final_url": "https://www.arocmag.cn/download/requisition",
+    "page_updated_date": "2023-10-13 16:38:02",
+    "accessed_date": "2026-10-01T12:47:26.782164+08:00",
+    "source_type": "forms",
+    "download_filename": "题目及作者变更申请书-计算机应用研究.doc",
+    "local_path": "official/forms/题目及作者变更申请书-计算机应用研究.doc",
+    "sha256": "e75a656b200ac50179fb6318edebfd021f4de710c05e13b5c4fd393291ce1e92",
+    "bytes": 55808,
+    "headers": {
+      "Content-Length": "55808",
+      "Content-Type": "application/octet-stream",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:47:28 GMT; path=/; secure; samesite=strict; httponly",
+      "Content-Disposition": "attachment; filename=__________-_______.doc; filename*=UTF-8''%E9%A2%98%E7%9B%AE%E5%8F%8A%E4%BD%9C%E8%80%85%E5%8F%98%E6%9B%B4%E7%94%B3%E8%AF%B7%E4%B9%A6-%E8%AE%A1%E7%AE%97%E6%9C%BA%E5%BA%94%E7%94%A8%E7%A0%94%E7%A9%B6.doc",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:47:27 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "P09",
+    "title": "关于《计算机应用研究》 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/about/journal",
+    "final_url": "https://www.arocmag.cn/info/about/journal",
+    "page_updated_date": "2024-10-09",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P09.html",
+    "sha256": "16d844957fabaaaf31dbbef65bf37e5515873b0a9c5e964be58cc5131cbefef3",
+    "bytes": 17211,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:28 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:27 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fabout%2Fjournal"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fabout%2Fjournal"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "关于《计算机应用研究》",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "开放获取声明",
+        "url": "https://www.arocmag.cn/info/about/OpenAccess"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-10-09"
+  },
+  {
+    "source_id": "P10",
+    "title": "版权转让协议 及 保密审查证明 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/agreement",
+    "final_url": "https://www.arocmag.cn/info/instruction/agreement",
+    "page_updated_date": "2022-08-19",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P10.html",
+    "sha256": "6db6847454a4325388ee0fb3e7e5a52693bdb380e99a8c7467d2bc01adca9656",
+    "bytes": 16799,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:28 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:27 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fagreement"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fagreement"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "下载 《计算机应用研究》杂志稿件版权转让协议书及保密审查证明",
+        "url": "https://www.arocmag.cn/UpFile/doc/201912121738250Y.dotx"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-08-19"
+  },
+  {
+    "source_id": "P11",
+    "title": "题目、作者变更申请书 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/requistion",
+    "final_url": "https://www.arocmag.cn/info/instruction/requistion",
+    "page_updated_date": "2022-07-24",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P11.html",
+    "sha256": "dc48062fc92805961b38767e0d9814350ec6d68ac35bad57d6c1ea49a88e5413",
+    "bytes": 15336,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:28 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:28 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Frequistion"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Frequistion"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "下载 《计算机应用研究》题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/UpFile/201405/计算机应用研究题目及作者变更申请书.doc"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-07-24"
+  },
+  {
+    "source_id": "P12",
+    "title": "PDF清样稿修改批注方法 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction/comment",
+    "final_url": "https://www.arocmag.cn/info/instruction/comment",
+    "page_updated_date": "2022-07-24",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P12.html",
+    "sha256": "b19b1962cd0c697d250cbb4627f8fec6ad02607aa19613fa2dfc9ad4b3ab7660",
+    "bytes": 14930,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:28 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:28 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fcomment"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fcomment"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "Adobe Reader XI",
+        "url": "http://www.adobe.com/cn/products/reader.html"
+      },
+      {
+        "text": "福欣PDF阅读器",
+        "url": "http://www.foxitsoftware.cn/"
+      },
+      {
+        "text": "投稿须知",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "版权转让协议 及 保密审查证明",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "题目、作者变更申请书",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "摘要编写要求",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "TP类中图分类号",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "稿件处理流程",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "投稿模板",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "PDF清样稿修改批注方法",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-07-24"
+  },
+  {
+    "source_id": "P13",
+    "title": "投稿要求 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/instruction",
+    "final_url": "https://www.arocmag.cn/info/instruction",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P13.html",
+    "sha256": "e6d41a35d22285c671760020a78653f78d41907eae16a6572e1956c6d153cfd6",
+    "bytes": 20394,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:29 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:28 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/instructions"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/agreement"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/requistion"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/clc"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/procedure"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/template"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/instruction/comment"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "P14",
+    "title": "本刊投稿优先采用条件 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/announce/preferred-conditions",
+    "final_url": "https://www.arocmag.cn/info/announce/preferred-conditions",
+    "page_updated_date": "2024-06-19",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P14.html",
+    "sha256": "2b92fe5fe2638b4ebfd1c15fc6177edd0e572636ccd7cefd99e4dc945f6ad8f7",
+    "bytes": 15075,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:29 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:28 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fpreferred-conditions"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fpreferred-conditions"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "关于征集青年编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+      },
+      {
+        "text": "关于征集编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+      },
+      {
+        "text": "关于《计算机应用研究》杂志征稿的郑重申明",
+        "url": "https://www.arocmag.cn/info/announce/article-desired"
+      },
+      {
+        "text": "本刊针对处理学术不端行为办法的公告",
+        "url": "https://www.arocmag.cn/info/announce/misconduct"
+      },
+      {
+        "text": "关于样刊和稿费邮寄的说明",
+        "url": "https://www.arocmag.cn/info/announce/post-info"
+      },
+      {
+        "text": "本刊投稿优先采用条件",
+        "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+      },
+      {
+        "text": "2025年度优秀审稿人名单",
+        "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-06-19"
+  },
+  {
+    "source_id": "P15",
+    "title": "2026年第7期 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/issue/202607",
+    "final_url": "https://www.arocmag.cn/issue/202607",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P15.html",
+    "sha256": "803aeb9ac1ec62c17dca995973ac5b375b16e2b25566e901911ada3d524baf6d",
+    "bytes": 91850,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:29 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:29 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fissue%2F202607"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fissue%2F202607"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202607"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202607/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202607/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202607/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202607/ibcover"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202606"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202608"
+      },
+      {
+        "text": "基于大模型遗忘的隐私保护:方法、评估与挑战",
+        "url": "https://www.arocmag.cn/abs/2025.12.0482"
+      },
+      {
+        "text": "基于Mamba的图像分割应用综述",
+        "url": "https://www.arocmag.cn/abs/2025.11.0483"
+      },
+      {
+        "text": "图Mamba与稀疏拟合驱动的自闭症谱系障碍预测",
+        "url": "https://www.arocmag.cn/abs/2025.11.0476"
+      },
+      {
+        "text": "基于自适应组效应稀疏的抑郁识别方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0474"
+      },
+      {
+        "text": "联邦学习的梯度安全鲁棒聚合算法",
+        "url": "https://www.arocmag.cn/abs/2025.09.0442"
+      },
+      {
+        "text": "双正交分解与自适应聚合的个性化联邦学习",
+        "url": "https://www.arocmag.cn/abs/2025.09.0440"
+      },
+      {
+        "text": "基于层次化上下文增强与知识库的关键要素抽取方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0453"
+      },
+      {
+        "text": "MLE-KPE:一种融合大模型的多阶段中文专利关键词提取方法",
+        "url": "https://www.arocmag.cn/abs/2025.10.0466"
+      },
+      {
+        "text": "基于大语言模型微调的知识图谱补全",
+        "url": "https://www.arocmag.cn/abs/2025.11.0469"
+      },
+      {
+        "text": "基于多维聚类与知识蒸馏的上下文学习演示样本检索方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0470"
+      },
+      {
+        "text": "基于大语言模型与注意力机制的多模态股票价格趋势预测",
+        "url": "https://www.arocmag.cn/abs/2025.11.0471"
+      },
+      {
+        "text": "伪标签优化与特征判别增强的无源域自适应故障诊断",
+        "url": "https://www.arocmag.cn/abs/2025.11.0460"
+      },
+      {
+        "text": "用于动态图风险溯源的增强型时空注意力框架",
+        "url": "https://www.arocmag.cn/abs/2025.10.0472"
+      },
+      {
+        "text": "基于时频域注意力与局部归一化损失的时间序列异常检测",
+        "url": "https://www.arocmag.cn/abs/2025.11.0451"
+      },
+      {
+        "text": "基于时频域重构融合的多变量时序异常检测",
+        "url": "https://www.arocmag.cn/abs/2025.11.0465"
+      },
+      {
+        "text": "基于变分集体图自编码器的自适应调制多行为推荐方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0461"
+      },
+      {
+        "text": "IKFCL:基于意图感知与知识融合的增强对比学习推荐模型",
+        "url": "https://www.arocmag.cn/abs/2025.11.0478"
+      },
+      {
+        "text": "Policy-Miner:面向公共政策非结构化文本的神经符号可微分因果归因框架",
+        "url": "https://www.arocmag.cn/abs/2025.11.0452"
+      },
+      {
+        "text": "基于扩展区域的模糊空间高效用并置模式挖掘方法",
+        "url": "https://www.arocmag.cn/abs/2025.10.0468"
+      },
+      {
+        "text": "基于PIBT框架的多机器人动态任务分配算法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0464"
+      },
+      {
+        "text": "混合知识迁移的多任务差分演化算法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0449"
+      },
+      {
+        "text": "基于互邻结构的降偏对比聚类方法",
+        "url": "https://www.arocmag.cn/abs/2025.11.0450"
+      },
+      {
+        "text": "面向探索-救援权衡的无人机集群自主协同搜救方法",
+        "url": "https://www.arocmag.cn/abs/2025.12.0459"
+      },
+      {
+        "text": "HisFuzz:基于历史缺陷的通用模糊测试用例生成方法",
+        "url": "https://www.arocmag.cn/abs/2025.10.0477"
+      },
+      {
+        "text": "融合语义与层次化结构信息的代码推荐方法",
+        "url": "https://www.arocmag.cn/abs/2025.10.0462"
+      },
+      {
+        "text": "基于LLM增强的前后向推荐PageRank算法识别软件系统关键类",
+        "url": "https://www.arocmag.cn/abs/2025.11.0479"
+      },
+      {
+        "text": "基于非线性声速模型的ST-TDOA定位算法",
+        "url": "https://www.arocmag.cn/abs/2025.12.0480"
+      },
+      {
+        "text": "基于深度学习的城市环境UAV动态覆盖预测",
+        "url": "https://www.arocmag.cn/abs/2025.11.0481"
+      },
+      {
+        "text": "基于SWAP测试的三方可认证量子密钥协商协议",
+        "url": "https://www.arocmag.cn/abs/2025.10.0454"
+      },
+      {
+        "text": "一种基于格的轻量级多因素认证密钥交换协议",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441"
+      },
+      {
+        "text": "一种双模协同SDN的DDoS攻击检测与防御方案",
+        "url": "https://www.arocmag.cn/abs/2025.10.0456"
+      },
+      {
+        "text": "基于LoongArch架构的CRYSTALS-Kyber算法向量优化实现",
+        "url": "https://www.arocmag.cn/abs/2025.09.0439"
+      },
+      {
+        "text": "MAGAT-IDS:一种少数类感知的图注意力入侵检测模型",
+        "url": "https://www.arocmag.cn/abs/2025.10.0455"
+      },
+      {
+        "text": "基于双重洗牌与频域增强的三维人体姿态估计方法",
+        "url": "https://www.arocmag.cn/abs/2025.08.0448"
+      },
+      {
+        "text": "GSDI-VMunet:基于Mamba结构的混凝土裂缝分割网络",
+        "url": "https://www.arocmag.cn/abs/2025.11.0473"
+      },
+      {
+        "text": "基于StyleGAN2和自注意力机制融合的道路驾驶场景生成方法",
+        "url": "https://www.arocmag.cn/abs/2025.08.0447"
+      },
+      {
+        "text": "基于频域动态增强与掩码感知门控融合的图像修复网络",
+        "url": "https://www.arocmag.cn/abs/2025.09.0446"
+      },
+      {
+        "text": "基于HDC-Grasp模型的机器人抓取检测方法",
+        "url": "https://www.arocmag.cn/abs/2025.09.0445"
+      },
+      {
+        "text": "基于学习提示和双模态适配器的小样本图像分类算法",
+        "url": "https://www.arocmag.cn/abs/2025.08.0409"
+      },
+      {
+        "text": "综述评论2",
+        "url": "https://www.arocmag.cn/issue/202607#section20260701"
+      },
+      {
+        "text": "AI+医学检测专题2",
+        "url": "https://www.arocmag.cn/issue/202607#section20260702"
+      },
+      {
+        "text": "联邦学习专题2",
+        "url": "https://www.arocmag.cn/issue/202607#section20260703"
+      },
+      {
+        "text": "算法研究探讨17",
+        "url": "https://www.arocmag.cn/issue/202607#section20260704"
+      },
+      {
+        "text": "软件技术研究3",
+        "url": "https://www.arocmag.cn/issue/202607#section20260705"
+      },
+      {
+        "text": "网络与通信技术2",
+        "url": "https://www.arocmag.cn/issue/202607#section20260706"
+      },
+      {
+        "text": "信息安全技术5",
+        "url": "https://www.arocmag.cn/issue/202607#section20260707"
+      },
+      {
+        "text": "图形图像技术6",
+        "url": "https://www.arocmag.cn/issue/202607#section20260708"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "P16",
+    "title": "2025年第4期 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/issue/202504",
+    "final_url": "https://www.arocmag.cn/issue/202504",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P16.html",
+    "sha256": "d0e43fc806d10315db538d8a36196b7fdf4947e6ec4a895bad6427e2064d7b56",
+    "bytes": 96874,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:30 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:29 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fissue%2F202504"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fissue%2F202504"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202504"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202504/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202504/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202504/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202504/ibcover"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202503"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/issue/202505"
+      },
+      {
+        "text": "面向社交媒体的讽刺检测研究综述",
+        "url": "https://www.arocmag.cn/abs/2024.08.0317"
+      },
+      {
+        "text": "Graph Transformer技术与研究进展：从基础理论到前沿应用",
+        "url": "https://www.arocmag.cn/abs/2024.08.0291"
+      },
+      {
+        "text": "基于双链架构与BBF-Merkle树的高速公路事故救援数据共享方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0292"
+      },
+      {
+        "text": "考虑平行进口下区块链追溯对企业跨国IP授权影响和策略分析",
+        "url": "https://www.arocmag.cn/abs/2024.09.0326"
+      },
+      {
+        "text": "DPC-DQRL:动态行为克隆约束的离线-在线双Q值强化学习",
+        "url": "https://www.arocmag.cn/abs/2024.09.0338"
+      },
+      {
+        "text": "基于强化学习策略的梯度下降学习求解GCP",
+        "url": "https://www.arocmag.cn/abs/2024.09.0330"
+      },
+      {
+        "text": "融合先验知识与引导策略搜索的机器人轴孔装配方法",
+        "url": "https://www.arocmag.cn/abs/2024.08.0324"
+      },
+      {
+        "text": "基于行为克隆的机械臂多智能体深度强化学习轨迹跟踪控制",
+        "url": "https://www.arocmag.cn/abs/2024.09.0340"
+      },
+      {
+        "text": "基于时空预测的多策略网约车调度算法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0339"
+      },
+      {
+        "text": "面向飞机蒙皮检测任务的空-地异构机器人协同覆盖路径规划",
+        "url": "https://www.arocmag.cn/abs/2024.09.0336"
+      },
+      {
+        "text": "任务和参与者匹配意愿规则约束下的移动群智感知多任务分配",
+        "url": "https://www.arocmag.cn/abs/2024.08.0321"
+      },
+      {
+        "text": "融合多层图与分类信息的双意图会话推荐",
+        "url": "https://www.arocmag.cn/abs/2024.08.0323"
+      },
+      {
+        "text": "基于知识增强的跨模态融合网络的多模态对话情绪识别模型",
+        "url": "https://www.arocmag.cn/abs/2024.08.0322"
+      },
+      {
+        "text": "基于细粒度图像-方面的情感增强方面级情感分析",
+        "url": "https://www.arocmag.cn/abs/2024.08.0294"
+      },
+      {
+        "text": "一种基于运动状态的轨迹预测方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0295"
+      },
+      {
+        "text": "考虑工时区间的可重入混合流水车间调度方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0329"
+      },
+      {
+        "text": "基于部分标准对齐的协同遗传规划算法解决本体匹配问题",
+        "url": "https://www.arocmag.cn/abs/2024.09.0328"
+      },
+      {
+        "text": "注意力机制驱动的个性化联邦学习特征分离方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0325"
+      },
+      {
+        "text": "基于平滑插值和自适应相似矩阵的推荐算法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0335"
+      },
+      {
+        "text": "融合迁移学习和解纠缠负采样的去偏推荐方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0296"
+      },
+      {
+        "text": "基于改进DDQN算法的复杂网络关键节点识别方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0327"
+      },
+      {
+        "text": "无人机辅助移动边缘计算中的视频任务卸载算法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0293"
+      },
+      {
+        "text": "基于交通流仿真的智能路侧设施管控效果测度方法",
+        "url": "https://www.arocmag.cn/abs/2024.07.0306"
+      },
+      {
+        "text": "基于先验知识的问诊系统文本结构化解析方法",
+        "url": "https://www.arocmag.cn/abs/2024.07.0263"
+      },
+      {
+        "text": "广义更新过程下生产系统最优维修策略",
+        "url": "https://www.arocmag.cn/abs/2024.08.0260"
+      },
+      {
+        "text": "神经网络算子——一种面向符号回归问题的遗传编程新方法",
+        "url": "https://www.arocmag.cn/abs/2024.09.0337"
+      },
+      {
+        "text": "融合静态程序分析与集成学习的Android代码异味共存检测",
+        "url": "https://www.arocmag.cn/abs/2024.09.0331"
+      },
+      {
+        "text": "基于强化学习的无人机网络自适应QoS路由算法",
+        "url": "https://www.arocmag.cn/abs/2024.08.0318"
+      },
+      {
+        "text": "工业5G-TSN融合网络的异构流量整形器设计",
+        "url": "https://www.arocmag.cn/abs/2024.08.0268"
+      },
+      {
+        "text": "移动群智感知中基于纳什讨价还价博弈的多任务分配策略",
+        "url": "https://www.arocmag.cn/abs/2024.07.0319"
+      },
+      {
+        "text": "感知时间不可区分的车辆群智感知隐私保护任务分配方案",
+        "url": "https://www.arocmag.cn/abs/2024.09.0320"
+      },
+      {
+        "text": "VANET中高效的格基异构多接收者签密方案",
+        "url": "https://www.arocmag.cn/abs/2024.05.0266"
+      },
+      {
+        "text": "基于矩阵的安全多方计算同态加密方案",
+        "url": "https://www.arocmag.cn/abs/2024.06.0267"
+      },
+      {
+        "text": "基于相邻均值差直方图的高容量可逆信息隐藏算法",
+        "url": "https://www.arocmag.cn/abs/2024.05.0265"
+      },
+      {
+        "text": "基于可验证秘密共享与智能合约的隐私保护算法",
+        "url": "https://www.arocmag.cn/abs/2024.05.0248"
+      },
+      {
+        "text": "无线传感器网络中基于PUF的轻量级多网关身份认证协议",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249"
+      },
+      {
+        "text": "ASGC-STT：基于自适应空间图卷积和时空Transformer的人体行为识别",
+        "url": "https://www.arocmag.cn/abs/2024.07.0255"
+      },
+      {
+        "text": "基于图像-文本大模型CLIP微调的零样本参考图像分割",
+        "url": "https://www.arocmag.cn/abs/2024.06.0254"
+      },
+      {
+        "text": "联合边缘特征的物流驾驶员危险行为识别",
+        "url": "https://www.arocmag.cn/abs/2024.06.0251"
+      },
+      {
+        "text": "面向隐私保护的无镜头成像坐姿识别技术",
+        "url": "https://www.arocmag.cn/abs/2024.06.0252"
+      },
+      {
+        "text": "基于关节结构依赖的三维人体姿态估计与优化策略",
+        "url": "https://www.arocmag.cn/abs/2024.06.0253"
+      },
+      {
+        "text": "基于多模态特征融合的场景文本识别",
+        "url": "https://www.arocmag.cn/abs/2024.05.0250"
+      },
+      {
+        "text": "综述评论2",
+        "url": "https://www.arocmag.cn/issue/202504#section20250401"
+      },
+      {
+        "text": "区块链技术2",
+        "url": "https://www.arocmag.cn/issue/202504#section20250402"
+      },
+      {
+        "text": "强化学习专题4",
+        "url": "https://www.arocmag.cn/issue/202504#section20250403"
+      },
+      {
+        "text": "算法研究探讨13",
+        "url": "https://www.arocmag.cn/issue/202504#section20250404"
+      },
+      {
+        "text": "系统应用开发4",
+        "url": "https://www.arocmag.cn/issue/202504#section20250405"
+      },
+      {
+        "text": "软件技术研究2",
+        "url": "https://www.arocmag.cn/issue/202504#section20250406"
+      },
+      {
+        "text": "网络与通信技术4",
+        "url": "https://www.arocmag.cn/issue/202504#section20250407"
+      },
+      {
+        "text": "信息安全技术5",
+        "url": "https://www.arocmag.cn/issue/202504#section20250408"
+      },
+      {
+        "text": "图形图像技术6",
+        "url": "https://www.arocmag.cn/issue/202504#section20250409"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "A01",
+    "title": "无线传感器网络中基于PUF的轻量级多网关身份认证协议 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2024.06.0249",
+    "final_url": "https://www.arocmag.cn/abs/2024.06.0249",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A01.html",
+    "sha256": "fc8efc25135949d6c7f09436c4eddb632efd02018e1ffc05bc6b1d224c6fce94",
+    "bytes": 33078,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:30 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:30 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.06.0249"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.06.0249"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2025年第42卷 第4期",
+        "url": "https://www.arocmag.cn/issue/202504"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E9%9B%84"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E6%96%87%E5%8D%9A"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%88%98%E6%98%82"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%AE%B8%E7%9B%9B%E4%BC%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E6%9D%8E%E4%BC%9F%E9%BA%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%BC%A0%E6%B3%BD%E6%98%8A"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2024.06.0249",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2024.06.0249"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202504/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202504/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202504/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202504/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202504/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202504/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202504/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202504/ibcover"
+      },
+      {
+        "text": "不可克隆函数",
+        "url": "https://www.arocmag.cn/search/%E4%B8%8D%E5%8F%AF%E5%85%8B%E9%9A%86%E5%87%BD%E6%95%B0"
+      },
+      {
+        "text": "轻量级",
+        "url": "https://www.arocmag.cn/search/%E8%BD%BB%E9%87%8F%E7%BA%A7"
+      },
+      {
+        "text": "多网关",
+        "url": "https://www.arocmag.cn/search/%E5%A4%9A%E7%BD%91%E5%85%B3"
+      },
+      {
+        "text": "身份认证协议",
+        "url": "https://www.arocmag.cn/search/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.06.0249#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-12-06; 2025-04-05"
+  },
+  {
+    "source_id": "A02",
+    "title": "多网关无线医疗传感器网络中基于PUF的轻量级匿名认证协议 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2024.12.0536",
+    "final_url": "https://www.arocmag.cn/abs/2024.12.0536",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A02.html",
+    "sha256": "cee226f15d33ce21e056315eb4187bb1651c791e8679e46e1aa4d6c9021abb28",
+    "bytes": 32999,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:31 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:30 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.12.0536"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.12.0536"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2025年第42卷 第10期",
+        "url": "https://www.arocmag.cn/issue/202510"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E9%9B%84"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E6%9D%8E%E4%BC%9F%E9%BA%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%BC%A0%E6%B3%BD%E6%98%8A"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%83%A1%E5%AD%90%E5%AE%B8"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%AE%89%E6%98%9F%E5%AE%87"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2024.12.0536",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2024.12.0536"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202510/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202510/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202510/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202510/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202510/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202510/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202510/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202510/ibcover"
+      },
+      {
+        "text": "匿名认证协议",
+        "url": "https://www.arocmag.cn/search/%E5%8C%BF%E5%90%8D%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "多网关",
+        "url": "https://www.arocmag.cn/search/%E5%A4%9A%E7%BD%91%E5%85%B3"
+      },
+      {
+        "text": "轻量级",
+        "url": "https://www.arocmag.cn/search/%E8%BD%BB%E9%87%8F%E7%BA%A7"
+      },
+      {
+        "text": "物理不可克隆函数（PUF）",
+        "url": "https://www.arocmag.cn/search/%E7%89%A9%E7%90%86%E4%B8%8D%E5%8F%AF%E5%85%8B%E9%9A%86%E5%87%BD%E6%95%B0%EF%BC%88PUF%EF%BC%89"
+      },
+      {
+        "text": "无线医疗传感器网络",
+        "url": "https://www.arocmag.cn/search/%E6%97%A0%E7%BA%BF%E5%8C%BB%E7%96%97%E4%BC%A0%E6%84%9F%E5%99%A8%E7%BD%91%E7%BB%9C"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.12.0536#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2025-06-04; 2025-10-05"
+  },
+  {
+    "source_id": "A03",
+    "title": "一种雾计算辅助的工业物联网四方高效认证协议 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2025.05.0221",
+    "final_url": "https://www.arocmag.cn/abs/2025.05.0221",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A03.html",
+    "sha256": "aea9c3b7a68b1fe1ca9352abec5e190197c75d792d2f3ca5d09ec942d8008ef7",
+    "bytes": 33068,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:31 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:30 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.05.0221"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.05.0221"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2026年第43卷 第2期",
+        "url": "https://www.arocmag.cn/issue/202602"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E9%9B%84"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%BC%A0%E6%B3%BD%E6%98%8A"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%83%A1%E5%AD%90%E5%AE%B8"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E6%9D%8E%E4%BC%9F%E9%BA%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E6%96%87%E5%8D%9A"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2025.05.0221",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2025.05.0221"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202602/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202602/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202602/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202602/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202602/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202602/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202602/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202602/ibcover"
+      },
+      {
+        "text": "雾计算",
+        "url": "https://www.arocmag.cn/search/%E9%9B%BE%E8%AE%A1%E7%AE%97"
+      },
+      {
+        "text": "工业物联网",
+        "url": "https://www.arocmag.cn/search/%E5%B7%A5%E4%B8%9A%E7%89%A9%E8%81%94%E7%BD%91"
+      },
+      {
+        "text": "身份认证协议",
+        "url": "https://www.arocmag.cn/search/%E8%BA%AB%E4%BB%BD%E8%AE%A4%E8%AF%81%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "椭圆曲线密码学",
+        "url": "https://www.arocmag.cn/search/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%AF%86%E7%A0%81%E5%AD%A6"
+      },
+      {
+        "text": "物理不可克隆函数",
+        "url": "https://www.arocmag.cn/search/%E7%89%A9%E7%90%86%E4%B8%8D%E5%8F%AF%E5%85%8B%E9%9A%86%E5%87%BD%E6%95%B0"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.05.0221#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2025-10-31; 2026-02-05"
+  },
+  {
+    "source_id": "A04",
+    "title": "一种基于格的轻量级多因素认证密钥交换协议 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2025.08.0441",
+    "final_url": "https://www.arocmag.cn/abs/2025.08.0441",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A04.html",
+    "sha256": "62d0c5717b7597e02377ee2495361a4a1bfbb23816122348132de482258320d0",
+    "bytes": 33113,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:31 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:31 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.08.0441"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.08.0441"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2026年第43卷 第7期",
+        "url": "https://www.arocmag.cn/issue/202607"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%8E%9F%E7%85%9C%E5%8D%9A"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%82%96%E4%B8%BA%E6%81%A9"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%90%B4%E5%80%A9%E5%80%A9"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E9%BB%84%E9%91%AB"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2025.08.0441",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2025.08.0441"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202607/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202607/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202607/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202607/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202607/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202607/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202607/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202607/ibcover"
+      },
+      {
+        "text": "物联网",
+        "url": "https://www.arocmag.cn/search/%E7%89%A9%E8%81%94%E7%BD%91"
+      },
+      {
+        "text": "环上带误差学习",
+        "url": "https://www.arocmag.cn/search/%E7%8E%AF%E4%B8%8A%E5%B8%A6%E8%AF%AF%E5%B7%AE%E5%AD%A6%E4%B9%A0"
+      },
+      {
+        "text": "格密码",
+        "url": "https://www.arocmag.cn/search/%E6%A0%BC%E5%AF%86%E7%A0%81"
+      },
+      {
+        "text": "多因素认证密钥交换协议",
+        "url": "https://www.arocmag.cn/search/%E5%A4%9A%E5%9B%A0%E7%B4%A0%E8%AE%A4%E8%AF%81%E5%AF%86%E9%92%A5%E4%BA%A4%E6%8D%A2%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.08.0441#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2026-03-27; 2026-07-05"
+  },
+  {
+    "source_id": "A05",
+    "title": "适用于智能医疗的匿名基于身份的认证密钥协商协议 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2024.02.0163",
+    "final_url": "https://www.arocmag.cn/abs/2024.02.0163",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A05.html",
+    "sha256": "2d56c40f461ebf1b66931d64a1eb7be7e7fc717177800fec9fe2f14b6f5150e5",
+    "bytes": 33863,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:32 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:31 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.02.0163"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2024.02.0163"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2025年第42卷 第1期",
+        "url": "https://www.arocmag.cn/issue/202501"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%80%AA%E4%BA%AE"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%88%98%E7%AC%91%E9%A2%9C"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%B0%B7%E5%85%B5%E7%8F%82"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%BC%A0%E4%BA%9A%E4%BC%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%91%A8%E6%81%92%E6%98%87"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E5%BF%B5%E5%B9%B3"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2024.02.0163",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2024.02.0163"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202501/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202501/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202501/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202501/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202501/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202501/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202501/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202501/ibcover"
+      },
+      {
+        "text": "基于身份密码",
+        "url": "https://www.arocmag.cn/search/%E5%9F%BA%E4%BA%8E%E8%BA%AB%E4%BB%BD%E5%AF%86%E7%A0%81"
+      },
+      {
+        "text": "环上带误差学习",
+        "url": "https://www.arocmag.cn/search/%E7%8E%AF%E4%B8%8A%E5%B8%A6%E8%AF%AF%E5%B7%AE%E5%AD%A6%E4%B9%A0"
+      },
+      {
+        "text": "认证密钥协商协议",
+        "url": "https://www.arocmag.cn/search/%E8%AE%A4%E8%AF%81%E5%AF%86%E9%92%A5%E5%8D%8F%E5%95%86%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "后量子密码",
+        "url": "https://www.arocmag.cn/search/%E5%90%8E%E9%87%8F%E5%AD%90%E5%AF%86%E7%A0%81"
+      },
+      {
+        "text": "隐私保护",
+        "url": "https://www.arocmag.cn/search/%E9%9A%90%E7%A7%81%E4%BF%9D%E6%8A%A4"
+      },
+      {
+        "text": "智能医疗",
+        "url": "https://www.arocmag.cn/search/%E6%99%BA%E8%83%BD%E5%8C%BB%E7%96%97"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2024.02.0163#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2025-01-05"
+  },
+  {
+    "source_id": "A06",
+    "title": "基于定理证明的UML多视图模型良构一致性验证方法 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2025.05.0220",
+    "final_url": "https://www.arocmag.cn/abs/2025.05.0220",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A06.html",
+    "sha256": "33b02b0ae23ac174b4722b25ece7d142c26964b6de5b94cb7094feba0725c31b",
+    "bytes": 32126,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:33 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:33 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.05.0220"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2025.05.0220"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2026年第43卷 第2期",
+        "url": "https://www.arocmag.cn/issue/202602"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E5%90%B4%E6%B6%A6%E6%96%B9"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E6%9D%9C%E6%99%94"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E9%BB%8E%E5%A6%B9%E7%BA%A2"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2025.05.0220",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2025.05.0220"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202602/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202602/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202602/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202602/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202602/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202602/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202602/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202602/ibcover"
+      },
+      {
+        "text": "UML模型",
+        "url": "https://www.arocmag.cn/search/UML%E6%A8%A1%E5%9E%8B"
+      },
+      {
+        "text": "多视图一致性",
+        "url": "https://www.arocmag.cn/search/%E5%A4%9A%E8%A7%86%E5%9B%BE%E4%B8%80%E8%87%B4%E6%80%A7"
+      },
+      {
+        "text": "结构映射",
+        "url": "https://www.arocmag.cn/search/%E7%BB%93%E6%9E%84%E6%98%A0%E5%B0%84"
+      },
+      {
+        "text": "定理证明",
+        "url": "https://www.arocmag.cn/search/%E5%AE%9A%E7%90%86%E8%AF%81%E6%98%8E"
+      },
+      {
+        "text": "形式化验证",
+        "url": "https://www.arocmag.cn/search/%E5%BD%A2%E5%BC%8F%E5%8C%96%E9%AA%8C%E8%AF%81"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2025.05.0220#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2025-11-03; 2026-02-05"
+  },
+  {
+    "source_id": "A07",
+    "title": "基于Tamarin的MQTT协议安全性分析方法 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2023.02.0038",
+    "final_url": "https://www.arocmag.cn/abs/2023.02.0038",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A07.html",
+    "sha256": "d81562e8803a192cb522113957bfd6387c4b74fb0555ae42b4b564cc20351f28",
+    "bytes": 32537,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:34 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:33 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2023.02.0038"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2023.02.0038"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2023年第40卷 第10期",
+        "url": "https://www.arocmag.cn/issue/202310"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E9%83%91%E7%BA%A2%E5%85%B5"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%8E%8B%E7%84%95%E4%BC%9F"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%B5%B5%E7%90%AA"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%91%A3%E5%A7%9D%E5%B2%90"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E4%BA%95%E9%9D%96"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2023.02.0038",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2023.02.0038"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202310/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202310/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202310/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202310/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202310/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202310/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202310/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202310/ibcover"
+      },
+      {
+        "text": "MQTT协议",
+        "url": "https://www.arocmag.cn/search/MQTT%E5%8D%8F%E8%AE%AE"
+      },
+      {
+        "text": "保密属性",
+        "url": "https://www.arocmag.cn/search/%E4%BF%9D%E5%AF%86%E5%B1%9E%E6%80%A7"
+      },
+      {
+        "text": "认证属性",
+        "url": "https://www.arocmag.cn/search/%E8%AE%A4%E8%AF%81%E5%B1%9E%E6%80%A7"
+      },
+      {
+        "text": "形式化分析",
+        "url": "https://www.arocmag.cn/search/%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%88%86%E6%9E%90"
+      },
+      {
+        "text": "Tamarin",
+        "url": "https://www.arocmag.cn/search/Tamarin"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2023.02.0038#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2023-04-19; 2023-10-05"
+  },
+  {
+    "source_id": "A08",
+    "title": "基于安全协议代码的形式化辅助建模研究 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/abs/2022.08.0446",
+    "final_url": "https://www.arocmag.cn/abs/2022.08.0446",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:51:28.984086+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/A08.html",
+    "sha256": "73a9948f5987c4c5880e4c040dcb53df5b44b6bcdd12974dadc39b49bb27c5f0",
+    "bytes": 31953,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:51:34 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:51:34 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2022.08.0446"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Fabs%2F2022.08.0446"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "计算机应用研究 印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "2023年第40卷 第4期",
+        "url": "https://www.arocmag.cn/issue/202304"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E8%91%9B%E8%89%BA"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E9%BB%84%E6%96%87%E8%B6%85"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/search/%E7%86%8A%E7%84%B0"
+      },
+      {
+        "text": "10.19734/j.issn.1001-3695.2022.08.0446",
+        "url": "https://doi.org/10.19734/j.issn.1001-3695.2022.08.0446"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#citeSection"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202304/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202304/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202304/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202304/ibcover"
+      },
+      {
+        "text": "其他页面",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446"
+      },
+      {
+        "text": "封面",
+        "url": "https://www.arocmag.cn/appendix/202304/cover"
+      },
+      {
+        "text": "目录",
+        "url": "https://www.arocmag.cn/appendix/202304/catalog"
+      },
+      {
+        "text": "封二",
+        "url": "https://www.arocmag.cn/appendix/202304/ifcover"
+      },
+      {
+        "text": "封三",
+        "url": "https://www.arocmag.cn/appendix/202304/ibcover"
+      },
+      {
+        "text": "形式化验证",
+        "url": "https://www.arocmag.cn/search/%E5%BD%A2%E5%BC%8F%E5%8C%96%E9%AA%8C%E8%AF%81"
+      },
+      {
+        "text": "形式化建模",
+        "url": "https://www.arocmag.cn/search/%E5%BD%A2%E5%BC%8F%E5%8C%96%E5%BB%BA%E6%A8%A1"
+      },
+      {
+        "text": "协议代码",
+        "url": "https://www.arocmag.cn/search/%E5%8D%8F%E8%AE%AE%E4%BB%A3%E7%A0%81"
+      },
+      {
+        "text": "污点分析",
+        "url": "https://www.arocmag.cn/search/%E6%B1%A1%E7%82%B9%E5%88%86%E6%9E%90"
+      },
+      {
+        "text": "Tamarin",
+        "url": "https://www.arocmag.cn/search/Tamarin"
+      },
+      {
+        "text": "摘要",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#abstractSection"
+      },
+      {
+        "text": "关键词",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#keywordsSection"
+      },
+      {
+        "text": "基金项目",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#foundSection"
+      },
+      {
+        "text": "出版信息",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#publishSection"
+      },
+      {
+        "text": "发布历史",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#historySection"
+      },
+      {
+        "text": "引用本文",
+        "url": "https://www.arocmag.cn/abs/2022.08.0446#citeSection"
+      },
+      {
+        "text": "",
+        "url": "https://www.ccf.org.cn/"
+      },
+      {
+        "text": "",
+        "url": "https://dl.ccf.org.cn/article/journalIndex.html?issue=5&title=@8ba1@7b97@673a@5e94@7528@7814@7a76&year=2026&_ack=1&pageNum_p=1"
+      },
+      {
+        "text": "",
+        "url": "https://navi.cnki.net/knavi/journals/JSYJ/detail?uniplatform=NZKPT"
+      },
+      {
+        "text": "",
+        "url": "https://sns.wanfangdata.com.cn/perio/jsjyyyj"
+      },
+      {
+        "text": "",
+        "url": "http://lib.cqvip.com/Qikan/Journal/Summary?kind=1&gch=93231X"
+      },
+      {
+        "text": "",
+        "url": "http://www.sciencechina.cn/"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2022-12-07; 2023-04-05"
+  },
+  {
+    "source_id": "P17",
+    "title": "关于《计算机应用研究》杂志征稿的郑重申明 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/announce/article-desired",
+    "final_url": "https://www.arocmag.cn/info/announce/article-desired",
+    "page_updated_date": "2024-06-26",
+    "accessed_date": "2026-10-01T12:55:05.672299+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P17.html",
+    "sha256": "7d0667db445fabd2248a66d97c98039cfb23db9880be552979e31beb1d865df2",
+    "bytes": 15682,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:55:04 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:55:03 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Farticle-desired"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Farticle-desired"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/announce/article-desired"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "arocmag.com",
+        "url": "http://www.arocmag.com/"
+      },
+      {
+        "text": "https://www.arocmag.com",
+        "url": "https://www.arocmag.com"
+      },
+      {
+        "text": "关于征集青年编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+      },
+      {
+        "text": "关于征集编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+      },
+      {
+        "text": "关于《计算机应用研究》杂志征稿的郑重申明",
+        "url": "https://www.arocmag.cn/info/announce/article-desired"
+      },
+      {
+        "text": "本刊针对处理学术不端行为办法的公告",
+        "url": "https://www.arocmag.cn/info/announce/misconduct"
+      },
+      {
+        "text": "关于样刊和稿费邮寄的说明",
+        "url": "https://www.arocmag.cn/info/announce/post-info"
+      },
+      {
+        "text": "本刊投稿优先采用条件",
+        "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+      },
+      {
+        "text": "2025年度优秀审稿人名单",
+        "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-06-26"
+  },
+  {
+    "source_id": "P18",
+    "title": "本刊针对处理学术不端行为办法的公告 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/info/announce/misconduct",
+    "final_url": "https://www.arocmag.cn/info/announce/misconduct",
+    "page_updated_date": "2024-06-19",
+    "accessed_date": "2026-10-01T12:55:05.672299+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P18.html",
+    "sha256": "e03d76503a0b947cd6055f8c67bf3d07b8762fe5b623f0235e3460e01aae36e6",
+    "bytes": 17444,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:55:04 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:55:04 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "ISSN 1001-3695CN  51-1196/TP",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "EN",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fmisconduct"
+      },
+      {
+        "text": "首页",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "关于期刊",
+        "url": "https://www.arocmag.cn/info/about/journal"
+      },
+      {
+        "text": "编委会/董事会",
+        "url": "https://www.arocmag.cn/info/about/committee"
+      },
+      {
+        "text": "English",
+        "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fmisconduct"
+      },
+      {
+        "text": "",
+        "url": "https://www.arocmag.cn/info/announce/misconduct"
+      },
+      {
+        "text": "优先出版",
+        "url": "https://www.arocmag.cn/accepted"
+      },
+      {
+        "text": "印刷出版",
+        "url": "https://www.arocmag.cn/printed"
+      },
+      {
+        "text": "常见问题及解答",
+        "url": "https://www.arocmag.cn/info/instruction/faq"
+      },
+      {
+        "text": "常用文档下载",
+        "url": "https://www.arocmag.cn/download"
+      },
+      {
+        "text": "录用通知查验",
+        "url": "https://cert.arocmag.cn"
+      },
+      {
+        "text": "查看《高等学校预防与处理学术不端行为办法》全文",
+        "url": "https://www.arocmag.cn/html/more/2016072133.html"
+      },
+      {
+        "text": "关于征集青年编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+      },
+      {
+        "text": "关于征集编辑委员会委员的通知",
+        "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+      },
+      {
+        "text": "关于《计算机应用研究》杂志征稿的郑重申明",
+        "url": "https://www.arocmag.cn/info/announce/article-desired"
+      },
+      {
+        "text": "本刊针对处理学术不端行为办法的公告",
+        "url": "https://www.arocmag.cn/info/announce/misconduct"
+      },
+      {
+        "text": "关于样刊和稿费邮寄的说明",
+        "url": "https://www.arocmag.cn/info/announce/post-info"
+      },
+      {
+        "text": "本刊投稿优先采用条件",
+        "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+      },
+      {
+        "text": "2025年度优秀审稿人名单",
+        "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "2024-06-19"
+  },
+  {
+    "source_id": "P19",
+    "title": "登录投稿系统 - 《计算机应用研究》编辑部官方网站",
+    "official_url": "https://www.arocmag.cn/login/author",
+    "final_url": "https://www.arocmag.cn/login/author",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:55:05.672299+08:00",
+    "source_type": "page",
+    "download_filename": "",
+    "local_path": "snapshots/P19.html",
+    "sha256": "2535c7fef4427d49049859400e83910c2f78c266661974c6ff528d828efb9bf6",
+    "bytes": 10250,
+    "headers": {
+      "Cache-Control": "no-cache, no-store",
+      "Pragma": "no-cache",
+      "Transfer-Encoding": "chunked",
+      "Content-Type": "text/html; charset=utf-8",
+      "Vary": "Accept-Encoding",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Set-Cookie": "Aroc.Lang=cn; expires=Fri, 01 Oct 2027 04:55:05 GMT; path=/; secure; samesite=strict; httponly",
+      "X-Frame-Options": "SAMEORIGIN",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:55:04 GMT",
+      "Connection": "close"
+    },
+    "links": [
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn/"
+      },
+      {
+        "text": "注册成为投稿作者",
+        "url": "https://www.arocmag.cn/signup"
+      },
+      {
+        "text": "忘记密码？",
+        "url": "https://www.arocmag.cn/getpassword"
+      },
+      {
+        "text": "计算机应用研究",
+        "url": "https://www.arocmag.cn"
+      },
+      {
+        "text": "四川省计算机研究院",
+        "url": "http://www.scsics.cn/"
+      },
+      {
+        "text": "蜀ICP备13001376号-34",
+        "url": "https://beian.miit.gov.cn"
+      },
+      {
+        "text": "域名证书",
+        "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+      },
+      {
+        "text": "https://www.arocmag.cn",
+        "url": "https://www.arocmag.cn"
+      }
+    ],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  },
+  {
+    "source_id": "F06",
+    "title": "201912121738250Y.dotx",
+    "official_url": "https://www.arocmag.cn/UpFile/doc/201912121738250Y.dotx",
+    "final_url": "https://www.arocmag.cn/UpFile/doc/201912121738250Y.dotx",
+    "page_updated_date": "NOT OFFICIALLY SPECIFIED",
+    "accessed_date": "2026-10-01T12:55:05.672299+08:00",
+    "source_type": "forms",
+    "download_filename": "201912121738250Y.dotx",
+    "local_path": "official/forms/201912121738250Y.dotx",
+    "sha256": "e5030fc86b15c7b7cd55570fee9d2dfe7a299c959383360ca2521f6242eb1778",
+    "bytes": 25213,
+    "headers": {
+      "Cache-Control": "public,max-age=86400",
+      "Content-Length": "25213",
+      "Content-Type": "application/vnd.openxmlformats-officedocument.wordprocessingml.template",
+      "Last-Modified": "Fri, 17 May 2024 08:58:48 GMT",
+      "Accept-Ranges": "bytes",
+      "ETag": "\"1daa8386e1eb67d\"",
+      "Strict-Transport-Security": "max-age=2592000",
+      "Content-Security-Policy": "default-src 'unsafe-inline' 'self';script-src 'unsafe-inline' 'self' https://hm.baidu.com;img-src 'unsafe-inline' 'self' https://hm.baidu.com data: *.arocmag.cn;frame-ancestors 'none';",
+      "Referrer-Policy": "origin",
+      "X-Content-Type-Options": "nosniff",
+      "X-Download-Options": "noopen",
+      "X-Frame-Options": "deny",
+      "X-Permitted-Cross-Domain-Policies": "none",
+      "X-XSS-Protection": "1",
+      "Date": "Thu, 01 Oct 2026 04:55:05 GMT",
+      "Connection": "close"
+    },
+    "links": [],
+    "detected_dates_from_page": "NOT OFFICIALLY SPECIFIED"
+  }
+]

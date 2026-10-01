@@ -1,0 +1,172 @@
+Title: 投稿要求 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/instruction
+Accessed: 2026-10-01T12:51:28.984086+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+投稿要求
+投稿要求
+1
+投稿须知
+更新日期：2024年06月26日
+2
+版权转让协议 及 保密审查证明
+更新日期：2022年08月19日
+3
+题目、作者变更申请书
+更新日期：2022年07月24日
+4
+摘要编写要求
+更新日期：2022年07月24日
+5
+TP类中图分类号
+更新日期：2022年07月24日
+6
+稿件处理流程
+更新日期：2026年08月04日
+7
+投稿模板
+更新日期：2024年06月26日
+8
+常见问题及解答
+更新日期：2022年08月19日
+9
+PDF清样稿修改批注方法
+更新日期：2022年07月24日
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/instructions"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/agreement"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/requistion"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/clc"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/procedure"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/template"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/comment"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

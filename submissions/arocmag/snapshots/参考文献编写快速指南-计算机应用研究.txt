@@ -1,0 +1,267 @@
+PAGE 1
+ 
+参考文献编写快速指南 
+ver 2.2.4 lite - 2018/04/02 
+特别注意： 
+ 低质量的参考文献将直接影响您稿件的评审结果； 
+ 随性或者错误的文献编排将给后期编辑工作带来困难，甚至会延后文章的发布。 
+ 
+文档信息： 
+该文档仅是《计算机应用研究》编辑部编写参考文献的快速指南。具体细则以《参考文献编写规则》为准。 
+《参考文献编写规则》文档获取地址：http://go.arocmag.com/?LinkId=468800。 
+ 四川省成都市武侯区成科西路3 号 
+ 028-85249567 
+ http://www.arocmag.com 
+ journal@arocmag.com 
+Journal of 
+Application Research of Computers
+
+
+PAGE 2
+只著录 3 个文献责任人，多于3 人的，
+在其后著录“, 等”。 
+汉语拼音书写的英文姓名， 不缩写，姓
+前名后用空格分开，首字母大写。 
+非汉语拼音的按英文姓名处理。 
+期刊题名中含有副标题的， 使用冒号
+“: ”进行分隔。 
+出版物英文名称中，除虚词外其他单词
+首字母大写，字体为 Arial，副标题同样
+用冒号“: ”进行分隔。 
+出版信息和页码起讫之间，使用冒号
+“: ”分隔，转接的页码用逗号分隔。 
+文献英文题名中，除第一个单词、专有
+名词及缩写，其他单词均小写。 
+英文姓名，姓前名后用空格分开，姓氏
+不缩写，每个名字只保留首字母，【不
+加缩写点】首字母大写。 
+中间名写在姓氏前面，首字母大写，如：
+Van Wassenhove L N、Jr McKendall A 
+R。 
+英文期刊物名称中，除“Transaction”
+需要缩写为“Trans”，其他缩写词均需
+补充完整。 
+英文文献中，同样只著录 3 个文献责任
+人， 多于3 人的，在其后著录 “, et al”。 
+英文姓名中，需要将韵母“ü”转写为
+“yu”。 
+ 
+仅在线出版的期刊 文献，需要著录其
+URL 地址或者 DOI 地址。 
+日期格式统一为“yyyy-mm-dd”，只有
+一位的月和日需在前面补“0”。 
+方括号“[]”中的日期是引用日期，著
+录您撰写文稿的日期即可。 
+会议录中文献责任人、文献题名、出版
+物题名、页码编写规则同期刊文献。 
+会议录析出文献标志为“[C]//”，两侧
+加空格方便排版。 
+序数词前加“the”，后缀不上标。删掉
+年份。 
+参考文献编写快速指南 
+J 期刊中的析出文献 
+文献责任人. 题名 [J]. 期刊题名, 年, 卷(期): 页码起讫/序号. (中文文献按格式补充英文
+信息) 
+[1] 马艳萍, 杨洪勇, 马彰超, 等. 中继增强蜂窝系统中的比例公平资源分配 [J]. 西安电子科技
+大学学报: 自然科学版, 2015, 42(3): 179-185. (Ma Yanping, Yang Hongyong, Ma Zhangchao, et 
+al. Proportional fair resource allocation in the relay enhanced cellular system [J]. Journal of Xidian 
+University: Natural Science, 2015, 42(3): 179-185. ) 
+// 标准结构 
+[2] 邸亮, 杜永萍. LDA 模型在微博用户推荐中的应用[J]. 计算机工程, 2014, 40(5): 1-6, 11. (Di 
+Liang, Du Yongping. Application of LDA model in microblog user recommendation [J]. Computer 
+Engineering, 2014, 40(5): 1-6, 11. ) 
+// 带转接页码 
+[3] 刘伟, 郭丽, 闫晋锋. 数据库集群服务器系统性能瓶颈分析[J]. 科技信息, 2007(33): 78. (Liu 
+Wei, Guo Li, Yan Jinfeng. Performance bottleneck analysis of database cluster server system  [J]. 
+Science & Technology Information, 2007(33): 78. ) 
+// 未设卷号 
+[4] Alexopoulos C, Griffin P M. Path planning for a mobile robot[J]. IEEE Trans on Systems Man 
+and Cybernetics, 1992, 22(2): 318-322. 
+// 外文文献标准结构 
+[5] Zhao Zengshun, Feng Xiang, Lin Yanyan , et al . Improved Rao -Blackwellized particle filter by 
+particle swarm optimization [J]. Journal of Applied Mathematics , 2013, 2013(2): Article ID 
+302170.  
+// 以年份为卷，无页码 
+[6] Lyu Qin, Lin Zhouchen, She Yiyuan, et al. A comparison of typical lp minimization algorithms [J]. 
+Neurocomputing, 2013, 119(16): 413-424.  
+// 拼音姓名及标题中带格式字符 
+[7] 吴晶, 梁意文, 谭成予, 等. 基于反向选择的地震预测方法  [J/OL]. 计算机应用研究 , 2019, 
+36(5). (2018 -03-09)[2018-03-19]. http://www.arocmag.com/article/02 -2019-05-002.html. (Wu 
+Jing, Liang Yiwen, Tan Chengyu, et al. Method of earthquake prediction based on negative selection 
+[J/OL]. Application Research of Computers , 2019, 36(5). (2018 -03-09)[2018-03-19]. 
+http://www.arocmag.com/article/02-2019-05-002. html. ) 
+// 带 URL 的电子文献 
+[8] Zhao Zengshun, Feng Xiang, Lin Yanyan, et al . Improved Rao -Blackwellized particle filter by 
+particle swarm optimization[J/OL]. Journal of Applied Mathematics, 2013, 2013(2): Article ID 
+302170. (2013-07-30)[2018-03-19]. http://doi.org/10.1155/2013/302170.  
+// 带 DOI 的电子文献 
+C 会议录中的析出文献 
+文献责任人. 题名 [C]// 会议录题名. 出版地: 出版者, 出版年: 页码起讫. 
+[1] Li Bin, Yang Qiang, Xue Xiangyang. Transfer learning for collaborative filtering via a rating-matrix 
+generative model [C]// Proc of the 26th Annual International Conference on Machine Learning. New 
+York: ACM Press, 2009: 617-624.  
+// 外文文献标准结构 
+[2] 刘开瑛. 专有名词与网络词语识别软 件技术研究 [C]// 辉煌二十年 ——中国中文信息学会
+
+PAGE 3
+会议录的出版地和出版者之间用冒号
+“: ”分隔。 
+特别注意：是出版者的地址，而非会议
+的地址。 
+出版地不可查的，用“[S. l. ]”代替；出
+版者不可查的，用“[s. n. ]”代替；两
+者均不可查的，可省略。 
+常用的会议录出版者示例和说明参见
+完整的参考文献规则[链接]。 
+图书及图书中的析出文献，其文献责任
+人、文献题名、出版物题名、出版地和
+出版者、页码编写规则同会议录文献。 
+译者姓名规则同文献责任人。如有多个
+译作者，则著录为“……, 等译”。 
+该类型仅用于论文汇编图书， 会议集应
+使用“[C]”，即使出版物有统一书号
+（ISBN）。 
+外文机构团体名称应由上级至下级分
+级著录。 
+二十周年学术会议论文集. 北京: 清华大学出版社, 2001: 14-20. (Liu Kaiying. Research on the 
+software technology of proper noun and network word recognition [C]// Brilliant 20 Years—Proc of 
+the 20th Annual Conference of Chinese Information Processing Society of China. Beijing: Tsinghua 
+University Press, 2001: 14-20. ) 
+// 中文文献标准结构 
+[3] Wang Yufei, Wang Zheng, Zhang L. Internet traffic engineering without full mesh overlaying [C]// 
+Proc of IEEE INFOCOM. Piscataway, NJ: IEEE Press, 2001: 565-571.  
+// 无会议届次；会议名缩写 
+[4] Shepherd D C. The cost -benefit analysis of usage data in robotstudio (keynote) [C/OL]// Proc of 
+IEEE Workshop on Mining and Analyzing Interaction Histories. Piscataway, NJ: IEEE Press, 2018. 
+(2018-03-26)[2018-03-28]. http://dx.doi.org/10.1109/MAINT.2018.8323086.  
+// 无页码的电子会议文献 
+M 图书 
+文献责任人. 题名 [M]. 〈译者. 〉〈版本项. 〉出版地: 出版者, 出版年〈: 页码起讫〉.  
+[1] Han Jiawei, Kamber M, Pei Jian, 等. 数据挖掘: 概念与技术[M]. 范明, 孟小峰, 译. 3 版. 北
+京：机械工业出版社, 2012: 186-188. 
+// 中文标准结构 
+[2] Rafael C G, Richard E W. Digital image processing [M]. 2nd ed. Upper Saddle River: Prentice Hall, 
+2002: 20.  
+// 外文标准结构 
+[3] Anderson D, Sweeney D, Williams T. Statistics for business and economics  [M]. 10th ed. [S. l. ]: 
+Thomson Higher Education, 2009.  
+// 无法确定出版地 
+[4] Holland J H. Adaptation in natural and artificial s ystems [M]. Ann Arbor: University of Michigan 
+Press, 1975.  
+// 本刊允许的最简略结构 
+M 图书中的析出文献 
+文献责任人. 题名 [M]// 出版物责任人. 出版物题名. 〈译者. 〉〈版本项. 〉出版地: 出
+版者, 出版年〈: 页码起讫〉.  
+[1] 沈晖, 谢逸. 房地产交易中隐名购房的风险管理与防范 [M]// 陈伟忠. 中国经济热点问题研
+究——同济大学应用经济学科学术论文集. 北京: 科学出版社, 2017: 278-286.  
+// 中文文献标准结构 
+[2] Fister I, Yang Xinshe, Fister D, et al. Cuckoo search: a brief literature review [M]// Cuckoo Search 
+and Firefly Algorithm, V olume 516 of the Series Studies in Computational Intelligence. Berlin: 
+Springer-Verlag, 2013: 49-62． 
+// 外文文献标准结构 
+D 学位论文 
+文献责任人. 题名 [D]. 出版地: 出版者, 出版年.  
+[1] 陈彬. 一类新品再造品价差的闭环供应链内在博弈与稳定控制 [D]. 天津: 天津大学, 2014.  
+// 中文标准结构 
+[2] Cheng H G. Representing and reasoning about semantic conflicts in heterogeneous information 
+systems [D]. Cambridge, MA: MIT, Sloan School of Management, 1991.  
+// 外文标准结构 
+图书若为第 1 版，可不著录版本项。 
+英文版本项使用序数词，后缀不上标。 
+
+PAGE 4
+该类型仅用于非正式出版物的在线电
+子文档， 如能确定文献属于期刊、 会议，
+应使用 “[J/OL]”“[C/OL]”“[R/OL]”等。 
+国标编号中 ，年份前的符号为 一字符
+（“—”，破折号的一半）。 
+恰当地在 URL 中使用空格，Word 会自
+动换行，使版式更美观。 
+EB 电子公告 
+文献责任人. 题名 [EB/OL]. 〈(发布/更新时间)〉[引用时间]. 访问 URL.  
+[1] Yao Kaisheng, Zweig G, Peng Baolin. Attention with intention for a neural network conversation 
+model [EB/OL]. (2015)[2018-03-29]. http://www.oalib.com/paper/4052520#.WsG2ZCv6gkS. 
+[2] Wiesner T P. Towards algebraic multigrid (AMG) methods for mortar -based finite element 
+discretizations in contact mechanics  [EB/OL]. (2013)[2018-03-29]. http://mediatum.ub.tum.de/  
+doc/1231974/1231974.pdf.  
+[3] 腾讯反病毒实验. 腾讯哈勃分析系统 [EB/OL]. [2016-09-23]. https://habo.qq.com/index.  
+R 报告 
+文献责任人. 题名, 报告号 [R]. 出版地: 出版者, 出版年.  
+[1] Jeon J, Micinski K K, Foster J S. SymDroid: symbolic execution for Dalvik bytecode, CS-TR-5022 
+[R]. College Park: University of Mayland, 2012.  
+// 标准结构 
+[2] Walther O J. Social network  analysis and informal trade  [R/OL]. (2015-01-10)[2018-03-29]. 
+http://dx.doi.org/10.2139/ssrn.2593021.  
+// 报告性质的 Working Paper，无报告号和出版者，补充其文献地址 
+S 标准 
+文献责任人. 标准编号, 标准题名 [S]. 出版地: 出版者, 出版年.  
+[1] 国务院信息化工作办公室. GB/T 20984—2007, 信息安全风险评估规范 [S]. 北京: 国家标准
+化管理委员会, 2007.  
+// 中文标准结构 
+[2] IEEE. IEEE Std 1609.4 , Multi-channel operation corrigendum: wireless access in vehicular 
+environments (WA VE) [S]. Piscataway, NJ: IEEE Press, 2014.  
+// 外文标准结构 
+P 专利 
+专利责任人. 专利题名: 专利国别, 专利号 [P]. 公告日期〈[引用日期]. 访问 URL〉.  
+[1] 郭健 , 郭书 祥, 王鹏 , 等. 一 种主 从微 创血 管介 入手术 辅助 系统 从操 作器 装置: 中国 , 
+CN201410206956.7 [P]. 2014-09-17.  
+// 中文标准结构 
+[2] Deroo J, Morein S, Favela B, et al. Method and apparatus for compressing parameter values for 
+pixels in a display frame: USA, 6476811  [P/OL]. 2002 -11-05. [2018-03-29]. http://www. 
+freepatentsonline.com/6476811.html.  
+// 可查询的电子文献 
+N 报纸 
+文献责任人. 题名 [N]. 报纸名, 出版日期(版次).  
+[1] 童超. 国务院加码云计算安全体系建设 [N]. 政府采购信息报, 2015-02-09(18).  
+[2] 李陈续, 杨保国. 我国科学家在量子计算领域取得突破 [N]. 光明日报, 2016-08-23(1).  
+ 
+
+PAGE 5
+特别说明 
+ 不要在 Word 文档中以尾注、书签及域代码的形式标注参考文献。因为这些属于非文本内容，可能在多次格式转换后
+丢失而造成文章内容错误。 
+ 尽可能地不在参考文献中使用 MathType 等对象型公式。 
+ 参考文献条目所有非中文字符，均使用半角符号（如“.”“,”“:”“(”“)”等， 中文题目中的一字符“—”、破折号“—
+—”、顿号“、 ”以及姓名中的分隔符“· ”例外） 。点号（如“.”“,”“:”等）在其之后接一个半角空格。这样以方便编辑部在
+后期的文档转换和制作。 
+ 对于英文文献，不要使用自动或手动的断字功能。多余的断字符或连字符会在版式改变后影响排版效果，甚至造成歧
+义。 
+ 每 1 条文献均以段落标记“
+ ”为结束，文献内部不换行。 
+中文文献标注 
+为方便外文阅读者查阅文献，在收录中文文献时，需补充对应的英文信息，在条目后的括号中表示。 
+示例： 
+[1] 刘世超, 朱福喜, 甘琳. 基于标签传播概率的重叠社区发现算法[J]. 计算机学报, 2016, 39(4): 717-729. (Liu Shichao, Zhu Fuxi, Gan 
+Lin. A label-propagation-probability-based algorithm for overlapping community detection [J]. Chinese Journal of Computers, 
+2016, 39(4): 717-729. ) 
+[2] 白雪. 聚类分析中的相似性度量及其应用研究[D]. 北京: 北京交通大学, 2014. (Bai Xue. Similarity measures in cluster analysis 
+and its applications [D]. Beijing: Beijing Jiaotong University, 2014. ) 
+[3] 徐野. 复杂互联系统与网络鲁棒性研究 [M]. 北京: 电子工业出版社 , 2015: 8-10. (Xu Ye. Stady of robustness in complex 
+interconnected system and networks [M]. Beijing: Publishing House of Electronics Industry, 2015: 8-10. ) 
+[4] 骆建文. 信用交易条件下的供应链库存协调策略研究[C]// 中国管理科学学术会议论文集. 2004: 482 -486. (Luo Jianwen. Study 
+on coordination strategy of s upply chain inventory under credit transactions [C]// Proc of China Academic Conference on 
+Management Science. 2004: 482-486. ) 
+注意：部分文献可能需要自行翻译。 
+
+PAGE 6
+编码规则 
+本刊出版的所有文稿， 其参考文献表和参考文献标注均采用顺序编码制， 即按正文中引用文献出现的先后顺序连续编码，
+并将序号置于方括号“[”和“]”中。 
+注意：文章标题、摘要、关键词等元数据中，不能编码和引用参考文献。若需要特别指出，请使用文献责任人指代。 
+单独标志的序号放在引文责任人之后，且设置其格式为上标；阐述中出现的引文序号不需要上标。 
+正文中的引用文献若需指明文献责任人，则仅需写出第一责任人，外文文献仅需写出其姓氏即可。 
+示例： 
+  Chabarek 等人[5]将绿色路由问题归纳为多商品网络流问题，并使用混合整型规划技术来研究静态和动态网络设计中的能耗和
+网络性能；文献[6]构造最小能量路由问题为最优化问题，分析建立了一个绿色路由算法…… 
+在正文同一处引用多个文献时，只需将各篇文献的序号在方括号内全部列出。非连续序号用“,” ，三个以上的连续序号用
+“~”连接。 
+示例： 
+  新近提出的 SDN[8, 9]技术，为改善 ICT 网络的能效问题及提高其可靠性提供了崭新思路……SDN 可以通过控制器中软件应用来
+储备和分配资源，达到节能的目的[10~13]。……相关研究如文献[2, 4~6, 13]以及 SDN 中的资源管理[14, 15]等文献都将精力集中于
+如何在模型场景中去实现总能量消耗最小化…… 
+多次引用同一作者的同一文献时，使用该文献首次引用的文献序号。 
+示例： 
+  文献[14]假设模型的轨迹是有限的，得到两个模型所有的执行轨迹集，比较两个集合的相似度，但是这个方法的结果总是缺乏
+准确度，因为没有考虑到两条路径部分相同的情况。文献[15]在文献[14]的基础上进行修改，提出了考虑部分轨迹相似度的方
+法…… 
+ 

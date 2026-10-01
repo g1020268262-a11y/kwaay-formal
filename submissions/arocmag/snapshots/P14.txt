@@ -1,0 +1,156 @@
+Title: 本刊投稿优先采用条件 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/announce/preferred-conditions
+Accessed: 2026-10-01T12:51:28.984086+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+本刊投稿优先采用条件
+本刊投稿优先采用条件
+2024-06-19
+本刊对下述四类来稿（经审通过后）可考虑优先采用：
+能代表计算机学科领域最高学术水准，独具重大创新或具有重要理论与技术水准，尚未公开发表的学术性文稿。
+具有独到见解，阐述详尽，能反映本学科领域最新发展趋势，最新热点技术，最新软件技术的综述性文稿。
+具有独创性、新颖性、各类应用性、探讨性、工具性的实用性文稿。
+获国家自然科学基金或其它各类重大基金资助项目以及重大获奖项目的文稿（来稿请注明资助基金准确的名称及项目编号）。
+本刊对下述类别的来稿（经审通过后）可考虑优先采用：
+综述评论；
+算法研究探讨；
+软件技术研究
+。
+相关内容
+关于征集青年编辑委员会委员的通知
+关于征集编辑委员会委员的通知
+关于《计算机应用研究》杂志征稿的郑重申明
+本刊针对处理学术不端行为办法的公告
+关于样刊和稿费邮寄的说明
+本刊投稿优先采用条件
+2025年度优秀审稿人名单
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fpreferred-conditions"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fpreferred-conditions"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "关于征集青年编辑委员会委员的通知",
+    "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+  },
+  {
+    "text": "关于征集编辑委员会委员的通知",
+    "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+  },
+  {
+    "text": "关于《计算机应用研究》杂志征稿的郑重申明",
+    "url": "https://www.arocmag.cn/info/announce/article-desired"
+  },
+  {
+    "text": "本刊针对处理学术不端行为办法的公告",
+    "url": "https://www.arocmag.cn/info/announce/misconduct"
+  },
+  {
+    "text": "关于样刊和稿费邮寄的说明",
+    "url": "https://www.arocmag.cn/info/announce/post-info"
+  },
+  {
+    "text": "本刊投稿优先采用条件",
+    "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+  },
+  {
+    "text": "2025年度优秀审稿人名单",
+    "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

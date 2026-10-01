@@ -1,0 +1,206 @@
+Title: 投稿须知 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/instruction/instructions
+Accessed: 2026-10-01T12:47:15.796052+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+投稿须知
+投稿须知
+2024-06-26
+郑重声明
+《计算机应用研究》自创刊以来，从未委托过任何单位或个人进行过任何形式的组稿、征稿工作，本刊稿件均通过本投稿系统进行投稿。
+使用稿件系统投稿
+本刊投稿均在
+网站系统
+中进行上传登记，不接收任何打印稿和电子邮件投稿。
+请管理好您的账号、密码以及电子邮箱地址。电子邮件是我们与您联系沟通的重要方式，请务必保证您的邮箱地址正确有效。
+请务必留存至少一名作者的
+手机号码
+，以便编辑与您联系；若重要事项无法及时联系到作者，所造成的后果由作者自行承担。
+您可以通过本系统及时更新您的个人信息、查询稿件的进展状况。同时可以通过绑定微信公众号来接收稿件相关的推送通知。
+投稿前请作者认真审核，投稿成功后本系统不再接收所投稿件更新。
+请参照本刊提供的
+投稿模板
+来录入文章。请尽可能使用Word文档(doc或docx格式)进行上传，PDF文档会额外地增加您手工录入文章信息的工作量。
+投稿成功后可在“稿件查询”中得知所投稿件编号，这是您与编辑部沟通处理文章的重要信息。
+合法地投稿
+稿件请勿一稿多投。
+本刊审稿周期为1～2个月。在投出稿件100天后未收悉稿件处理意见通知书，作者可自行另作处理。
+所有作者应保证该文章的合法性，即文章属于作者自己的科研成果，无抄袭、剽窃、侵权、数据伪造等不良行为，不涉及国家机密；稿件中引用他人成果已注明出处，并作为参考文献列出。
+本刊已执行“《中国学术期刊网络出版总库》删除学术不端文献的暂行办法”，对网络出版的来稿通过系统进行检测，如因不良行为造成的经济损失和社会负面影响，由作者本人负责。
+请慎重署名
+作者应承诺稿件署名无争议。
+多位作者署名或多个单位的文章，作者应保证署名内容（包括作者简介信息）、顺序，以及单位内容、顺序无争议。
+本刊不允许新增作者。
+在投稿之后，如删除作者署名内容或调整顺序，作者须以书面形式通知编辑部，并需所有作者的签字和第一作者身份证证明或第一单位证明，详见
+作者变更申请书
+。
+不当署名也会被认定为学术不端
+。不当署名包括：未经他人同意擅自将其列入作者名单；提供虚假的作者职称、单位、学历、研究经历等信息。
+后续的流程
+本刊未收取审稿费，待录用后仅收取版面费。
+本刊版面费根据TP类论文学术期刊的平均标准定价，实际费用会根据文章的内容质量及公式、图、表等因素综合确定。
+本刊为中国计算机学会(CCF)会刊，CCF会员作者在投稿时须注明会员身份及会员号；凡第一作者为CCF会员者，将享受8.5折的版面费优惠。
+本刊所刊载稿件（仅限月刊）将进入各大检索数据源并网上发行，作者若有异议请预先申明。
+本刊与《中国知网》(www.cnki.net)合作编辑出版《计算机应用研究》优先数字出版期刊，出版内容为本刊已确定月刊录用的稿件，将在《中国知网》发布。
+如果作者不同意在《中国知网》中预先发表，请在投稿时声明。
+月刊出版后，本刊将支付第一作者或通信作者稿酬（在出版后30日内），稿酬中已包括该稿件版权转让的费用，并将寄赠样刊。
+相关内容
+投稿须知
+版权转让协议 及 保密审查证明
+题目、作者变更申请书
+摘要编写要求
+TP类中图分类号
+稿件处理流程
+投稿模板
+常见问题及解答
+PDF清样稿修改批注方法
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Finstructions"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Finstructions"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/instructions"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "网站系统",
+    "url": "https://www.arocmag.com/login/author"
+  },
+  {
+    "text": "投稿模板",
+    "url": "https://www.arocmag.com/info/instruction/template"
+  },
+  {
+    "text": "作者变更申请书",
+    "url": "https://www.arocmag.com/info/instruction/requistion"
+  },
+  {
+    "text": "投稿须知",
+    "url": "https://www.arocmag.cn/info/instruction/instructions"
+  },
+  {
+    "text": "版权转让协议 及 保密审查证明",
+    "url": "https://www.arocmag.cn/info/instruction/agreement"
+  },
+  {
+    "text": "题目、作者变更申请书",
+    "url": "https://www.arocmag.cn/info/instruction/requistion"
+  },
+  {
+    "text": "摘要编写要求",
+    "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+  },
+  {
+    "text": "TP类中图分类号",
+    "url": "https://www.arocmag.cn/info/instruction/clc"
+  },
+  {
+    "text": "稿件处理流程",
+    "url": "https://www.arocmag.cn/info/instruction/procedure"
+  },
+  {
+    "text": "投稿模板",
+    "url": "https://www.arocmag.cn/info/instruction/template"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "PDF清样稿修改批注方法",
+    "url": "https://www.arocmag.cn/info/instruction/comment"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

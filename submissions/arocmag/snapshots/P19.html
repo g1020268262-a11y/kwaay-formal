@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>登录投稿系统 - 《计算机应用研究》编辑部官方网站</title>
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="/lib/bootstrap/bootstrap-5.1.3-dist/css/bootstrap-custum.css">
+
+    <!-- icon CSS of Segoe MDL2 Icons -->
+    <link rel="stylesheet" href="/lib/segoemdl2-icon/segoemdl2-icons.css">
+
+    <link rel="stylesheet" href="/css/site.css">
+
+    <link rel="apple-touch-icon" href="/favicon/aroc-favicon-152.png" sizes="152x152">
+    <link rel="apple-touch-icon" href="/favicon/aroc-favicon-64.png" sizes="64x64">
+    <link rel="apple-touch-icon" href="/favicon/aroc-favicon-32.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="/favicon/aroc-favicon-16.png" sizes="16x16">
+    <link rel="shortcut icon" href="/favicon/aroc-favicon.ico" type="image/x-icon" />
+    <link rel="Bookmark" href="/favicon/aroc-favicon.ico" type="image/x-icon" />
+    <style>
+
+    </style>
+
+</head>
+<body class="bg-light vh-100">
+        
+<div class="container h-100 px-xxl-5">
+
+    <div class="d-flex flex-row align-items-center h-100 flex-wrap">
+        <div class="row w-100 pb-4 pt-5 align-items-center">
+            <div class="col-6 d-none d-lg-block">
+                <div class="w-50"><img src="/img/cnlogo_b.svg" /></div>
+                <h1 class="text-primary fs-2 pt-2 pb-4 m-0 d-none">登录投稿系统以进行投稿</h1>
+                <hr />
+                <div><a class="text-primary" href="/">https://www.arocmag.cn</a></div>
+            </div>
+            <div class="col-12 col-lg-6 px-xxl-5 ">
+                <form class="border rounded shadow p-4 p-md-5 bg-white" method="post" name="author-login" onsubmit="return checkForm();" action="/login/author">
+                    <div class="d-lg-none border-bottom mb-4 mb-md-5">
+                        <div class="w-25  pb-3"><img src="/img/cnlogo_b.svg" /></div>
+                        <h4 class="text-primary fs-6 pt-2 pb-3 m-0 d-none">登录投稿系统</h4>
+                    </div>
+                    <h2 class="text-primary fs-4 mb-4 mb-md-5">登录投稿系统以进行投稿</h2>
+                    <div class="form-floating mb-4">
+                        <input type="text" class="form-control" placeholder="作者用户名" autocomplete="off" id="username" data-val="true" data-val-required="The UserName field is required." name="UserName" value="">
+                        <label for="UserName">作者用户名</label>
+                    </div>
+                    <div class="form-floating mb-4">
+                        <input type="password" class="form-control" placeholder="登录密码" autocomplete="off" id="password" data-val="true" data-val-required="The Password field is required." name="Password">
+                        <label for="Password">登录密码</label>
+                    </div>
+                    <div class="form-floating flex-grow-1 position-relative mb-4">
+                        <img class="p-0 position-absolute end-0 top-50 translate-middle-y me-2 pointer verify-code-image" src="/verifycode/author" />
+                        <input type="text" value="" class="form-control" autocomplete="off" id="verifycode" maxlength="4" placeholder="验证码" data-val="true" data-val-maxlength="The field VerifyCode must be a string or array type with a maximum length of &#x27;4&#x27;." data-val-maxlength-max="4" data-val-required="The VerifyCode field is required." name="VerifyCode">
+                        <label for="verifyCode">验证码</label>
+                    </div>
+                    <div class="d-flex flex-wrap  align-items-center ">
+                        <button type="submit" class="btn btn-lg btn-primary px-4 me-2 mb-3">登录</button>
+                        <button type="button" id="resetBtn" class="btn btn-lg btn-secondary me-3 mb-3">清空</button>
+                        <span class="alert alert-danger py-2 px-3 m-0 mb-3 flex-grow-1 d-none" id="validmsg"></span>
+                    </div>
+                    <div class="pt-3">
+                        <a class="me-3" href="/signup">注册成为投稿作者</a>
+                        <a class="me-3" href="/getpassword">忘记密码？</a>
+                    </div>
+                <input name="AntiforgeryField" type="hidden" value="CfDJ8Fe3lySq_BpIllijAEmqk9dg-cJ1wcF-M036-Fw2dFShErxAmyK8aK6mQxMgWf2Knla0dweoBpMrIJ44KlldS6TfYBnBkLFRFigNohnEDp3ZYdpd9QKMa9R5xX2RyLquqGMbAJgSfmdXF7hEtS1oek0" /></form>
+
+            </div>
+            <div class="border-top mt-5 pt-3">
+                <footer class="text-muted my-4 py-3">
+    <div class="container-xl">
+        <div class="row align-items-center">
+            <div class="col-12 col-md-3 col-lg-2 mb-3 mb-md-0">
+                <img src="/img/cnlogo_b.svg" class="main-header-logo" alt="" />
+            </div>
+            <div class="col-12 col-md-9 col-lg-10">
+                <div class="d-flex small flex-wrap mb-1">
+                    <div class="d-flex flex-row me-3">
+                        <span class="pe-1">&copy;2026</span>
+                        <span>
+                            <a class="link-secondary text-decoration-none"
+                               href="https://www.arocmag.cn"
+                               target="_blank">计算机应用研究</a>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row me-3">
+                        <span class="si-bank si pe-1"></span>
+                        <span>
+                            <a class="link-secondary text-decoration-none" href="http://www.scsics.cn/"
+                               target="_blank">四川省计算机研究院</a>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row me-3">
+                        <span class="si-shield pe-1"></span>
+                        <span>
+                            <a href="https://beian.miit.gov.cn" target="_blank"
+                               class="link-secondary text-decoration-none">蜀ICP备13001376号-34</a>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row me-3">
+                        <span class="pe-1 si-certificate"></span>
+                        <span>
+                            <a href="https://www.xinnet.com/domain/cert.do?method=listCert&amp;enDomainName=arocmag.cn"
+                               target="_blank" class="link-secondary text-decoration-none">域名证书</a>
+                        </span>
+                    </div>
+                </div>
+
+                <div class="d-flex flex-wrap small">
+                    <div class="d-flex flex-row me-3" title="官方网站">
+                        <span class="pe-1 si-home"></span>
+                        <span>
+                            <a href="https://www.arocmag.cn"
+                               class="link-secondary text-decoration-none">https://www.arocmag.cn</a>
+                        </span>
+                    </div>
+                    <div class="d-flex flex-row me-3" title="服务邮箱">
+                        <span class="pe-1 si si-mail"></span>
+                        <span>journal&#x0040;arocmag.cn</span>
+                    </div>
+                    <div class="d-flex flex-row me-3" title="服务电话">
+                        <span class="pe-1 si-phone"></span>
+                        <span>028-85249567</span>
+                    </div>
+                    <div class="d-flex flex-row me-3" title="办公地址">
+                        <span class="pe-1 si si-work"></span>
+                        <span>四川省成都市武候区成科西路3号</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</footer>
+
+
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+        
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="/lib/jquery/dist/jquery.min.js"></script>
+    <script src="/lib/jquery-cookie/jquery.cookie.js"></script>
+    <script src="/lib/popper.js/2.5.4/popper.min.js"></script>
+    <script src="/lib/bootstrap/bootstrap-5.1.3-dist/js/bootstrap.min.js"></script>
+    <script src="/js/site.js?v=Q5hm_nifjEOus0TT9TUrkK83rZYvp8QrbeaVZq-KIuU"></script>
+
+    
+    
+
+    <script>
+        var invalidClass = "is-invalid";
+        $(document).ready(function () {
+            $('#username,#password,#verifycode').bind('keyup', function () {
+                if ($(this).val() != "") {
+                    $(this).removeClass(invalidClass);
+                }
+            });
+            $('#resetBtn').bind('click', function () {
+                $('#username,#password,#verifycode').val("").removeClass(invalidClass);
+                $('#validmsg').fadeOut(function () { $(this).html(""); });
+                $('#certId').focus();
+            });
+        });
+        function checkForm() {
+            var userName = $('#username');
+            var password = $('#password');
+            var verifyCode = $('#verifycode');
+            var rslt = true;
+            var msg = "";
+            if (verifyCode.val() == "") {
+                verifyCode.addClass(invalidClass).focus();
+                msg = "请输入验证码";
+                rslt = rslt && false;
+            }
+            if (password.val() == "") {
+                password.addClass(invalidClass).focus();
+                msg = "请输入密码";
+                rslt = rslt && false;
+            }
+            if (userName.val() == "") {
+                userName.addClass(invalidClass).focus();
+                msg = "请输入用户名";
+                rslt = rslt && false;
+            }
+            if (rslt == false) {
+                $('#validmsg').hide(function () { $(this).html(msg).removeClass('d-none').fadeIn() });
+            }
+            return rslt;
+        }
+    </script>
+
+</body>
+</html>

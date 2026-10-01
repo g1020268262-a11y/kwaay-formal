@@ -1,0 +1,60 @@
+Title: 登录投稿系统 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/login/author
+Accessed: 2026-10-01T12:55:05.672299+08:00
+
+登录投稿系统以进行投稿
+https://www.arocmag.cn
+登录投稿系统
+登录投稿系统以进行投稿
+作者用户名
+登录密码
+验证码
+登录
+清空
+注册成为投稿作者
+忘记密码？
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "注册成为投稿作者",
+    "url": "https://www.arocmag.cn/signup"
+  },
+  {
+    "text": "忘记密码？",
+    "url": "https://www.arocmag.cn/getpassword"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

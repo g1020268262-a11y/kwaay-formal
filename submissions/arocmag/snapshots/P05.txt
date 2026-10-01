@@ -1,0 +1,296 @@
+Title: 常见问题及解答 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/instruction/faq
+Accessed: 2026-10-01T12:47:26.782164+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+常见问题及解答
+常见问题及解答
+2022-08-19
+关于期刊
+Q： 《计算机应用研究》接受英文稿件吗？
+Q： 《计算机应用研究》增刊是否算核心期刊，是否有国内国际刊号？
+关于稿件处理流程
+Q： 怎样向《计算机应用研究》投稿？审稿周期多长？
+Q： 我已投稿成功，需要交纳审稿费吗？
+Q： 如何在汇出版面费后查询款项是否已收到？并且什么时候能收到发票？
+Q： 文章出版后，是否向作者邮寄样刊？
+Q： 我只想转让印刷版，不想转让网络版，怎么办？
+关于投稿
+Q： 可以提供一个《计算机应用研究》的稿件格式吗？
+Q： 如何查询稿件的处理状态？
+Q： 我已成功注册了账号，但却不能正确登录，怎么办？
+Q： 在使用在线投稿系统上传稿件的时，总是不能完成上传，出现错误提示甚至无任何提示，如何处理？
+关于稿件修改
+Q： 完成投稿之后，作者的联系方式可否自由改动？
+Q： 完成投稿之后发现稿件还有疏漏之处，能否再修改？
+Q： 我投稿时所选栏目错误，应该为“算法研究”，是否需要修改？
+Q： 稿件录用后，文章的作者能否自由改动（包括增减、调整顺序）？
+Q： 不变更作者，只是变更作者单位或者添加基金项目；或者已通过网站上传了修改稿，但某些问题还需要再修改，怎么提交？
+关于期刊
+Q： 《计算机应用研究》接受英文稿件吗？
+A： 本刊暂未刊登英文稿件，请改投他刊。
+Q： 《计算机应用研究》增刊是否算核心期刊，是否有国内国际刊号？
+A： 《计算机应用研究》是核心期刊，其增刊一年只出版一或两期，和月刊一样具有相同的正式出版刊号。对增刊的认定各单位并不统一，请咨询您所在单位的意见。
+关于稿件处理流程
+Q： 怎样向《计算机应用研究》投稿？审稿周期多长？
+A： 请从本网站首页登录投稿系统，第一次投稿请注册。在系统中即可进行投稿并查询操作。正常情况下，本刊审稿周期为1～2个月，若有重要结果将及时通知作者（您在投稿系统中也可以及时看到这些信息）。
+Q： 我已投稿成功，需要交纳审稿费吗？
+A： 本刊未预收审稿费，在录用后收取版面费（含审稿费）。
+Q： 如何在汇出版面费后查询款项是否已收到？并且什么时候能收到发票？
+A： 请在汇出版面费的同时，登录投稿系统，在“版面费管理”中填写相应稿件的汇款信息。本刊收到您的汇款后会登记收款时间，这时您可以在“版面费管理明细” 中查询收款时间是否已登记。
+为便于管理，发票分批寄出，一般在月中旬和月底挂号邮寄发票。若作者急需可在“版面费管理”备注中说明，若需快递请告知手机号（注：快递费用需作者支付，在收到信件后直接付给快递公司）。邮寄发票时我们会登记邮寄发票的时间，作者可查询。
+若版面费是通过银行汇出，请注意：
+作者或单位财务人员在通过银行汇出版面费的同时，请务必在“备注”或“转账说明”中注明稿件编号和第一作者姓名。
+Q： 文章出版后，是否向作者邮寄样刊？
+A： 刊物出版后，我们会及时寄出样刊。为了确保准确寄达作者手中，请您务必在出刊前告之我们新的通信地址。
+Q： 我只想转让印刷版，不想转让网络版，怎么办？
+A： 我刊不仅出版印刷版，也出版网络版。在出版过程中，不大可能将其中的一篇文章撤下来不做网络版，所以凡不同意将转让光盘版和网络版的文章作者，在通知本刊之后，可以改投其他刊物。
+关于投稿
+Q： 可以提供一个《计算机应用研究》的稿件格式吗？
+A： 您可参考本网站正式出版的月刊文章，同时“投稿要求”栏目下的“
+投稿模板
+”提供了可编辑的Word文档模板和模板说明。
+Q： 如何查询稿件的处理状态？
+A： 请从本站首页登录您的投稿账号。在管理台左侧菜单中选择“稿件查询”，即可了解稿件最新的处理状态。稿件一旦有了重要的处理结果，我们将及时通过Email告知您。
+由于审稿周期略长，请您耐心等待审稿结果（电话和Email咨询的结果与您通过在线稿件系统查询到的信息不会有任何不同）。
+Q： 我已成功注册了账号，但却不能正确登录，怎么办？
+A： 您在注册完成后，需要激活账号方能登录系统。请检查您注册的邮箱中是否有系统发送的激活邮件。若不能正常收取邮件，请通过Email（journal@arocmag.com）或电话（028-85249567）告之我们，我们的工作人员将手工激活您的账号，届时您只需输入您注册的账号及密码即可登录。
+Q： 在使用在线投稿系统上传稿件的时，总是不能完成上传，出现错误提示甚至无任何提示，如何处理？
+A： 请尽可能避免使用特殊符号（如：=、-、+、.等全角或半角的符号）作为稿件的文件名。
+若无任何提示，则可能是服务器超时中断，与您上传稿件的软件及网络环境有关，请尝试换一台电脑进行投稿操作。
+若所有尝试均无效，请将稿件发送到journal@arocmag.com，并注明您的用户名和说明无法上传的情况，由我们的工作人员人工进行操作。
+关于稿件修改
+Q： 完成投稿之后，作者的联系方式可否自由改动？
+A： 可以，请登录投稿系统，从左侧菜单栏中进入“稿件查询”，更新您相应文章的联系方式，同时请发一封电子邮件告知我们。
+Q： 完成投稿之后发现稿件还有疏漏之处，能否再修改？
+A： 稿件送审期间，不再对稿件版本进行更新。请作者在上传稿件之前，认真修改论文后再将完全定稿的版本上传。
+如果作者认为的确有必要更新稿件，需要首先向编辑部提交终止原稿件的审理要求（通过Email或投稿系统），编辑部收到您的要求后将终止原稿件的审理。您需要通过投稿系统重新进行投稿，并在原稿件名称后注明“（修改稿）”，例如“基于云的信息系统挖掘机制研究（修改稿）”。
+Q： 我投稿时所选栏目错误，应该为“算法研究”，是否需要修改？
+A： 投稿时的栏目只作为一个参考意见，责任编辑在之后的编辑过程中会对稿件重新进行分类。
+Q： 稿件录用后，文章的作者能否自由改动（包括增减、调整顺序）？
+A： 不可自由改动。著作权人若需对原稿作者更改（原稿中无此作者，则不能添加为第一作者）或顺序调整，必须由原稿作者书面致函并签名授权本刊编辑部对稿件进行修改、调整。
+办理需要的文件和流程请参见“
+作者变更申请书
+”。
+Q： 不变更作者，只是变更作者单位或者添加基金项目；或者已通过网站上传了修改稿，但某些问题还需要再修改，怎么提交？
+A： 请直接将修改信息Email到journal@arocmag.com，请注明稿件编号。我们在收到邮件后会及时回复您。
+相关内容
+投稿须知
+版权转让协议 及 保密审查证明
+题目、作者变更申请书
+摘要编写要求
+TP类中图分类号
+稿件处理流程
+投稿模板
+常见问题及解答
+PDF清样稿修改批注方法
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ffaq"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Ffaq"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "Q： 《计算机应用研究》接受英文稿件吗？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q1"
+  },
+  {
+    "text": "Q： 《计算机应用研究》增刊是否算核心期刊，是否有国内国际刊号？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q2"
+  },
+  {
+    "text": "Q： 怎样向《计算机应用研究》投稿？审稿周期多长？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q3"
+  },
+  {
+    "text": "Q： 我已投稿成功，需要交纳审稿费吗？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q4"
+  },
+  {
+    "text": "Q： 如何在汇出版面费后查询款项是否已收到？并且什么时候能收到发票？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q5"
+  },
+  {
+    "text": "Q： 文章出版后，是否向作者邮寄样刊？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q6"
+  },
+  {
+    "text": "Q： 我只想转让印刷版，不想转让网络版，怎么办？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q7"
+  },
+  {
+    "text": "Q： 可以提供一个《计算机应用研究》的稿件格式吗？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q8"
+  },
+  {
+    "text": "Q： 如何查询稿件的处理状态？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q9"
+  },
+  {
+    "text": "Q： 我已成功注册了账号，但却不能正确登录，怎么办？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q10"
+  },
+  {
+    "text": "Q： 在使用在线投稿系统上传稿件的时，总是不能完成上传，出现错误提示甚至无任何提示，如何处理？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q11"
+  },
+  {
+    "text": "Q： 完成投稿之后，作者的联系方式可否自由改动？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q12"
+  },
+  {
+    "text": "Q： 完成投稿之后发现稿件还有疏漏之处，能否再修改？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q13"
+  },
+  {
+    "text": "Q： 我投稿时所选栏目错误，应该为“算法研究”，是否需要修改？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q14"
+  },
+  {
+    "text": "Q： 稿件录用后，文章的作者能否自由改动（包括增减、调整顺序）？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q15"
+  },
+  {
+    "text": "Q： 不变更作者，只是变更作者单位或者添加基金项目；或者已通过网站上传了修改稿，但某些问题还需要再修改，怎么提交？",
+    "url": "https://www.arocmag.cn/info/instruction/faq#q16"
+  },
+  {
+    "text": "投稿模板",
+    "url": "https://www.arocmag.cn/html/requirement/201405168.html"
+  },
+  {
+    "text": "作者变更申请书",
+    "url": "https://www.arocmag.cn/html/requirement/201405153.html"
+  },
+  {
+    "text": "投稿须知",
+    "url": "https://www.arocmag.cn/info/instruction/instructions"
+  },
+  {
+    "text": "版权转让协议 及 保密审查证明",
+    "url": "https://www.arocmag.cn/info/instruction/agreement"
+  },
+  {
+    "text": "题目、作者变更申请书",
+    "url": "https://www.arocmag.cn/info/instruction/requistion"
+  },
+  {
+    "text": "摘要编写要求",
+    "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+  },
+  {
+    "text": "TP类中图分类号",
+    "url": "https://www.arocmag.cn/info/instruction/clc"
+  },
+  {
+    "text": "稿件处理流程",
+    "url": "https://www.arocmag.cn/info/instruction/procedure"
+  },
+  {
+    "text": "投稿模板",
+    "url": "https://www.arocmag.cn/info/instruction/template"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "PDF清样稿修改批注方法",
+    "url": "https://www.arocmag.cn/info/instruction/comment"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

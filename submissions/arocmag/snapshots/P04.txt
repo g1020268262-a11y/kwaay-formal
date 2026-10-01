@@ -1,0 +1,214 @@
+Title: 摘要编写要求 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/instruction/abstract-instruction
+Accessed: 2026-10-01T12:47:15.796052+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+摘要编写要求
+摘要编写要求
+2022-07-24
+摘要编写要求
+字数在200～300字为宜。
+要用第三人称的写法。应采用“针对……进行了研究”“进行了……调查”等记述方法表明文章的性质和主题，不必使用“本文”“作者”“我”“我们”等作为主语。
+要客观如实地反映文章内容，不可加进作者的主观见解、解释和评论；要着重反映新内容和作者特别强调的观点。
+要排除在本学科领域已成常识的内容；不得简单地重复标题中已有信息。
+书写要合乎语法，保持上下文的逻辑关系，尽量同文章的文体保持一致；结构要严谨，表达要简明，语义要确切。一般不分段落。
+除非该文章证实或否定了他人已出版的著作，否则不用引文。
+缩略语、简称、代号，除了相邻专业的读者也能清楚理解的以外，在首次出现处必须加以说明；新术语或尚无合适汉文术语的，可用原文或译出后加括号注明原文。
+其他信息
+摘要应具有独立性和自含性，即不阅读文章的全文，就能获得必要的信息。摘要中有数据、有结论，是一篇完整的短文，可以独立使用，可以引用。摘要内容应包括与文章内容同等量的主要信息，供读者确定有无必要阅读全文，也供文献等二次文献采用。摘要一般应说明研究工作目的、实验方法、结果和最终结论等。
+摘要的要素包括：
+目的
+。研究、研制、调查等的前提、目的和任务，所涉及的主题范围。
+方法
+。所用的原理、理论、条件、对象、工艺、结构、手段、装备、程序等。
+结果
+。实验的、研究的结果，数据，被确定的关系，观察结果，得到的效果、性能等。
+结论
+。结果的分析、研究、比较、评价、应用，提出的问题，今后的课题，假设，启发，建议，预测等。
+其他
+。不属于研究、研制、调查的主要目的，但就其见识和情报价值而言也是重要的信息。
+摘要编写要求
+对摘要内容的要求与中文摘要编写要求相同。不出现“I”“we”“us”等第一人称代词。
+尽量使用短句。
+描述作者的工作一般用过去时态（因为工作是在过去做的）；陈述由这些工作所得出的结论时，应该用现在时态。
+一般都应使用动词的主动语态，如：写成 A exceeded B 比写成 B was exceeded by A 更好。
+示例
+This paper
+developed
+a new trajectory simplification algorithm NPLAZA based on PLAZA. …
+It (the algorithm) could
+control
+the errors in distance and direction to a smaller range. …
+Simulation experiments
+show
+that NPLAZA algorithm has smaller error range.
+其他信息：EI对英文摘要的基本要求
+EI中国信息部要求信息性文摘（Information Abstract）应该用简洁、明确的语言（一般不超过150 words）将论文的目的（Purposes），主要的研究过程（Procedures）及所采用的方法（Methods），由此得到的主要结果（Results）和得出的重要结论（Conclusions）表达清楚。如有可能，还应尽量提一句论文结果和结论的应用范围和应用情况。也就是说，要写好英文摘要，作者必须回答好以下几个问题：
+本文的目的或要解决的问题（What I want to do?）
+解决问题的方法及过程（How I did it?）
+主要结果及结论（What results did I get and what conclusions can I draw?）
+本文的创新、独到之处（What is new and original in this paper?）
+1）目的（What I want to do?）
+主要说明作者写作此文的目的，或本文主要解决的问题。一般来说，一篇好的英文摘要，一开头就应该把作者本文的目的或要解决的主要问题非常明确地交待清楚。必要时，可利用论文中所列的最新文献，简要介绍前人的工作，但这种介绍一定要极其简练。在这方面，EI提出了两点具体要求：
+Eliminate or minimize background information（不谈或尽量少谈背景信息）。
+Avoid repeating the title or part of the title in the first sentence of the abstract （避免在摘要的第一句话重复使用题目或题目的一部分）。
+2）过程与方法（How I did it?）
+主要说明作者主要工作过程及所用的方法，也应包括众多的边界条件，使用的主要设备和仪器。在英文摘要中，过程与方法的阐述起着承前启后的作用。开头交待了要解决的问题（What I want to do）之后，接着要回答的自然就是如何解决问题（How I did it），而且，最后的结果和结论也往往与研究过程及方法是密切相关的。大多数作者在阐述过程与方法时，最常见的问题是泛泛而谈、空洞无物，只有定性的描述，使读者很难清楚地了解论文中解决问题的过程和方法。因此，在说明过程与方法时，应结合（指向）论文中的公式、实验框图等来进行阐述，这样可以既给读者一个清晰的思路，又给那些看不懂中文（但却可以看懂公式、图、表等）的英文读者以一种可信的感觉。
+3）结果和结论（What results did I get and what conclusions can I draw?）
+结果和结论部分代表着文章的主要成就和贡献，论文有没有价值，值不值得读者阅读，主要取决于你所获得的结果和所得出的结论。因此，在写作结果和结论部分时，一般都要尽量结合实验结果或仿真结果的图、表、曲线等来加以说明，使结论部分言之有物，有根有据；同时，对那些看不懂中文的英文读者来说，通过这些图表，结合英文摘要的说明就可以比较清楚地了解论文的结果和结论。也只有这样，论文的结论才有说服力。如有可能，在结尾部分还可以将论文的结果和他人最新的研究结果进行比较，以突出论文的主要贡献和创新、独到之处（回答What is new and original in this paper）。
+其他信息：如何提高英文摘要的文字效能
+EI很看重英文摘要的文字效能。为了提高文字效能，应尽量删去所有多余的字、句。在这方面，EI提出了两个原则：
+Limit the abstract to new information（摘要中只谈新的信息）；
+Trive for brevity（尽量使摘要简洁）。
+就目前来看，由于大多数作者在英文写作方面都比较欠缺，因此，由作者所写的英文摘要离EI的要求相距甚远。有的作者写出很长的英文摘要，但文字效能很低，多余的字、句很多；有的作者写的英文摘要很短，但也存在多余的字句。总而言之，就是文字的信息含量少。因此，EI中国信息部还对英文摘要的写作提出了以下几点具体要求。
+尽量使用短句。
+描述作者的工作一般用过去时态（因为工作是在过去做的）；陈述由这些工作所得出的结论时，应该用现在时态。
+一般都应使用动词的主动语态，如：写成 A exceeded B 比写成 B was exceeded by A 更好。
+相关内容
+投稿须知
+版权转让协议 及 保密审查证明
+题目、作者变更申请书
+摘要编写要求
+TP类中图分类号
+稿件处理流程
+投稿模板
+常见问题及解答
+PDF清样稿修改批注方法
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fabstract-instruction"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Finstruction%2Fabstract-instruction"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "投稿须知",
+    "url": "https://www.arocmag.cn/info/instruction/instructions"
+  },
+  {
+    "text": "版权转让协议 及 保密审查证明",
+    "url": "https://www.arocmag.cn/info/instruction/agreement"
+  },
+  {
+    "text": "题目、作者变更申请书",
+    "url": "https://www.arocmag.cn/info/instruction/requistion"
+  },
+  {
+    "text": "摘要编写要求",
+    "url": "https://www.arocmag.cn/info/instruction/abstract-instruction"
+  },
+  {
+    "text": "TP类中图分类号",
+    "url": "https://www.arocmag.cn/info/instruction/clc"
+  },
+  {
+    "text": "稿件处理流程",
+    "url": "https://www.arocmag.cn/info/instruction/procedure"
+  },
+  {
+    "text": "投稿模板",
+    "url": "https://www.arocmag.cn/info/instruction/template"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "PDF清样稿修改批注方法",
+    "url": "https://www.arocmag.cn/info/instruction/comment"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]

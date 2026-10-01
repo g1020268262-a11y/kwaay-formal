@@ -1,0 +1,167 @@
+Title: 本刊针对处理学术不端行为办法的公告 - 《计算机应用研究》编辑部官方网站
+URL: https://www.arocmag.cn/info/announce/misconduct
+Accessed: 2026-10-01T12:55:05.672299+08:00
+
+ISSN 1001-3695
+CN 51-1196/TP
+首页
+关于
+EN
+首页
+关于期刊
+编委会/董事会
+English
+优先出版
+印刷出版
+常见问题及解答
+常用文档下载
+录用通知查验
+本刊针对处理学术不端行为办法的公告
+本刊针对处理学术不端行为办法的公告
+2024-06-19
+2016年6月，教育部颁布《高等学校预防与处理学术不端行为办法》（以下简称《办法》）。该《办法》是教育部第一次以部门规章的形式对高等学校预防与处理学术不端行为做出规定，并将在2016年9月1日正式实施。
+《办法》的颁布实施，使得对学术不端行为的处理有章可依、有规可循。接下来要做的，便是建立健全学术不端行为处理机制，以及提高甄别的技术手段等一系列工作。作为计算技术类学术期刊，《计算机应用研究》编辑部郑重申明：
+本编辑部将一如既往对投递稿件进行严格审查，对学术不端采取“零容忍”的态度，一旦发现学术造假行为，均参照《高等学校预防与处理学术不端行为办法》进行举报和曝光，绝不姑息。
+学术研究，是借助已有的理论、知识、经验对科学问题的假设、分析、探讨和推出结论，其结果应该是力求符合事物客观规律的，是对未知科学问题的某种程度的揭示；学者，是具有一定专业技能、学识水平、创造能力，能在相关领域表达思想、提出见解、引领科技社会文化潮流的人。学术和学者的存在，不仅仅是推动整个人类在未知领域不懈探索的力量，也是一个国家科技发展、实力增强的重要根基。
+然而某些人为了一己私利，败坏学术风气，背弃了科学精神和道德，违背了科学研究中的诚信原则，大肆弄虚作假，剽窃、抄袭和伪造学术成果，更有甚者，形成了成规模的学术造假产业链，极大地损害了学术形象，给科学和教育事业带来了严重的负面影响：轻则骗取国家科研经费，造成资源浪费；重则对科研活动、经济生活、社会生活、国家决策、国家形象产生不良后果。
+治理学术不端，不仅需要自律，更需要通过立法来进行他律。《办法》的颁布正是教育部走出科研立法的第一步，充分表明了其整治学术风气的决心。《办法》对预防与处理学术不端行为的工作机制、工作原则、预防措施、学术不端行为的类型、学术不端案件的受理、调查、认定、处理、救济与监督等内容做了全面规定，提出了许多重要的制度举措。
+1、明确了高等学校预防与处理学术不端行为的主体责任，规定高等学校应当建立集教育、预防、监督、惩治于一体的学术诚信体系。
+2、突出了预防为主、教育与惩戒相结合的原则。
+3、健全了学术不端案件举报受理机制。
+4、明确了学术不端案件的调查、认定程序。
+5、明确了学术不端的类型。《办法》明确了六类学术不端情形，包括：
+剽窃、抄袭、侵占他人学术成果，篡改他人研究成果，伪造数据或捏造事实，不当署名，提供虚假学术信息，买卖或代写论文
+等。同时授权高等学校可以结合学校实际，自行规定六类之外的学术不端情形。
+6、规定了学术不端行为的处理方式与救济途径。
+7、规定了查处学术不端的监督机制。
+查看《高等学校预防与处理学术不端行为办法》全文
+相信随着2016年9月1日《办法》正式施行，高校的学术不端现象可望得到有效遏制。
+相关内容
+关于征集青年编辑委员会委员的通知
+关于征集编辑委员会委员的通知
+关于《计算机应用研究》杂志征稿的郑重申明
+本刊针对处理学术不端行为办法的公告
+关于样刊和稿费邮寄的说明
+本刊投稿优先采用条件
+2025年度优秀审稿人名单
+©2026
+计算机应用研究
+四川省计算机研究院
+蜀ICP备13001376号-34
+域名证书
+https://www.arocmag.cn
+journal@arocmag.cn
+028-85249567
+四川省成都市武候区成科西路3号
+
+LINKS
+[
+  {
+    "text": "ISSN 1001-3695CN  51-1196/TP",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "EN",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fmisconduct"
+  },
+  {
+    "text": "首页",
+    "url": "https://www.arocmag.cn/"
+  },
+  {
+    "text": "关于期刊",
+    "url": "https://www.arocmag.cn/info/about/journal"
+  },
+  {
+    "text": "编委会/董事会",
+    "url": "https://www.arocmag.cn/info/about/committee"
+  },
+  {
+    "text": "English",
+    "url": "https://www.arocmag.cn/language?lang=en&returnUrl=%2Finfo%2Fannounce%2Fmisconduct"
+  },
+  {
+    "text": "",
+    "url": "https://www.arocmag.cn/info/announce/misconduct"
+  },
+  {
+    "text": "优先出版",
+    "url": "https://www.arocmag.cn/accepted"
+  },
+  {
+    "text": "印刷出版",
+    "url": "https://www.arocmag.cn/printed"
+  },
+  {
+    "text": "常见问题及解答",
+    "url": "https://www.arocmag.cn/info/instruction/faq"
+  },
+  {
+    "text": "常用文档下载",
+    "url": "https://www.arocmag.cn/download"
+  },
+  {
+    "text": "录用通知查验",
+    "url": "https://cert.arocmag.cn"
+  },
+  {
+    "text": "查看《高等学校预防与处理学术不端行为办法》全文",
+    "url": "https://www.arocmag.cn/html/more/2016072133.html"
+  },
+  {
+    "text": "关于征集青年编辑委员会委员的通知",
+    "url": "https://www.arocmag.cn/info/announce/youngboardmember-request"
+  },
+  {
+    "text": "关于征集编辑委员会委员的通知",
+    "url": "https://www.arocmag.cn/info/announce/boardmember-request"
+  },
+  {
+    "text": "关于《计算机应用研究》杂志征稿的郑重申明",
+    "url": "https://www.arocmag.cn/info/announce/article-desired"
+  },
+  {
+    "text": "本刊针对处理学术不端行为办法的公告",
+    "url": "https://www.arocmag.cn/info/announce/misconduct"
+  },
+  {
+    "text": "关于样刊和稿费邮寄的说明",
+    "url": "https://www.arocmag.cn/info/announce/post-info"
+  },
+  {
+    "text": "本刊投稿优先采用条件",
+    "url": "https://www.arocmag.cn/info/announce/preferred-conditions"
+  },
+  {
+    "text": "2025年度优秀审稿人名单",
+    "url": "https://www.arocmag.cn/info/announce/OutstandingReviewer-2025"
+  },
+  {
+    "text": "计算机应用研究",
+    "url": "https://www.arocmag.cn"
+  },
+  {
+    "text": "四川省计算机研究院",
+    "url": "http://www.scsics.cn/"
+  },
+  {
+    "text": "蜀ICP备13001376号-34",
+    "url": "https://beian.miit.gov.cn"
+  },
+  {
+    "text": "域名证书",
+    "url": "https://www.xinnet.com/domain/cert.do?method=listCert&enDomainName=arocmag.cn"
+  },
+  {
+    "text": "https://www.arocmag.cn",
+    "url": "https://www.arocmag.cn"
+  }
+]
