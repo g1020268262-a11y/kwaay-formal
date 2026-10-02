@@ -24,7 +24,7 @@ $$
 | 同一 `BatchReceive` 调用 | 共享 $(bid,rst)$ | 两槽属于同一模型批次和接收方上下文 | 真实 $st_i$ 的密码状态、预密钥生命周期和调度 |
 | 原文不同参与方条件 | $A_1\ne A_2$ | 两槽目标关系 | 任意批大小的机器证明、具体执行组件 |
 | 逐分量处理和 $k_j$ | `ReceiverAccept(A,oid,m,bid,rst)` | 一个精确来源支持一次模型内处理事件 | $k_j$、会话状态、`KEY/TEST`、应用安装 |
-| 批次失败和分量 $\bot$ | M/P 的抽象 `Reject(bid,rst)` 分支 | 受限谓词下的模型拒绝可达性 | K-Waay 的签名失败、split-KEM batch-wide failure 及返回向量 |
+| 批次失败和分量 $\bot$ | 无直接对应；M/P 另有抽象 `Reject(bid,rst)` 分支 | 不保留源协议的密码失败语义；`Reject` 仅表示消息或参与方接纳条件不满足 | K-Waay 的签名失败、split-KEM batch-wide failure 及返回向量与模型 `Reject` 之间未建立映射，二者不能视为同一安全事件 |
 
 模型中的持久事实 $!Sent(A,oid,m)$ 是理想化的精确发送来源事实。`SendMessage` 产生该事实，后续处理规则只有在完整三元组 $(A,oid,m)$ 一致时才能触发 `ReceiverAccept`。它由规则直接提供来源对应性，不是 K-Waay 签名验证、解封装或认证过程的实现。特别地，模型没有编码 signature、KEM、KDF、receiver/prekey binding、原协议 `sid` 的构造、密钥输出、`KEY/TEST` 查询或应用安装。
 
@@ -109,25 +109,23 @@ $$
 **2）接受事件上的参与方区分与消息区分。** 对一条 trace $\tau$，定义
 
 $$
-P_\tau \triangleq
-\forall r_1\ne r_2,
-\bigl(
-\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1
-\land
-\mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2
-\bigr)
-\Rightarrow A_1\ne A_2,
+\begin{aligned}
+P_\tau\triangleq \forall A_1,A_2,oid_1,oid_2,m_1,m_2,bid,rst,r_1,r_2.\;&
+\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1 \\
+&\land \mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2 \\
+&\land r_1\ne r_2
+\Rightarrow A_1\ne A_2.
+\end{aligned}
 $$
 
 $$
-M_\tau \triangleq
-\forall r_1\ne r_2,
-\bigl(
-\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1
-\land
-\mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2
-\bigr)
-\Rightarrow m_1\ne m_2,
+\begin{aligned}
+M_\tau\triangleq \forall A_1,A_2,oid_1,oid_2,m_1,m_2,bid,rst,r_1,r_2.\;&
+\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1 \\
+&\land \mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2 \\
+&\land r_1\ne r_2
+\Rightarrow m_1\ne m_2.
+\end{aligned}
 $$
 
 其中 $\mathsf{RA}(\cdot)$ 是 `ReceiverAccept` 的缩写，两个事件共享同一 $(bid,rst)$。$P_\tau$ 对应 P 的 `accepted_batch_has_distinct_parties`，$M_\tau$ 对应 M 的 `accepted_batch_has_distinct_messages`。
