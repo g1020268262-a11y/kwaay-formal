@@ -51,14 +51,14 @@ $$
 消息级限制并未维护参与方关系。`same_party_different_messages_batch_exists` 以 16 步得到验证，其见证由同一参与方 $A$ 的两个发送实例组成：
 
 $$
-E_1=(A,oid_1,m_1),qquad
+E_1=(A,oid_1,m_1),\qquad
 E_2=(A,oid_2,m_2),
 $$
 
 其中
 
 $$
-oid_1\ne oid_2,qquad m_1\ne m_2.
+oid_1\ne oid_2,\qquad m_1\ne m_2.
 $$
 
 机器公式同时绑定两个发送和两个接受：
@@ -70,7 +70,7 @@ $$
 &\operatorname{BatchReceive}(bid,rst)@b,\\
 &\mathsf{RA}(A,oid_1,m_1,bid,rst)@r_1,
 \quad \mathsf{RA}(A,oid_2,m_2,bid,rst)@r_2,\\
-&s_1<b,quad s_2<b,quad b<r_1<r_2.
+&s_1<b,\quad s_2<b,\quad b<r_1<r_2.
 \end{aligned}
 $$
 
@@ -98,7 +98,7 @@ $$
 &\operatorname{BatchReceive}(bid,rst)@b,\\
 &\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1,
 \quad \mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2,\\
-&s_1<b,quad s_2<b,quad b<r_1<r_2.
+&s_1<b,\quad s_2<b,\quad b<r_1<r_2.
 \end{aligned}
 $$
 

@@ -26,6 +26,12 @@ K-Waay 完整构造的图 10 进一步给出了接收处理过程\cite[Sec. 5.1,
 
 为描述输入被组合后是否进入模型处理路径，本文使用“批处理接纳”（batch admission）一词。它是分析层边界，不是 K-Waay 原规范中新增加的算法。原条件可以由调用方、批次构造器、接收方接纳层或其他可信组件维护；原论文的自然语言条件本身没有唯一规定其实现位置。
 
+> **图1  K-Waay BatchReceive输入条目、索引输出与参与方投影关系**
+>
+> **Fig. 1  Input Entries, Indexed Outputs, and Party Projections in K-Waay BatchReceive**
+>
+> 注：依据 K-Waay 接口事实与本文抽象人工整理；源接口到符号模型之间尚未建立精化证明。
+
 ## 1.2 身份坐标与批内参与方区分
 
 K-Waay 原协议的 `sid` 是由参与方身份、公钥、预密钥包和消息拼接形成并输入 KDF 的 transcript 标识。当前 Tamarin 模型中的字段 `sid` 则是每次 `SendMessage` 规则触发时生成的独立新鲜原子，不包含上述结构。为避免两种含义混淆，本文在叙述和公式中将模型字段统一记为 $oid$，即
