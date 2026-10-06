@@ -1,0 +1,164 @@
+[
+  {
+    "number": 1,
+    "source_file": "01-batch-admission-problem.md",
+    "latex": "\\{k_{j_\\ell}\\}_{\\ell=1}^{d}\n\\leftarrow\n\\operatorname{BatchReceive}\n\\left(sk_i,st_i,\nS=\\bigl((pk_{j_\\ell},prek_{j_\\ell},m_{j_\\ell})\\bigr)_{\\ell=1}^{d}\n\\right),\n\\qquad d\\ge 1 .",
+    "rendered": "⦃kj_ℓ⦄ℓ₌₁d\n←\nBatchReceive\n(skᵢ,stᵢ,\nS=((pkj_ℓ,prekj_ℓ,mj_ℓ))ℓ₌₁d\n),\nd≥ 1 ."
+  },
+  {
+    "number": 2,
+    "source_file": "01-batch-admission-problem.md",
+    "latex": "oid \\equiv sid_{\\mathrm{model}} .",
+    "rendered": "oid ≡ sidₘₒdₑₗ ."
+  },
+  {
+    "number": 3,
+    "source_file": "01-batch-admission-problem.md",
+    "latex": "E_\\ell=(A_\\ell,oid_\\ell,m_\\ell),",
+    "rendered": "Eℓ=(Aℓ,oidℓ,mℓ),"
+  },
+  {
+    "number": 4,
+    "source_file": "01-batch-admission-problem.md",
+    "latex": "\\operatorname{DistinctPartyPerBatch}(B)\n\\triangleq\n\\forall\\,1\\le p<q\\le n,\n\\operatorname{party}(E_p)\\ne\\operatorname{party}(E_q).",
+    "rendered": "DistinctPartyPerBatch(B)\n≜\n∀ 1≤ p<q≤ n,\nparty(Ep)≠party(Eq)."
+  },
+  {
+    "number": 5,
+    "source_file": "01-batch-admission-problem.md",
+    "latex": "E_1=(A,oid_1,m_1),\\qquad\nE_2=(A,oid_2,m_2),\n\\qquad oid_1\\ne oid_2,\\quad m_1\\ne m_2,",
+    "rendered": "E₁=(A,oid₁,m₁),\nE₂=(A,oid₂,m₂),\noid₁≠ oid₂, m₁≠ m₂,"
+  },
+  {
+    "number": 6,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "oid \\equiv sid_{\\mathrm{model}},",
+    "rendered": "oid ≡ sidₘₒdₑₗ,"
+  },
+  {
+    "number": 7,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\text{创建参与方}\n\\rightarrow \\text{产生发送实例并公开条目}\n\\rightarrow \\text{收集两槽输入}\n\\rightarrow \\text{接纳或拒绝}\n\\rightarrow \\text{顺序处理}\n\\rightarrow \\texttt{ReceiverAccept}.",
+    "rendered": "创建参与方\n→ 产生发送实例并公开条目\n→ 收集两槽输入\n→ 接纳或拒绝\n→ 顺序处理\n→ ReceiverAccept."
+  },
+  {
+    "number": 8,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\operatorname{Send}(A,oid,m),",
+    "rendered": "Send(A,oid,m),"
+  },
+  {
+    "number": 9,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\operatorname{Collected}\n(bid,rst,A_1,oid_1,m_1,A_2,oid_2,m_2).",
+    "rendered": "Collected\n(bid,rst,A₁,oid₁,m₁,A₂,oid₂,m₂)."
+  },
+  {
+    "number": 10,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\operatorname{ReceiverAccept}\n(A_1,oid_1,m_1,bid,rst)",
+    "rendered": "ReceiverAccept\n(A₁,oid₁,m₁,bid,rst)"
+  },
+  {
+    "number": 11,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\forall A,oid,m,bid,rst,r.\n\\operatorname{ReceiverAccept}(A,oid,m,bid,rst)@r\n\\Rightarrow\n\\exists s.\n\\operatorname{Send}(A,oid,m)@s \\land s<r.",
+    "rendered": "∀ A,oid,m,bid,rst,r.\nReceiverAccept(A,oid,m,bid,rst)@r\n⇒\n∃ s.\nSend(A,oid,m)@s ∧ s<r."
+  },
+  {
+    "number": 12,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\begin{aligned}\nP_\\tau\\triangleq \\forall A_1,A_2,oid_1,oid_2,m_1,m_2,bid,rst,r_1,r_2.\\;&\n\\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1 \\\\\n&\\land \\mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2 \\\\\n&\\land r_1\\ne r_2\n\\Rightarrow A_1\\ne A_2.\n\\end{aligned}",
+    "rendered": "Pτ≜ ∀ A₁,A₂,oid₁,oid₂,m₁,m₂,bid,rst,r₁,r₂.\nRA(A₁,oid₁,m₁,bid,rst)@r₁\n\n∧ RA(A₂,oid₂,m₂,bid,rst)@r₂\n\n∧ r₁≠ r₂\n⇒ A₁≠ A₂."
+  },
+  {
+    "number": 13,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\begin{aligned}\nM_\\tau\\triangleq \\forall A_1,A_2,oid_1,oid_2,m_1,m_2,bid,rst,r_1,r_2.\\;&\n\\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1 \\\\\n&\\land \\mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2 \\\\\n&\\land r_1\\ne r_2\n\\Rightarrow m_1\\ne m_2.\n\\end{aligned}",
+    "rendered": "Mτ≜ ∀ A₁,A₂,oid₁,oid₂,m₁,m₂,bid,rst,r₁,r₂.\nRA(A₁,oid₁,m₁,bid,rst)@r₁\n\n∧ RA(A₂,oid₂,m₂,bid,rst)@r₂\n\n∧ r₁≠ r₂\n⇒ m₁≠ m₂."
+  },
+  {
+    "number": 14,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "\\begin{aligned}\n\\forall A,oid,m,bid,rst,s,r_1,r_2.;&\n\\operatorname{Send}(A,oid,m)@s \\\\\n&\\land \\mathsf{RA}(A,oid,m,bid,rst)@r_1\n\\land \\mathsf{RA}(A,oid,m,bid,rst)@r_2 \\\\\n&\\land s<r_1 \\land s<r_2\n\\Rightarrow r_1=r_2.\n\\end{aligned}",
+    "rendered": "∀ A,oid,m,bid,rst,s,r₁,r₂.;\nSend(A,oid,m)@s\n\n∧ RA(A,oid,m,bid,rst)@r₁\n∧ RA(A,oid,m,bid,rst)@r₂\n\n∧ s<r₁ ∧ s<r₂\n⇒ r₁=r₂."
+  },
+  {
+    "number": 15,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "(P_\\tau\\Rightarrow M_\\tau)\\ \\land\\ (M_\\tau\\Leftrightarrow I_\\tau),",
+    "rendered": "(Pτ⇒ Mτ) ∧ (Mτ⇔ Iτ),"
+  },
+  {
+    "number": 16,
+    "source_file": "02-symbolic-modeling.md",
+    "latex": "M_\\tau\\not\\Rightarrow P_\\tau.",
+    "rendered": "Mτ⇏ Pτ."
+  },
+  {
+    "number": 17,
+    "source_file": "03-formal-analysis.md",
+    "latex": "\\begin{aligned}\n&\\operatorname{Send}(A,oid,m)@s,\\\\\n&\\operatorname{BatchReceive}(bid,rst)@b,\\\\\n&\\mathsf{RA}(A,oid,m,bid,rst)@r_1,\\\\\n&\\mathsf{RA}(A,oid,m,bid,rst)@r_2,\\\\\n&s<b<r_1<r_2,\n\\end{aligned}",
+    "rendered": "Send(A,oid,m)@s,\n\nBatchReceive(bid,rst)@b,\n\nRA(A,oid,m,bid,rst)@r₁,\n\nRA(A,oid,m,bid,rst)@r₂,\n\ns<b<r₁<r₂,"
+  },
+  {
+    "number": 18,
+    "source_file": "03-formal-analysis.md",
+    "latex": "\\forall s_2.\\ \n\\operatorname{Send}(A,oid,m)@s_2\n\\Rightarrow s_2=s.",
+    "rendered": "∀ s₂.\nSend(A,oid,m)@s₂\n⇒ s₂=s."
+  },
+  {
+    "number": 19,
+    "source_file": "03-formal-analysis.md",
+    "latex": "m_1\\ne m_2.",
+    "rendered": "m₁≠ m₂."
+  },
+  {
+    "number": 20,
+    "source_file": "03-formal-analysis.md",
+    "latex": "E_1=(A,oid_1,m_1),\\qquad\nE_2=(A,oid_2,m_2),",
+    "rendered": "E₁=(A,oid₁,m₁),\nE₂=(A,oid₂,m₂),"
+  },
+  {
+    "number": 21,
+    "source_file": "03-formal-analysis.md",
+    "latex": "oid_1\\ne oid_2,\\qquad m_1\\ne m_2.",
+    "rendered": "oid₁≠ oid₂, m₁≠ m₂."
+  },
+  {
+    "number": 22,
+    "source_file": "03-formal-analysis.md",
+    "latex": "\\begin{aligned}\n&\\operatorname{Send}(A,oid_1,m_1)@s_1,\n\\quad \\operatorname{Send}(A,oid_2,m_2)@s_2,\\\\\n&\\operatorname{BatchReceive}(bid,rst)@b,\\\\\n&\\mathsf{RA}(A,oid_1,m_1,bid,rst)@r_1,\n\\quad \\mathsf{RA}(A,oid_2,m_2,bid,rst)@r_2,\\\\\n&s_1<b,\\quad s_2<b,\\quad b<r_1<r_2.\n\\end{aligned}",
+    "rendered": "Send(A,oid₁,m₁)@s₁,\nSend(A,oid₂,m₂)@s₂,\n\nBatchReceive(bid,rst)@b,\n\nRA(A,oid₁,m₁,bid,rst)@r₁,\nRA(A,oid₂,m₂,bid,rst)@r₂,\n\ns₁<b, s₂<b, b<r₁<r₂."
+  },
+  {
+    "number": 23,
+    "source_file": "03-formal-analysis.md",
+    "latex": "A_1\\ne A_2.",
+    "rendered": "A₁≠ A₂."
+  },
+  {
+    "number": 24,
+    "source_file": "03-formal-analysis.md",
+    "latex": "\\begin{aligned}\n&\\operatorname{Send}(A_1,oid_1,m_1)@s_1,\n\\quad \\operatorname{Send}(A_2,oid_2,m_2)@s_2,\\\\\n&A_1\\ne A_2,\\\\\n&\\operatorname{BatchReceive}(bid,rst)@b,\\\\\n&\\mathsf{RA}(A_1,oid_1,m_1,bid,rst)@r_1,\n\\quad \\mathsf{RA}(A_2,oid_2,m_2,bid,rst)@r_2,\\\\\n&s_1<b,\\quad s_2<b,\\quad b<r_1<r_2.\n\\end{aligned}",
+    "rendered": "Send(A₁,oid₁,m₁)@s₁,\nSend(A₂,oid₂,m₂)@s₂,\n\nA₁≠ A₂,\n\nBatchReceive(bid,rst)@b,\n\nRA(A₁,oid₁,m₁,bid,rst)@r₁,\nRA(A₂,oid₂,m₂,bid,rst)@r₂,\n\ns₁<b, s₂<b, b<r₁<r₂."
+  },
+  {
+    "number": 25,
+    "source_file": "03-formal-analysis.md",
+    "latex": "(P_\\tau\\Rightarrow M_\\tau)\n\\land\n(M_\\tau\\Leftrightarrow I_\\tau).",
+    "rendered": "(Pτ⇒ Mτ)\n∧\n(Mτ⇔ Iτ)."
+  },
+  {
+    "number": 26,
+    "source_file": "03-formal-analysis.md",
+    "latex": "M_\\tau\\not\\Rightarrow P_\\tau.",
+    "rendered": "Mτ⇏ Pτ."
+  },
+  {
+    "number": 27,
+    "source_file": "04-discussion.md",
+    "latex": "(P_\\tau\\Rightarrow M_\\tau)\n\\land\n(M_\\tau\\Leftrightarrow I_\\tau),\n\\qquad\nM_\\tau\\not\\Rightarrow P_\\tau",
+    "rendered": "(Pτ⇒ Mτ)\n∧\n(Mτ⇔ Iτ),\n\nMτ⇏ Pτ"
+  }
+]
