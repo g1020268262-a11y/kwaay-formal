@@ -1,0 +1,114 @@
+\subsection{K-Waay与BatchReceive}
+
+\kwaay 是一种由KEM、数字签名和split-KEM构造的后量子、类似X3DH的可否认认证密钥交换协议\cite{collins2024kwaay}。完整协议包含远多于本文问题所需的密码结构。这里仅考察接收方在一次协议操作中处理多个发送方关联输入的接口，即\batchreceive。
+
+在协议接口中，发送方以自身本地状态和接收方预密钥束为输入调用\textsf{Send}，得到会话密钥与协议消息。接收方临时密钥材料被复用时，多条发送方消息可能对应同一接收方临时状态。接收方随后针对该状态，以输入向量调用\batchreceive\cite[第4.1节]{collins2024kwaayfull}。将该向量写为
+
+\begin{equation}
+  S = \bigl((\mathit{pk}_{j_1},\mathit{prek}_{j_1},m_{j_1}),\ldots,
+             (\mathit{pk}_{j_d},\mathit{prek}_{j_d},m_{j_d})\bigr),
+  \qquad d \geq 1,
+  \label{eq:kwaay-batch-input}
+\end{equation}
+
+其中，每个分量包含所声称发送方的公钥、该发送方的预密钥束以及相应协议消息。\batchreceive 针对各分量验证相关预密钥信息，并利用接收方的长期与临时秘密材料执行所需的解封装操作。若split-KEM解封装失败，协议通过返回全为$\bot$的结果向量拒绝整个批次；否则返回对应的派生密钥结果向量，其中个别元素仍可能为$\bot$\cite[第5.1节，图10]{collins2024kwaayfull}。
+
+上述描述无意复述完整握手或其计算安全证明，而是确定本文关心的协议对象：一次接收方调用可以在共享接收方状态下处理多个与发送方相关联的分量。
+
+这种成组处理使分量之间的关系成为执行语义的一部分。每个位置都关联一个所声称的发送方、一条消息和一个接收方密钥结果。本文关注的是这些分量作为一个整体被视为可接纳批次的边界，并将其称为\emph{批处理接纳}（batch admission）。该术语仅用于分析，不表示原始\kwaay 规范中另有一个独立算法。
+
+\subsection{原协议中的不同参与方条件}
+
+\kwaay 完整构造明确指出：对于给定的\batchreceive 调用，$S$中的每个元素均假定对应不同参与方\cite[第5.1节，第21页，图10之后]{collins2024kwaayfull}。该条件的作用域是单个批次，约束一次\batchreceive 调用中各分量之间的关系；它不要求某一参与方在整个协议中只出现一次、只运行一个会话或只产生一条协议消息。
+
+下文将这一条件记为\distinctparty。原论文以自然语言陈述该条件，本文仅为便于分析而命名。它规定批内参与方关系，但没有限定具体执行机制：原陈述并未说明应由客户端、服务器、调用者还是其他批次构造组件完成检查，也不能据此推断某个真实实现必然缺少相应检查。第\ref{sec:objective-threat-model}节将形式化定义该关系，并给出研究所采用的对手与证据边界。
+
+\subsection{身份坐标}
+
+为区分参与方级条件与其他唯一性形式，将批处理接纳所需的信息抽象为条目
+
+\begin{equation}
+  E_i=(A_i,\mathit{oid}_i,m_i),
+  \label{eq:abstract-entry}
+\end{equation}
+
+其中，$A_i$表示建模的协议参与方，$\mathit{oid}_i$表示分析中的发送实例坐标，$m_i$表示发送方产生的协议内容。英文母稿和Tamarin源模型将该实例坐标记为$\mathit{sid}_{\mathrm{model}}$；为避免与K-Waay协议消息摘要中的transcript $\mathit{sid}$混淆，中文叙述统一采用$\mathit{oid}\equiv\mathit{sid}_{\mathrm{model}}$。这只是论文记号的替换，不改变源模型变量、规则或事件。式\eqref{eq:abstract-entry}是分析抽象，而非\kwaay 输入在线路上的编码形式。
+
+$A_i$同样不应被解释为账户记录、公钥字节串、预密钥或实现对象；它表示不同参与方条件所作用的协议主体坐标。与批处理接纳有关的坐标及其语义边界列于表\ref{tab:identity-coordinates}。
+
+\begin{table}[htbp]
+  \centering
+  \caption{批处理接纳中的身份坐标}
+  \label{tab:identity-coordinates}
+  \small
+  \begin{tabularx}{\linewidth}{@{}lXX@{}}
+    \toprule
+    坐标 & 区分对象 & 解释边界 \\
+    \midrule
+    参与方$A$ & 建模的协议主体 & 不等同于预密钥或密钥编码 \\
+    消息$m$ & 发送方产生的协议内容 & 消息不同不要求来源参与方不同 \\
+    发送实例$\mathit{oid}$ & 分析中的一次发送方会话或出现 & 实例不同不要求参与方不同 \\
+    槽位$i$ & 同一批次中的一个位置 & 位置不同不要求参与方或消息不同 \\
+    批次$B$ & 一次成组的接收方执行 & 不要求其中的参与方在全局唯一 \\
+    接收方状态$r$ & 成组执行所共享的接收方状态 & 该坐标不能确定参与方的身份或数量 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+表\ref{tab:identity-coordinates}区分的是概念角色，并不声称原型中任意坐标等式组合都可实现。后续形式模型为每次发送实例新鲜生成$\mathit{oid}$和$m$；在此假设下，来自不同参与方的合法来源元组也具有不同的实例与消息坐标。反向推理并不成立：同一参与方可以经由多个协议实例产生不同消息。因此，
+
+\begin{equation}
+  A_i=A_j
+  \quad\text{可与}\quad
+  \mathit{oid}_i\neq\mathit{oid}_j
+  \ \land\ 
+  m_i\neq m_j
+  \quad\text{同时成立}.
+  \label{eq:same-party-different-message}
+\end{equation}
+
+类似地，$i\neq j$只表明两个分量位于不同批次位置，不能推出$A_i\neq A_j$；批次标识和接收方状态只确定共同处理上下文，也不能确定其中包含多少个不同参与方。
+
+这些区别也影响认证证据的解释。若证据把某个协议分量绑定到参与方$A$，它可以确定该分量的来源，却不能单独证明$A$在整个批次中至多出现一次。相应地，两条消息不相等只能区分协议内容，不能推出其来源参与方坐标不相等。
+
+\subsection{动机中的参与方重复组合}
+
+考虑如下两位置候选批次：
+
+\begin{equation}
+  B^{\star}
+  =\bigl((A,\mathit{oid}_1,m_1),
+          (A,\mathit{oid}_2,m_2)\bigr),
+  \qquad
+  \mathit{oid}_1\neq\mathit{oid}_2,
+  \quad m_1\neq m_2.
+  \label{eq:motivating-composition}
+\end{equation}
+
+两个分量位于不同槽位，来自不同建模发送实例，并包含不同消息，但其参与方坐标均为$A$。因此，仅排除重复消息的限制不能凭$m_1\neq m_2$排除这一组合；不同参与方条件则因两个条目的参与方坐标相同而排除它。
+
+该例揭示如下逻辑不蕴含关系：
+
+\begin{equation}
+  m_1\neq m_2
+  \ \not\Longrightarrow\ 
+  \mathsf{party}(E_1)\neq\mathsf{party}(E_2).
+  \label{eq:message-does-not-imply-party}
+\end{equation}
+
+式\eqref{eq:motivating-composition}只是引出形式化问题的分析对象，并非机器检查得到的攻击轨迹；它也不属于满足\kwaay 原有不同参与方条件的执行域。该例所要分离的是不同身份坐标上约束的作用：放宽参与方关系后会出现何种变化，以及其他坐标上的限制能否替代该关系。
+
+\subsection{研究问题}
+
+上述坐标区分产生三个研究问题。
+
+\paragraph{RQ1：放宽不变量。}
+在其他接纳行为保持可比的条件下，移除\distinctparty 要求后，哪些批内参与方重复组合变为可达？
+
+\paragraph{RQ2：分量级后果。}
+在形式模型采用的接收侧抽象中，放宽不同参与方条件是否会使一个匹配的发送来源支持同一批次中的多个接收事件？这里的“接收分量”是符号抽象中的事件，不等同于K-Waay原安全模型为接收方会话给出的单一接受或拒绝状态。
+
+\paragraph{RQ3：坐标替代。}
+在当前建模生命周期下，仅作用于消息身份的限制能否推出原有的批内参与方区分目标，抑或消息不同的分量仍可具有相同的参与方坐标？
+
+后文采用的显式参与方坐标限制是针对目标关系的正控制，而非第四个未知问题；消息坐标限制才用于检验坐标替代是否成立。以上问题区分参与方级目标与观察其后果所需的分量级行为，不预设K-Waay密码原语被攻破、某个部署实现存在漏洞，也不规定维护不同参与方条件的唯一机制。第\ref{sec:objective-threat-model}节给出相应能力、假设和非目标，后续形式化章节再说明它们在符号模型中的实现。
