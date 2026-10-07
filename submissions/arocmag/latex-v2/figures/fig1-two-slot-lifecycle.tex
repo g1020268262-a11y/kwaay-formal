@@ -1,98 +1,98 @@
 \begin{tikzpicture}[
-  node distance=2.4mm,
+  node distance=3.2mm,
   >=Latex,
   flow/.style={->,line width=0.45pt},
   rejectflow/.style={->,dashed,line width=0.35pt},
-  common/.style={
+  stage/.style={
     draw,
     rounded corners=1pt,
     line width=0.35pt,
     align=center,
-    text width=5.25cm,
-    minimum height=6.5mm,
+    text width=5.30cm,
+    minimum height=7mm,
     inner sep=2.2pt,
     font=\small
   },
-  boundary/.style={common,dashed,text width=5.25cm},
-  admission/.style={common,fill=black!7,text width=5.85cm,minimum height=16mm},
-  event/.style={common,fill=black!3},
-  reject/.style={common,dashed,text width=1.45cm,minimum height=9mm,font=\scriptsize}
+  boundary/.style={stage,dashed},
+  admission/.style={stage,fill=black!7,text width=5.85cm,minimum height=17mm},
+  terminal/.style={stage,text width=4.20cm,minimum height=7mm},
+  reject/.style={
+    stage,
+    dashed,
+    text width=1.78cm,
+    minimum height=13mm,
+    inner sep=1.5pt,
+    font=\scriptsize
+  },
+  actionlabel/.style={
+    fill=white,
+    inner sep=1pt,
+    align=left,
+    font=\scriptsize
+  }
 ]
 
-  \node[common] (send) {
-    发送实例生成\\[-1pt]
-    {\scriptsize $\mathsf{Send}(A_i,\mathit{oid}_i,m_i)$}
+  \node[stage] (source) {
+    \textbf{发送实例与候选条目暴露}\\[-1pt]
+    {\scriptsize 条目 $E_i=(A_i,\mathit{oid}_i,m_i)$}\\[-1pt]
+    {\scriptsize 动作：$\mathsf{Send}(A_i,\mathit{oid}_i,m_i)$}\\[-1pt]
+    {\scriptsize 网络：$\mathsf{Out}(E_i)$\quad 持久来源：$!\mathsf{Sent}(A_i,\mathit{oid}_i,m_i)$}
   };
 
-  \node[common,below=of send] (expose) {
-    符号网络暴露候选条目\\[-1pt]
-    {\scriptsize $E_i=(A_i,\mathit{oid}_i,m_i)$}
-  };
-
-  \node[boundary,below=of expose] (compose) {
-    候选条目组合（攻击者可控）\\[-1pt]
+  \node[boundary,below=of source] (compose) {
+    \textbf{候选条目组合（攻击者可控）}\\[-1pt]
     {\scriptsize 选择、排列或重复已有条目}
   };
 
-  \node[common,below=of compose] (slot1) {
-    槽位1收集 $E_1$\\[-1pt]
-    {\scriptsize $\mathsf{OpenSlot1}\rightarrow\mathsf{OpenSlot2}$}
+  \node[stage,below=of compose] (collect) {
+    \textbf{两槽顺序收集}\\[-1pt]
+    {\scriptsize 1. $E_1$：$\mathsf{OpenSlot1}\rightarrow\mathsf{OpenSlot2}$}\\[-1pt]
+    {\scriptsize 2. $E_2$：$\mathsf{OpenSlot2}\rightarrow\mathsf{Collected}$}
   };
 
-  \node[common,below=of slot1] (slot2) {
-    槽位2收集 $E_2$\\[-1pt]
-    {\scriptsize $\mathsf{OpenSlot2}\rightarrow\mathsf{Collected}$}
-  };
-
-  \node[admission,below=of slot2] (admit) {
+  \node[admission,below=3.5mm of collect] (admit) {
     \begin{tabular}{@{}l@{}}
       \textbf{批次准入（受控变化）}\\[-1pt]
-      无互异约束：无额外互异条件\\[-1pt]
+      无互异约束：无额外互异要求\\[-1pt]
       消息互异约束：$m_1\neq m_2$\\[-1pt]
       参与方互异约束：$A_1\neq A_2$
     \end{tabular}
   };
 
-  \node[reject,right=3.5mm of admit] (reject) {
-    拒绝\\[-1pt]
-    $\mathsf{Reject}$
+  \node[reject,right=2.5mm of admit] (reject) {
+    互异约束不满足\\[-1pt]
+    仅限消息互异与\\[-1pt]
+    参与方互异模型\\[-1pt]
+    拒绝 $\mathsf{Reject}$
   };
 
-  \node[event,below=of admit] (batch) {
-    批次获准\\[-1pt]
-    {\scriptsize $\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})$}
-  };
-
-  \node[common,below=of batch] (process1) {
-    处理槽位1并匹配发送来源\\[-1pt]
+  \node[stage,below=8mm of admit] (process1) {
+    \textbf{处理槽位1并匹配发送来源}\\[-1pt]
     {\scriptsize $!\mathsf{Sent}(A_1,\mathit{oid}_1,m_1)$}
   };
 
-  \node[event,below=of process1] (accept1) {
-    接受事件\\[-1pt]
-    {\scriptsize $\mathsf{ReceiverAccept}(E_1,\mathit{bid},\mathit{rst})$}
-  };
-
-  \node[common,below=of accept1] (process2) {
-    处理槽位2并匹配发送来源\\[-1pt]
+  \node[stage,below=8mm of process1] (process2) {
+    \textbf{处理槽位2并匹配发送来源}\\[-1pt]
     {\scriptsize $!\mathsf{Sent}(A_2,\mathit{oid}_2,m_2)$}
   };
 
-  \node[event,below=of process2] (accept2) {
-    接受事件\\[-1pt]
-    {\scriptsize $\mathsf{ReceiverAccept}(E_2,\mathit{bid},\mathit{rst})$}
+  \node[terminal,below=8mm of process2] (complete) {
+    \textbf{处理完成}\\[-1pt]
+    {\scriptsize $\mathsf{BatchComplete}(\mathit{bid},\mathit{rst})$}
   };
 
-  \draw[flow] (send) -- (expose);
-  \draw[flow] (expose) -- (compose);
-  \draw[flow] (compose) -- (slot1);
-  \draw[flow] (slot1) -- (slot2);
-  \draw[flow] (slot2) -- (admit);
-  \draw[flow] (admit) -- node[right,font=\scriptsize] {满足} (batch);
-  \draw[rejectflow] (admit.east) -- node[above,font=\scriptsize] {不满足} (reject.west);
-  \draw[flow] (batch) -- (process1);
-  \draw[flow] (process1) -- (accept1);
-  \draw[flow] (accept1) -- (process2);
-  \draw[flow] (process2) -- (accept2);
+  \draw[flow] (source) -- (compose);
+  \draw[flow] (compose) -- (collect);
+  \draw[flow] (collect) -- (admit);
+  \draw[rejectflow] (admit.east) -- (reject.west);
+  \draw[flow] (admit) --
+    node[actionlabel,right] {动作：$\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})$}
+    (process1);
+  \draw[flow] (process1) --
+    node[actionlabel,right] {动作：$\mathsf{ReceiverAccept}(E_1,\mathit{bid},\mathit{rst})$}
+    (process2);
+  \draw[flow] (process2) --
+    node[actionlabel,right] {动作：$\mathsf{ReceiverAccept}(E_2,\mathit{bid},\mathit{rst})$}
+    (complete);
 
 \end{tikzpicture}

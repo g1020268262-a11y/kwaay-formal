@@ -31,7 +31,7 @@ Tamarin以多集重写规则描述状态转换，并用动作事实记录迹性�
   \label{fig:two-slot-lifecycle}
 \end{figure}
 
-图\ref{fig:two-slot-lifecycle}给出了三种模型共享的两槽批次准入生命周期。三种模型共享相同的发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理骨架，主要受控变化集中在收集完成后的准入约束及其对应拒绝分支。
+图\ref{fig:two-slot-lifecycle}给出了三种模型共享的两槽批次准入生命周期。三种模型共享相同的发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理骨架，主要受控变化集中在收集完成后的准入约束；消息互异约束模型和参与方互异约束模型还具有相应拒绝分支。
 
 \subsection{准入模型与验证性质}
 \label{subsec:configurations-properties}
