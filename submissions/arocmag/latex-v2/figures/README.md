@@ -7,11 +7,11 @@ Its information requirements come from
 
 No figure asset is generated in Phase 1.
 
-Fig.2 planned: exact-origin duplicate acceptance trace under relaxed admission.
+Fig.2 planned: duplicate acceptance trace under admission without a distinction constraint.
 
 Required content:
 
-- one Send source for the exact tuple;
+- one Send source matching the complete tuple;
 - same A, oid, m in both collected entries and acceptance events;
 - same bid, rst in both acceptance events;
 - two distinct ReceiverAccept events;

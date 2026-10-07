@@ -3,24 +3,24 @@
   \caption{核心验证性质的迹语义}
   \label{tab:verification-property-semantics}
   \footnotesize
-  \begin{tabularx}{\linewidth}{@{}L{0.19\linewidth}YY@{}}
+  \begin{tabularx}{\linewidth}{@{}L{0.18\linewidth}YY@{}}
     \toprule
     性质 & 迹语义 & 解释边界 \\
     \midrule
-    精确来源对应 &
+    发送来源对应性 &
       $\mathsf{ReceiverAccept}(A,\oid,m,\mathit{bid},\mathit{rst})@r$
       推出存在$s<r$使$\mathsf{Send}(A,\oid,m)@s$成立 &
-      匹配完整$(A,\oid,m)$，不是仅匹配参与方$A$ \\
-    作用域内发生注入性 &
+      断言完整$(A,\oid,m)$匹配，不是仅匹配$A$ \\
+    批内来源单射性 &
       同一$\mathsf{Send}(A,\oid,m)@s$早于两个坐标均为
-      $(A,\oid,m,\mathit{bid},\mathit{rst})$的接收事件时，推出$r_1=r_2$ &
-      检查一个精确来源是否对应多个不同接收事件，不检查参与方数目 \\
-    消息区分 &
+      $(A,\oid,m,\mathit{bid},\mathit{rst})$的接受事件时，推出$r_1=r_2$ &
+      限制一个匹配来源对应的接受事件数，不检查参与方数目 \\
+    批内消息互异性 &
       同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则该性质断言$m_1\neq m_2$ &
       不主张消息跨批次或跨执行全局唯一 \\
-    参与方区分 &
+    批内参与方互异性 &
       同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则该性质要求$A_1\neq A_2$ &
-      结论只作用于接收事件的参与方投影 \\
+      结论只作用于接受事件的参与方投影 \\
     \bottomrule
   \end{tabularx}
 \end{table}

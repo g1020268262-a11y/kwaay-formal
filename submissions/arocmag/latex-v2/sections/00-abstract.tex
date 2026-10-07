@@ -1,30 +1,31 @@
 \begin{abstract}
-K-Waay原协议已要求同次\batchreceive 输入对应不同参与方。本文构造共享生命周期的两槽Tamarin模型，受控比较放宽、消息级与参与方级配置。结果表明：放宽配置可重复接受同一精确发送来源；消息级配置虽满足消息区分和作用域内发生注入性，同一参与方见证仍可达；参与方级正控制保持参与方区分，且有效批次可达。结论仅适用于两槽批处理接纳抽象。
+K-Waay的\batchreceive 操作已要求同次调用的输入对应不同参与方，但消息或发送实例层面的限制能否维持这一批内关系仍需明确。本文在统一的发送、来源匹配、两槽收集和顺序处理生命周期上，构造无互异约束、消息互异约束和参与方互异约束三种Tamarin批次准入模型。验证表明：无互异约束模型中，一个匹配发送来源可对应同批两个接受事件；消息互异约束模型虽满足批内消息互异性和批内来源单射性，同一参与方的不同消息批次仍然可达；参与方互异约束模型保持目标性质，且有效的不同参与方批次可达。该受控比较区分了条目自身性质与批次组合关系，并说明消息互异性与批内来源单射性即使同时成立，也不足以推出批内参与方互异性。上述结论限于固定两槽的批次准入抽象。
 
-\noindent\textbf{关键词：}K-Waay；批处理接纳；不同参与方条件；Tamarin；形式化验证
+\noindent\textbf{关键词：}K-Waay；批次准入；批内参与方互异条件；Tamarin；形式化验证
 \end{abstract}
 
 \begin{center}
-  \bfseries Abstract
+  \large\bfseries \englishtitle\\[0.5em]
+  \normalsize Abstract
 \end{center}
 \noindent
-The complete K-Waay specification already requires the inputs of one
-\batchreceive invocation to correspond to different parties.  To clarify the
-same-batch relation maintained by this condition and to test whether controls
-over message or sender-occurrence coordinates can replace it, we construct
-three fixed-two-slot Tamarin models with a common sender-origin and sequential
-processing lifecycle.  The controlled comparison covers relaxed admission, a
-message-level restriction, and a party-level positive control.  The relaxed
-configuration admits a trace in which one exact sender origin supports two
-receiver events in the same batch context.  The message-level configuration
-satisfies message distinction and scoped occurrence injectivity, while two
-different messages from one party can still be accepted together.  The
-party-level configuration preserves same-batch party distinction and retains
-a reachable valid distinct-party batch.  Hence, message distinction and
-exact-origin occurrence injectivity do not substitute for the required party
-relation.  The conclusion is limited to the fixed-two-slot admission
-abstraction and does not constitute an attack on complete K-Waay executions
-or a theorem for arbitrary batch sizes.
+K-Waay already requires the inputs of one \batchreceive invocation to
+correspond to different parties.  It remains necessary to determine whether
+constraints on messages or sender occurrences can preserve this same-batch
+relation.  We construct three fixed-two-slot Tamarin models that share the
+same lifecycle for sending, origin matching, collection, admission, and
+sequential processing.  The models respectively impose no distinction
+constraint, message distinction, and party distinction.  In the first model,
+one matching sender origin can correspond to two acceptance events in the
+same batch.  The message-constrained model satisfies both same-batch message
+distinction and batch-scoped origin injectivity, while a batch containing two
+different messages from the same party remains reachable.  The
+party-constrained model preserves the target relation and still admits a
+valid batch formed by different parties.  The controlled comparison therefore
+shows that message distinction and batch-scoped origin injectivity, even when
+both hold, do not imply same-batch party distinction.  The conclusion is
+limited to the fixed-two-slot admission abstraction; it is neither a full
+K-Waay security proof nor a claim about arbitrary batch sizes.
 
 \noindent\textbf{Key words:} K-Waay; batch admission; distinct-party
 condition; Tamarin; formal verification

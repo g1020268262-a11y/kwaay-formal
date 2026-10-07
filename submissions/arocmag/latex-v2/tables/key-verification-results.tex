@@ -2,31 +2,32 @@
   \centering
   \caption{关键Tamarin验证结果}
   \label{tab:key-verification-results}
-  \small
-  \begin{tabularx}{\linewidth}{@{}L{0.08\linewidth}L{0.40\linewidth}L{0.10\linewidth}L{0.12\linewidth}Y@{}}
+  \footnotesize
+  \begin{tabularx}{\linewidth}{@{}L{0.12\linewidth}L{0.38\linewidth}L{0.09\linewidth}L{0.12\linewidth}Y@{}}
     \toprule
-    配置 & 验证性质 & 类型 & 结果 & 论证作用 \\
+    模型 & 验证性质 & 类型 & 结果 & 论证作用 \\
     \midrule
-    放宽 & 一个精确来源支持两个同批接受\newline
-      {\footnotesize\path{one_send_two_accepts_exists}} & 存在迹 & 已验证 & 重复接受见证 \\
-    放宽 & 作用域内发生注入性\newline
-      {\footnotesize\path{receiver_accept_injective}} & 全迹 & 被反例否定 & 对应全迹性质失败 \\
+    无互异约束 & 一个匹配来源对应两个同批接受\newline
+      {\scriptsize\path{one_send_two_accepts_exists}} & 存在性 & 已验证 & 给出重复接受的可达执行 \\
+    无互异约束 & 批内来源单射性\newline
+      {\scriptsize\path{receiver_accept_injective}} & 全称性 & 被反例否定 & 表明同一来源可重复对应 \\
     \midrule
-    消息级 & 消息区分\newline
-      {\footnotesize\path{accepted_batch_has_distinct_messages}} & 全迹 & 已验证 & 维护消息坐标性质 \\
-    消息级 & 作用域内发生注入性\newline
-      {\footnotesize\path{receiver_accept_injective}} & 全迹 & 已验证 & 排除精确重复形状 \\
-    消息级 & 同一参与方不同消息批次可达\newline
-      {\footnotesize\path{same_party_different_messages_batch_exists}} & 存在迹 & 已验证 & 支撑非替代性结论 \\
+    消息互异约束 & 批内消息互异性\newline
+      {\scriptsize\path{accepted_batch_has_distinct_messages}} & 全称性 & 已验证 & 确认模型自身约束 \\
+    消息互异约束 & 批内来源单射性\newline
+      {\scriptsize\path{receiver_accept_injective}} & 全称性 & 已验证 & 排除同一来源重复形状 \\
+    消息互异约束 & 同一参与方不同消息批次可达\newline
+      {\scriptsize\path{same_party_different_messages_batch_exists}} & 存在性 & 已验证 & 支持非替代性结论 \\
     \midrule
-    参与方级 & 参与方区分\newline
-      {\footnotesize\path{accepted_batch_has_distinct_parties}} & 全迹 & 已验证 & 维持目标参与方关系 \\
-    参与方级 & 有效不同参与方批次可达\newline
-      {\footnotesize\path{distinct_party_batch_exists}} & 存在迹 & 已验证 & 排除真空成立 \\
+    参与方互异约束 & 批内参与方互异性\newline
+      {\scriptsize\path{accepted_batch_has_distinct_parties}} & 全称性 & 已验证 & 保持目标关系 \\
+    参与方互异约束 & 有效不同参与方批次可达\newline
+      {\scriptsize\path{distinct_party_batch_exists}} & 存在性 & 已验证 & 排除真空成立 \\
     \bottomrule
   \end{tabularx}
   \par\smallskip
   \begin{minipage}{\linewidth}
-    \footnotesize 注：存在迹对应exists-trace，全迹对应all-traces；“已验证”对应verified，“被反例否定”对应falsified。性质名下方的小号标识用于追踪对应lemma。
+    \scriptsize 注：存在性对应exists-trace，全称性对应all-traces；“已验证”对应verified，“被反例否定”对应falsified。小号英文标识用于追踪相应lemma。
   \end{minipage}
 \end{table}
+

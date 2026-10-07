@@ -1,15 +1,15 @@
 \begin{table}[htbp]
   \centering
-  \caption{接纳配置与验证目标}
+  \caption{批次准入模型与验证目标}
   \label{tab:admission-configurations}
   \footnotesize
-  \begin{tabularx}{\linewidth}{@{}L{0.13\linewidth}C{0.13\linewidth}C{0.16\linewidth}YY@{}}
+  \begin{tabularx}{\linewidth}{@{}L{0.14\linewidth}C{0.12\linewidth}C{0.15\linewidth}YY@{}}
     \toprule
-    配置 & 约束坐标 & 接纳条件 & 分析角色 & 主要性质 \\
+    模型 & 比较分量 & 准入条件 & 分析作用 & 主要验证对象 \\
     \midrule
-    放宽配置 & 无 & 无不等式约束 & 条件移除基线 & 精确来源重复；发生注入性 \\
-    消息级配置 & 消息$m$ & $m_1\neq m_2$ & 坐标替代对照 & 消息区分；发生注入性；同一参与方见证 \\
-    参与方级配置 & 参与方$A$ & $A_1\neq A_2$ & 目标关系正控制 & 参与方区分；有效批次可达性 \\
+    无互异约束 & 无 & 无互异要求 & 条件移除基线 & 来源重复；来源单射性 \\
+    消息互异约束 & 消息$m$ & $m_1\neq m_2$ & 替代性检验 & 消息互异性；来源单射性；同一参与方批次 \\
+    参与方互异约束 & 参与方$A$ & $A_1\neq A_2$ & 目标对照 & 参与方互异性；有效批次可达性 \\
     \bottomrule
   \end{tabularx}
 \end{table}
