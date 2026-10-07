@@ -7,22 +7,22 @@
 这样处理有三个理由：
 
 1. P1/P2 的同类写法以性质分组和代表性结果解释为主，不让工具代码名替代论文论证；
-2. 7 项关键结果已经完整覆盖放宽反例、消息级分离和参与方级 positive control 三条证据链；
+2. 7 项关键结果已经完整覆盖放宽反例、消息级分离和参与方级正控制三条证据链；
 3. 其余 7 项用于排除死模型、无来源接受或验证拒绝分支可达，属于必要 supporting properties，但不需要与核心结论等权占据主表。
 
 ## 2. 正文表 3 的 7 项关键结果
 
-正文表 3 建议列为“配置—自然语言性质—lemma 标识—类型—状态—steps—论证作用”。自然语言性质位于 lemma 标识之前。
+正文表 3 使用“配置—自然语言性质—类型—结果—论证作用”五类主要信息。lemma 标识放在最后一列，也可在排版时改为括号或次要小字号信息；proof steps 不进入正文主表。
 
-| 配置 | 正文自然语言性质 | lemma 标识 | 类型 | 状态 | steps | 直接论证作用 |
-|---|---|---|---|---|---:|---|
-| 放宽 | 一个精确发送来源支持同一批中的两个接受发生 | `one_send_two_accepts_exists` | exists-trace | verified | 13 | 给出重复接受见证 |
-| 放宽 | 精确来源在同一批上下文中的作用域内发生注入性 | `receiver_accept_injective` | all-traces | falsified | 13 | 由反例确认两个接受发生不重合 |
-| 消息级 | 同一批中的不同接受发生具有不同消息 | `accepted_batch_has_distinct_messages` | all-traces | verified | 31 | 证明消息级配置维护其目标坐标 |
-| 消息级 | 精确来源的作用域内发生注入性 | `receiver_accept_injective` | all-traces | verified | 33 | 排除放宽配置的精确重复形状 |
-| 消息级 | 同一参与方的不同发生、不同消息仍可同批接受 | `same_party_different_messages_batch_exists` | exists-trace | verified | 16 | 机器见证支撑“消息级不能替代参与方级” |
-| 参与方级 | 同一批中的不同接受发生具有不同参与方 | `accepted_batch_has_distinct_parties` | all-traces | verified | 31 | 验证目标参与方关系 |
-| 参与方级 | 有效的不同参与方批次可达 | `distinct_party_batch_exists` | exists-trace | verified | 17 | 排除全拒绝造成的真空成立 |
+| 配置 | 正文自然语言性质 | 类型 | 结果 | 直接论证作用 | lemma 标识（次要信息） |
+|---|---|---|---|---|---|
+| 放宽 | 一个精确发送来源支持同一批中的两个接受发生 | exists-trace | verified | 给出重复接受见证 | `one_send_two_accepts_exists` |
+| 放宽 | 精确来源在同一批上下文中的作用域内发生注入性 | all-traces | falsified | 由反例确认两个接受发生不重合 | `receiver_accept_injective` |
+| 消息级 | 同一批中的不同接受发生具有不同消息 | all-traces | verified | 说明消息级配置维护其目标坐标 | `accepted_batch_has_distinct_messages` |
+| 消息级 | 精确来源的作用域内发生注入性 | all-traces | verified | 排除放宽配置的精确重复形状 | `receiver_accept_injective` |
+| 消息级 | 同一参与方的不同发送发生、不同消息仍可同批接受 | exists-trace | verified | 机器见证支撑“消息级不能替代参与方级” | `same_party_different_messages_batch_exists` |
+| 参与方级 | 同一批中的不同接受发生具有不同参与方 | all-traces | verified | 验证目标参与方关系 | `accepted_batch_has_distinct_parties` |
+| 参与方级 | 有效的不同参与方批次可达 | exists-trace | verified | 排除全拒绝造成的真空成立 | `distinct_party_batch_exists` |
 
 表后正文只解释三条链：放宽配置的重复接受；消息级配置“自身成功但替代失败”；参与方级配置的目标性质和非真空性。
 
@@ -38,11 +38,11 @@
 | 消息级 | `receiver_accept_has_send` | verified | 8 | 3.4 supporting properties；完整表 | 与其他配置同类，可合并报告 |
 | 参与方级 | `same_party_rejection_exists` | verified | 5 | 3.3 注释或 3.4 supporting properties；完整表 | 公式未把发送条目绑定到被拒批次，不能作为强拒绝结论 |
 | 参与方级 | `receiver_accept_has_send` | verified | 8 | 3.4 supporting properties；完整表 | 与其他配置同类，可合并报告 |
-| 参与方级 | `receiver_accept_injective` | verified | 33 | 3.3/3.4 合并说明；完整表 | 支持 positive control，但目标参与方性质和非真空性更直接 |
+| 参与方级 | `receiver_accept_injective` | verified | 33 | 3.3/3.4 合并说明；完整表 | 支持正控制，但目标参与方性质和非真空性更直接 |
 
 ## 4. 完整 14 项表的承载位置
 
-完整表应至少保留以下列：模型/配置、lemma 标识、量词类型、状态、proof steps、语义角色。其权威数据来源为：
+完整 14 项复现表应至少保留以下列：模型/配置、lemma 标识、量词/性质类型、状态、proof steps、语义角色。proof steps 只保留在这份完整材料中，不回填正文表 3。其权威数据来源为：
 
 - `reviews/2026-09-16-evidence/result-comparison.tsv`；
 - 三个 `*-prove.stdout.txt`；

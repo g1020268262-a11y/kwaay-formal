@@ -75,15 +75,17 @@ P3～P7 主要用于观察中文引言、章节压缩、数学表达、安全分
 3. 术语从笼统“批接收/准入”统一为冻结标题中的“批处理接纳”；条目记号改用 `oid`，并明确映射到模型 `sid`。
 4. 三个模型重写为同一骨架上的三种接纳配置，不作为三套协议或论文创新主线。
 5. 第 3 章设为全文核心，3.2 必须由同一参与方/不同消息的机器见证支撑中心分离结论。
-6. 正文表 3 从完整 14 行改为 7 项关键结果；完整 14 项仍保留在附属/复现材料。
-7. 独立编号公式压缩为条目、目标关系、核心反例事件链三项。
-8. Scope/non-goal 只放 2.1、3.1、4.3 三处。
-9. 图表冻结为 2 幅核心论证图和约 3 张主表的功能需求，不把样本均值变成硬数量。
-10. 复现事实更新为 2026-09-16 后续独立 reviewer rerun。
+6. 2.3 补入四类核心验证性质的真实迹语义，尤其明确作用域内发生注入性的完整来源元组、上下文和时间条件。
+7. 正文表 3 从完整 14 行改为 7 项关键结果，并删除 proof steps；完整 14 项仍在附属/复现材料中保留 proof steps。
+8. 4.2 和结束语的接口责任改为以满足原不同参与方条件为前提的条件式结论。
+9. 独立编号公式压缩为条目、目标关系、核心反例事件链三项；2.3 的注入性解释只使用未编号式。
+10. Scope/non-goal 只放 2.1、3.1、4.3 三处。
+11. 图表冻结为 2 幅核心论证图和约 3 张主表的功能需求，不把样本均值变成硬数量。
+12. 复现事实统一写为 2026-09-16 后续独立复核。
 
 ## 6. 统一复现事实
 
-2026-09-16，后续独立 reviewer rerun 在 Tamarin 1.12.0、Maude 3.5.1、WSL Ubuntu-24.04 下对三个未修改模型完成 parse/prove；14/14 项 lemma 的结果状态与 proof steps 均与既有记录一致，并保存原始 stdout/stderr、manifest、模型及输出哈希和 7 个导出 graph。该复跑是新的 reviewer-generated evidence，不是历史运行日志恢复；它证明当前抽象结果可复现，不建立完整 K-Waay refinement，也不扩大协议级或部署级安全结论。
+2026-09-16，后续独立复核在 Tamarin 1.12.0、Maude 3.5.1、WSL Ubuntu-24.04 下对三个未修改模型完成 parse/prove；14/14 项 lemma 的结果状态与 proof steps 均与既有记录一致，并保存原始 stdout/stderr、manifest、模型及输出哈希和 7 个导出 graph。该复核形成新的审查证据，不是历史运行日志恢复；它证明当前抽象结果可复现，不建立完整 K-Waay refinement，也不扩大协议级或部署级安全结论。
 
 证据目录为 `reviews/2026-09-16-evidence/`。正文 3.4 只保留环境、三个未修改模型和 14/14 状态/步数匹配这一句；其他细节留在复现材料。
 
@@ -96,6 +98,8 @@ P3～P7 主要用于观察中文引言、章节压缩、数学表达、安全分
 - party-level：party distinction verified；valid distinct-party batch exists。
 
 其余 7 项合并为 supporting properties。完整 14 项状态与 steps 保留，详见 [FULL_14_RESULT_PLACEMENT_DECISION.md](FULL_14_RESULT_PLACEMENT_DECISION.md)。
+
+正文表 3 的主要列为配置、自然语言性质、类型、结果和论证作用；lemma 标识只作为次要信息，不显示 proof steps。7 项选择和状态均未改变。
 
 ## 8. 图表与公式
 
@@ -127,8 +131,9 @@ P3～P7 主要用于观察中文引言、章节压缩、数学表达、安全分
 - [KWAAY_SECTION_RESTRUCTURING_PLAN.md](KWAAY_SECTION_RESTRUCTURING_PLAN.md)：英文到中文映射；
 - [FULL_14_RESULT_PLACEMENT_DECISION.md](FULL_14_RESULT_PLACEMENT_DECISION.md)：14 项结果位置决定；
 - [BLUEPRINT_REVISION_REPORT.md](BLUEPRINT_REVISION_REPORT.md)：本次修订与自检。
+- [FINAL_BLUEPRINT_PATCH_REPORT.md](FINAL_BLUEPRINT_PATCH_REPORT.md)：最终小范围补丁与 12 项检查。
 
 本次未生成中文正文、正式图、Word，未修改英文母稿、中文 LaTeX 或 Tamarin 模型，也未 commit/push。
 
-**AROCMAG_FINAL_BLUEPRINT_READY**
+**AROCMAG_FINAL_BLUEPRINT_PATCH_READY**
 
