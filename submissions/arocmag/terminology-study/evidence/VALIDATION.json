@@ -1,0 +1,25 @@
+{
+  "status": "PASS",
+  "protected_files": 125,
+  "protected_changed": [],
+  "required_files": {
+    "TERM_INVENTORY.md": true,
+    "TERM_EVIDENCE_MATRIX.md": true,
+    "FROZEN_TERMINOLOGY_GLOSSARY.md": true,
+    "CONTEXT_SENSITIVE_TERMS.md": true,
+    "TERMINOLOGY_REWRITE_PLAN.md": true,
+    "TERMINOLOGY_AUDIT_REPORT.md": true
+  },
+  "term_coverage": {
+    "TERM_INVENTORY.md": 82,
+    "TERM_EVIDENCE_MATRIX.md": 82,
+    "FROZEN_TERMINOLOGY_GLOSSARY.md": 82
+  },
+  "broken_local_links": [],
+  "malformed_table_rows": [],
+  "new_manuscript_figures": 0,
+  "latex_modified": false,
+  "latex_compile": "NOT_RUN_NO_SOURCE_CHANGES",
+  "tamarin_run": false,
+  "commit_push": false
+}

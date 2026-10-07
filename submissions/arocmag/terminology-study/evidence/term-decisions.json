@@ -1,0 +1,740 @@
+[
+  {
+    "id": "T01",
+    "en": "party; protocol principal",
+    "current": "参与方；协议主体",
+    "final": "参与方",
+    "kind": "A",
+    "evidence": "P2 p5；P3 p3；M",
+    "scope": "A是建模主体，不自动等同于账户、公钥字节串或预密钥"
+  },
+  {
+    "id": "T02",
+    "en": "party identity",
+    "current": "参与方身份；参与方坐标",
+    "final": "参与方标识",
+    "kind": "M",
+    "evidence": "P3 p3（身份概念）；M",
+    "scope": "指条目中A分量；不得据此主张身份认证"
+  },
+  {
+    "id": "T03",
+    "en": "party projection",
+    "current": "参与方投影；身份投影",
+    "final": "参与方投影",
+    "kind": "M",
+    "evidence": "E2；M",
+    "scope": "保留数学投影party(E)，即从条目取出A；不用身份认证"
+  },
+  {
+    "id": "T04",
+    "en": "message identity; message coordinate",
+    "current": "消息坐标",
+    "final": "消息标识维度；元组中称消息分量",
+    "kind": "M",
+    "evidence": "E2；M",
+    "scope": "m为模型中的符号消息；不是实现中的message ID字段"
+  },
+  {
+    "id": "T05",
+    "en": "sender occurrence",
+    "current": "发送发生",
+    "final": "发送实例",
+    "kind": "M",
+    "evidence": "P3 p3、P6 p4（仅支持实例一词）；M",
+    "scope": "一次SendMessage规则实例化产生的发送实例，不是完整协议会话"
+  },
+  {
+    "id": "T06",
+    "en": "sender occurrence coordinate; sid; oid",
+    "current": "发送发生坐标；一次发送发生",
+    "final": "发送实例标识",
+    "kind": "M",
+    "evidence": "T1 Fresh Names；M SendMessage",
+    "scope": "oid对应模型sid；与事件时间点s分开，禁止完整会话标识"
+  },
+  {
+    "id": "T07",
+    "en": "sender-origin tuple",
+    "current": "发送来源元组；精确元组",
+    "final": "发送来源元组",
+    "kind": "M",
+    "evidence": "E4；M !Sent",
+    "scope": "完整(A,oid,m)，不是仅A，也不是网络编码"
+  },
+  {
+    "id": "T08",
+    "en": "exact sender origin",
+    "current": "精确发送来源；精确来源",
+    "final": "精确发送来源",
+    "kind": "M",
+    "evidence": "E4；M Send/!Sent",
+    "scope": "首次解释为与完整(A,oid,m)匹配的发送来源；禁止真实来源认证"
+  },
+  {
+    "id": "T09",
+    "en": "identity coordinate; comparison dimension",
+    "current": "身份坐标；坐标",
+    "final": "标识维度",
+    "kind": "M",
+    "evidence": "E2；M",
+    "scope": "用于比较A、oid、m、槽位和上下文；不是几何坐标或均为人的身份属性"
+  },
+  {
+    "id": "T10",
+    "en": "tuple component",
+    "current": "分量；坐标",
+    "final": "元组分量",
+    "kind": "A",
+    "evidence": "E2；M",
+    "scope": "解释E=(A,oid,m)时用分量；槽位和上下文不擅自加入该三元组"
+  },
+  {
+    "id": "T11",
+    "en": "batch",
+    "current": "批次；批处理",
+    "final": "批次",
+    "kind": "M",
+    "evidence": "E2；M CreateBatch",
+    "scope": "一组有序候选条目；处理过程才称批处理"
+  },
+  {
+    "id": "T12",
+    "en": "batch admission",
+    "current": "批处理接纳；接纳",
+    "final": "批次准入",
+    "kind": "M",
+    "evidence": "A1；A2（均仅支持准入）；E2/M",
+    "scope": "本文分析边界，非K-Waay原协议算法名；不等于接受事件"
+  },
+  {
+    "id": "T13",
+    "en": "batch composition",
+    "current": "批组成；批次组合",
+    "final": "批次组合",
+    "kind": "M",
+    "evidence": "E3；M CollectSlot1/2",
+    "scope": "选择、排列、重复已有候选条目，非密码组件的可组合安全定理"
+  },
+  {
+    "id": "T14",
+    "en": "receiver context",
+    "current": "接收方上下文；接收上下文",
+    "final": "接收方上下文",
+    "kind": "M",
+    "evidence": "E4；M CreateBatch",
+    "scope": "rst是模型标识，不是完整接收方临时密码状态"
+  },
+  {
+    "id": "T15",
+    "en": "batch context; same-batch scope",
+    "current": "批次上下文；作用域",
+    "final": "批次上下文；同一批次上下文内",
+    "kind": "M",
+    "evidence": "E4；M",
+    "scope": "性质中的共同上下文为同一(bid,rst)，简称批内须先定义"
+  },
+  {
+    "id": "T16",
+    "en": "slot; position",
+    "current": "槽位；位置",
+    "final": "槽位",
+    "kind": "M",
+    "evidence": "E2；M CollectSlot1/2",
+    "scope": "批次内位置，两个槽位不推出两消息或两参与方不同"
+  },
+  {
+    "id": "T17",
+    "en": "entry; candidate tuple",
+    "current": "条目；候选元组",
+    "final": "条目；候选条目",
+    "kind": "M",
+    "evidence": "E2；M",
+    "scope": "候选条目、准入条目、已产生接受事件的条目不可混同"
+  },
+  {
+    "id": "T18",
+    "en": "trace; execution trace",
+    "current": "迹；执行；执行轨迹；符号迹",
+    "final": "执行轨迹；理论定义后可简称迹",
+    "kind": "T",
+    "evidence": "S2（迹语义）；T2",
+    "scope": "运行叙述用执行轨迹；不把符号轨迹称真实网络日志"
+  },
+  {
+    "id": "T19",
+    "en": "trace semantics",
+    "current": "迹语义",
+    "final": "迹语义",
+    "kind": "T",
+    "evidence": "S2 §1.2；T2",
+    "scope": "保留专业表达并定义本文动作事实序列的语义；不移植MSC半序定义"
+  },
+  {
+    "id": "T20",
+    "en": "trace property",
+    "current": "迹性质",
+    "final": "迹性质",
+    "kind": "T",
+    "evidence": "T2；M lemma",
+    "scope": "理论语境保留；正文也可说关于执行轨迹的性质"
+  },
+  {
+    "id": "T21",
+    "en": "all-traces; all traces",
+    "current": "全迹；全迹性质；全迹验证",
+    "final": "全称性质（all-traces）",
+    "kind": "T",
+    "evidence": "T2；M 默认lemma",
+    "scope": "表中简称全称性；对模型所有执行轨迹量化，不是无限协议能力保证"
+  },
+  {
+    "id": "T22",
+    "en": "exists-trace",
+    "current": "存在迹；存在迹性质",
+    "final": "存在性性质（exists-trace）",
+    "kind": "T",
+    "evidence": "T2；T3；M",
+    "scope": "表中简称存在性；本文相关性质可解释为某类执行可达，但不是所有exists-trace都叫可达性"
+  },
+  {
+    "id": "T23",
+    "en": "witness",
+    "current": "见证；机器见证；存在性见证",
+    "final": "按语境：见证值／满足性质的执行轨迹",
+    "kind": "M",
+    "evidence": "T2/T3（语义）；E5/M",
+    "scope": "不得把所有witness一律改成反例或攻击"
+  },
+  {
+    "id": "T24",
+    "en": "witness value",
+    "current": "见证值（正文未直接使用）",
+    "final": "见证值",
+    "kind": "A",
+    "evidence": "T2 量词；M Ex",
+    "scope": "逻辑存在量词的取值；复合中文用法未在本次中文样本建立共识"
+  },
+  {
+    "id": "T25",
+    "en": "witness execution; witness trace",
+    "current": "见证；机器见证",
+    "final": "满足存在性性质的执行轨迹",
+    "kind": "M",
+    "evidence": "T2/T3；M exists-trace",
+    "scope": "简写可达执行或该执行轨迹；需标明满足哪项性质"
+  },
+  {
+    "id": "T26",
+    "en": "same-party/different-message witness",
+    "current": "同一参与方见证；同参与方不同消息见证",
+    "final": "同一参与方不同消息批次的可达执行",
+    "kind": "M",
+    "evidence": "E5；M same_party_different_messages_batch_exists",
+    "scope": "同一A，不同oid和m，两个匹配Send及两个同上下文接受"
+  },
+  {
+    "id": "T27",
+    "en": "counterexample; counterexample trace",
+    "current": "反例；反例轨迹",
+    "final": "反例；反例轨迹",
+    "kind": "A",
+    "evidence": "P1 p4；T2",
+    "scope": "反驳指定全称性质的执行；不是完整K-Waay攻击"
+  },
+  {
+    "id": "T28",
+    "en": "attack trace",
+    "current": "攻击轨迹；完整协议攻击",
+    "final": "攻击轨迹（仅已建立攻击语义时）",
+    "kind": "A",
+    "evidence": "P1 p4（攻击路径）；S1",
+    "scope": "当前两槽结果称反例轨迹或可达执行，不升级为部署攻击"
+  },
+  {
+    "id": "T29",
+    "en": "reachability",
+    "current": "可达性；可达执行",
+    "final": "可达性",
+    "kind": "A",
+    "evidence": "P6 p5；T3",
+    "scope": "存在所需事件及次序的执行，不是所有输入都能到达"
+  },
+  {
+    "id": "T30",
+    "en": "correspondence",
+    "current": "对应；对应关系",
+    "final": "对应关系；性质名称用对应性",
+    "kind": "A",
+    "evidence": "T2 Authentication；S1 表3",
+    "scope": "匹配字段、方向、时间及量词均须定义；不默认是认证"
+  },
+  {
+    "id": "T31",
+    "en": "origin correspondence",
+    "current": "精确来源对应；来源对应",
+    "final": "精确发送来源对应性",
+    "kind": "M",
+    "evidence": "E4/E5；M receiver_accept_has_send",
+    "scope": "ReceiverAccept蕴含先前完整元组匹配Send；不等于源真实性"
+  },
+  {
+    "id": "T32",
+    "en": "injectivity",
+    "current": "注入性；认证注入性",
+    "final": "单射性（抽象数学语境）",
+    "kind": "A",
+    "evidence": "P1 p3；S1 §2.1.1；T2",
+    "scope": "具体性质按下列完整名；文献回顾Lowe概念用单射一致性"
+  },
+  {
+    "id": "T33",
+    "en": "occurrence injectivity; scoped occurrence injectivity",
+    "current": "作用域内发生注入性；发生注入性",
+    "final": "批次上下文内的发送—接受单射对应性",
+    "kind": "M",
+    "evidence": "M receiver_accept_injective；T2（对照定义）",
+    "scope": "简称批内单射对应性；同一(bid,rst)下给定先前精确Send最多对应一次接受"
+  },
+  {
+    "id": "T34",
+    "en": "injective agreement",
+    "current": "单射一致性（待审计术语）",
+    "final": "单射一致性",
+    "kind": "A",
+    "evidence": "P1 p3；S1 §2.1.1/表3；T2",
+    "scope": "只用于Lowe认证概念；不能命名本文receiver_accept_injective"
+  },
+  {
+    "id": "T35",
+    "en": "distinct-party condition; different-party condition",
+    "current": "不同参与方条件",
+    "final": "批内参与方互异条件",
+    "kind": "M",
+    "evidence": "E2；M；P3（仅基础名词）",
+    "scope": "原协议已有条件；本文命名而非原文正式算法；限定同次调用"
+  },
+  {
+    "id": "T36",
+    "en": "party distinction",
+    "current": "参与方区分",
+    "final": "批内参与方互异性",
+    "kind": "M",
+    "evidence": "M accepted_batch_has_distinct_parties；E5",
+    "scope": "同一(bid,rst)不同接受事件具有不同A，不是身份认证或全局唯一"
+  },
+  {
+    "id": "T37",
+    "en": "message distinction",
+    "current": "消息区分",
+    "final": "批内消息互异性",
+    "kind": "M",
+    "evidence": "M accepted_batch_has_distinct_messages；E5",
+    "scope": "不同接受事件的m不等；不是密码学可区分性或机密性"
+  },
+  {
+    "id": "T38",
+    "en": "positive control",
+    "current": "正控制",
+    "final": "目标对照",
+    "kind": "M",
+    "evidence": "E2/E5；M party_admission",
+    "scope": "首次用直接施加目标约束的对照模型（positive control）；非修复方案"
+  },
+  {
+    "id": "T39",
+    "en": "relaxed admission",
+    "current": "放宽配置；放宽",
+    "final": "无互异约束的批次准入模型",
+    "kind": "M",
+    "evidence": "M rqv2_relaxed；E4",
+    "scope": "仅不施加消息/参与方互异约束，仍有来源和顺序约束；禁无约束模型"
+  },
+  {
+    "id": "T40",
+    "en": "message-level restriction; message-level configuration",
+    "current": "消息级限制；消息级配置",
+    "final": "消息互异约束的批次准入模型",
+    "kind": "M",
+    "evidence": "M rqv2_message_dedup；E4",
+    "scope": "比较m1与m2；并非新协议或实现中的全部去重策略"
+  },
+  {
+    "id": "T41",
+    "en": "party-level admission; party-level configuration",
+    "current": "参与方级配置；参与方级正控制",
+    "final": "参与方互异约束的批次准入模型",
+    "kind": "M",
+    "evidence": "M rqv2_party_admission；E4",
+    "scope": "比较A1与A2；用作目标对照，禁止修复协议"
+  },
+  {
+    "id": "T42",
+    "en": "controlled comparison",
+    "current": "受控比较；受控配置",
+    "final": "受控比较",
+    "kind": "M",
+    "evidence": "E4/E5；M共同规则",
+    "scope": "相同生命周期下改变准入约束，非随机实验或三种真实实现"
+  },
+  {
+    "id": "T43",
+    "en": "fact",
+    "current": "事实；来源事实",
+    "final": "事实",
+    "kind": "T",
+    "evidence": "P2 p2–3；T1",
+    "scope": "模型符号对象，不表示经验证的真实世界事实"
+  },
+  {
+    "id": "T44",
+    "en": "action fact",
+    "current": "动作事实；动作",
+    "final": "动作事实",
+    "kind": "T",
+    "evidence": "P2 p2（动作/action事实）；T1",
+    "scope": "记录事件供性质使用，区分状态事实与动作标签"
+  },
+  {
+    "id": "T45",
+    "en": "persistent fact",
+    "current": "持久事实；持久来源事实",
+    "final": "持久事实",
+    "kind": "T",
+    "evidence": "T1；M !Sent/!Party",
+    "scope": "可被多次匹配，不是数据库持久化，也不自动产生多个Send事件"
+  },
+  {
+    "id": "T46",
+    "en": "linear fact; state fact",
+    "current": "线性槽位；收集状态",
+    "final": "线性事实；状态事实",
+    "kind": "T",
+    "evidence": "T1；M OpenSlot/AdmittedSlot",
+    "scope": "线性事实使用时消耗；不要把槽位本身误称不可复用的消息"
+  },
+  {
+    "id": "T47",
+    "en": "multiset rewriting",
+    "current": "多集重写",
+    "final": "多集重写",
+    "kind": "T",
+    "evidence": "P2 p2（多重集合改写）；T1",
+    "scope": "允许多重集重写/多重集合改写；同文优先多集重写"
+  },
+  {
+    "id": "T48",
+    "en": "rule; rule-level semantics",
+    "current": "规则；规则层；规则语义",
+    "final": "规则；规则语义",
+    "kind": "T",
+    "evidence": "P2 p2；T1；M",
+    "scope": "约束执行构造方式，不等于已验证性质"
+  },
+  {
+    "id": "T49",
+    "en": "restriction",
+    "current": "不等式约束；限制",
+    "final": "限制条件（restriction）",
+    "kind": "T",
+    "evidence": "T2 Restrictions；M Inequality",
+    "scope": "工具关键字限制允许的轨迹；与普通message-level restriction区别"
+  },
+  {
+    "id": "T50",
+    "en": "guard; admission condition",
+    "current": "接纳条件；约束",
+    "final": "准入条件",
+    "kind": "M",
+    "evidence": "M Neq+Inequality；T2",
+    "scope": "Neq动作联合restriction落实不等式，不能称独立布尔guard即全部实现"
+  },
+  {
+    "id": "T51",
+    "en": "lemma",
+    "current": "lemma；性质；引理",
+    "final": "待验证性质（lemma）",
+    "kind": "T",
+    "evidence": "P1 p1；P2 p2；T2",
+    "scope": "lemma是声明类别，可能被否定；不统一称已证明引理"
+  },
+  {
+    "id": "T52",
+    "en": "fresh name; fresh value",
+    "current": "新鲜；新鲜坐标",
+    "final": "新鲜值；新鲜标识",
+    "kind": "T",
+    "evidence": "T1 Fresh Names；M Fr",
+    "scope": "符号新鲜性不等同现实随机数碰撞概率；sid与m分别生成"
+  },
+  {
+    "id": "T53",
+    "en": "timepoint; event occurrence",
+    "current": "时间条件；事件发生；接受发生数",
+    "final": "事件时间点；一次事件发生",
+    "kind": "T",
+    "evidence": "T2；M #s/#r",
+    "scope": "r1与r2表示事件位置，不是sid/oid；接受发生数改接受事件数"
+  },
+  {
+    "id": "T54",
+    "en": "Send; send event",
+    "current": "Send动作；发送事件",
+    "final": "发送事件（Send）",
+    "kind": "M",
+    "evidence": "M SendMessage；E4",
+    "scope": "模型动作不是完整原协议Send算法的全部语义"
+  },
+  {
+    "id": "T55",
+    "en": "ReceiverAccept; acceptance event",
+    "current": "接收事件；接受事件；ReceiverAccept",
+    "final": "接受事件（ReceiverAccept）",
+    "kind": "M",
+    "evidence": "M ProcessSlot1/2；E4",
+    "scope": "不是In网络接收，不是完整会话接受，不是成功密钥建立"
+  },
+  {
+    "id": "T56",
+    "en": "BatchReceive action",
+    "current": "BatchReceive动作；批次接纳",
+    "final": "批次准入事件（模型中的BatchReceive）",
+    "kind": "M",
+    "evidence": "M admission规则；E4",
+    "scope": "必须与规范BatchReceive操作区分；准入不等于两槽均已接受"
+  },
+  {
+    "id": "T57",
+    "en": "rejection branch; rejection reachability",
+    "current": "拒绝分支；拒绝见证",
+    "final": "拒绝分支可达性",
+    "kind": "M",
+    "evidence": "M 两个rejection_exists",
+    "scope": "存在性不蕴含所有无效输入最终拒绝，且Send未绑定被拒元组"
+  },
+  {
+    "id": "T58",
+    "en": "non-vacuity; vacuous truth",
+    "current": "非真空性；真空成立",
+    "final": "排除因无相关接受事件而成立的情形（non-vacuity）",
+    "kind": "M",
+    "evidence": "T3；M distinct_party_batch_exists",
+    "scope": "中文短名NO_STABLE_CONSENSUS；结果处用有效批次可达性及明确解释"
+  },
+  {
+    "id": "T59",
+    "en": "refinement; refinement theorem",
+    "current": "refinement；refinement theorem",
+    "final": "精化；精化定理",
+    "kind": "A",
+    "evidence": "S3（检索摘要）；E6",
+    "scope": "当前未建立模型到完整协议/实现的精化定理；不把映射说明称精化证明"
+  },
+  {
+    "id": "T60",
+    "en": "symbolic model; symbolic abstraction",
+    "current": "符号模型；两槽抽象",
+    "final": "符号模型；符号抽象",
+    "kind": "A",
+    "evidence": "P1/P2；T1；M",
+    "scope": "固定两槽不等于整个模型仅两次会话，也不是任意批长定理"
+  },
+  {
+    "id": "T61",
+    "en": "Dolev–Yao adversary; attacker",
+    "current": "攻击者；对手；敌手",
+    "final": "Dolev–Yao攻击者；攻击者",
+    "kind": "A",
+    "evidence": "P1 p3；P4 p6；P6",
+    "scope": "文献中的敌手可保留引用；模型实例能力以规则为准"
+  },
+  {
+    "id": "T62",
+    "en": "replay; repeated acceptance",
+    "current": "重放；重复接受",
+    "final": "重放；重复接受",
+    "kind": "A",
+    "evidence": "P1；P4 p6；M",
+    "scope": "重复接受是抽象行为，重放候选元组不推出完整协议重放攻击"
+  },
+  {
+    "id": "T63",
+    "en": "authentication; secrecy",
+    "current": "认证；保密性；密钥安全",
+    "final": "认证；保密性",
+    "kind": "A",
+    "evidence": "P1 p3；P4 p6；S1",
+    "scope": "仅背景或边界说明；来源对应和消息互异不升级为这些性质"
+  },
+  {
+    "id": "T64",
+    "en": "authenticated key exchange; deniable",
+    "current": "认证密钥交换；可否认",
+    "final": "认证密钥交换；可否认性",
+    "kind": "A",
+    "evidence": "P3/P7（认证密钥协商）；E1/E2",
+    "scope": "原协议背景，不是本模型新增证明"
+  },
+  {
+    "id": "T65",
+    "en": "KEM; split-KEM; prekey bundle",
+    "current": "KEM；split-KEM；预密钥束",
+    "final": "KEM；split-KEM；预密钥束",
+    "kind": "A",
+    "evidence": "E2及其引用",
+    "scope": "保留源协议术语；首次KEM可注密钥封装机制，split-KEM不强造拆分中文标准"
+  },
+  {
+    "id": "T66",
+    "en": "transcript; session identifier; wire representation",
+    "current": "transcript；session标识；线路编码",
+    "final": "协议交互记录；会话标识；传输编码",
+    "kind": "A",
+    "evidence": "E2；P3 p3（会话标识）",
+    "scope": "说明oid不是完整协议交互记录或会话标识；勿把抽象元组写成网络字段"
+  },
+  {
+    "id": "T67",
+    "en": "non-implication; non-substitutability",
+    "current": "非蕴含；非替代性",
+    "final": "不蕴含；不能替代",
+    "kind": "M",
+    "evidence": "E2/E5；M",
+    "scope": "逻辑例子和机器可达执行分别给证据，不将常识例子充当机器结果"
+  },
+  {
+    "id": "T68",
+    "en": "verified; falsified; proof steps",
+    "current": "已验证；被反例否定；证明步数",
+    "final": "验证通过；被否定；证明步数",
+    "kind": "T",
+    "evidence": "T2/T3；E5结果表",
+    "scope": "全称falsified可称被反例否定；exists-trace的falsified不可照搬；steps不是运行时间"
+  },
+  {
+    "id": "T69",
+    "en": "bounded abstraction; arbitrary batch sizes",
+    "current": "固定两槽；任意批长",
+    "final": "固定两槽抽象；任意批次长度",
+    "kind": "M",
+    "evidence": "E3/E6；M",
+    "scope": "两槽界限是每批槽数；批次/发送实例总数未被固定为2"
+  },
+  {
+    "id": "T70",
+    "en": "matching origin; idealized origin relation",
+    "current": "来源匹配；精确来源关系",
+    "final": "精确发送来源匹配；抽象来源关系",
+    "kind": "M",
+    "evidence": "E4；M !Sent",
+    "scope": "!Sent是持久事实的建模假设，不是实现的密码学认证机制"
+  },
+  {
+    "id": "T71",
+    "en": "sequential processing; common lifecycle",
+    "current": "顺序处理；共同生命周期；共同骨架",
+    "final": "顺序处理；共同生命周期",
+    "kind": "M",
+    "evidence": "E4；M ProcessSlot1/2",
+    "scope": "三模型共同处理过程，不推断现实网络时序完全相同"
+  },
+  {
+    "id": "T72",
+    "en": "scope; global uniqueness",
+    "current": "作用域；全局唯一性",
+    "final": "作用域；全局唯一性",
+    "kind": "A",
+    "evidence": "M 量词；E2",
+    "scope": "批内性质不声称跨批唯一；但模型Fr确实令新生成sid/m在一条执行中新鲜，不可否认这一规则事实"
+  },
+  {
+    "id": "T73",
+    "en": "aliveness; liveness",
+    "current": "liveness；存活性",
+    "final": "Lowe存活性；活性（liveness）",
+    "kind": "A",
+    "evidence": "P1 p3；T2；E5",
+    "scope": "区分Lowe认证层级aliveness与最终发生的活性性质；拒绝存在性不证明后者"
+  },
+  {
+    "id": "T74",
+    "en": "supporting property; key result",
+    "current": "支持性质；核心结果",
+    "final": "支持性质；核心结果",
+    "kind": "M",
+    "evidence": "E5；当前表4",
+    "scope": "论文取舍标签，非工具安全等级；不可删去量词类型"
+  },
+  {
+    "id": "T75",
+    "en": "source-to-abstraction mapping",
+    "current": "来源到抽象映射；模型映射",
+    "final": "协议来源与模型抽象的对应说明",
+    "kind": "M",
+    "evidence": "E4；E6",
+    "scope": "说明性映射不等于精化证明，不能把缺失机制当已实现"
+  },
+  {
+    "id": "T76",
+    "en": "composition boundary; cryptographic component",
+    "current": "组合边界；密码组件",
+    "final": "组合边界；密码组件",
+    "kind": "M",
+    "evidence": "E1/E3/E6",
+    "scope": "批内关系区别于组件安全，不主张新的通用组合定理"
+  },
+  {
+    "id": "T77",
+    "en": "receiver ephemeral state",
+    "current": "接收方临时状态；共享状态",
+    "final": "接收方临时状态",
+    "kind": "A",
+    "evidence": "E2",
+    "scope": "原协议状态与模型rst标识分开；不复制完整密码结构"
+  },
+  {
+    "id": "T78",
+    "en": "unknown key-share; misbinding",
+    "current": "UKS；misbinding（notes边界）",
+    "final": "未知密钥共享（UKS）；错误绑定（misbinding）",
+    "kind": "A",
+    "evidence": "E6/notes",
+    "scope": "本任务仅界限清单；不得把同A的两次接受命名为UKS或错误绑定攻击"
+  },
+  {
+    "id": "T79",
+    "en": "implementation; deployment",
+    "current": "实现；部署缺陷",
+    "final": "实现；部署",
+    "kind": "A",
+    "evidence": "E3/E6；notes",
+    "scope": "抽象模型结果不等同部署漏洞或客户端遗漏检查"
+  },
+  {
+    "id": "T80",
+    "en": "reachability sanity check",
+    "current": "正常路径；非真空性支持",
+    "final": "正常路径可达性检查",
+    "kind": "M",
+    "evidence": "T3；M normal_relaxed_batch_exists",
+    "scope": "这里只要求准入及后续一次接受，不证明两个不同参与方完成"
+  },
+  {
+    "id": "T81",
+    "en": "one-send/two-accepts witness",
+    "current": "一个精确来源支持两个同批接受",
+    "final": "一个精确发送来源对应两个同批接受事件的可达执行",
+    "kind": "M",
+    "evidence": "M one_send_two_accepts_exists；E5",
+    "scope": "唯一匹配Send仅限完整元组；不排除无关发送事件"
+  },
+  {
+    "id": "T82",
+    "en": "valid distinct-party batch",
+    "current": "有效不同参与方批次",
+    "final": "有效的不同参与方批次",
+    "kind": "M",
+    "evidence": "M distinct_party_batch_exists；E5",
+    "scope": "两匹配Send和两个接受均存在；有效仅在本抽象中解释"
+  }
+]
