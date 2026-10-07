@@ -24,10 +24,14 @@ Tamarin以多集重写规则描述状态转换，并用动作事实记录迹性�
 
 收集完成后，准入规则按模型约束进入拒绝状态或顺序处理状态。获准路径先记录模型中的批次准入事件\batchreceive，再处理槽位1和槽位2。每个步骤都必须匹配相应的\texttt{!Sent(A,oid,m)}，随后记录包含$(A,\oid,m,\mathit{bid},\mathit{rst})$的\receiveraccept 事件。该事件表示来源匹配后到达抽象接受边界，不等同于网络输入、完整K-Waay会话接受或密钥安装。由于\texttt{!Sent}是持久事实，同一精确元组占据两个槽位时，两个处理步骤可以匹配同一来源事实；这正是需要验证的事件关系。
 
-% FIGURE 1 TO BE INSERTED BY SEPARATE FIGURE TASK:
-% two-slot batch composition and admission lifecycle
+\begin{figure}[!t]
+  \centering
+  \input{figures/fig1-two-slot-lifecycle}
+  \caption{两槽批次准入的共同生命周期}
+  \label{fig:two-slot-lifecycle}
+\end{figure}
 
-三种模型共享相同的发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理骨架，主要受控变化集中在收集完成后的准入约束及其对应拒绝分支。
+图\ref{fig:two-slot-lifecycle}给出了三种模型共享的两槽批次准入生命周期。三种模型共享相同的发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理骨架，主要受控变化集中在收集完成后的准入约束及其对应拒绝分支。
 
 \subsection{准入模型与验证性质}
 \label{subsec:configurations-properties}

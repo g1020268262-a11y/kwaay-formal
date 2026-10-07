@@ -1,11 +1,14 @@
 # Figure plan
 
-Fig.1 planned: two-slot batch composition and admission lifecycle.
+Fig.1 completed: two-slot batch composition and admission lifecycle.
 
 Its information requirements come from
 `submissions/arocmag/style-study/FINAL_CHINESE_PAPER_BLUEPRINT.md`.
 
-No figure asset is generated in Phase 1.
+The editable TikZ source is `fig1-two-slot-lifecycle.tex`; the standalone
+review source and PDF are `fig1-preview.tex` and `fig1-preview.pdf`.
+Reference and design decisions are recorded in `FIG1_REFERENCE_ANALYSIS.md`
+and `FIG1_DESIGN_REPORT.md`.
 
 Fig.2 planned: duplicate acceptance trace under admission without a distinction constraint.
 
