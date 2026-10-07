@@ -96,3 +96,25 @@ Phase 1 使用的 8 个引用键均来自英文母稿现有 `references.bib`：
 `06-discussion.tex` 用于控制解释边界，没有搬入接口维护责任、完整局限或后续研究段落。
 本任务没有执行新的 Tamarin 运行；正文的后续独立复核指2026-09-16已有记录。
 
+## 6. Phase 2B 第4、5章逐段映射
+
+第4章不重新报告lemma状态，而是解释第3章结果的关系含义、接口含义与证据边界。术语采用`terminology-study/`冻结结论，并以本阶段任务给出的微调规则为最高优先级：使用“比较维度”“匹配发送来源”“发送来源对应性”和“批内来源单射性”。英文来源位置相对于`manuscript/sections/06-discussion.tex`和`08-conclusion.tex`；机器结果沿用第3章已核对的模型与2026-09-16复核材料，没有新增Tamarin运行。
+
+| 中文段落 | 英文discussion/conclusion来源 | 第3章机器结果 | 压缩/合并 | 推论性质 | 推论边界 |
+|---|---|---|---|---|---|
+| 4.1第1段：三个比较维度 | Discussion: Party Identity, Message Identity, and Occurrence Injectivity | 3.4三模型受控比较 | 将英文身份坐标讨论改组为参与方、发送实例、消息三问 | 对既有模型对象的语义归纳 | 不建立新的身份理论，不改变条目元组 |
+| 4.1第2段：来源对应性与来源单射性 | Discussion同小节；Relation to Authentication首段 | 三模型`receiver_accept_has_send`；消息模型`receiver_accept_injective` | 合并来源存在与事件单射关系，并按新术语首次定义 | 由真实量词范围得到性质分工 | 明确不同于Lowe单射一致性，不扩大为完整认证 |
+| 4.1第3段：消息互异的非替代性 | Discussion同小节第2段；Formal Analysis: Message-Level Restriction | 3.2 `same_party_different_messages_batch_exists`及两项全称性质 | 以同一A、不同oid/m、两匹配Send的可达执行为中心 | 从共同生命周期中的可达执行解释非替代性 | 不是只凭静态赋值，也不把不同来源写成精确重放 |
+| 4.1第4段：独立关系结论 | Discussion同小节末段；Controlled Comparison | 3.2与3.3目标性质 | 将三类性质收束到不同关系 | 本文BatchReceive问题内的关系分类 | 不声称所有逻辑独立性或一般理论 |
+| 4.2第1段：不变量与机制 | Discussion: Invariant and Enforcement | 3.3参与方互异性质与目标对照 | 合并显式规则和多种可能维护机制 | 由模型实现区分接口语义与执行机制 | 不指定唯一算法，不评价机制优劣 |
+| 4.2第2段：条件式接口责任 | Discussion: Invariant and Enforcement；Design Implications | 原协议条件、式(2)、3.3结果 | 将英文建议列表改写为连续条件式论证 | 若需满足原条件，则可信边界需维护关系 | 不指定客户端、服务器、调用者或batch builder为唯一实体 |
+| 4.2第3段：参与方表示映射 | Discussion: Invariant and Enforcement末段；Limitations: Representation | 模型参与方A及表1边界 | 压缩账户、公钥、设备等可能对象为映射边界 | 具体实现须先说明适当参与方表示 | 不替K-Waay设计身份解析层，不验证具体映射 |
+| 4.3第1段：两槽范围 | Discussion: Limitations--Fixed two-slot evidence | 式(2)与三个固定两槽模型 | 将批内和跨批边界合为一段 | 两槽捕获最小非平凡成对关系 | 不推出任意批长、回滚或重启保证 |
+| 4.3第2段：来源与密码过程 | Discussion: Admission-level abstraction；Receiver-event endpoint | `!Sent`来源事实、`ReceiverAccept`终点 | 合并完整密码省略和KEY/TEST缺失 | 说明直接机器证据的终点 | 不推出密钥泄露、机密性或完整AKE失败 |
+| 4.3第3段：consumer、精化与部署 | Discussion: Receiver-event endpoint；Representation and enforcement | 当前模型无相应事件或定理 | 将三类外部映射边界集中说明 | 无模型对象即不作下游推论 | 抽象执行不自动成为具体攻击，不声称部署遗漏检查 |
+| 4.3第4段：拒绝与复核 | Discussion: Rejection evidence；英文旧稿末段由新版复核证据替代 | 两项拒绝存在性；2026-09-16匹配记录 | 合并拒绝性质限制和复现证据作用 | 只报告分支可达与抽象可复现 | 不给普遍活性，不把独立复核说成历史日志恢复或协议级证明 |
+| 5第1段：问题、方法和三层结果 | Conclusion全文；Formal Analysis三模型结果 | 3.1重复接受、3.2非替代、3.3目标与有效批次 | 压为一段，不列lemma和环境 | 对已报告结果的终局总结 | 结果仍限两槽抽象，不新增实验或安全主张 |
+| 5第2段：条件式设计含义 | Conclusion第2段；Discussion: Invariant and Enforcement | 式(2)及3.3目标对照 | 压为最终两句 | 若需满足原条件，则构造或准入过程维护参与方关系 | 不写必须增加身份检查，机制和映射保持开放 |
+
+第4章的关系结论属于对第3章既有机器结果的语义解释，未新增验证性质、公式或模型假设。第5章只总结已经出现的三层结果和条件式接口含义，没有加入未来实验、性能分析或完整协议安全结论。
+
