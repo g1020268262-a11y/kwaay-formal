@@ -1,0 +1,18 @@
+\begin{table}[htbp]
+  \centering
+  \caption{身份坐标与模型映射}
+  \label{tab:identity-coordinate-map}
+  \footnotesize
+  \begin{tabularx}{\linewidth}{@{}L{0.13\linewidth}C{0.13\linewidth}C{0.15\linewidth}YY@{}}
+    \toprule
+    概念 & 论文记号 & Tamarin记号 & 作用 & 解释边界 \\
+    \midrule
+    参与方 & $A$ & $A$ & 标识建模协议主体 & 不自动等同于账户或密钥编码 \\
+    发送发生 & $\oid$ & $\mathit{sid}$ & 区分发送方产生条目的发生 & 发生不同不推出参与方不同 \\
+    消息 & $m$ & $m$ & 表示发送方产生的符号消息 & 消息不同不推出参与方不同 \\
+    槽位 & $i$ & 线性收集状态 & 标识批次内位置 & 位置不同不保证条目内容互异 \\
+    批次/接收上下文 & $(\mathit{bid},\mathit{rst})$ & $(\mathit{bid},\mathit{rst})$ & 限定共同处理作用域 & 不表示完整接收方状态 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+

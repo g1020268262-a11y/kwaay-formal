@@ -1,0 +1,31 @@
+\begin{abstract}
+K-Waay完整规范已要求一次\batchreceive 调用中的输入分别对应不同参与方。为明确这一不同参与方条件（different-party condition）所维护的批内关系，并检验消息或发送发生坐标上的限制能否替代该关系，构造共享同一发送来源与顺序处理生命周期的固定两槽Tamarin模型，受控比较放宽配置、消息级配置和参与方级正控制（positive control）。验证结果表明：放宽配置允许一个精确发送来源在同一批次上下文中对应两个接收事件；消息级配置能够满足消息区分和作用域内发生注入性，但同一参与方产生的不同消息仍可共同获接纳；参与方级配置维持批内参与方区分，且有效的不同参与方批次可达。结果说明，消息区分和精确来源上的发生注入性不能替代参与方级关系。该结论限定于固定两槽的批处理接纳抽象，不扩张为完整K-Waay协议的攻击或任意批长定理。
+
+\noindent\textbf{关键词：}K-Waay；批处理接纳；不同参与方条件；Tamarin；形式化验证
+\end{abstract}
+
+\begin{center}
+  \bfseries Abstract
+\end{center}
+\noindent
+The complete K-Waay specification already requires the inputs of one
+\batchreceive invocation to correspond to different parties.  To clarify the
+same-batch relation maintained by this condition and to test whether controls
+over message or sender-occurrence coordinates can replace it, we construct
+three fixed-two-slot Tamarin models with a common sender-origin and sequential
+processing lifecycle.  The controlled comparison covers relaxed admission, a
+message-level restriction, and a party-level positive control.  The relaxed
+configuration admits a trace in which one exact sender origin supports two
+receiver events in the same batch context.  The message-level configuration
+satisfies message distinction and scoped occurrence injectivity, while two
+different messages from one party can still be accepted together.  The
+party-level configuration preserves same-batch party distinction and retains
+a reachable valid distinct-party batch.  Hence, message distinction and
+exact-origin occurrence injectivity do not substitute for the required party
+relation.  The conclusion is limited to the fixed-two-slot admission
+abstraction and does not constitute an attack on complete K-Waay executions
+or a theorem for arbitrary batch sizes.
+
+\noindent\textbf{Key words:} K-Waay; batch admission; distinct-party
+condition; Tamarin; formal verification
+

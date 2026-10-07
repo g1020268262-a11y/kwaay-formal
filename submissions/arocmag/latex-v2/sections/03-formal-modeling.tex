@@ -1,0 +1,55 @@
+\subsection{安全目标与攻击者模型}
+\label{subsec:objective-adversary}
+
+设$B=(E_1,\ldots,E_n)$为有序批次，$\mathsf{party}(E_i)$表示条目$E_i$的参与方投影。不同参与方条件对应的批内目标定义为
+\begin{equation}
+  \distinctparty(B)
+  \triangleq
+  \forall\,1\leq i<j\leq n,\quad
+  \mathsf{party}(E_i)\neq\mathsf{party}(E_j).
+  \label{eq:distinct-party-objective}
+\end{equation}
+该关系要求一个批次中任意两个不同位置都投影到不同参与方，但不要求参与方、消息或发送发生活跃于其他批次时仍保持全局唯一。定义面向任意有限批次给出，机器分析取最小的非平凡情形$n=2$，此时目标化为$A_1\neq A_2$。
+
+攻击者采用标准Dolev--Yao符号网络能力，并在候选条目已经暴露后控制两槽批次的组合：可以保留、重放、选择和排列已有条目，既可重复同一精确元组，也可选取同一参与方产生的两个不同合法元组。该能力只改变候选条目的组合方式，不赋予攻击者生成诚实参与方内部状态或制造合法来源的能力。接收事件的来源按完整$(A,\oid,m)$元组匹配；仅有参与方$A$相同，不能凭空得到相应的\sendaction 来源事实。
+
+机器模型固定两个槽位，批次组合控制是形式分析中的能力假设，直接机器证据止于\receiveraccept 事件。目标和攻击者能力因而都位于候选条目形成之后、分量被接收处理之前的批处理接纳边界。
+
+\subsection{Tamarin模型与共同生命周期}
+\label{subsec:common-lifecycle}
+
+Tamarin以多集重写规则描述状态变化，并用动作事实记录可供迹性质引用的事件\cite{meier2013tamarin}。发送规则为参与方产生新鲜的发送发生坐标和消息，发出$\mathsf{Send}(A,\oid,m)$动作，将$(A,\oid,m)$暴露到符号网络，同时保存持久事实\texttt{!Sent(A,oid,m)}。前者记录发送事件，后者表示模型中的精确来源关系；该持久事实是抽象假设，不是对真实协议认证机制的直接实现。
+
+网络上的候选元组随后进入两个线性槽位。第一个收集状态保存$E_1$并开放第二个槽位，第二个状态保存$E_2$，二者共享批次标识$\mathit{bid}$和接收方上下文$\mathit{rst}$。这里的$\mathit{rst}$仅标识模型中的共同接收上下文，不展开K-Waay接收方临时状态的密码结构。
+
+收集完成后，接纳规则根据所选配置决定进入拒绝状态或顺序处理状态。获接纳路径先记录\batchreceive 动作，再依次处理槽位1和槽位2。每个处理步骤都必须匹配相应的\texttt{!Sent(A,oid,m)}，随后记录携带$(A,\oid,m,\mathit{bid},\mathit{rst})$的\receiveraccept 动作。持久来源事实可以在精确元组被重复收集时支持多个处理步骤，这正是后续注入性性质需要检查的情形。
+
+% FIGURE 1 TO BE INSERTED BY SEPARATE FIGURE TASK:
+% two-slot batch composition and admission lifecycle
+
+三种配置完全共享发送生成、网络暴露、两槽收集、精确来源匹配、顺序处理及\receiveraccept 事件。分析变量仅是收集完成后的接纳坐标及其对应拒绝分支，因此后续性质差异可归因于接纳条件，而不是生命周期变化。
+
+\subsection{接纳配置与验证性质}
+\label{subsec:configurations-properties}
+
+表\ref{tab:admission-configurations}给出三种受控配置。放宽配置不增加坐标限制，用于观察条件移除后的基线行为；消息级配置只比较消息坐标，用于检验其能否替代参与方关系；参与方级配置直接比较目标坐标，作为正控制验证目标性质及其非真空性。三者都是同一抽象上的实验条件，不构成三套新协议或修复方案。
+
+\input{tables/admission-configurations}
+
+除代表性路径的可达性外，模型还检查精确来源对应、作用域内发生注入性、消息区分和参与方区分。为避免由名称推断性质含义，下面的不编号语义表按Tamarin中的真实量词范围给出四类性质。
+
+\input{tables/verification-property-semantics}
+
+其中，作用域内发生注入性的精确前件可写为未编号式
+\[
+\begin{aligned}
+  \forall A,\oid,m,\mathit{bid},\mathit{rst},s,r_1,r_2:\quad
+  &\mathsf{Send}(A,\oid,m)@s \\
+  {}\land{}&\mathsf{ReceiverAccept}(A,\oid,m,\mathit{bid},\mathit{rst})@r_1 \\
+  {}\land{}&\mathsf{ReceiverAccept}(A,\oid,m,\mathit{bid},\mathit{rst})@r_2 \\
+  {}\land{}&s<r_1\land s<r_2
+  \quad\Longrightarrow\quad r_1=r_2.
+\end{aligned}
+\]
+该性质把一个精确发送来源与同一批次、同一接收方上下文中的接收事件数联系起来；它不比较两个不同来源的参与方投影，也不直接回答一个批次中包含多少个不同参与方。消息区分和参与方区分则分别约束不同接收事件的消息坐标和参与方坐标，三者不能按名称视为递进或等价关系。
+

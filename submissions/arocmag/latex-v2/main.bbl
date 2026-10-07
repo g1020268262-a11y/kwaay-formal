@@ -1,0 +1,54 @@
+\begin{thebibliography}{1}
+
+\bibitem{cremers2023session}
+Cas Cremers, Charlie Jacomme, and Aurora Naska.
+\newblock Formal analysis of session-handling in secure messaging: Lifting
+  security from sessions to conversations.
+\newblock In {\em 32nd USENIX Security Symposium}, pages 1235--1252, 2023.
+
+\bibitem{collins2024kwaay}
+Daniel Collins, Lo{\"i}s Huguenin-Dumittan, Ngoc~Khanh Nguyen, Nicolas Rolin,
+  and Serge Vaudenay.
+\newblock {K-Waay}: Fast and deniable post-quantum {X3DH} without ring
+  signatures.
+\newblock In {\em 33rd USENIX Security Symposium}, pages 433--450, 2024.
+
+\bibitem{collins2024kwaayfull}
+Daniel Collins, Lo{\"i}s Huguenin-Dumittan, Ngoc~Khanh Nguyen, Nicolas Rolin,
+  and Serge Vaudenay.
+\newblock {K-Waay}: Fast and deniable post-quantum {X3DH} without ring
+  signatures.
+\newblock Cryptology ePrint Archive, Paper 2024/120, 2024.
+\newblock Full version of the USENIX Security 2024 paper.
+  \url{https://eprint.iacr.org/2024/120}.
+
+\bibitem{cohngordon2020signal}
+Katriel Cohn-Gordon, Cas Cremers, Benjamin Dowling, Luke Garratt, and Douglas
+  Stebila.
+\newblock A formal security analysis of the {Signal} messaging protocol.
+\newblock {\em Journal of Cryptology}, 33:1914--1983, 2020.
+
+\bibitem{bhargavan2024pqxdh}
+Karthikeyan Bhargavan, Charlie Jacomme, Franziskus Kiefer, and Rolfe Schmidt.
+\newblock Formal verification of the {PQXDH} post-quantum key agreement
+  protocol for end-to-end secure messaging.
+\newblock In {\em 33rd USENIX Security Symposium}, pages 469--486, 2024.
+
+\bibitem{meier2013tamarin}
+Simon Meier, Benedikt Schmidt, Cas Cremers, and David Basin.
+\newblock The {TAMARIN} prover for the symbolic analysis of security protocols.
+\newblock In {\em CAV 2013; LNCS 8044}, pages 696--701, 2013.
+
+\bibitem{lupetti2006names}
+Simone Lupetti, Feike~W. Dillema, and Tage Stabell-Kul{\o}.
+\newblock Names in cryptographic protocols.
+\newblock In {\em 4th International Workshop on Security in Information Systems
+  (WOSIS 2006)}, pages 185--194, 2006.
+
+\bibitem{lowe1997hierarchy}
+Gavin Lowe.
+\newblock A hierarchy of authentication specifications.
+\newblock In {\em 10th IEEE Computer Security Foundations Workshop}, pages
+  31--43, 1997.
+
+\end{thebibliography}

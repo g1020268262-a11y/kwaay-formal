@@ -1,0 +1,16 @@
+\begin{table}[htbp]
+  \centering
+  \caption{接纳配置与验证目标}
+  \label{tab:admission-configurations}
+  \footnotesize
+  \begin{tabularx}{\linewidth}{@{}L{0.13\linewidth}C{0.13\linewidth}C{0.16\linewidth}YY@{}}
+    \toprule
+    配置 & 约束坐标 & 接纳条件 & 分析角色 & 主要性质 \\
+    \midrule
+    放宽配置 & 无 & 无不等式约束 & 条件移除基线 & 精确来源重复；发生注入性 \\
+    消息级配置 & 消息$m$ & $m_1\neq m_2$ & 坐标替代对照 & 消息区分；发生注入性；同一参与方见证 \\
+    参与方级配置 & 参与方$A$ & $A_1\neq A_2$ & 目标关系正控制 & 参与方区分；有效批次可达性 \\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
