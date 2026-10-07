@@ -1,21 +1,32 @@
-# AROCMAG 论文风格与结构研究报告
+# AROCMAG 风格研究与最终蓝图修订报告
 
-## 1. 完成范围
+## 1. 样本与全文状态
 
-本研究实际分析 7 篇《计算机应用研究》安全协议/形式化验证论文，共 52 个正式排版页。7 篇均取得期刊官网 `version=v2` 正式全文并逐页检查；只看摘要的论文为 0，`FULL_TEXT_NOT_AVAILABLE` 为 0。样本覆盖 Tamarin、形式化辅助建模、ProVerif、ROR/BPR 可证明安全、后量子口令认证和多因素认证。
+风格研究分析 7 篇《计算机应用研究》安全协议/形式化验证论文，共 52 个正式排版页。7 篇均取得期刊官网正式版全文；只看摘要的论文为 0，`FULL_TEXT_NOT_AVAILABLE` 为 0。
 
-## 2. 主要统计结论
+## 2. 样本权重
 
-- 单篇 6～9 页，中位数 7 页；一级章通常 5～7 个。
-- 5/7 在引言中完成主要 related work，2/7 单列“相关工作”。
-- 0/7 将 Threat Model 设为独立一级章；4/7 设置明确的攻击者/威胁模型小节。
-- 0/7 单列 Discussion，0/7 单列 Limitations。
-- 7/7 使用紧凑结束语，通常 1～2 段。
-- 共 46 幅图、27 张表；图承担系统/流程/状态机/工具结果/性能功能，表承担符号、安全性质、机器结果和性能比较。
-- Tamarin 论文公式密度低，以状态机、性质表和轨迹为主；高公式密度主要出现在 RLWE 与 ROR/BPR 证明。
-- 结果的稳定顺序为“对象/性质 → 机器或数学结果 → 安全含义”，完整结果由表压缩，正文只展开代表性成功和失败。
+### 第一层：主要结构参考
 
-详细证据见：
+- P1《基于 Tamarin 的 MQTT 协议安全性分析方法》；
+- P2《基于安全协议代码的形式化辅助建模研究》。
+
+P1/P2 与当前 Tamarin 语义分析最接近，主要用于决定建模章节、安全属性、攻击者说明、结果节奏和图表功能。
+
+### 第二层：总体中文安全论文风格参考
+
+P3～P7 主要用于观察中文引言、章节压缩、数学表达、安全分析措辞、图表版式和结束语。其 ROR/BPR 证明、注册/认证流程和性能比较是内容特例，不构成 K-Waay 的结构要求。
+
+## 3. 仍然有效的主要观察
+
+- 样本多为 6～9 页，但这一分布不是稿件硬约束。
+- 5/7 在引言完成主要 related work；独立 Threat Model 一级章为 0/7。
+- 形式化论文通常采用“协议/问题 → 模型与属性 → 验证结果与解释”的主线。
+- Tamarin 类论文公式密度低于 ROR/BPR 论文；工具结果通常由表格压缩，正文解释关键成功和失败。
+- Discussion 与 Limitations 是否独立受研究对象影响；K-Waay 需要一个紧凑讨论章来承载身份坐标含义、维护责任和集中边界。
+- 图表数量由论证功能决定，不能从 46 幅图、27 张表的样本总数反推硬配额。
+
+原始分析证据保留在：
 
 - [REFERENCE_PAPER_MATRIX.md](REFERENCE_PAPER_MATRIX.md)
 - [INTRODUCTION_PATTERN_ANALYSIS.md](INTRODUCTION_PATTERN_ANALYSIS.md)
@@ -24,74 +35,100 @@
 - [FIGURE_TABLE_STYLE_ANALYSIS.md](FIGURE_TABLE_STYLE_ANALYSIS.md)
 - [RESULT_NARRATIVE_ANALYSIS.md](RESULT_NARRATIVE_ANALYSIS.md)
 
-## 3. 推荐的 K-Waay 中文结构
+上述六份文件按任务要求不修改，保留风格研究形成时的分析快照；其中早期的复现/原始 transcript 表述已由本报告、第 6 节和最终蓝图的统一 provenance 取代。
 
-唯一推荐结构为：
+## 4. 冻结的中文结构
 
+```text
 0 引言
 
-1 K-Waay 批接收的身份约束  
-1.1 BatchReceive 接口与不同参与方条件  
-1.2 身份坐标与最小问题实例  
-1.3 研究问题与分析目标
+1 K-Waay批处理接纳与参与方区分问题
+  1.1 BatchReceive机制与不同参与方条件
+  1.2 身份坐标与问题实例
+  1.3 研究问题
 
-2 批组成的形式化建模  
-2.1 安全目标与批组成攻击者  
-2.2 共同两槽生命周期与源抽象  
-2.3 受控准入变体与安全性质
+2 批处理接纳的形式化建模
+  2.1 安全目标与攻击者模型
+  2.2 Tamarin模型与共同生命周期
+  2.3 接纳配置与验证性质
 
-3 Tamarin 验证结果与分析  
-3.1 放宽准入的重复发生反例  
-3.2 消息级限制的对照结果  
-3.3 参与方级约束的恢复结果  
-3.4 结果汇总与语义解释
+3 形式化验证与结果分析
+  3.1 放宽参与方条件后的重复接受
+  3.2 消息级限制的替代性
+  3.3 参与方级条件下的性质验证
+  3.4 综合验证结果
 
-4 讨论  
-4.1 身份坐标的非蕴含关系  
-4.2 组合不变量与执行责任  
-4.3 适用范围与局限
+4 结果讨论与适用范围
+  4.1 消息区分与参与方区分
+  4.2 批处理接口的维护责任
+  4.3 适用范围与局限
 
 5 结束语
+```
 
-逐节目的、英文来源、公式、图表、篇幅和节末结论见 [FINAL_CHINESE_PAPER_BLUEPRINT.md](FINAL_CHINESE_PAPER_BLUEPRINT.md)。
+五个正文一级章依次回答：研究对象和问题是什么；如何形式化；机器验证得到什么；结果意味着什么且不能意味着什么；最终结论是什么。
 
-## 4. 推荐图表
+## 5. 本次关键修订
 
-正文推荐 2 幅图、3 张主表：
+1. 删除引言 roadmap，固定为背景、K-Waay、三组相关工作、缺口、方法/结果、三点贡献六段。
+2. 以 P1/P2 为结构主参考，P3～P7 降为总体中文风格参考。
+3. 术语从笼统“批接收/准入”统一为冻结标题中的“批处理接纳”；条目记号改用 `oid`，并明确映射到模型 `sid`。
+4. 三个模型重写为同一骨架上的三种接纳配置，不作为三套协议或论文创新主线。
+5. 第 3 章设为全文核心，3.2 必须由同一参与方/不同消息的机器见证支撑中心分离结论。
+6. 正文表 3 从完整 14 行改为 7 项关键结果；完整 14 项仍保留在附属/复现材料。
+7. 独立编号公式压缩为条目、目标关系、核心反例事件链三项。
+8. Scope/non-goal 只放 2.1、3.1、4.3 三处。
+9. 图表冻结为 2 幅核心论证图和约 3 张主表的功能需求，不把样本均值变成硬数量。
+10. 复现事实更新为 2026-09-16 后续独立 reviewer rerun。
 
-- 图 1：两槽批组成与准入生命周期；
-- 图 2：放宽模型的重构抽象反例轨迹；
-- 表 1：身份坐标、源语义、模型表示和解释边界；
-- 表 2：三种准入变体、约束坐标、分析角色和性质；
-- 表 3：14 条 Tamarin 记录结果及论证作用。
+## 6. 统一复现事实
 
-现有 `identity-control-comparison.tex` 的内容建议转为表 2。没有运行时、通信或存储实验，不设置性能图。样本文中的工具截图不应被机械仿制；K-Waay 应继续把反例图标明为基于模型和执行记录的重构图。
+2026-09-16，后续独立 reviewer rerun 在 Tamarin 1.12.0、Maude 3.5.1、WSL Ubuntu-24.04 下对三个未修改模型完成 parse/prove；14/14 项 lemma 的结果状态与 proof steps 均与既有记录一致，并保存原始 stdout/stderr、manifest、模型及输出哈希和 7 个导出 graph。该复跑是新的 reviewer-generated evidence，不是历史运行日志恢复；它证明当前抽象结果可复现，不建立完整 K-Waay refinement，也不扩大协议级或部署级安全结论。
 
-## 5. 对英文母稿的调整建议
+证据目录为 `reviews/2026-09-16-evidence/`。正文 3.4 只保留环境、三个未修改模型和 14/14 状态/步数匹配这一句；其他细节留在复现材料。
 
-1. 把独立 Related Work 的五个小节压缩并吸收入引言。
-2. 把独立 Security Objective and Threat Model 合入形式化建模的 2.1。
-3. 合并身份坐标、source-to-abstraction 和模型条目的重复定义。
-4. 将 relaxed/message-level/party-level 定位为同一实验设计中的基线、替代对照和正控制，不称为三套协议。
-5. 保留核心不变量、最小问题实例、反例事件链和中心非蕴含；将重复不等式与规则条件移入表格。
-6. 保留 14 条记录结果的完整主表，正文只展开三条证据链。
-7. 将 scope/non-goal 分为：2.1 的必要局部边界、3.1 的反例边界、4.3 的完整限制；删除其他重复。
-8. 将英文 Discussion 的六个小节压缩为三个中文小节，维持解释性贡献但缩短篇幅。
-9. 保留 recorded executions、版本、哈希和无原始 transcript 的 provenance，不写成重新运行。
+## 7. 结果表决定
 
-完整映射见 [KWAAY_SECTION_RESTRUCTURING_PLAN.md](KWAAY_SECTION_RESTRUCTURING_PLAN.md)，写作规则见 [AROCMAG_STYLE_GUIDE_FOR_KWAAY.md](AROCMAG_STYLE_GUIDE_FOR_KWAAY.md)。
+正文主表突出 7 项：
 
-## 6. 尚不确定的事项
+- relaxed：精确来源重复接受 exists；scoped injectivity falsified；
+- message-level：distinct messages verified；scoped injectivity verified；same-party/different-message exists；
+- party-level：party distinction verified；valid distinct-party batch exists。
 
-- 本研究从同类论文归纳写作节奏，没有据此推定编辑部的官方页数、图表数量或章节强制要求；正式改写前仍应以最新投稿须知和模板为准。
-- 中文 LaTeX 版的实际页数只有在正文重写、参考文献和图表定稿后才能确认。
-- 图 1 尚未绘制；本任务按边界只规定其信息功能和放置位置。
-- 本任务没有重新运行 Tamarin；机器结论仍以项目中已有执行记录、模型哈希和证据边界为准。
-- 若期刊在线系统对补充材料有限制，完整 lemma、命令、哈希和 trace provenance 的承载位置需在投稿制作阶段确认。
+其余 7 项合并为 supporting properties。完整 14 项状态与 steps 保留，详见 [FULL_14_RESULT_PLACEMENT_DECISION.md](FULL_14_RESULT_PLACEMENT_DECISION.md)。
 
-## 7. 交付物
+## 8. 图表与公式
 
-本目录包含任务要求的 10 份 Markdown 文档和 7 份用于核查的正式版参考 PDF。未修改 `manuscript/`、`tamarin/`、`docs/`、`artifact/` 或其他投稿目录，未生成中文论文正文、Word 或正式图，也未 commit/push。
+当前研究最少需要 2 幅核心论证图和约 3 张主表；数量由信息功能决定，不因样本平均数强制增减。
 
-**AROCMAG_STYLE_STUDY_READY**
+- 图 1：两槽批组成与接纳生命周期；
+- 图 2：放宽条件下的精确来源重复接受轨迹；
+- 表 1：身份坐标与模型映射；
+- 表 2：三种接纳配置与验证目标；
+- 表 3：关键 Tamarin 验证结果。
+
+`identity-control-comparison` 不再作为独立图。正文核心编号公式只保留 (E_i=(A_i,oid_i,m_i))、`DistinctPartyPerBatch(B)` 和核心反例事件链。
+
+## 9. 页数和未决事项
+
+参考样本多为 6～9 页，当前稿件优先保证论证完整，最终页数由实际版面决定。仍需在下一阶段确认：
+
+- 中文 LaTeX 实际排版页数；
+- 期刊投稿系统是否允许附属材料；
+- 若不允许，完整 14 项结果采用正文压缩表还是文后附表；
+- 图 1、图 2 的正式绘制和双栏可读性。
+
+这些事项不改变已冻结的章节和论证顺序。
+
+## 10. 交付物
+
+- [FINAL_CHINESE_PAPER_BLUEPRINT.md](FINAL_CHINESE_PAPER_BLUEPRINT.md)：最终冻结蓝图；
+- [AROCMAG_STYLE_GUIDE_FOR_KWAAY.md](AROCMAG_STYLE_GUIDE_FOR_KWAAY.md)：写作节奏约束；
+- [KWAAY_SECTION_RESTRUCTURING_PLAN.md](KWAAY_SECTION_RESTRUCTURING_PLAN.md)：英文到中文映射；
+- [FULL_14_RESULT_PLACEMENT_DECISION.md](FULL_14_RESULT_PLACEMENT_DECISION.md)：14 项结果位置决定；
+- [BLUEPRINT_REVISION_REPORT.md](BLUEPRINT_REVISION_REPORT.md)：本次修订与自检。
+
+本次未生成中文正文、正式图、Word，未修改英文母稿、中文 LaTeX 或 Tamarin 模型，也未 commit/push。
+
+**AROCMAG_FINAL_BLUEPRINT_READY**
 
