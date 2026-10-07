@@ -7,3 +7,23 @@ Its information requirements come from
 
 No figure asset is generated in Phase 1.
 
+Fig.2 planned: exact-origin duplicate acceptance trace under relaxed admission.
+
+Required content:
+
+- one Send source for the exact tuple;
+- same A, oid, m in both collected entries and acceptance events;
+- same bid, rst in both acceptance events;
+- two distinct ReceiverAccept events;
+- s < b < r1 < r2, in particular r1 < r2;
+- reconstructed analytical trace, based on the model and recorded witness;
+- not a full K-Waay attack or a raw historical log screenshot.
+
+Source: `rqv2_relaxed.spthy`, lemma `one_send_two_accepts_exists`, and
+`reviews/2026-09-16-evidence/trace-audit-summary.txt` (relaxed duplicate witness).
+Only the related event projection is displayed; unrelated Send events in an
+exported graph must not be added to the core chain. The matching Send is unique
+for this exact tuple, not necessarily the only Send in the complete trace.
+
+Phase 2A leaves only comments in Section 3.1 and creates no figure asset.
+

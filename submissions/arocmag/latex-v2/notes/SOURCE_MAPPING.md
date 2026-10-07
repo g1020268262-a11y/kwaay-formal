@@ -59,3 +59,40 @@ Phase 1 使用的 8 个引用键均来自英文母稿现有 `references.bib`：
 
 当前三组相关工作已有足够的英文母稿来源支撑 Phase 1 定位，未发现需要临时补造文献的空缺。
 
+## 5. Phase 2A 第3章逐段映射
+
+正文以 `% P31-1` 等注释标记段落，注释不进入 PDF。以下英文位置均相对于
+`manuscript/sections/05-formal-analysis.tex`；R/M/P 分别指 relaxed、message_dedup、party_admission 模型，
+仅用于本来源记录，不作为正文协议名称。证据目录统一为 `reviews/2026-09-16-evidence/`。
+每项状态及 steps 同时核对 `result-comparison.tsv` 和相应 `*-prove.stdout.txt` 的最终汇总。
+
+| 中文段落 | 英文母稿位置 | Tamarin lemma / 规则 | 独立复核证据 | 压缩/合并处理 |
+|---|---|---|---|---|
+| P31-1 正常路径 | Relaxed Admission 首段 | R: `normal_relaxed_batch_exists` | TSV、R stdout、trace-audit 的 normal graph | 压缩；只报告批次接纳与后续一次接受，不称完整不同参与方批次 |
+| P31-2 核心见证及式(3) | Relaxed Admission 核心公式及前段 | R: `one_send_two_accepts_exists` | TSV、R stdout、trace-audit 的 duplicate graph | 重写；oid 沿用前文记号，保留 s<b<r1<r2 |
+| P31-3 匹配来源唯一性 | 核心公式后的唯一来源解释 | R: 同上，全称 Send 时间子句 | R stdout 中精确公式、trace-audit | 压缩；不把唯一匹配 Send 扩大为全执行只有一个 Send |
+| P31-4 两槽复用与RQ | Relaxed Admission 轨迹重构及语义段 | R: 同上；CollectSlot1/2、ProcessSlot1/2 | trace-audit 中两个槽位和接受的相同元组 | 合并；只解释见证路径，不复制完整模型 |
+| P31-5 全迹反例 | Relaxed Admission universal diagnostic 两段 | R: `receiver_accept_injective` | TSV、R stdout、trace-audit 的 injectivity graph | 合并；存在性与全迹失败不重复计贡献 |
+| P31-6 来源及边界 | Relaxed Admission 来源解释与末段 | R: `receiver_accept_has_send` | TSV、R stdout、README | 合并；只用一个完整协议攻击边界句 |
+| P32-1 消息性质 | Message-Level Restriction universal message 段 | M: `accepted_batch_has_distinct_messages` | TSV、M stdout | 压缩；同上下文、不同接受事件与消息不等齐全 |
+| P32-2 注入性及来源 | 同节 universal results 段 | M: `receiver_accept_injective`、`receiver_accept_has_send` | TSV、M stdout | 合并；分别解释两项性质的作用，不重新给量词定义 |
+| P32-3 核心同参与方见证 | 同节 decisive control 段 | M: `same_party_different_messages_batch_exists` | TSV、M stdout、trace-audit 的同名 graph | 改为行内条目，无非蕴含编号式 |
+| P32-4 事件时序及来源 | 同节 More precisely 段 | M: 同上及 ProcessSlot1/2 | 精确 lemma 的时间约束、trace-audit 两组 Send/Accept | 合并；两条目各有来源，只有参与方坐标相等 |
+| P32-5 机器证据作用 | 同节结论；Controlled Comparison | M: 上述 witness 与两项全迹性质 | TSV、M stdout、trace-audit | 合并；非替代性来自真实可达见证，非抽象常识冒充结果 |
+| P32-6 消息拒绝 | Message-Level Restriction 首段 | M: `repeated_message_rejection_exists` | TSV、M stdout、trace-audit 拒绝 graph | 压为一句；不推断所有输入最终拒绝 |
+| P32-7 小节结论 | Message-Level Restriction 末段 | M: 消息区分、注入性、同参与方见证 | TSV、M stdout | 压缩；不引入实现层的去重效果主张 |
+| P33-1 目标性质 | Party-Level Restoration all-traces safety | P: `accepted_batch_has_distinct_parties` | TSV、P stdout | 重写为正控制；引用既有目标式 |
+| P33-2 规则与接受边界 | 同节 Admission-rule semantics | P: AdmitDistinctParties、Inequality；目标 lemma | P stdout 中规则、restriction 与已验证性质 | 合并；区分规则语义与全迹结果 |
+| P33-3 非真空性 | 同节 Reachability and non-vacuity | P: `distinct_party_batch_exists` | TSV、P stdout、trace-audit 的有效批次 graph | 保留两匹配来源、接纳及两次接受的时序 |
+| P33-4 支持与拒绝限制 | 同节 supporting results 及首段 | P: `receiver_accept_has_send`、`receiver_accept_injective`、`same_party_rejection_exists` | TSV、P stdout、README、trace-audit 拒绝 graph | 合并；保留 Send 未绑定被拒元组限制，不展开 Discussion |
+| P33-5 正控制结论 | 同节末段 | P: 目标性质及有效批次可达性 | TSV、P stdout | 压缩；不写修复方案、机制唯一性或协议安全结论 |
+| P34-1 表格导语与类型 | Verification Summary | 三模型7项核心 lemma | TSV、三个 stdout | 重组；解释 exists-trace 与 all-traces 的不同验证含义 |
+| 表4 7项核心结果 | `manuscript/tables/verification-results.tex` | R 2项、M 3项、P 2项 | TSV、三个 stdout | 按冻结取舍压缩为7行；不列 steps，自然编号为表4 |
+| P34-2 三配置比较 | Controlled Comparison | R重复接受；M区分/注入性/同参与方；P目标/非真空 | TSV、trace-audit | 压成一段结果链，不提前写接口设计 |
+| P34-3 7项支持结果 | Verification Summary；完整结果表 | R正常路径；R/M/P来源对应；M/P拒绝；P注入性 | TSV、三个 stdout，14行 MATCH | 合并为一段，完整14项和steps留在既有复现材料 |
+| P34-4 后续独立复核 | Verification Environment 的主题；其历史口径由新版证据替代 | 三个未修改模型的全部14项 | README、manifest、TSV、三个 stdout | 更新为2026-09-16复核；只列环境、14/14状态及steps匹配与相对目录 |
+
+`04-formal-modeling.tex` 用于核对共同生命周期、接纳规则与性质定义；
+`06-discussion.tex` 用于控制解释边界，没有搬入接口维护责任、完整局限或后续研究段落。
+本任务没有执行新的 Tamarin 运行；正文的后续独立复核指2026-09-16已有记录。
+

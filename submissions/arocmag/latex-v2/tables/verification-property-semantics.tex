@@ -1,6 +1,6 @@
 \begin{table}[htbp]
   \centering
-  \caption*{核心验证性质的迹语义}
+  \caption{核心验证性质的迹语义}
   \label{tab:verification-property-semantics}
   \footnotesize
   \begin{tabularx}{\linewidth}{@{}L{0.19\linewidth}YY@{}}
@@ -16,10 +16,10 @@
       $(A,\oid,m,\mathit{bid},\mathit{rst})$的接收事件时，推出$r_1=r_2$ &
       检查一个精确来源是否对应多个不同接收事件，不检查参与方数目 \\
     消息区分 &
-      同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则消息级配置要求$m_1\neq m_2$ &
+      同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则该性质断言$m_1\neq m_2$ &
       不主张消息跨批次或跨执行全局唯一 \\
     参与方区分 &
-      同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则参与方级配置要求$A_1\neq A_2$ &
+      同一$(\mathit{bid},\mathit{rst})$中若$r_1\neq r_2$，则该性质要求$A_1\neq A_2$ &
       结论只作用于接收事件的参与方投影 \\
     \bottomrule
   \end{tabularx}
