@@ -27,7 +27,7 @@ Tamarin以多集重写规则描述状态转换，并用动作事实记录迹性�
 % FIGURE 1 TO BE INSERTED BY SEPARATE FIGURE TASK:
 % two-slot batch composition and admission lifecycle
 
-三种模型完全共享发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理过程。唯一受控变化是收集完成后比较的分量及相应拒绝分支，因此结果差异可以归因于准入约束，而不是处理生命周期改变。
+三种模型共享相同的发送生成、网络暴露、两槽收集、来源匹配、批次准入和顺序处理骨架，主要受控变化集中在收集完成后的准入约束及其对应拒绝分支。
 
 \subsection{准入模型与验证性质}
 \label{subsec:configurations-properties}

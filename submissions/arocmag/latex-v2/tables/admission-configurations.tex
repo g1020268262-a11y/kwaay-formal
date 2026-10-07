@@ -3,12 +3,12 @@
   \caption{批次准入模型与验证目标}
   \label{tab:admission-configurations}
   \footnotesize
-  \begin{tabularx}{\linewidth}{@{}L{0.14\linewidth}C{0.12\linewidth}C{0.15\linewidth}YY@{}}
+  \begin{tabularx}{\linewidth}{@{}L{0.14\linewidth}C{0.12\linewidth}C{0.15\linewidth}L{0.12\linewidth}Y@{}}
     \toprule
     模型 & 比较分量 & 准入条件 & 分析作用 & 主要验证对象 \\
     \midrule
     无互异约束 & 无 & 无互异要求 & 条件移除基线 & 来源重复；来源单射性 \\
-    消息互异约束 & 消息$m$ & $m_1\neq m_2$ & 替代性检验 & 消息互异性；来源单射性；同一参与方批次 \\
+    消息互异约束 & 消息$m$ & $m_1\neq m_2$ & 替代性检验 & 消息互异性；来源单射性；同参与方异消息批次可达性 \\
     参与方互异约束 & 参与方$A$ & $A_1\neq A_2$ & 目标对照 & 参与方互异性；有效批次可达性 \\
     \bottomrule
   \end{tabularx}
