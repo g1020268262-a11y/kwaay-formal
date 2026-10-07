@@ -1,6 +1,6 @@
 # Figure plan
 
-Fig.1 patched after the first human review: two-slot batch composition and admission lifecycle.
+Fig.1 frozen after semantic/hierarchy review and artifact rebuild.
 
 Its information requirements come from
 `submissions/arocmag/style-study/FINAL_CHINESE_PAPER_BLUEPRINT.md`.
