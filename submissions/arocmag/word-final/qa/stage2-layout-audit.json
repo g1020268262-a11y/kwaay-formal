@@ -1,0 +1,157 @@
+{
+  "checks": {
+    "zip_integrity": true,
+    "a4_all_sections": true,
+    "official_margins_all_sections": true,
+    "single_column_front_two_column_body": true,
+    "full_width_table_sections_present": true,
+    "four_tables_exact_shapes": true,
+    "two_single_column_figures": true,
+    "paper_figures_are_png": true,
+    "six_display_formulas": true,
+    "editable_omml_present": true,
+    "no_ole_or_mathtype_objects": true,
+    "one_final_column_break": true,
+    "no_external_package_relationships": true,
+    "pdf_six_pages": true,
+    "pdf_a4": true,
+    "anonymous_core_metadata": true
+  },
+  "all_pass": true,
+  "sections": [
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 1
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 2
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 1
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 2
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 1
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 2
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 1
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 2
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 1
+    },
+    {
+      "page_width_cm": 21.001,
+      "page_height_cm": 29.7,
+      "top_margin_cm": 2.0,
+      "bottom_margin_cm": 1.499,
+      "left_margin_cm": 1.499,
+      "right_margin_cm": 1.499,
+      "columns": 2
+    }
+  ],
+  "table_shapes": [
+    [
+      6,
+      5
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      8,
+      5
+    ]
+  ],
+  "image_parts": [
+    "/word/media/image4.png",
+    "/word/media/image5.png"
+  ],
+  "image_widths_cm": [
+    7.9,
+    7.9
+  ],
+  "package_media": [
+    "word/media/image1.wmf",
+    "word/media/image2.wmf",
+    "word/media/image3.emf",
+    "word/media/image4.png",
+    "word/media/image5.png"
+  ],
+  "display_formula_count": 6,
+  "omath_count": 99,
+  "ole_object_count": 0,
+  "embedded_object_parts": [],
+  "column_break_count": 1,
+  "external_relationship_parts": [],
+  "pdf_pages": 6,
+  "pdf_page_size_pt": [
+    595.3,
+    841.9
+  ]
+}
