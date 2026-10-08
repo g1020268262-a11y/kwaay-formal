@@ -1,0 +1,27 @@
+[
+  {
+    "source": "02-problem.tex",
+    "number": null,
+    "latex": "S=\\bigl((\\mathit{pk}_{j_1},\\mathit{prek}_{j_1},m_{j_1}),\\ldots,\n           (\\mathit{pk}_{j_d},\\mathit{prek}_{j_d},m_{j_d})\\bigr),\n  \\qquad d\\geq 1,"
+  },
+  {
+    "source": "02-problem.tex",
+    "number": 1,
+    "latex": "E_i=(A_i,\\mathit{oid}_i,m_i),"
+  },
+  {
+    "source": "03-formal-modeling.tex",
+    "number": 2,
+    "latex": "\\mathsf{DistinctPartyPerBatch}(B)\n  \\triangleq\n  \\forall\\,1\\leq i<j\\leq n,\\quad\n  \\mathsf{party}(E_i)\\neq\\mathsf{party}(E_j)."
+  },
+  {
+    "source": "03-formal-modeling.tex",
+    "number": null,
+    "latex": "\\begin{aligned}\n  \\forall A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst},s,r_1,r_2:\\quad\n  &\\mathsf{Send}(A,\\mathit{oid},m)@s \\\\\n  {}\\land{}&\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_1 \\\\\n  {}\\land{}&\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_2 \\\\\n  {}\\land{}&s<r_1\\land s<r_2\n  \\quad\\Longrightarrow\\quad r_1=r_2.\n\\end{aligned}"
+  },
+  {
+    "source": "04-formal-analysis.tex",
+    "number": 3,
+    "latex": "\\begin{aligned}\n    &\\mathsf{Send}(A,\\mathit{oid},m)@s,\\\\\n    &\\mathsf{BatchReceive}(\\mathit{bid},\\mathit{rst})@b,\\\\\n    &\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_1,\\\\\n    &\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_2,\\\\\n    &s<b<r_1<r_2.\n  \\end{aligned}"
+  }
+]

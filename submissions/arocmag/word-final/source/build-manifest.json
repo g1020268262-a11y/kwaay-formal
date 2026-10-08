@@ -1,0 +1,23 @@
+{
+  "scientific_baseline": "54ad3723d1c509693693c8b5984c3b1b8bc006e1",
+  "official_template_sha256": "BAF9FCE8B2BC56F2320C8BF4541546E43F48A8F3A1C773B40667D7B2A7B872CB",
+  "working_docx": "submissions/arocmag/word-final/K-Waay-AROCMAG-submission-working.docx",
+  "working_docx_sha256": "03AA990783C22BC30706EBDDA66EDC1024D322974698046D072A6A802507FCCD",
+  "citation_order": [
+    "cremers2023session",
+    "collins2024kwaay",
+    "collins2024kwaayfull",
+    "cohngordon2020signal",
+    "bhargavan2024pqxdh",
+    "meier2013tamarin",
+    "lupetti2006names",
+    "lowe1997hierarchy"
+  ],
+  "numbered_formulas": 3,
+  "unnumbered_formulas": 2,
+  "tables": 4,
+  "figures": 2,
+  "qa_pdf_sha256": "255082234C72FC7B46BBEF4209B5AD9BD4AD208A3CD5F015349E1EDF39E53572",
+  "qa_pdf_pages": 6,
+  "final_render_dir": "submissions/arocmag/word-final/qa/stage1-render-v3"
+}
