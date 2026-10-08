@@ -2,7 +2,7 @@
 
 任务：AROCMAG_FIGURE2_DUPLICATE_ACCEPTANCE_TRACE
 
-状态：**AROCMAG_FIG2_READY_FOR_REVIEW**
+状态：**AROCMAG_FIG2_FROZEN_READY**
 
 日期：2026-10-08（Asia/Shanghai）。正文 TEXT CONTENT FROZEN；图1 FIGURE 1 FROZEN / AROCMAG_FIG1_FROZEN_READY。只制作图2，未运行 Tamarin，未修改模型或14项结果，未制作图3、Word、EMF，未 commit / push。
 
@@ -97,7 +97,7 @@ G-ex中的 `#s/#b/#r1/#r2` 分别显示为 `s/b/r₁/r₂`。G-inj的准入节�
 
 收集规则没有action fact，因此其框只标槽位数据、规则名与输入。四个动作事件使用数学动作名与`@`时间点；规则名另起小字号一行并带“规则：”。图没有把二者作为同一语义类别。
 
-## 5. 唯一匹配发送与无关Send
+## 5. 唯一匹配发送与额外Send
 
 存在性lemma含：
 
@@ -105,9 +105,9 @@ G-ex中的 `#s/#b/#r1/#r2` 分别显示为 `s/b/r₁/r₂`。G-inj的准入节�
 All #s2. Send(A,sid,m) @ #s2 ==> #s2 = #s
 ```
 
-这只保证该完整 `(A,sid,m)` 元组的匹配发送发生点唯一。图中使用“匹配发送来源（该完整元组唯一）”，图注附近保留如下限定：
+这只保证该完整 `(A,sid,m)` 元组的匹配发送发生点唯一。图中使用“唯一匹配Send来源”，图注附近保留如下限定：
 
-> 依据Tamarin模型及独立复核的可达执行重构。仅显示与完整元组相关的关键事件投影；该元组的匹配Send唯一，执行中可能存在其他无关Send。
+> 依据Tamarin模型及独立复核的可达执行重构，仅显示与所示完整元组相关的关键事件；该元组的匹配Send唯一，执行中可能存在与其不匹配的其他Send。
 
 两graph实际上都还有一个协议 `SendMessage` 节点：
 
@@ -116,7 +116,7 @@ All #s2. Send(A,sid,m) @ #s2 ==> #s2 = #s
 | G-ex | `#vr.4` | `Send(~a,~sid.1,~m.1)` | 同参与方，发送实例标识和消息不同，不匹配完整所示元组 |
 | G-inj | `#vr.5` | `Send(~a,~sid.1,~m.1)` | 同参与方，发送实例标识和消息不同，不匹配完整所示元组 |
 
-因此省略的是与目标完整元组匹配关系无关的Send，没有删除一个与该元组匹配的第二个Send。所谓“无关”是相对于图所强调的元组匹配和来源对应；额外发送在完整知识依赖图中仍参与获取参与方分量的知识推导，不能据此声称它与整个constraint graph的所有推导都无关。
+因此省略的是与所示完整元组不匹配的其他Send，没有删除一个与该元组匹配的第二个Send。额外发送具有不同的发送实例标识和消息分量，并可能参与完整知识依赖图中的其他推导，不能称为对整个执行完全无关。
 
 graph中的 `#vf.3/#vf.4` 另有名为 `Send` 的攻击者规则节点，它们的动作是 `K(<~a,~sid,~m>)`，结论是 `In`。这些是网络投递规则，不是协议动作事实 `Send(A,sid,m)`，也不是第二次匹配发送。正式图只以公开条目至两个槽位的分支表示它们。
 
@@ -128,14 +128,14 @@ graph中的 `#vf.3/#vf.4` 另有名为 `Send` 的攻击者规则节点，它们�
 - H1 [A Formal Analysis of 5G Authentication](https://people.inf.ethz.ch/rsasse/pub/5G-CCS18.pdf)，ACM CCS 2018作者扩展版本：物理第5页Figure 3，纵向生命线、状态框、相同消息标识、黑白/浅灰。该参考图本身是协议流程，未将其误写成反例图。
 - H2 [A Comprehensive Formal Security Analysis of OAuth 2.0](https://publ.sec.uni-stuttgart.de/FettKuestersSchmitz-CCS-2016.pdf)，ACM CCS 2016：物理第5页Figure 3，将形式化分析发现的路径整理为可读顺序及数据标签。只借鉴表达，不引入其OAuth攻击结论。
 
-为便于复查，保留本次实际查看的作者PDF副本：
+研究阶段实际查看过下列作者PDF副本；它们只用于图形风格研究，不是本项目原创产物，也不是科学证明依赖。由于未核实再分发许可，本轮从项目提交内容中移除副本，仅保留下列来源与核对记录：
 
-| 副本 | 页数/所查页 | SHA-256 |
-|---|---|---|
-| [5G作者扩展PDF](D:/kwaay-formal/submissions/arocmag/latex-v2/figures/fig2-qa/reference-pdfs/5G-CCS18.pdf) | 21页/物理第5页 | `2878bfacffd1118c67f9a26cd4401544b83391a1c7b593a55519d189af6d0e1c` |
-| [OAuth作者PDF](D:/kwaay-formal/submissions/arocmag/latex-v2/figures/fig2-qa/reference-pdfs/OAuth-CCS16.pdf) | 12页/物理第5页 | `799f2c2f4027b15b08a7d1c2fac8340db47a7ea40992a02aed887cd484bc81e2` |
+| 研究时副本 | 原始公开URL | 页数/所查页 | SHA-256 | 当前状态 |
+|---|---|---|---|---|
+| `5G-CCS18.pdf` | [作者扩展PDF](https://people.inf.ethz.ch/rsasse/pub/5G-CCS18.pdf) | 21页/物理第5页 | `2878bfacffd1118c67f9a26cd4401544b83391a1c7b593a55519d189af6d0e1c` | 已从项目移除 |
+| `OAuth-CCS16.pdf` | [作者/研究组PDF](https://publ.sec.uni-stuttgart.de/FettKuestersSchmitz-CCS-2016.pdf) | 12页/物理第5页 | `799f2c2f4027b15b08a7d1c2fac8340db47a7ea40992a02aed887cd484bc81e2` | 已从项目移除 |
 
-这些只用于图形研究，不作为本稿新增安全证据，也不加入冻结参考文献。
+论文标题、作者、会议、DOI、参考图号、PDF物理页码和图形风格分析结论继续保存在`FIG2_REFERENCE_ANALYSIS.md`中；外部PDF不作为本稿新增安全证据，也不加入冻结参考文献。
 
 图2采用向下时间轴。若把7个阶段横排在8.2cm内，阶段说明及完整接受参数会争夺水平空间。纵向图能保留9pt动作文字、7.5pt规则说明，且让单一Out分支、持久来源复用和顺序接受同时可读。没有使用 `figure*` 或缩放整个图。
 
@@ -219,6 +219,6 @@ Git受跟踪内容改动限定为第3节的图2插入、图目录README的图2�
 4. **为什么当前事件表示？** 以数学动作名与时间点为主层，小字号规则名为说明层；收集规则只显示状态和输入，保持rule/action语义区别。
 5. **如何表现同一来源复用？** 只有一个`!Sent(A,oid,m)`节点，右侧同一虚线干线分成两条读取箭头，对应两条真实PersistentFact边。
 6. **如何表现接受事件不同？** 完整五参数相同，而两框时间分别为r₁/r₂；纵轴和r₁<r₂显示两次发生，底部明确r₁≠r₂。
-7. **如何处理无关Send？** 省略G-ex `#vr.4` / G-inj `#vr.5` 的不同sid/m发送；图注限定唯一性只针对完整所示元组，报告保留其参数和知识依赖边界。
+7. **如何处理独立graph里的额外Send？** 省略G-ex `#vr.4` / G-inj `#vr.5` 中与所示完整元组不匹配的不同sid/m发送；图注限定唯一性只针对所示完整元组，报告保留其参数和知识依赖边界。
 8. **为什么不用Tamarin截图？** 截图保留证明界面与知识展开，单栏信息密度过高；本文需要经审计的相关事件投影，故依据真实节点与边重构可编辑TikZ。
 9. **为什么不称完整K-Waay攻击？** 当前两槽抽象只表达准入、来源匹配与模型接受；没有完整密码机制、上层安装或部署服务，且所示执行未满足原有参与方互异条件。

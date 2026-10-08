@@ -1,6 +1,6 @@
 # Figure plan
 
-Fig.1 frozen after semantic/hierarchy review and artifact rebuild.
+Fig.1 frozen after semantic/hierarchy review and artifact rebuild: `AROCMAG_FIG1_FROZEN_READY`.
 
 Its information requirements come from
 `submissions/arocmag/style-study/FINAL_CHINESE_PAPER_BLUEPRINT.md`.
@@ -10,14 +10,14 @@ review source and PDF are `fig1-preview.tex` and `fig1-preview.pdf`.
 Reference and design decisions are recorded in `FIG1_REFERENCE_ANALYSIS.md`
 and `FIG1_DESIGN_REPORT.md`; the latter records the semantic and visual-hierarchy patch.
 
-Fig.2 ready for review: `AROCMAG_FIG2_READY_FOR_REVIEW`.
+Fig.2 frozen: `AROCMAG_FIG2_FROZEN_READY`.
 
 The editable TikZ source is `fig2-duplicate-acceptance-trace.tex`; the 8.2cm
 standalone review source and PDF are `fig2-preview.tex` and `fig2-preview.pdf`.
 Actual PDF figure research is recorded in `FIG2_REFERENCE_ANALYSIS.md`;
 element-by-element model/graph mappings, scope and QA are recorded in
-`FIG2_DESIGN_REPORT.md`. `fig2-qa/` preserves the build logs, static graph checks,
-gray-scale review renderings and the two external reference PDFs.
+`FIG2_DESIGN_REPORT.md`. `fig2-qa/` preserves the build logs, static graph checks
+and gray-scale review renderings; third-party reference PDFs are not retained.
 
 Required content:
 
@@ -31,9 +31,9 @@ Required content:
 
 Source: `rqv2_relaxed.spthy`, lemma `one_send_two_accepts_exists`, and
 `reviews/2026-09-16-evidence/trace-audit-summary.txt` (relaxed duplicate witness).
-Only the related event projection is displayed; unrelated Send events in an
-exported graph must not be added to the core chain. The matching Send is unique
-for this exact tuple, not necessarily the only Send in the complete trace.
+Only the related event projection is displayed; Send events that do not match
+the shown exact tuple are omitted from the core chain. The matching Send is
+unique for this exact tuple, not necessarily the only Send in the complete trace.
 
 Section 3.1 now replaces the Fig.2 placeholder comments with the formal figure,
 one figure-reference sentence and a short evidence/projection note.
