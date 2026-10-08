@@ -16,8 +16,18 @@
 \end{equation}
 式\eqref{eq:relaxed-duplicate-witness}中的两个接受事件具有相同条目、批次和接收方上下文坐标，但$r_1<r_2$表明它们是两次不同的事件发生。性质还要求，所有与该精确元组匹配的发送事件都位于$s$；因此两个接受不是分别对应两个匹配发送。这个唯一性只针对所示元组，不排除执行中存在其他坐标的无关发送。
 
-% FIGURE 2 TO BE INSERTED BY SEPARATE FIGURE TASK:
-% exact-origin duplicate acceptance trace in relaxed admission
+图\ref{fig:duplicate-acceptance-trace}给出了该可达执行的关键事件投影。
+\begin{figure}[tbp]
+  \centering
+  \input{figures/fig2-duplicate-acceptance-trace}
+  \caption{无互异约束模型中的重复接受可达执行}
+  \label{fig:duplicate-acceptance-trace}
+  \par\smallskip
+  \begin{minipage}{8.2cm}
+    \fontsize{7.5}{10}\selectfont
+    依据Tamarin模型及独立复核的可达执行重构。仅显示与完整元组相关的关键事件投影；该元组的匹配Send唯一，执行中可能存在其他无关Send。
+  \end{minipage}
+\end{figure}
 
 该重复接受源于批次组合阶段对同一已暴露条目的重复选取：同一条目占据两个槽位，随后两个处理步骤分别匹配同一持久来源事实并产生接受事件。该执行说明重复参与方条目能够进入同一批次并产生接受事件，对RQ1给出肯定回答；它同时对RQ2给出肯定的存在性回答。
 

@@ -1,0 +1,19 @@
+\documentclass[varwidth=8.4cm,border=6pt]{standalone}
+\usepackage[UTF8,fontset=fandol]{ctex}
+\usepackage{amsmath}
+\usepackage{tikz}
+\usetikzlibrary{positioning,arrows.meta,fit}
+
+\begin{document}
+\begin{minipage}{8.2cm}
+  \centering
+  \input{fig2-duplicate-acceptance-trace}
+  \par\smallskip
+  {\fontsize{9}{11}\selectfont\textbf{图2}\quad 无互异约束模型中的重复接受可达执行}
+  \par\smallskip
+  \begin{minipage}{8.2cm}
+    \fontsize{7.5}{10}\selectfont
+    依据Tamarin模型及独立复核的可达执行重构。仅显示与完整元组相关的关键事件投影；该元组的匹配Send唯一，执行中可能存在其他无关Send。
+  \end{minipage}
+\end{minipage}
+\end{document}

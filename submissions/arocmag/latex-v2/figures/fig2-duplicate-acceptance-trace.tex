@@ -1,0 +1,93 @@
+% Audited key-event projection; see FIG2_DESIGN_REPORT.md.
+% Model sid is rendered as the frozen manuscript's oid.
+\begin{tikzpicture}[
+  >=Latex,
+  flow/.style={->,line width=0.45pt},
+  read/.style={->,dashed,line width=0.35pt},
+  event/.style={
+    draw,rounded corners=1pt,line width=0.35pt,
+    align=center,text width=5.70cm,inner sep=2.2pt,
+    font=\fontsize{9}{11}\selectfont
+  },
+  output/.style={event,text width=3.12cm,
+    font=\fontsize{9}{11}\selectfont},
+  slot/.style={event,minimum height=8.5mm},
+  accept/.style={event,fill=black!7,minimum height=10mm},
+  time/.style={font=\fontsize{9}{11}\selectfont,inner sep=0pt},
+  note/.style={font=\fontsize{7.5}{9.5}\selectfont,align=center,inner sep=1pt}
+]
+  % A context boundary, rather than a separate participant/actor.
+  \draw[line width=0.35pt,rounded corners=1pt]
+    (1.08,-2.34) rectangle (7.22,-8.66);
+  \node[note,fill=white] at (4.15,-2.34)
+    {同一批次上下文 $(\mathit{bid},\mathit{rst})$};
+
+  \node[event,minimum height=11mm] (f2send) at (4.15,0) {
+    匹配发送来源（该完整元组唯一）\\[-1pt]
+    $\mathsf{Send}(A,\mathit{oid},m)@s$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{SendMessage}}
+  };
+  \node[output,minimum height=11mm] (f2out) at (2.60,-1.50) {
+    公开条目\\[-1pt]
+    $E=(A,\mathit{oid},m)$\\[-1pt]
+    $\mathsf{Out}(E)$
+  };
+  \node[output,minimum height=11mm] (f2sent) at (6.18,-1.50) {
+    持久来源事实\\[-1pt]
+    $!\mathsf{Sent}(A,\mathit{oid},m)$
+  };
+
+  \node[slot] (f2slot1) at (4.15,-3.02) {
+    槽位1：$E=(A,\mathit{oid},m)$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{CollectSlot1}；输入 $\mathsf{In}(E)$}
+  };
+  \node[slot] (f2slot2) at (4.15,-4.12) {
+    槽位2：$E=(A,\mathit{oid},m)$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{CollectSlot2}；再次输入 $\mathsf{In}(E)$}
+  };
+  \node[event,minimum height=10mm] (f2batch) at (4.15,-5.35) {
+    $\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})@b$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{AdmitRelaxedBatch}（无互异条件）}
+  };
+  \node[accept] (f2accept1) at (4.15,-6.74) {
+    $\mathsf{ReceiverAccept}(A,\mathit{oid},m,\mathit{bid},\mathit{rst})@r_1$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{ProcessSlot1}}
+  };
+  \node[accept] (f2accept2) at (4.15,-8.05) {
+    $\mathsf{ReceiverAccept}(A,\mathit{oid},m,\mathit{bid},\mathit{rst})@r_2$\\[-1pt]
+    {\fontsize{7.5}{9.5}\selectfont 规则：\textsf{ProcessSlot2}}
+  };
+
+  % One rule firing exposes E and creates one persistent origin fact.
+  \draw[flow] (f2send.south) -- (f2out.north);
+  \draw[flow] (f2send.south) -- (f2sent.north);
+
+  % A single public entry is selected/delivered twice by the network.
+  \draw[line width=0.45pt] (f2out.west) -- (0.88,-1.50) -- (0.88,-4.12);
+  \draw[flow] (0.88,-3.02) -- (f2slot1.west);
+  \draw[flow] (0.88,-4.12) -- (f2slot2.west);
+  \draw[flow] (f2slot1) -- (f2slot2);
+  \draw[flow] (f2slot2) -- (f2batch);
+  \draw[flow] (f2batch) -- (f2accept1);
+  \draw[flow] (f2accept1) -- (f2accept2);
+
+  % Both reads have the same origin (#s:c1 in both audited graphs).
+  \draw[dashed,line width=0.35pt]
+    (f2sent.east) -- (8.04,-1.50) -- (8.04,-8.05);
+  \draw[read] (8.04,-6.74) -- (f2accept1.east);
+  \draw[read] (8.04,-8.05) -- (f2accept2.east);
+
+  % Time points mark action events; collection rules have no action fact.
+  \node[note] at (0.43,0.90) {时间};
+  \draw[->,line width=0.35pt] (0.43,0.68) -- (0.43,-8.63);
+  \foreach \t/\y in {s/0,b/-5.35,r_1/-6.74,r_2/-8.05} {
+    \fill (0.43,\y) circle (1.25pt);
+    \node[time,anchor=east] at (0.30,\y) {$\t$};
+  }
+
+  \node[font=\fontsize{9}{11}\selectfont,align=center] at (4.15,-9.07)
+    {$E_1=E_2=(A,\mathit{oid},m)$\qquad $s<b<r_1<r_2$\\[-1pt]
+     两个接受事件不同：$r_1\neq r_2$};
+  \node[note] at (4.15,-9.72)
+    {实线：条目投递/执行顺序\qquad 虚线：读取同一持久来源事实};
+\end{tikzpicture}

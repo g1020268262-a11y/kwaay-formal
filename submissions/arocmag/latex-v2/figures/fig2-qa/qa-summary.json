@@ -1,0 +1,111 @@
+{
+  "time": "2026-10-08T04:36:49.330505+08:00",
+  "status": "AROCMAG_FIG2_READY_FOR_REVIEW",
+  "scope": "static read-only audit of recorded independent traces; no Tamarin execution",
+  "graph_checks": [
+    {
+      "graph": "trace_RQv2_Relaxed_SL2-AS0-CL0-A1-C1-NB_one_send_two_accepts_exists-CreateParty-CollectSlot2-ProcessSlot1-AdmitRelaxedBatch-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage",
+      "nodes": 16,
+      "edges": 26,
+      "matching_send": "#s",
+      "matching_send_count": 1,
+      "unrelated_send": "#vr.4",
+      "batch_receive": "#b",
+      "collect_slot_1": "#vr.2",
+      "collect_slot_2": "#vr.1",
+      "accept_1": "#r1",
+      "accept_2": "#r2",
+      "persistent_origin_edges": [
+        {
+          "jgeRelation": "PersistentFact",
+          "jgeSource": "#s:c1",
+          "jgeTarget": "#r1:p1"
+        },
+        {
+          "jgeRelation": "PersistentFact",
+          "jgeSource": "#s:c1",
+          "jgeTarget": "#r2:p1"
+        }
+      ],
+      "same_complete_tuple": true,
+      "same_accept_context": true
+    },
+    {
+      "graph": "trace_RQv2_Relaxed_SL2-AS0-CL0-A1-C1-NB_receiver_accept_injective-case_1-CreateParty-ProcessSlot1-AdmitRelaxedBatch-SendMessage-ProcessSlot2-ProcessSlot1-SendMessage-SendMessage-SendMessage-SendMessage",
+      "nodes": 16,
+      "edges": 26,
+      "matching_send": "#s",
+      "matching_send_count": 1,
+      "unrelated_send": "#vr.5",
+      "batch_receive": "#vr.1",
+      "collect_slot_1": "#vr.3",
+      "collect_slot_2": "#vr.2",
+      "accept_1": "#r1",
+      "accept_2": "#r2",
+      "persistent_origin_edges": [
+        {
+          "jgeRelation": "PersistentFact",
+          "jgeSource": "#s:c1",
+          "jgeTarget": "#r1:p1"
+        },
+        {
+          "jgeRelation": "PersistentFact",
+          "jgeSource": "#s:c1",
+          "jgeTarget": "#r2:p1"
+        }
+      ],
+      "same_complete_tuple": true,
+      "same_accept_context": true
+    }
+  ],
+  "model_lemma_order_and_tuple_uniqueness_checked": true,
+  "result_rows": 14,
+  "verified_rows": 13,
+  "falsified_rows": 1,
+  "all_comparisons_match": true,
+  "build_checks": {
+    "fig2-preview.log": {
+      "undefined_refs": 0,
+      "undefined_citations": 0,
+      "missing_glyphs": 0,
+      "overfull_boxes": 0
+    },
+    "main.log": {
+      "undefined_refs": 0,
+      "undefined_citations": 0,
+      "missing_glyphs": 0,
+      "overfull_boxes": 0
+    }
+  },
+  "preview_content_width_cm": 8.2,
+  "preview_page_width_cm": 8.62188888888889,
+  "preview_pages": 1,
+  "main_pages": 11,
+  "figure_2_main_page": 7,
+  "protected_sha256": {
+    "tamarin/rq-v2-minimal/rqv2_relaxed.spthy": "e5129575720020aa3f509782c2052fbf2114a540d013126f5a75d316cbabaf9d",
+    "reviews/2026-09-16-evidence/rqv2_relaxed-traces.json": "78fc92c506df4e5fb5ab61c2d0ee711f8408ae7a39cc5bbb2913759600e28986",
+    "reviews/2026-09-16-evidence/result-comparison.tsv": "27826a17a5e0eb90ebf40647dc1e5055285a58ce5641ea3bebf343b23b2bb4e6",
+    "submissions/arocmag/latex-v2/figures/fig1-two-slot-lifecycle.tex": "09ef99e6e62227e67224425ff80a5295ac103bac8226d9e956148aba30726c72",
+    "submissions/arocmag/latex-v2/figures/fig1-preview.pdf": "566698c2aeac87b9e6a4a172923755b3c1dbbbc1d9774792c68f0bc39a26ea28"
+  },
+  "tracked_changes_before_report_and_README": [
+    "submissions/arocmag/latex-v2/main.pdf",
+    "submissions/arocmag/latex-v2/sections/04-formal-analysis.tex"
+  ],
+  "final_tracked_changes": [
+    "submissions/arocmag/latex-v2/figures/README.md",
+    "submissions/arocmag/latex-v2/main.pdf",
+    "submissions/arocmag/latex-v2/sections/04-formal-analysis.tex"
+  ],
+  "frozen_body_recovered_exactly_after_removing_figure_insertion": true,
+  "formal_figure_has_one_send_one_sent_two_equal_tuple_slots_two_equal_context_accepts": true,
+  "artifact_sha256": {
+    "submissions/arocmag/latex-v2/figures/fig2-duplicate-acceptance-trace.tex": "4357438943ff9576a4c8f3a60a40e25cdbc38f6b88401f7fec86a24b5ef3e476",
+    "submissions/arocmag/latex-v2/figures/fig2-preview.tex": "8a81ffaae2fa7591f82eaf8048a35a382e5419ee602883acefddb014154cad5c",
+    "submissions/arocmag/latex-v2/figures/fig2-preview.pdf": "efa4f76337df8731d06d66768d116be1ce9bf7e08912ffe8d298385ff503f8eb",
+    "submissions/arocmag/latex-v2/main.pdf": "cdd3c7a5ed066a591269b6ec37986596dd652a217db5eabfc63cb43a7a71d1a3",
+    "submissions/arocmag/latex-v2/figures/FIG2_REFERENCE_ANALYSIS.md": "22cf70b7f20fbc733b6c7a2a2ff9b5b40480dfe8e0ce04976c22c09dffa93de9",
+    "submissions/arocmag/latex-v2/figures/FIG2_DESIGN_REPORT.md": "0b7e2214996fca02bfb97ea2560d8c2927d4e842aec6a0c4aec02ff9df499307"
+  }
+}
