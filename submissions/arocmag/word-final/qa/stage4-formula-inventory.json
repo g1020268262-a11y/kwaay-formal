@@ -1,0 +1,949 @@
+{
+  "format": "editable OMML",
+  "mathtype_status": "MATHTYPE_CONVERSION_BLOCKED",
+  "total_omml_objects": 99,
+  "inline_omml_objects": 86,
+  "display_member_omml_objects": 13,
+  "display_formula_paragraphs": 6,
+  "numbered_display_formulas": 3,
+  "unnumbered_display_formulas": 3,
+  "display_formulas": [
+    {
+      "paragraph_index": 26,
+      "number": null,
+      "math_object_count": 1,
+      "text": "S=((pkⱼ₁,prekⱼ₁,mⱼ₁),…,\n(pkⱼ₍d₎,prekⱼ₍d₎,mⱼ₍d₎)),\nd≥ 1,"
+    },
+    {
+      "paragraph_index": 32,
+      "number": 1,
+      "math_object_count": 1,
+      "text": "Eᵢ=(Aᵢ,oidᵢ,mᵢ),(1)"
+    },
+    {
+      "paragraph_index": 78,
+      "number": 2,
+      "math_object_count": 1,
+      "text": "DistinctPartyPerBatch(B)\n≜\n∀ 1≤ i<j≤ n,\nparty(Eᵢ)≠party(Eⱼ).(2)"
+    },
+    {
+      "paragraph_index": 133,
+      "number": null,
+      "math_object_count": 4,
+      "text": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s∧ReceiverAccept(A,oid,m,bid,rst)@r₁∧ReceiverAccept(A,oid,m,bid,rst)@r₂∧s<r₁∧ s<r₂\n⇒ r₁=r₂."
+    },
+    {
+      "paragraph_index": 136,
+      "number": null,
+      "math_object_count": 1,
+      "text": "Pτ⇒ Mτ, Mτ⇔ Iτ."
+    },
+    {
+      "paragraph_index": 142,
+      "number": 3,
+      "math_object_count": 5,
+      "text": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    }
+  ],
+  "objects": [
+    {
+      "object_index": 1,
+      "paragraph_index": 26,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "S=((pkⱼ₁,prekⱼ₁,mⱼ₁),…,\n(pkⱼ₍d₎,prekⱼ₍d₎,mⱼ₍d₎)),\nd≥ 1,",
+      "paragraph_context": "S=((pkⱼ₁,prekⱼ₁,mⱼ₁),…,\n(pkⱼ₍d₎,prekⱼ₍d₎,mⱼ₍d₎)),\nd≥ 1,"
+    },
+    {
+      "object_index": 2,
+      "paragraph_index": 32,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": 1,
+      "math_text": "Eᵢ=(Aᵢ,oidᵢ,mᵢ),",
+      "paragraph_context": "Eᵢ=(Aᵢ,oidᵢ,mᵢ),(1)"
+    },
+    {
+      "object_index": 3,
+      "paragraph_index": 33,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Aᵢ",
+      "paragraph_context": "其中，Aᵢ是参与方分量，oidᵢ是发送实例标识，mᵢ是消息分量。中文稿中的oid对应Tamarin源模型的sid，表示一次SendMessage规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式(1)仅用于分析，不表示协议线路编码。"
+    },
+    {
+      "object_index": 4,
+      "paragraph_index": 33,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oidᵢ",
+      "paragraph_context": "其中，Aᵢ是参与方分量，oidᵢ是发送实例标识，mᵢ是消息分量。中文稿中的oid对应Tamarin源模型的sid，表示一次SendMessage规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式(1)仅用于分析，不表示协议线路编码。"
+    },
+    {
+      "object_index": 5,
+      "paragraph_index": 33,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "mᵢ",
+      "paragraph_context": "其中，Aᵢ是参与方分量，oidᵢ是发送实例标识，mᵢ是消息分量。中文稿中的oid对应Tamarin源模型的sid，表示一次SendMessage规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式(1)仅用于分析，不表示协议线路编码。"
+    },
+    {
+      "object_index": 6,
+      "paragraph_index": 33,
+      "object_in_paragraph": 4,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oid",
+      "paragraph_context": "其中，Aᵢ是参与方分量，oidᵢ是发送实例标识，mᵢ是消息分量。中文稿中的oid对应Tamarin源模型的sid，表示一次SendMessage规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式(1)仅用于分析，不表示协议线路编码。"
+    },
+    {
+      "object_index": 7,
+      "paragraph_index": 33,
+      "object_in_paragraph": 5,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "sid",
+      "paragraph_context": "其中，Aᵢ是参与方分量，oidᵢ是发送实例标识，mᵢ是消息分量。中文稿中的oid对应Tamarin源模型的sid，表示一次SendMessage规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式(1)仅用于分析，不表示协议线路编码。"
+    },
+    {
+      "object_index": 8,
+      "paragraph_index": 42,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "A"
+    },
+    {
+      "object_index": 9,
+      "paragraph_index": 43,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "A"
+    },
+    {
+      "object_index": 10,
+      "paragraph_index": 47,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oid",
+      "paragraph_context": "oid"
+    },
+    {
+      "object_index": 11,
+      "paragraph_index": 48,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "sid",
+      "paragraph_context": "sid"
+    },
+    {
+      "object_index": 12,
+      "paragraph_index": 52,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m",
+      "paragraph_context": "m"
+    },
+    {
+      "object_index": 13,
+      "paragraph_index": 53,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m",
+      "paragraph_context": "m"
+    },
+    {
+      "object_index": 14,
+      "paragraph_index": 57,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "i",
+      "paragraph_context": "i"
+    },
+    {
+      "object_index": 15,
+      "paragraph_index": 62,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "(bid,rst)"
+    },
+    {
+      "object_index": 16,
+      "paragraph_index": 63,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "(bid,rst)"
+    },
+    {
+      "object_index": 17,
+      "paragraph_index": 67,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "表1中的维度具有不同作用：槽位和(bid,rst)限定条目所在的批次上下文，消息分量区分符号消息，发送实例标识区分具体发送，参与方分量则是目标条件比较的对象。A表示符号模型中的协议主体，不自动等同于账户、公钥字节串或数据库记录；具体系统仍需说明实现对象到参与方投影的映射。"
+    },
+    {
+      "object_index": 18,
+      "paragraph_index": 67,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "表1中的维度具有不同作用：槽位和(bid,rst)限定条目所在的批次上下文，消息分量区分符号消息，发送实例标识区分具体发送，参与方分量则是目标条件比较的对象。A表示符号模型中的协议主体，不自动等同于账户、公钥字节串或数据库记录；具体系统仍需说明实现对象到参与方投影的映射。"
+    },
+    {
+      "object_index": 19,
+      "paragraph_index": 68,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid₁,m₁)",
+      "paragraph_context": "考虑候选条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。"
+    },
+    {
+      "object_index": 20,
+      "paragraph_index": 68,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid₂,m₂)",
+      "paragraph_context": "考虑候选条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。"
+    },
+    {
+      "object_index": 21,
+      "paragraph_index": 68,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oid₁≠oid₂",
+      "paragraph_context": "考虑候选条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。"
+    },
+    {
+      "object_index": 22,
+      "paragraph_index": 68,
+      "object_in_paragraph": 4,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "考虑候选条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。"
+    },
+    {
+      "object_index": 23,
+      "paragraph_index": 77,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "B=(E₁,…,Eₙ)",
+      "paragraph_context": "设B=(E₁,…,Eₙ)为有序批次，party(Eᵢ)表示条目Eᵢ的参与方投影。批内参与方互异条件对应的目标为"
+    },
+    {
+      "object_index": 24,
+      "paragraph_index": 77,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "party(Eᵢ)",
+      "paragraph_context": "设B=(E₁,…,Eₙ)为有序批次，party(Eᵢ)表示条目Eᵢ的参与方投影。批内参与方互异条件对应的目标为"
+    },
+    {
+      "object_index": 25,
+      "paragraph_index": 77,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Eᵢ",
+      "paragraph_context": "设B=(E₁,…,Eₙ)为有序批次，party(Eᵢ)表示条目Eᵢ的参与方投影。批内参与方互异条件对应的目标为"
+    },
+    {
+      "object_index": 26,
+      "paragraph_index": 78,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": 2,
+      "math_text": "DistinctPartyPerBatch(B)\n≜\n∀ 1≤ i<j≤ n,\nparty(Eᵢ)≠party(Eⱼ).",
+      "paragraph_context": "DistinctPartyPerBatch(B)\n≜\n∀ 1≤ i<j≤ n,\nparty(Eᵢ)≠party(Eⱼ).(2)"
+    },
+    {
+      "object_index": 27,
+      "paragraph_index": 79,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "n=2",
+      "paragraph_context": "该关系要求同批任意两个不同位置具有不同参与方投影，但不要求参与方、消息或发送实例在其他批次或其他执行中保持全局唯一。该定义适用于任意有限批次；机器分析采用最小非平凡情形n=2，此时目标化为A₁≠ A₂。"
+    },
+    {
+      "object_index": 28,
+      "paragraph_index": 79,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁≠ A₂",
+      "paragraph_context": "该关系要求同批任意两个不同位置具有不同参与方投影，但不要求参与方、消息或发送实例在其他批次或其他执行中保持全局唯一。该定义适用于任意有限批次；机器分析采用最小非平凡情形n=2，此时目标化为A₁≠ A₂。"
+    },
+    {
+      "object_index": 29,
+      "paragraph_index": 80,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "攻击者具有标准Dolev–Yao符号网络能力，并在候选条目暴露后控制两槽批次的组合。攻击者可以保留、重放、选择和排列已有条目，既可以在两个槽位重复同一元组，也可以选择由同一参与方产生、分别具有匹配发送来源的两个不同元组。接收处理要求存在与完整(A,oid,m)匹配的发送来源。攻击者能够改变已有条目的组合方式，但不能据此生成诚实参与方内部状态或凭空构造匹配发送来源。"
+    },
+    {
+      "object_index": 30,
+      "paragraph_index": 83,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Send(A,oid,m)",
+      "paragraph_context": "Tamarin使用多集重写规则描述状态转换，并以动作事实记录迹性质引用的事件[6]。SendMessage规则复用持久事实!Party(A)，在每次实例化时生成新鲜值~ sid和~ m，形成一个发送实例及其消息。该规则记录Send(A,oid,m)，将(A,oid,m)暴露到符号网络，并保存持久事实!Sent(A,oid,m)。其中，oid标识模型中的一次发送实例，不表示完整协议会话或事件时间戳；!Sent是理想化的来源事实，不实现真实签名或认证过程。"
+    },
+    {
+      "object_index": 31,
+      "paragraph_index": 83,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "Tamarin使用多集重写规则描述状态转换，并以动作事实记录迹性质引用的事件[6]。SendMessage规则复用持久事实!Party(A)，在每次实例化时生成新鲜值~ sid和~ m，形成一个发送实例及其消息。该规则记录Send(A,oid,m)，将(A,oid,m)暴露到符号网络，并保存持久事实!Sent(A,oid,m)。其中，oid标识模型中的一次发送实例，不表示完整协议会话或事件时间戳；!Sent是理想化的来源事实，不实现真实签名或认证过程。"
+    },
+    {
+      "object_index": 32,
+      "paragraph_index": 83,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oid",
+      "paragraph_context": "Tamarin使用多集重写规则描述状态转换，并以动作事实记录迹性质引用的事件[6]。SendMessage规则复用持久事实!Party(A)，在每次实例化时生成新鲜值~ sid和~ m，形成一个发送实例及其消息。该规则记录Send(A,oid,m)，将(A,oid,m)暴露到符号网络，并保存持久事实!Sent(A,oid,m)。其中，oid标识模型中的一次发送实例，不表示完整协议会话或事件时间戳；!Sent是理想化的来源事实，不实现真实签名或认证过程。"
+    },
+    {
+      "object_index": 33,
+      "paragraph_index": 84,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "E₁",
+      "paragraph_context": "网络中的候选元组依次进入两个线性槽位。第一个收集状态保存E₁并开放第二个槽位，第二个状态保存E₂；两个槽位共享批次标识bid和接收方上下文rst。其中，rst仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。"
+    },
+    {
+      "object_index": 34,
+      "paragraph_index": 84,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "E₂",
+      "paragraph_context": "网络中的候选元组依次进入两个线性槽位。第一个收集状态保存E₁并开放第二个槽位，第二个状态保存E₂；两个槽位共享批次标识bid和接收方上下文rst。其中，rst仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。"
+    },
+    {
+      "object_index": 35,
+      "paragraph_index": 84,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "bid",
+      "paragraph_context": "网络中的候选元组依次进入两个线性槽位。第一个收集状态保存E₁并开放第二个槽位，第二个状态保存E₂；两个槽位共享批次标识bid和接收方上下文rst。其中，rst仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。"
+    },
+    {
+      "object_index": 36,
+      "paragraph_index": 84,
+      "object_in_paragraph": 4,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "rst",
+      "paragraph_context": "网络中的候选元组依次进入两个线性槽位。第一个收集状态保存E₁并开放第二个槽位，第二个状态保存E₂；两个槽位共享批次标识bid和接收方上下文rst。其中，rst仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。"
+    },
+    {
+      "object_index": 37,
+      "paragraph_index": 84,
+      "object_in_paragraph": 5,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "rst",
+      "paragraph_context": "网络中的候选元组依次进入两个线性槽位。第一个收集状态保存E₁并开放第二个槽位，第二个状态保存E₂；两个槽位共享批次标识bid和接收方上下文rst。其中，rst仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。"
+    },
+    {
+      "object_index": 38,
+      "paragraph_index": 85,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m,bid,rst)",
+      "paragraph_context": "收集完成后，准入规则依据相应模型的约束进入拒绝状态或顺序处理状态。获准路径先记录批次准入事件BatchReceive，再依次处理槽位1和槽位2。每个处理步骤都必须匹配相应的!Sent(A,oid,m)，随后记录包含(A,oid,m,bid,rst)的ReceiverAccept 事件。该事件表示条目完成来源匹配并到达抽象接受边界，不等同于网络输入、完整K-Waay会话接受或密钥安装。由于!Sent是持久事实，当同一完整元组占据两个槽位时，两个处理步骤可以读取同一来源事实；该事件对应关系正是后续验证的对象。"
+    },
+    {
+      "object_index": 39,
+      "paragraph_index": 89,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "表2列出三种批次准入模型。无互异约束模型不比较消息或参与方分量，用于观察移除目标条件后的行为；消息互异约束模型仅要求m₁≠ m₂，用于检验消息关系能否替代参与方关系；参与方互异约束模型直接要求A₁≠ A₂，用作目标对照。三者仅改变同一抽象中的准入条件，不表示三套新协议或修复方案。"
+    },
+    {
+      "object_index": 40,
+      "paragraph_index": 89,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁≠ A₂",
+      "paragraph_context": "表2列出三种批次准入模型。无互异约束模型不比较消息或参与方分量，用于观察移除目标条件后的行为；消息互异约束模型仅要求m₁≠ m₂，用于检验消息关系能否替代参与方关系；参与方互异约束模型直接要求A₁≠ A₂，用作目标对照。三者仅改变同一抽象中的准入条件，不表示三套新协议或修复方案。"
+    },
+    {
+      "object_index": 41,
+      "paragraph_index": 103,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m",
+      "paragraph_context": "消息m"
+    },
+    {
+      "object_index": 42,
+      "paragraph_index": 104,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "m₁≠ m₂"
+    },
+    {
+      "object_index": 43,
+      "paragraph_index": 108,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "参与方A"
+    },
+    {
+      "object_index": 44,
+      "paragraph_index": 109,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁≠ A₂",
+      "paragraph_context": "A₁≠ A₂"
+    },
+    {
+      "object_index": 45,
+      "paragraph_index": 113,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "除代表性执行的可达性外，模型还检查发送来源对应性、批内来源单射性、批内消息互异性和批内参与方互异性。发送来源对应性要求每个ReceiverAccept 都有一个更早且与完整(A,oid,m)匹配的Send。批内来源单射性（scoped occurrence injectivity）要求：在同一批次和接收方上下文中，不同接受事件不能对应同一个匹配发送来源。该性质描述本文作用域内的事件发生单射性，不是Lowe认证层次中的单射一致性[8]。表3列出四类性质的量词范围。"
+    },
+    {
+      "object_index": 46,
+      "paragraph_index": 120,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "ReceiverAccept(A,oid,m,bid,rst)@r",
+      "paragraph_context": "ReceiverAccept(A,oid,m,bid,rst)@r推出存在s<r使Send(A,oid,m)@s成立"
+    },
+    {
+      "object_index": 47,
+      "paragraph_index": 120,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "s<r",
+      "paragraph_context": "ReceiverAccept(A,oid,m,bid,rst)@r推出存在s<r使Send(A,oid,m)@s成立"
+    },
+    {
+      "object_index": 48,
+      "paragraph_index": 120,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Send(A,oid,m)@s",
+      "paragraph_context": "ReceiverAccept(A,oid,m,bid,rst)@r推出存在s<r使Send(A,oid,m)@s成立"
+    },
+    {
+      "object_index": 49,
+      "paragraph_index": 121,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "断言完整(A,oid,m)匹配，不是仅匹配A"
+    },
+    {
+      "object_index": 50,
+      "paragraph_index": 121,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "断言完整(A,oid,m)匹配，不是仅匹配A"
+    },
+    {
+      "object_index": 51,
+      "paragraph_index": 123,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Send(A,oid,m)@s",
+      "paragraph_context": "同一Send(A,oid,m)@s早于两个坐标均为(A,oid,m,bid,rst)的接受事件时，推出r₁=r₂"
+    },
+    {
+      "object_index": 52,
+      "paragraph_index": 123,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m,bid,rst)",
+      "paragraph_context": "同一Send(A,oid,m)@s早于两个坐标均为(A,oid,m,bid,rst)的接受事件时，推出r₁=r₂"
+    },
+    {
+      "object_index": 53,
+      "paragraph_index": 123,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "r₁=r₂",
+      "paragraph_context": "同一Send(A,oid,m)@s早于两个坐标均为(A,oid,m,bid,rst)的接受事件时，推出r₁=r₂"
+    },
+    {
+      "object_index": 54,
+      "paragraph_index": 126,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质断言m₁≠ m₂"
+    },
+    {
+      "object_index": 55,
+      "paragraph_index": 126,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "r₁≠ r₂",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质断言m₁≠ m₂"
+    },
+    {
+      "object_index": 56,
+      "paragraph_index": 126,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质断言m₁≠ m₂"
+    },
+    {
+      "object_index": 57,
+      "paragraph_index": 129,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质要求A₁≠ A₂"
+    },
+    {
+      "object_index": 58,
+      "paragraph_index": 129,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "r₁≠ r₂",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质要求A₁≠ A₂"
+    },
+    {
+      "object_index": 59,
+      "paragraph_index": 129,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁≠ A₂",
+      "paragraph_context": "同一(bid,rst)中若r₁≠ r₂，则该性质要求A₁≠ A₂"
+    },
+    {
+      "object_index": 60,
+      "paragraph_index": 133,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s",
+      "paragraph_context": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s∧ReceiverAccept(A,oid,m,bid,rst)@r₁∧ReceiverAccept(A,oid,m,bid,rst)@r₂∧s<r₁∧ s<r₂\n⇒ r₁=r₂."
+    },
+    {
+      "object_index": 61,
+      "paragraph_index": 133,
+      "object_in_paragraph": 2,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "∧ReceiverAccept(A,oid,m,bid,rst)@r₁",
+      "paragraph_context": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s∧ReceiverAccept(A,oid,m,bid,rst)@r₁∧ReceiverAccept(A,oid,m,bid,rst)@r₂∧s<r₁∧ s<r₂\n⇒ r₁=r₂."
+    },
+    {
+      "object_index": 62,
+      "paragraph_index": 133,
+      "object_in_paragraph": 3,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "∧ReceiverAccept(A,oid,m,bid,rst)@r₂",
+      "paragraph_context": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s∧ReceiverAccept(A,oid,m,bid,rst)@r₁∧ReceiverAccept(A,oid,m,bid,rst)@r₂∧s<r₁∧ s<r₂\n⇒ r₁=r₂."
+    },
+    {
+      "object_index": 63,
+      "paragraph_index": 133,
+      "object_in_paragraph": 4,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "∧s<r₁∧ s<r₂\n⇒ r₁=r₂.",
+      "paragraph_context": "∀ A,oid,m,bid,rst,s,r₁,r₂:\nSend(A,oid,m)@s∧ReceiverAccept(A,oid,m,bid,rst)@r₁∧ReceiverAccept(A,oid,m,bid,rst)@r₂∧s<r₁∧ s<r₂\n⇒ r₁=r₂."
+    },
+    {
+      "object_index": 64,
+      "paragraph_index": 134,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "该公式限制一个匹配发送来源在给定(bid,rst)中对应的接受事件数。虽然前件包含发送事件，但公式本身不保证每个接受都有来源；这一存在性由发送来源对应性另行断言。公式也不比较两个不同来源的参与方投影，因而不能直接确定批内包含多少个不同参与方。"
+    },
+    {
+      "object_index": 65,
+      "paragraph_index": 135,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Pτ",
+      "paragraph_context": "若分别以Pτ、Mτ和Iτ表示迹τ中的批内参与方互异性、批内消息互异性和批内来源单射性，则根据当前规则可人工推导"
+    },
+    {
+      "object_index": 66,
+      "paragraph_index": 135,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Mτ",
+      "paragraph_context": "若分别以Pτ、Mτ和Iτ表示迹τ中的批内参与方互异性、批内消息互异性和批内来源单射性，则根据当前规则可人工推导"
+    },
+    {
+      "object_index": 67,
+      "paragraph_index": 135,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Iτ",
+      "paragraph_context": "若分别以Pτ、Mτ和Iτ表示迹τ中的批内参与方互异性、批内消息互异性和批内来源单射性，则根据当前规则可人工推导"
+    },
+    {
+      "object_index": 68,
+      "paragraph_index": 135,
+      "object_in_paragraph": 4,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "τ",
+      "paragraph_context": "若分别以Pτ、Mτ和Iτ表示迹τ中的批内参与方互异性、批内消息互异性和批内来源单射性，则根据当前规则可人工推导"
+    },
+    {
+      "object_index": 69,
+      "paragraph_index": 136,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": null,
+      "math_text": "Pτ⇒ Mτ, Mτ⇔ Iτ.",
+      "paragraph_context": "Pτ⇒ Mτ, Mτ⇔ Iτ."
+    },
+    {
+      "object_index": 70,
+      "paragraph_index": 141,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "核心存在性性质one_send_two_accepts_exists同样验证通过。相应可达执行在两个槽位收集同一个(A,oid,m)元组，并由一个匹配发送来源支持同批两个接受事件。关键动作事实可归纳为"
+    },
+    {
+      "object_index": 71,
+      "paragraph_index": 142,
+      "object_in_paragraph": 1,
+      "kind": "display-member",
+      "display_number": 3,
+      "math_text": "Send(A,oid,m)@s,",
+      "paragraph_context": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    },
+    {
+      "object_index": 72,
+      "paragraph_index": 142,
+      "object_in_paragraph": 2,
+      "kind": "display-member",
+      "display_number": 3,
+      "math_text": "BatchReceive(bid,rst)@b,",
+      "paragraph_context": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    },
+    {
+      "object_index": 73,
+      "paragraph_index": 142,
+      "object_in_paragraph": 3,
+      "kind": "display-member",
+      "display_number": 3,
+      "math_text": "ReceiverAccept(A,oid,m,bid,rst)@r₁,",
+      "paragraph_context": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    },
+    {
+      "object_index": 74,
+      "paragraph_index": 142,
+      "object_in_paragraph": 4,
+      "kind": "display-member",
+      "display_number": 3,
+      "math_text": "ReceiverAccept(A,oid,m,bid,rst)@r₂,",
+      "paragraph_context": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    },
+    {
+      "object_index": 75,
+      "paragraph_index": 142,
+      "object_in_paragraph": 5,
+      "kind": "display-member",
+      "display_number": 3,
+      "math_text": "s<b<r₁<r₂.",
+      "paragraph_context": "Send(A,oid,m)@s,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid,m,bid,rst)@r₁,ReceiverAccept(A,oid,m,bid,rst)@r₂,s<b<r₁<r₂.(3)"
+    },
+    {
+      "object_index": 76,
+      "paragraph_index": 143,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "r₁<r₂",
+      "paragraph_context": "式(3)中的两个接受事件具有相同的条目、批次和接收方上下文坐标，而r₁<r₂表明二者是不同的事件发生。该性质还约束与所示完整元组匹配的Send 发生点唯一为s，因此两个接受并非分别对应两个匹配发送。此处的唯一性仅针对所示元组，不排除执行中存在与该元组不匹配的其他发送。"
+    },
+    {
+      "object_index": 77,
+      "paragraph_index": 143,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "s",
+      "paragraph_context": "式(3)中的两个接受事件具有相同的条目、批次和接收方上下文坐标，而r₁<r₂表明二者是不同的事件发生。该性质还约束与所示完整元组匹配的Send 发生点唯一为s，因此两个接受并非分别对应两个匹配发送。此处的唯一性仅针对所示元组，不排除执行中存在与该元组不匹配的其他发送。"
+    },
+    {
+      "object_index": 78,
+      "paragraph_index": 148,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "r₁≠ r₂",
+      "paragraph_context": "与之对应的全称性质receiver_accept_injective被反例否定。式(3)满足同一发送早于两个同坐标接受事件的前件，但r₁≠ r₂。因此，该执行既是one_send_two_accepts_exists的可达见证，也是批内来源单射性的反例轨迹，两项结果描述同一种重复形状。与此同时，receiver_accept_has_send验证通过，表明两个接受均有更早的匹配发送。该反例揭示的是具有模型内匹配发送来源的条目在两槽抽象中被重复使用，而非无来源接受或满足K-Waay原有互异条件的完整协议攻击。"
+    },
+    {
+      "object_index": 79,
+      "paragraph_index": 150,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "消息互异约束模型中的accepted_batch_has_distinct_messages验证通过：同一(bid,rst)中的两个不同ReceiverAccept 事件具有不同消息分量。该全称性质确认了模型直接施加的批内消息关系，但不涉及参与方分量。"
+    },
+    {
+      "object_index": 80,
+      "paragraph_index": 152,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 81,
+      "paragraph_index": 152,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid₁,m₁)",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 82,
+      "paragraph_index": 152,
+      "object_in_paragraph": 3,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid₂,m₂)",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 83,
+      "paragraph_index": 152,
+      "object_in_paragraph": 4,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "oid₁≠oid₂",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 84,
+      "paragraph_index": 152,
+      "object_in_paragraph": 5,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 85,
+      "paragraph_index": 152,
+      "object_in_paragraph": 6,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Send",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 86,
+      "paragraph_index": 152,
+      "object_in_paragraph": 7,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "替代性结论的关键证据是same_party_different_messages_batch_exists的验证结果。相应可达执行包含同一参与方A的两个条目(A,oid₁,m₁)和(A,oid₂,m₂)，其中oid₁≠oid₂且m₁≠ m₂。两个条目各有自己的匹配Send来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同(bid,rst)中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。"
+    },
+    {
+      "object_index": 87,
+      "paragraph_index": 153,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "m₁≠ m₂",
+      "paragraph_context": "该机器见证将m₁≠ m₂且A₁=A₂的静态关系落实到完整的共同生命周期，并确认两个接受各有匹配发送来源。因此，消息级准入约束不能推出式(2)规定的批内参与方互异性。批内消息互异性和批内来源单射性的全称结果仍分别对应各自公式与复核记录，但不构成相互独立的增量证据。消息相等时的拒绝分支也存在可达执行（repeated_message_rejection_exists）；该结果仅说明分支可达，不保证所有重复消息最终均被拒绝。"
+    },
+    {
+      "object_index": 88,
+      "paragraph_index": 153,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁=A₂",
+      "paragraph_context": "该机器见证将m₁≠ m₂且A₁=A₂的静态关系落实到完整的共同生命周期，并确认两个接受各有匹配发送来源。因此，消息级准入约束不能推出式(2)规定的批内参与方互异性。批内消息互异性和批内来源单射性的全称结果仍分别对应各自公式与复核记录，但不构成相互独立的增量证据。消息相等时的拒绝分支也存在可达执行（repeated_message_rejection_exists）；该结果仅说明分支可达，不保证所有重复消息最终均被拒绝。"
+    },
+    {
+      "object_index": 89,
+      "paragraph_index": 156,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁≠ A₂",
+      "paragraph_context": "参与方互异约束模型在准入时直接要求A₁≠ A₂。目标全称性质accepted_batch_has_distinct_parties验证通过，表明同一(bid,rst)中的两个不同ReceiverAccept 事件具有不同参与方投影。准入规则规定执行如何受到目标条件约束，全称性质则验证后续接受事件满足的关系；二者分别属于规则语义和机器验证结论。"
+    },
+    {
+      "object_index": 90,
+      "paragraph_index": 156,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "参与方互异约束模型在准入时直接要求A₁≠ A₂。目标全称性质accepted_batch_has_distinct_parties验证通过，表明同一(bid,rst)中的两个不同ReceiverAccept 事件具有不同参与方投影。准入规则规定执行如何受到目标条件约束，全称性质则验证后续接受事件满足的关系；二者分别属于规则语义和机器验证结论。"
+    },
+    {
+      "object_index": 91,
+      "paragraph_index": 211,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Mτ⇏ Pτ",
+      "paragraph_context": "参与方、发送实例和消息三个维度分别描述同批条目的主体归属、发送发生和消息内容。沿用第2.3节的记号，机器结果直接支持Mτ⇏ Pτ：same_party_different_messages_batch_exists给出同一参与方的不同消息在同批被接受的完整可达执行。与之不同，Pτ⇒ Mτ⇔ Iτ来自三个模型共同采用的新鲜消息生成和完整元组精确来源匹配规则，是人工迹语义推导，而非新增的Tamarin lemma或证明器结果。该关系不能推广为任意协议中的一般性质，也不意味着三个性质具有相同语义或三个比较维度彼此独立。"
+    },
+    {
+      "object_index": 92,
+      "paragraph_index": 211,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "Pτ⇒ Mτ⇔ Iτ",
+      "paragraph_context": "参与方、发送实例和消息三个维度分别描述同批条目的主体归属、发送发生和消息内容。沿用第2.3节的记号，机器结果直接支持Mτ⇏ Pτ：same_party_different_messages_batch_exists给出同一参与方的不同消息在同批被接受的完整可达执行。与之不同，Pτ⇒ Mτ⇔ Iτ来自三个模型共同采用的新鲜消息生成和完整元组精确来源匹配规则，是人工迹语义推导，而非新增的Tamarin lemma或证明器结果。该关系不能推广为任意协议中的一般性质，也不意味着三个性质具有相同语义或三个比较维度彼此独立。"
+    },
+    {
+      "object_index": 93,
+      "paragraph_index": 212,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(A,oid,m)",
+      "paragraph_context": "发送来源对应性和批内来源单射性约束发送—接受事件关系：前者要求每个ReceiverAccept 都有更早且与完整(A,oid,m)匹配的Send，后者限制同一匹配发送来源在一个(bid,rst)中对应的接受事件数。两者均不比较不同来源的参与方投影，批内来源单射性也不同于Lowe认证层次中的单射一致性。因此，两个条目可以分别满足来源要求并各自接受一次，同时仍具有相同的参与方投影。"
+    },
+    {
+      "object_index": 94,
+      "paragraph_index": 212,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "发送来源对应性和批内来源单射性约束发送—接受事件关系：前者要求每个ReceiverAccept 都有更早且与完整(A,oid,m)匹配的Send，后者限制同一匹配发送来源在一个(bid,rst)中对应的接受事件数。两者均不比较不同来源的参与方投影，批内来源单射性也不同于Lowe认证层次中的单射一致性。因此，两个条目可以分别满足来源要求并各自接受一次，同时仍具有相同的参与方投影。"
+    },
+    {
+      "object_index": 95,
+      "paragraph_index": 213,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "第3.2节的机器见证将上述维度差异落实为可达行为：两个条目具有不同发送实例、不同消息和各自的匹配发送来源，但参与方投影均为A，并在同批产生接受事件。该执行的意义不在于重述“不同消息不等于不同参与方”，而在于证明这种组合能够通过共同的来源匹配、准入和顺序处理生命周期。因此，条目级的消息和来源性质不能替代式(2)规定的批次组合关系。"
+    },
+    {
+      "object_index": 96,
+      "paragraph_index": 215,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₁",
+      "paragraph_context": "式(2)规定同批条目应保持的关系；参与方互异约束模型在准入处直接比较A₁与A₂，为该关系提供可执行的目标对照。该建模选择用于验证目标关系及有效批次的可达性，不说明显式比较是唯一实现方式。"
+    },
+    {
+      "object_index": 97,
+      "paragraph_index": 215,
+      "object_in_paragraph": 2,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A₂",
+      "paragraph_context": "式(2)规定同批条目应保持的关系；参与方互异约束模型在准入处直接比较A₁与A₂，为该关系提供可执行的目标对照。该建模选择用于验证目标关系及有效批次的可达性，不说明显式比较是唯一实现方式。"
+    },
+    {
+      "object_index": 98,
+      "paragraph_index": 217,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "A",
+      "paragraph_context": "参与方表示仍需由具体系统定义。模型中的A是抽象协议主体，不自动等同于账户、长期身份、公钥编码、设备、预密钥关联或数据库记录。系统只有建立实现对象到参与方投影的合理映射，才能据此比较批内条目；当前模型既未验证该映射，也未引入新的身份解析机制。"
+    },
+    {
+      "object_index": 99,
+      "paragraph_index": 219,
+      "object_in_paragraph": 1,
+      "kind": "inline",
+      "display_number": null,
+      "math_text": "(bid,rst)",
+      "paragraph_context": "机器证据固定为两个槽位。式(2)通过成对比较定义有限批次的目标关系，两槽模型捕获最小非平凡相等情形，但没有证明任意批次长度下的完整协议性质。结论仅涉及同一(bid,rst)中的条目组合和接受事件，不提供跨批次、回滚或重启保证。"
+    }
+  ],
+  "checks": {
+    "total_is_99": true,
+    "six_display_formulas": true,
+    "three_numbered": true,
+    "three_unnumbered": true,
+    "number_sequence": true
+  },
+  "all_pass": true
+}

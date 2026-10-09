@@ -1,0 +1,186 @@
+{
+  "docx": "submissions/arocmag/word-final/K-Waay-AROCMAG-submission-stage4.docx",
+  "docx_sha256": "C5A9A26B036B1B6747DEF8279769038BB8C1D1F92C392BB1A002D2ED8B6F9A64",
+  "stage3_1_docx_sha256": "71EB1C4B2F856D7CF63434861F96EB83BA4844F355A3D298EDF22984766A4556",
+  "zip_integrity": true,
+  "core_properties": {
+    "title": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+    "subject": "Anonymous AROCMAG Stage 4 submission-compliance manuscript",
+    "author": "Anonymous Author(s)",
+    "last_modified_by": "Anonymous Author(s)",
+    "comments": "Official-template-derived anonymous Stage 4 manuscript; submission-compliance build synchronized from the current latex-v2 source."
+  },
+  "comments_or_people_parts": [],
+  "tracked_change_counts": {
+    "insertions": 0,
+    "deletions": 0,
+    "moves_from": 0,
+    "moves_to": 0
+  },
+  "hidden_run_count": 0,
+  "external_relationship_parts": [],
+  "local_path_hits": [],
+  "referenced_paper_images": [
+    {
+      "part": "/word/media/image4.png",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1799
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ],
+      "metadata_keys": [
+        "dpi"
+      ],
+      "sha256": "AE6C5800ECFA64AB86200A6C73E25AA9248BA584825B9EEA8D0BC804E25C12AB"
+    },
+    {
+      "part": "/word/media/image5.png",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1454
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ],
+      "metadata_keys": [
+        "dpi"
+      ],
+      "sha256": "8A4804F82DC382DE777B726D21827703DA84C7E7920311F703619EB48DA06992"
+    }
+  ],
+  "figure_status": "VECTOR_GRAPHICS_PENDING",
+  "formula_status": "MATHTYPE_CONVERSION_BLOCKED",
+  "tool_availability": {
+    "MathType": null,
+    "Inkscape": null,
+    "pstoedit": null,
+    "dvisvgm": "C:\\texlive\\2025\\bin\\windows\\dvisvgm.EXE",
+    "pdftocairo": "C:\\texlive\\2025\\bin\\windows\\pdftocairo.EXE"
+  },
+  "page_comparison_with_stage3_1": [
+    {
+      "page": 1,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        87,
+        71,
+        1152,
+        1709
+      ]
+    },
+    {
+      "page": 2,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        88,
+        46,
+        1152,
+        1661
+      ]
+    },
+    {
+      "page": 3,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        88,
+        46,
+        1152,
+        1651
+      ]
+    },
+    {
+      "page": 4,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        88,
+        46,
+        1152,
+        1640
+      ]
+    },
+    {
+      "page": 5,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        88,
+        46,
+        1152,
+        1658
+      ]
+    },
+    {
+      "page": 6,
+      "same_dimensions": true,
+      "pixel_identical": false,
+      "difference_bbox": [
+        88,
+        46,
+        1156,
+        733
+      ]
+    }
+  ],
+  "pdf_text_comparison_with_stage3_1": [
+    {
+      "page": 1,
+      "text_identical": false,
+      "stage3_1_character_count": 2946,
+      "stage4_character_count": 2954
+    },
+    {
+      "page": 2,
+      "text_identical": true,
+      "stage3_1_character_count": 2618,
+      "stage4_character_count": 2618
+    },
+    {
+      "page": 3,
+      "text_identical": true,
+      "stage3_1_character_count": 1535,
+      "stage4_character_count": 1535
+    },
+    {
+      "page": 4,
+      "text_identical": true,
+      "stage3_1_character_count": 2379,
+      "stage4_character_count": 2379
+    },
+    {
+      "page": 5,
+      "text_identical": true,
+      "stage3_1_character_count": 2668,
+      "stage4_character_count": 2668
+    },
+    {
+      "page": 6,
+      "text_identical": true,
+      "stage3_1_character_count": 2031,
+      "stage4_character_count": 2031
+    }
+  ],
+  "checks": {
+    "zip_integrity": true,
+    "anonymous_core_properties": true,
+    "no_comments": true,
+    "no_tracked_changes": true,
+    "no_hidden_text": true,
+    "no_external_relationships": true,
+    "no_local_paths": true,
+    "two_referenced_png_figures": true,
+    "formula_inventory_pass": true,
+    "six_same_size_rendered_pages": true,
+    "only_page_one_text_changed": true
+  },
+  "all_internal_checks_pass": true
+}

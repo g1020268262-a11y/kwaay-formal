@@ -1,0 +1,58 @@
+[
+  {
+    "number": 1,
+    "key": "cremers2023session",
+    "reference": "[1] CREMERS C, JACOMME C, NASKA A. Formal analysis of session-handling in secure messaging: lifting security from sessions to conversations[C]//32nd USENIX Security Symposium (USENIX Security 23). Anaheim, CA: USENIX Association, 2023: 1235-1252.",
+    "verified_source": "https://www.usenix.org/conference/usenixsecurity23/presentation/cremers-session-handling",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 2,
+    "key": "collins2024kwaay",
+    "reference": "[2] COLLINS D, HUGUENIN-DUMITTAN L, NGUYEN N K, et al. K-Waay: fast and deniable post-quantum X3DH without ring signatures[C]//33rd USENIX Security Symposium (USENIX Security 24). Philadelphia, PA: USENIX Association, 2024: 433-450.",
+    "verified_source": "https://www.usenix.org/conference/usenixsecurity24/presentation/collins",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 3,
+    "key": "collins2024kwaayfull",
+    "reference": "[3] COLLINS D, HUGUENIN-DUMITTAN L, NGUYEN N K, et al. K-Waay: fast and deniable post-quantum X3DH without ring signatures[EB/OL]. Cryptology ePrint Archive, Paper 2024/120, 2024[2026-10-08]. https://eprint.iacr.org/2024/120.",
+    "verified_source": "https://eprint.iacr.org/2024/120",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 4,
+    "key": "cohngordon2020signal",
+    "reference": "[4] COHN-GORDON K, CREMERS C, DOWLING B, et al. A formal security analysis of the Signal messaging protocol[J]. Journal of Cryptology, 2020, 33(4): 1914-1983. DOI:10.1007/s00145-020-09360-1.",
+    "verified_source": "https://link.springer.com/article/10.1007/s00145-020-09360-1",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 5,
+    "key": "bhargavan2024pqxdh",
+    "reference": "[5] BHARGAVAN K, JACOMME C, KIEFER F, et al. Formal verification of the PQXDH post-quantum key agreement protocol for end-to-end secure messaging[C]//33rd USENIX Security Symposium (USENIX Security 24). Philadelphia, PA: USENIX Association, 2024: 469-486.",
+    "verified_source": "https://www.usenix.org/conference/usenixsecurity24/presentation/bhargavan",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 6,
+    "key": "meier2013tamarin",
+    "reference": "[6] MEIER S, SCHMIDT B, CREMERS C, et al. The TAMARIN prover for the symbolic analysis of security protocols[C]//Computer Aided Verification: CAV 2013. Berlin, Heidelberg: Springer, 2013: 696-701. DOI:10.1007/978-3-642-39799-8_48.",
+    "verified_source": "https://link.springer.com/chapter/10.1007/978-3-642-39799-8_48",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 7,
+    "key": "lupetti2006names",
+    "reference": "[7] LUPETTI S, DILLEMA F W, STABELL-KULO T. Names in cryptographic protocols[C]//Proceedings of the 4th International Workshop on Security in Information Systems. Paphos, Cyprus: SciTePress, 2006: 185-194. DOI:10.5220/0002484701850194.",
+    "verified_source": "https://www.scitepress.org/PublishedPapers/2006/24847/",
+    "source_metadata_pending": false
+  },
+  {
+    "number": 8,
+    "key": "lowe1997hierarchy",
+    "reference": "[8] LOWE G. A hierarchy of authentication specifications[C]//Proceedings of the 10th Computer Security Foundations Workshop. Rockport, MA: IEEE Computer Society Press, 1997: 31-43. DOI:10.1109/CSFW.1997.596782.",
+    "verified_source": "https://doi.org/10.1109/CSFW.1997.596782",
+    "source_metadata_pending": false
+  }
+]
