@@ -1,0 +1,32 @@
+{
+  "scientific_baseline_head": "7c2b8a0184cf858f5a3d468bdd9f71bff8863b01",
+  "scientific_sources": {
+    "submissions/arocmag/latex-v2/sections/00-abstract.tex": "2264691CEDE0B4778F52433928E460F2E9102E6C7BDBB453083B52506CDF29F9",
+    "submissions/arocmag/latex-v2/sections/01-introduction.tex": "CCAD8058F560544FD2AEC078909BF8518FA3683B3E9347C8A5B562A4C2B32C4E",
+    "submissions/arocmag/latex-v2/sections/02-problem.tex": "E54EBF0B9E607EBF1CB6BB5E44585A4866EFF839ECE6B11968F34F5D97B55D66",
+    "submissions/arocmag/latex-v2/sections/03-formal-modeling.tex": "FDA3DB3F41B44AE160298574FB53DD709EA2D95337420C3CA83948C1857E4879",
+    "submissions/arocmag/latex-v2/sections/04-formal-analysis.tex": "144B55F7B346C03372F006E3C8DC126FCC5C83BD17A52E14FA7B308514630420",
+    "submissions/arocmag/latex-v2/sections/05-discussion.tex": "46A1455ED189D760B165E38ECCF6D6D089EBEEA18685B486EDE40EC114BDC0AA",
+    "submissions/arocmag/latex-v2/sections/06-conclusion.tex": "357F7095CF1BC19BCED61F8CFE3A69D281558F92E495E6C19AF08422D3878087"
+  },
+  "official_template_sha256": "BAF9FCE8B2BC56F2320C8BF4541546E43F48A8F3A1C773B40667D7B2A7B872CB",
+  "working_docx": "submissions/arocmag/word-final/K-Waay-AROCMAG-submission-stage3-polished.docx",
+  "working_docx_sha256": "34518736176B6E2B4C7743E854074AE582BD7668A77C3BD8C738772FFE6420FA",
+  "citation_order": [
+    "cremers2023session",
+    "collins2024kwaay",
+    "collins2024kwaayfull",
+    "cohngordon2020signal",
+    "bhargavan2024pqxdh",
+    "meier2013tamarin",
+    "lupetti2006names",
+    "lowe1997hierarchy"
+  ],
+  "numbered_formulas": 3,
+  "unnumbered_formulas": 3,
+  "tables": 4,
+  "figures": 2,
+  "figure_format": "PNG, 360 dpi, generated from frozen PDF previews",
+  "equation_format": "editable OMML",
+  "reference_standard": "GB/T 7714-2005"
+}

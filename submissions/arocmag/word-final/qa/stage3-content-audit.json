@@ -1,0 +1,138 @@
+{
+  "checks": {
+    "title_exact": true,
+    "chinese_abstract_exact": true,
+    "english_abstract_exact": true,
+    "keywords_present": true,
+    "english_keywords_present": true,
+    "all_scientific_anchors": true,
+    "four_tables_exact_shapes": true,
+    "two_figures": true,
+    "three_numbered_equations": true,
+    "editable_omml_present": true,
+    "three_numbered_and_three_unnumbered_formulas": true,
+    "six_display_formula_contents_exact": true,
+    "all_eight_citations_present": true,
+    "all_eight_references_exact": true,
+    "heading_counts": true,
+    "semantic_context_checks": true,
+    "no_forbidden_visible_text": true,
+    "anonymous_metadata": true,
+    "stage3_metadata": true
+  },
+  "all_pass": true,
+  "anchor_status": {
+    "same_party_different_messages_batch_exists": true,
+    "全部14项结果仍为13项验证通过、1项被反例否定": true,
+    "Pτ⇒Mτ": true,
+    "Mτ⇔Iτ": true,
+    "Mτ⇏Pτ": true,
+    "而非新增的Tamarin lemma或证明器结果": true,
+    "机器证据固定为两个槽位": true,
+    "不能直接解释为具体协议攻击": true,
+    "结论限于两槽准入抽象和ReceiverAccept事件": true,
+    "该元组的匹配Send唯一，执行中可能存在与其不匹配的其他Send": true,
+    "模型内匹配发送来源": true
+  },
+  "forbidden_hits": {
+    "latex_cite": [],
+    "latex_ref": [],
+    "latex_environment": [],
+    "latex_project_macros": [],
+    "todo": [],
+    "local_path": [],
+    "github_internal": [],
+    "misleading_source_wording": []
+  },
+  "table_shapes": [
+    [
+      6,
+      5
+    ],
+    [
+      4,
+      5
+    ],
+    [
+      5,
+      3
+    ],
+    [
+      8,
+      5
+    ]
+  ],
+  "heading_counts": {
+    "level1": 6,
+    "level2": 13
+  },
+  "omath_count": 99,
+  "inline_shapes": 2,
+  "numbered_equations": [
+    1,
+    2,
+    3
+  ],
+  "citation_numbers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "semantic_context_checks": {
+    "machine_witness_vs_manual_derivation": true,
+    "fourteen_result_conservation": true,
+    "receiver_accept_scope": true
+  },
+  "formula_records": [
+    {
+      "source": "02-problem.tex",
+      "number": null,
+      "latex": "S=\\bigl((\\mathit{pk}_{j_1},\\mathit{prek}_{j_1},m_{j_1}),\\ldots,\n           (\\mathit{pk}_{j_d},\\mathit{prek}_{j_d},m_{j_d})\\bigr),\n  \\qquad d\\geq 1,"
+    },
+    {
+      "source": "02-problem.tex",
+      "number": 1,
+      "latex": "E_i=(A_i,\\mathit{oid}_i,m_i),"
+    },
+    {
+      "source": "03-formal-modeling.tex",
+      "number": 2,
+      "latex": "\\mathsf{DistinctPartyPerBatch}(B)\n  \\triangleq\n  \\forall\\,1\\leq i<j\\leq n,\\quad\n  \\mathsf{party}(E_i)\\neq\\mathsf{party}(E_j)."
+    },
+    {
+      "source": "03-formal-modeling.tex",
+      "number": null,
+      "latex": "\\begin{aligned}\n  \\forall A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst},s,r_1,r_2:\\quad\n  &\\mathsf{Send}(A,\\mathit{oid},m)@s \\\\\n  {}\\land{}&\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_1 \\\\\n  {}\\land{}&\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_2 \\\\\n  {}\\land{}&s<r_1\\land s<r_2\n  \\quad\\Longrightarrow\\quad r_1=r_2.\n\\end{aligned}"
+    },
+    {
+      "source": "03-formal-modeling.tex",
+      "number": null,
+      "latex": "P_\\tau\\Rightarrow M_\\tau,\\qquad M_\\tau\\Leftrightarrow I_\\tau."
+    },
+    {
+      "source": "04-formal-analysis.tex",
+      "number": 3,
+      "latex": "\\begin{aligned}\n    &\\mathsf{Send}(A,\\mathit{oid},m)@s,\\\\\n    &\\mathsf{BatchReceive}(\\mathit{bid},\\mathit{rst})@b,\\\\\n    &\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_1,\\\\\n    &\\mathsf{ReceiverAccept}(A,\\mathit{oid},m,\\mathit{bid},\\mathit{rst})@r_2,\\\\\n    &s<b<r_1<r_2.\n  \\end{aligned}"
+    }
+  ],
+  "display_formula_contents_exact": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    true
+  ],
+  "references_exact": true,
+  "metadata": {
+    "title": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+    "subject": "Anonymous AROCMAG Stage 3 academically polished submission manuscript",
+    "author": "Anonymous Author(s)",
+    "last_modified_by": "Anonymous Author(s)"
+  }
+}

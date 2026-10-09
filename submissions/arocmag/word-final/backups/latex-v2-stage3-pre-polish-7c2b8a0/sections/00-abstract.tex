@@ -1,0 +1,30 @@
+\begin{abstract}
+K-Waay的\batchreceive 已要求同次调用输入对应不同参与方。本文构造三种固定两槽Tamarin准入模型。无互异模型允许一个匹配来源对应同批两个接受。消息互异模型的消息互异性和来源单射性均验证通过，但二者在新鲜消息和精确来源匹配下逻辑相关。机器见证表明，同一参与方的不同发送实例和消息各有模型内匹配发送来源，仍能进入同批并产生两个接受，故消息约束不能推出参与方互异性。参与方互异模型保持目标关系且有效批次可达。
+
+\noindent\textbf{关键词：}K-Waay；批次准入；批内参与方互异条件；Tamarin；形式化验证
+\end{abstract}
+
+\begin{center}
+  \large\bfseries \englishtitle\\[0.5em]
+  \normalsize Abstract
+\end{center}
+\noindent
+K-Waay requires the inputs of one \batchreceive invocation to correspond to
+different parties.  We construct three fixed-two-slot Tamarin models with a
+common lifecycle and, respectively, no distinction constraint, message
+distinction, and party distinction.  In the unconstrained model, one matching
+sender origin can correspond to two acceptance events in the same batch.  In
+the message-constrained model, same-batch message distinction and batch-scoped
+origin injectivity are both verified; rule-level analysis shows, however,
+that they are logically dependent under the fresh-message and exact-origin
+matching rules.  The decisive machine witness is a complete execution in
+which two different sender occurrences and messages from the same party, each
+with its own matching sender origin, enter one batch and yield two
+\receiveraccept events.  Thus the message-level restriction does not imply
+same-batch party distinction.  The party-constrained model preserves the
+target relation while retaining reachable valid distinct-party batches.  The
+conclusion is limited to the fixed-two-slot batch-admission abstraction.
+
+\noindent\textbf{Key words:} K-Waay; batch admission; distinct-party
+condition; Tamarin; formal verification
+

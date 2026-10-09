@@ -1,0 +1,43 @@
+\subsection{BatchReceive机制与批内参与方互异条件}
+\label{subsec:batchreceive-condition}
+
+\kwaay 由KEM、数字签名和split-KEM等密码组件构成，本文不展开其完整握手和计算安全证明\cite{collins2024kwaay}。与本文问题直接相关的是接收侧接口：发送方调用\sendaction 产生协议消息；原文第4.1节说明，当多条发送方消息对应同一接收方临时状态时，接收方以该共享状态调用\batchreceive\cite{collins2024kwaayfull}。一次调用的输入可概括为未编号向量
+\[
+  S=\bigl((\mathit{pk}_{j_1},\mathit{prek}_{j_1},m_{j_1}),\ldots,
+           (\mathit{pk}_{j_d},\mathit{prek}_{j_d},m_{j_d})\bigr),
+  \qquad d\geq 1,
+\]
+其中每个分量包含所声称发送方的公钥、预密钥束和协议消息。该表示只说明一次接收操作会组合多个发送方关联输入，不涉及各分量的解封装与密钥派生细节。
+
+原文第5.1节（第21页）要求同次\batchreceive 调用中的元素对应不同参与方\cite{collins2024kwaayfull}。该要求约束同一批次内元素之间的关系，并不要求某参与方在全部执行中只出现一次，也不限制其只能产生一条消息。规范给出了目标关系，但这段表述没有指定由调用者、批次构造组件还是准入层承担维护职责。
+
+本文以候选条目完成组合、进入处理前的边界作为批次准入分析对象。“批次准入”是对这一分析边界的概括，不是为K-Waay增加新算法。需要刻画的是同次调用中各条目的参与方投影及其相互关系，而非完整密码过程。
+
+\subsection{比较维度与问题实例}
+\label{subsec:identity-coordinates}
+
+为了检验不同限制实际比较的对象，先把参与方、发送实例和消息分开。将批次准入所需的条目信息抽象为
+\begin{equation}
+  E_i=(A_i,\oid_i,m_i),
+  \label{eq:abstract-entry}
+\end{equation}
+其中，$A_i$是参与方分量，$\oid_i$是发送实例标识，$m_i$是消息分量。中文稿中的$\oid$对应Tamarin源模型的$\mathit{sid}$，表示一次\texttt{SendMessage}规则实例化所产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式\eqref{eq:abstract-entry}是分析记号，也不是协议线路编码。
+
+\input{tables/identity-coordinate-map}
+
+表\ref{tab:identity-coordinate-map}中的各维度承担不同作用：槽位和$(\mathit{bid},\mathit{rst})$限定条目所在的批次上下文，消息分量区分符号消息，发送实例标识区分具体发送，参与方分量则是目标条件所比较的对象。$A$表示符号模型中的协议主体，不自动等同于账户、公钥字节串或数据库记录；具体系统需要另行说明实现对象到参与方投影的映射。
+
+考虑候选条目$(A,\oid_1,m_1)$和$(A,\oid_2,m_2)$，其中$\oid_1\neq\oid_2$且$m_1\neq m_2$。二者来自不同发送实例并携带不同消息，参与方投影却相同。这个最小实例说明，消息或发送实例互异并不在逻辑上保证参与方互异；后续验证还需确认该组合能否通过共同生命周期并产生接受事件。
+
+\subsection{研究问题}
+\label{subsec:research-questions}
+
+据此提出三个研究问题：
+\begin{enumerate}[label=\textbf{RQ\arabic*：},leftmargin=4.2em,labelsep=0.5em]
+  \item 移除批内参与方互异条件后，重复参与方条目能否进入同一批次并产生接受事件？
+  \item 一个匹配发送来源能否在同一批次和接收方上下文中对应两个\receiveraccept 事件？
+  \item 消息互异约束能否替代参与方互异条件，还是同一参与方的不同消息仍可同时获准进入批次？
+\end{enumerate}
+
+为使结论归因于准入条件，三种模型保持发送、收集、来源匹配和顺序处理过程不变，仅调整准入时比较的维度。
+
