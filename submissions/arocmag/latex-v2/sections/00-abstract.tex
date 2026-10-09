@@ -1,5 +1,5 @@
 \begin{abstract}
-K-Waay的\batchreceive 要求同次调用的输入对应不同参与方，但消息级限制能否替代该条件仍需验证。为此，在共同生命周期上构造无互异、消息互异和参与方互异三种固定两槽Tamarin准入模型。结果表明，无互异模型允许一个匹配发送来源对应同批两个接受；消息互异模型的消息互异性与批内来源单射性在新鲜消息和精确来源匹配规则下等价，但同一参与方的不同发送实例和消息仍可各自匹配发送来源并在同批被接受；参与方互异模型保持目标关系且有效批次可达。结论限于两槽批次准入抽象。
+K-Waay的\batchreceive 要求同次调用对应不同参与方，但消息限制能否替代该条件需验证。基于共同生命周期构造无互异、消息互异和参与方互异三种固定两槽Tamarin准入模型。无互异模型允许一个匹配发送来源对应同批两个接受；人工语义推导表明，新鲜消息和精确来源匹配使消息互异性与批内来源单射性等价。机器可达见证显示，同一参与方的不同发送实例与消息各有匹配发送来源，可同批接受，故消息约束不能推出参与方互异性。参与方模型保持目标关系，有效批次可达。结论限于固定两槽准入抽象。
 
 \noindent\textbf{关键词：}K-Waay；批次准入；批内参与方互异条件；Tamarin；形式化验证
 \end{abstract}
@@ -9,22 +9,21 @@ K-Waay的\batchreceive 要求同次调用的输入对应不同参与方，但消
   \normalsize Abstract
 \end{center}
 \noindent
-K-Waay requires the inputs of one \batchreceive invocation to correspond to
-different parties, but whether a message-level restriction can replace this
-same-batch condition requires verification.  Three fixed-two-slot Tamarin
-admission models---unconstrained, message-constrained, and
-party-constrained---were therefore constructed over a common lifecycle.  The
-unconstrained model admits two same-batch acceptance events supported by one
-matching sender origin.  Under the fresh-message and exact-origin matching
-rules, same-batch message distinction and batch-scoped origin injectivity are
-equivalent in the message-constrained model.  Nevertheless, a complete
-reachable execution contains two distinct sender occurrences and messages
-from the same party, each with its own matching sender origin, that enter one
-batch and yield two \receiveraccept events.  Hence message distinction does
-not imply same-batch party distinction.  The party-constrained model preserves
+K-Waay requires inputs to one \batchreceive invocation to correspond to
+different parties, but whether message distinction can replace this same-batch
+condition requires verification.  Three fixed-two-slot Tamarin admission
+models---unconstrained, message-constrained, and party-constrained---were
+constructed over a common lifecycle.  The unconstrained model admitted two
+same-batch acceptance events supported by one matching sender origin.  A
+manual semantic derivation under the fresh-message and exact-origin rules
+showed that same-batch message distinction and batch-scoped origin injectivity
+are equivalent in the message-constrained model.  A machine-reachable
+execution nevertheless contained two distinct sender occurrences and messages
+from the same party, each with its own matching sender origin; both entered one
+batch and yielded two \receiveraccept events.  Thus message distinction does
+not imply same-batch party distinction.  The party-constrained model preserved
 the target relation while retaining reachable valid distinct-party batches.
-These conclusions are limited to the fixed-two-slot batch-admission
-abstraction.
+These conclusions are limited to the fixed-two-slot batch-admission abstraction.
 
 \noindent\textbf{Key words:} K-Waay; batch admission; distinct-party
 condition; Tamarin; formal verification
