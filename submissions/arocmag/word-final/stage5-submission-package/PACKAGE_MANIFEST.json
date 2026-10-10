@@ -1,0 +1,48 @@
+{
+  "format": "K-Waay AROCMAG Stage 5 submission package manifest",
+  "manifest_self_hash": "omitted to avoid recursive self-reference",
+  "baseline_head": "b4b484f20f7b2670490725e8b0653e6ca6de360b",
+  "status": "SUBMISSION_PACKAGE_PREPARED_WITH_BLOCKERS",
+  "files": [
+    {
+      "name": "AUTHOR_INFORMATION_COLLECTION_FORM.md",
+      "bytes": 3035,
+      "sha256": "2E5F644800790E0F3CCBF9226AC893704C078B05CFAD3D50947349A70CBB203A"
+    },
+    {
+      "name": "FORMULA_VERIFICATION_CHECKLIST.csv",
+      "bytes": 30146,
+      "sha256": "B7A79188FC10291462B92CB321F454B9F23D53DA82492083EE1F6AC4A6082A32"
+    },
+    {
+      "name": "FORMULA_VERIFICATION_GUIDE.md",
+      "bytes": 5329,
+      "sha256": "8CACDDB1155FB0065928306C277A2B28100B797A10A5FB308C414AC7797AD8A9"
+    },
+    {
+      "name": "K-Waay-AROCMAG-submission-stage5-author-confirmation.docx",
+      "bytes": 620518,
+      "sha256": "FBE2E7C8CA1F5BFE2B55F06BAE4B1EFA81340FD8CCA35DD5958EE6CF747BC0FC"
+    },
+    {
+      "name": "K-Waay-AROCMAG-submission-stage5-preview.pdf",
+      "bytes": 1673468,
+      "sha256": "4D9A150AF19771ED49D2E220AD846C483F59F90F7CBFEC84391855F39FCFFF49"
+    },
+    {
+      "name": "PACKAGE_README.md",
+      "bytes": 1449,
+      "sha256": "373CE27A51F03D0F3BFD8AC7147B42520D85DCAF6DB7EB77E85B997B4E0A89EA"
+    },
+    {
+      "name": "SUBMISSION_COMPLIANCE_REPORT.md",
+      "bytes": 1793,
+      "sha256": "F854983629D51A0EDACF739EDAEABBE90885F2BDA2E273118AFC073D7B7D5119"
+    },
+    {
+      "name": "SUBMISSION_SYSTEM_OPERATION_CHECKLIST.md",
+      "bytes": 2809,
+      "sha256": "24417317F47B24B23017912509E82BB84B083164BB5D457DE7286A165797A020"
+    }
+  ]
+}

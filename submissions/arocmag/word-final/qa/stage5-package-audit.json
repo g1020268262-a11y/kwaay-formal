@@ -1,0 +1,212 @@
+{
+  "baseline_head": "b4b484f20f7b2670490725e8b0653e6ca6de360b",
+  "stage4_docx_sha256": "C5A9A26B036B1B6747DEF8279769038BB8C1D1F92C392BB1A002D2ED8B6F9A64",
+  "stage5_docx_sha256": "FBE2E7C8CA1F5BFE2B55F06BAE4B1EFA81340FD8CCA35DD5958EE6CF747BC0FC",
+  "stage4_pdf_sha256": "448FF3B1C60D0E4BB66528F9D44044EDF3F01EEAA6E7A33500CE9B9CEC498F28",
+  "stage5_pdf_sha256": "4D9A150AF19771ED49D2E220AD846C483F59F90F7CBFEC84391855F39FCFFF49",
+  "docx_different_parts": [
+    "docProps/core.xml"
+  ],
+  "docx_structure": {
+    "omml": 99,
+    "word_objects": 0,
+    "ole_objects": 0,
+    "embedding_parts": [],
+    "tables": 4,
+    "inline_figures": 2
+  },
+  "core_properties": {
+    "author": "Anonymous Author(s)",
+    "last_modified_by": "Anonymous Author(s)",
+    "subject": "Anonymous AROCMAG Stage 5 author-confirmation manuscript",
+    "description": "Stage 5 author-confirmation copy; scientific body preserved from Stage 4; author metadata and MathType conversion pending."
+  },
+  "privacy": {
+    "comments_or_people_parts": [],
+    "tracked_change_counts": {
+      "insertions": 0,
+      "deletions": 0,
+      "moves_from": 0,
+      "moves_to": 0
+    },
+    "hidden_run_count": 0,
+    "external_relationship_parts": [],
+    "local_path_hits": [],
+    "macro_parts": [],
+    "author_form_email_hits": [],
+    "author_form_phone_hits": []
+  },
+  "figures": [
+    {
+      "part": "/word/media/image4.png",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1799
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ],
+      "sha256": "AE6C5800ECFA64AB86200A6C73E25AA9248BA584825B9EEA8D0BC804E25C12AB"
+    },
+    {
+      "part": "/word/media/image5.png",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1454
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ],
+      "sha256": "8A4804F82DC382DE777B726D21827703DA84C7E7920311F703619EB48DA06992"
+    }
+  ],
+  "formula_checklist_rows": 99,
+  "pdf_page_sizes_points": [
+    [
+      595.3,
+      841.9
+    ],
+    [
+      595.3,
+      841.9
+    ],
+    [
+      595.3,
+      841.9
+    ],
+    [
+      595.3,
+      841.9
+    ],
+    [
+      595.3,
+      841.9
+    ],
+    [
+      595.3,
+      841.9
+    ]
+  ],
+  "pdf_metadata": {
+    "/Author": "Anonymous Author(s)",
+    "/Comments": "",
+    "/Company": "",
+    "/CreationDate": "D:20261010010905+08'00'",
+    "/Creator": "WPS 文字",
+    "/Keywords": "K-Waay; batch admission; distinct-party condition; Tamarin; formal verification",
+    "/ModDate": "D:20261010010905+08'00'",
+    "/Producer": "",
+    "/SourceModified": "D:20261010010905+08'00'",
+    "/Subject": "Anonymous AROCMAG Stage 5 author-confirmation manuscript",
+    "/Title": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+    "/Trapped": "/False"
+  },
+  "pdf_metadata_local_path_hits": [],
+  "rendered_pages": [
+    {
+      "page": 1,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "5B8D09BEAA284A980FA5FEE3B5C8179B3C4D257B664895045CD414991B7A5F8E"
+    },
+    {
+      "page": 2,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "910654EDC2DAC04AB9123C4EA8AE4E1207DB2B0F28BFE5AB46151E5EBA5E7D7B"
+    },
+    {
+      "page": 3,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "5010079FDE9E0735CA8DA93F2A762AC64091CDFB237E49D0056E5A5A21A63395"
+    },
+    {
+      "page": 4,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "982E15E3A107C80CD9206F79CF55F377665C8E0ED7AF4DF29C6BBB1DCF9F32EA"
+    },
+    {
+      "page": 5,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "3B62A4B1CCEE0421951223278944A0BDF6EC1D234D53EE053921018F0C9DBB6D"
+    },
+    {
+      "page": 6,
+      "pixels": [
+        1241,
+        1754
+      ],
+      "sha256": "DE371692CA7CB86A4B304DD8E74ABC99341A105A3F6B6E0FE0753E08CEE44B2F"
+    }
+  ],
+  "missing_package_files": [],
+  "checks": {
+    "all_required_package_files_present": true,
+    "stage5_docx_zip_integrity": true,
+    "same_docx_part_names_as_stage4": true,
+    "only_core_metadata_differs_from_stage4": true,
+    "document_xml_byte_identical_to_stage4": true,
+    "anonymous_core_metadata": true,
+    "stage5_subject_present": true,
+    "no_comments_or_people_parts": true,
+    "no_tracked_changes": true,
+    "no_hidden_runs": true,
+    "no_external_relationships": true,
+    "no_local_paths": true,
+    "no_macros": true,
+    "formula_count_is_99": true,
+    "no_ole_or_embedded_objects": true,
+    "four_tables": true,
+    "two_inline_figures": true,
+    "frozen_figure_hashes_preserved": true,
+    "formula_checklist_has_99_rows": true,
+    "formula_checklist_indices_are_1_to_99": true,
+    "stage5_pdf_has_six_pages": true,
+    "stage4_pdf_has_six_pages": true,
+    "stage5_pdf_is_a4": true,
+    "stage5_pdf_text_matches_stage4": true,
+    "stage5_pdf_author_is_anonymous": true,
+    "stage5_pdf_metadata_has_no_local_paths": true,
+    "six_rendered_pages_present": true,
+    "rendered_pages_have_expected_size": true,
+    "author_form_contains_no_filled_email_or_phone": true
+  },
+  "all_internal_checks_pass": true,
+  "manual_visual_review": {
+    "status": "completed separately",
+    "pages_reviewed": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "scope": "WPS-exported Stage 5 PDF at 150 dpi; not a Microsoft Word validation"
+  },
+  "blocked_statuses": [
+    "MATHTYPE_CONVERSION_BLOCKED",
+    "VECTOR_GRAPHICS_PENDING_IF_SUBMISSION_SYSTEM_REQUIRES_VECTOR",
+    "MICROSOFT_WORD_VALIDATION_PENDING",
+    "AUTHOR_METADATA_PENDING",
+    "SUBMISSION_SYSTEM_RULES_PENDING"
+  ],
+  "final_status": "SUBMISSION_PACKAGE_PREPARED_WITH_BLOCKERS"
+}
