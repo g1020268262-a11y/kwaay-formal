@@ -1,0 +1,46 @@
+{
+  "checks": {
+    "package_parts_unchanged_except_body_metadata": true,
+    "old_four_tables_preserved": true,
+    "six_old_display_formulas_preserved": true,
+    "seven_displays": true,
+    "eight_references_unchanged": true,
+    "six_chapters_13_subsections": true,
+    "rq_text_unchanged": true,
+    "abstract_discussion_conclusion_sources_unchanged": true,
+    "front_matter_unchanged": true,
+    "figures_unchanged": true,
+    "all_scientific_prose_chinese_sequence_covered": true,
+    "all14_rows_bound_to_independent_stdout": true,
+    "13_verified_1_falsified": true,
+    "M_witness_full_event_formula": true,
+    "protected_inputs_unchanged": true,
+    "latex_compile_qa": true,
+    "complete14_table_on_one_page": true
+  },
+  "all_pass": true,
+  "pages": {
+    "word": 7,
+    "latex": 12
+  },
+  "OMML": 110,
+  "tables": 6,
+  "figures": 2,
+  "display_formulas": 7,
+  "numbered_formulas": 3,
+  "references": 8,
+  "protected_files": 200,
+  "changed_protected": [],
+  "compile": {
+    "undefined_references": 0,
+    "undefined_citations": 0,
+    "missing_glyphs": 0,
+    "overfull_boxes": 0,
+    "underfull_boxes": 1
+  },
+  "prose_paragraphs_checked": 86,
+  "missing_prose": [],
+  "new_M_formula": "Send(A,oid₁,m₁)@s₁,Send(A,oid₂,m₂)@s₂,oid₁≠oid₂, m₁≠ m₂, A₁=A₂=A,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid₁,m₁,bid,rst)@r₁,ReceiverAccept(A,oid₂,m₂,bid,rst)@r₂,s₁<b, s₂<b, b<r₁<r₂.",
+  "expected_M_formula": "Send(A,oid₁,m₁)@s₁,Send(A,oid₂,m₂)@s₂,oid₁≠oid₂,m₁≠m₂,A₁=A₂=A,BatchReceive(bid,rst)@b,ReceiverAccept(A,oid₁,m₁,bid,rst)@r₁,ReceiverAccept(A,oid₂,m₂,bid,rst)@r₂,s₁<b,s₂<b,b<r₁<r₂.",
+  "visual_review": "separate human-visible page-image review required; automatic pass is not visual acceptance"
+}

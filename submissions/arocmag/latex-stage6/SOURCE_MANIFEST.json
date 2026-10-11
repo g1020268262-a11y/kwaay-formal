@@ -1,0 +1,30 @@
+{
+  "baseline_head": "c0fa835b2b0da2e1cbc258bfc64bfa735c27ec20",
+  "source_authority": "../latex-v2",
+  "snapshot_date": "2026-10-10",
+  "sources_sha256": {
+    "main.tex": "580961d4ee17c898cee93b4922bcb3fd7c211040e51cb367d63e232a518318fc",
+    "paper-content.tex": "8b967471746d987e7967608a19f620e3aeae4770f08e8421b47c27e60833871f",
+    "sections/00-abstract.tex": "e500f61d83cf9e97f553ad6c4a3e0c4c5d02e95aca69139c786fe5aa472aa984",
+    "sections/01-introduction.tex": "cb787ef5a2b8320bef5d1903a28ee73e44c2713afc443f55b6c9488665694540",
+    "sections/02-problem.tex": "a8bc8b79388047dd51e7fc7045ce1f5b18f283e674ee3a3f19a26fb8056982cb",
+    "sections/03-formal-modeling.tex": "947f90c51dd4c6f4e3243bd099511c7a62d0c01763b1b0ce6a3b7a6b9e620ac0",
+    "sections/04-formal-analysis.tex": "d7cd4bb144561f4063d0d805795006b47c42d0860f9044de17efdd5fcb112ec3",
+    "sections/05-discussion.tex": "46a1455ed189d760b165e38eccf6d6d089ebeea18685b486ede40ec114bdc0aa",
+    "sections/06-conclusion.tex": "357f7095cf1bc19bced61f8cfe3a69d281558f92e495e6c19af08422d3878087",
+    "tables/admission-configurations.tex": "85b374c9d0fbdf52056e7b591c65b6d755b1fef85b463fde61692f29f73e57d4",
+    "tables/full-verification-results.tex": "8d8ae67cbb481c44c687dd92918f94b4c14ed0a0741b54b199fdbed5e7d19b04",
+    "tables/identity-coordinate-map.tex": "381b0426cd6488c1c804c72b7506e72a3b2bbf79ed47cd8f108091ff3bedc820",
+    "tables/key-verification-results.tex": "5440367941867c1493edf86dc717976e256500e7da6de9545ab95f00b4cf5e06",
+    "tables/source-to-abstraction.tex": "bd8ae162f648a9f7805a827762a4ede49f01b4176fa577f20befdfa785810923",
+    "tables/verification-property-semantics.tex": "adc14107b8270d43f33adb798611797b02582c4927c559ab551d1650c7de4ca8",
+    "preamble/macros.tex": "eff445abc69daf213693ea66cdc24d4b742251445cf0267e31c23d670377743c",
+    "preamble/metadata.tex": "a4317d582f9b5dad9111bb450b96d5b6a39c5c28cce7c085231db0bd30ec66ba",
+    "preamble/packages.tex": "cb2f418bb899e5631f29d84f3619b238b9b7fe7873f0a40b68bd60a966188740",
+    "bibliography/references.bib": "8a0a5a75d4c0294049fbac13b4cb74907e06729729d24051733b4dc8d9e04714",
+    "figures/fig1-two-slot-lifecycle.tex": "09ef99e6e62227e67224425ff80a5295ac103bac8226d9e956148aba30726c72",
+    "figures/fig2-duplicate-acceptance-trace.tex": "d7c7bf27cc6370de8fca1b90ac5c80a9ac1e97612a12f6f63e2a2fe22e9a9710"
+  },
+  "compiled_pdf_sha256": "7ab00d6e73a0585049622f14de8dbb59b4c4a60d3dbc347ed9a491f8437ebacd",
+  "pdf_pages": 12
+}

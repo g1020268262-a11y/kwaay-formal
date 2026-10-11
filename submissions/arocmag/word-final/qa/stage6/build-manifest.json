@@ -1,0 +1,21 @@
+{
+  "stage5_sha256": "FBE2E7C8CA1F5BFE2B55F06BAE4B1EFA81340FD8CCA35DD5958EE6CF747BC0FC",
+  "stage6_sha256": "2C07651DB11CB41CD5F44A624DB1777875ADADEEBE01B4808D6B45015054390F",
+  "reused_unchanged_body_blocks": 112,
+  "changed_package_parts": [
+    "word/document.xml",
+    "docProps/core.xml"
+  ],
+  "unchanged_parts": 23,
+  "tables": 6,
+  "figures": 2,
+  "source_hashes": {
+    "submissions/arocmag/latex-v2/sections/00-abstract.tex": "E500F61D83CF9E97F553AD6C4A3E0C4C5D02E95ACA69139C786FE5AA472AA984",
+    "submissions/arocmag/latex-v2/sections/01-introduction.tex": "CB787EF5A2B8320BEF5D1903A28EE73E44C2713AFC443F55B6C9488665694540",
+    "submissions/arocmag/latex-v2/sections/02-problem.tex": "A8BC8B79388047DD51E7FC7045CE1F5B18F283E674EE3A3F19A26FB8056982CB",
+    "submissions/arocmag/latex-v2/sections/03-formal-modeling.tex": "947F90C51DD4C6F4E3243BD099511C7A62D0C01763B1B0CE6A3B7A6B9E620AC0",
+    "submissions/arocmag/latex-v2/sections/04-formal-analysis.tex": "D7CD4BB144561F4063D0D805795006B47C42D0860F9044DE17EFDD5FCB112EC3",
+    "submissions/arocmag/latex-v2/sections/05-discussion.tex": "46A1455ED189D760B165E38ECCF6D6D089EBEEA18685B486EDE40EC114BDC0AA",
+    "submissions/arocmag/latex-v2/sections/06-conclusion.tex": "357F7095CF1BC19BCED61F8CFE3A69D281558F92E495E6C19AF08422D3878087"
+  }
+}

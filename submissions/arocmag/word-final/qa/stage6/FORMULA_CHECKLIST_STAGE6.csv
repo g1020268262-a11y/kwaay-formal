@@ -1,0 +1,118 @@
+﻿index,visible_math,format,external_status
+1,"S=((pkⱼ₁,prekⱼ₁,mⱼ₁),…,
+(pkⱼ₍d₎,prekⱼ₍d₎,mⱼ₍d₎)),
+d≥ 1,",OMML,MathType pending
+2,"Eᵢ=(Aᵢ,oidᵢ,mᵢ),",OMML,MathType pending
+3,Aᵢ,OMML,MathType pending
+4,oidᵢ,OMML,MathType pending
+5,mᵢ,OMML,MathType pending
+6,oid,OMML,MathType pending
+7,sid,OMML,MathType pending
+8,A,OMML,MathType pending
+9,A,OMML,MathType pending
+10,oid,OMML,MathType pending
+11,sid,OMML,MathType pending
+12,m,OMML,MathType pending
+13,m,OMML,MathType pending
+14,i,OMML,MathType pending
+15,"(bid,rst)",OMML,MathType pending
+16,"(bid,rst)",OMML,MathType pending
+17,"(bid,rst)",OMML,MathType pending
+18,A,OMML,MathType pending
+19,S,OMML,MathType pending
+20,oid,OMML,MathType pending
+21,Aᵢ,OMML,MathType pending
+22,"(oidᵢ,mᵢ)",OMML,MathType pending
+23,S,OMML,MathType pending
+24,"(E₁,E₂)",OMML,MathType pending
+25,"(bid,rst)",OMML,MathType pending
+26,"(A,oid₁,m₁)",OMML,MathType pending
+27,"(A,oid₂,m₂)",OMML,MathType pending
+28,oid₁≠oid₂,OMML,MathType pending
+29,m₁≠ m₂,OMML,MathType pending
+30,"B=(E₁,…,Eₙ)",OMML,MathType pending
+31,party(Eᵢ),OMML,MathType pending
+32,Eᵢ,OMML,MathType pending
+33,"DistinctPartyPerBatch(B)
+≜
+∀ 1≤ i<j≤ n,
+party(Eᵢ)≠party(Eⱼ).",OMML,MathType pending
+34,n=2,OMML,MathType pending
+35,A₁≠ A₂,OMML,MathType pending
+36,"(A,oid,m)",OMML,MathType pending
+37,"Send(A,oid,m)",OMML,MathType pending
+38,"(A,oid,m)",OMML,MathType pending
+39,oid,OMML,MathType pending
+40,E₁,OMML,MathType pending
+41,E₂,OMML,MathType pending
+42,bid,OMML,MathType pending
+43,rst,OMML,MathType pending
+44,rst,OMML,MathType pending
+45,"(A,oid,m,bid,rst)",OMML,MathType pending
+46,oid,OMML,MathType pending
+47,m,OMML,MathType pending
+48,"(A,oid,m)",OMML,MathType pending
+49,m₁≠ m₂,OMML,MathType pending
+50,A₁≠ A₂,OMML,MathType pending
+51,m,OMML,MathType pending
+52,m₁≠ m₂,OMML,MathType pending
+53,A,OMML,MathType pending
+54,A₁≠ A₂,OMML,MathType pending
+55,"(A,oid,m)",OMML,MathType pending
+56,"ReceiverAccept(A,oid,m,bid,rst)@r",OMML,MathType pending
+57,s<r,OMML,MathType pending
+58,"Send(A,oid,m)@s",OMML,MathType pending
+59,"(A,oid,m)",OMML,MathType pending
+60,A,OMML,MathType pending
+61,"Send(A,oid,m)@s",OMML,MathType pending
+62,"(A,oid,m,bid,rst)",OMML,MathType pending
+63,r₁=r₂,OMML,MathType pending
+64,"(bid,rst)",OMML,MathType pending
+65,r₁≠ r₂,OMML,MathType pending
+66,m₁≠ m₂,OMML,MathType pending
+67,"(bid,rst)",OMML,MathType pending
+68,r₁≠ r₂,OMML,MathType pending
+69,A₁≠ A₂,OMML,MathType pending
+70,"∀ A,oid,m,bid,rst,s,r₁,r₂:
+Send(A,oid,m)@s",OMML,MathType pending
+71,"∧ReceiverAccept(A,oid,m,bid,rst)@r₁",OMML,MathType pending
+72,"∧ReceiverAccept(A,oid,m,bid,rst)@r₂",OMML,MathType pending
+73,"∧s<r₁∧ s<r₂
+⇒ r₁=r₂.",OMML,MathType pending
+74,"(bid,rst)",OMML,MathType pending
+75,Pτ,OMML,MathType pending
+76,Mτ,OMML,MathType pending
+77,Iτ,OMML,MathType pending
+78,τ,OMML,MathType pending
+79,"Pτ⇒ Mτ, Mτ⇔ Iτ.",OMML,MathType pending
+80,"(A,oid,m)",OMML,MathType pending
+81,"Send(A,oid,m)@s,",OMML,MathType pending
+82,"BatchReceive(bid,rst)@b,",OMML,MathType pending
+83,"ReceiverAccept(A,oid,m,bid,rst)@r₁,",OMML,MathType pending
+84,"ReceiverAccept(A,oid,m,bid,rst)@r₂,",OMML,MathType pending
+85,s<b<r₁<r₂.,OMML,MathType pending
+86,r₁<r₂,OMML,MathType pending
+87,s,OMML,MathType pending
+88,r₁≠ r₂,OMML,MathType pending
+89,"(bid,rst)",OMML,MathType pending
+90,"Send(A,oid₁,m₁)@s₁,",OMML,MathType pending
+91,"Send(A,oid₂,m₂)@s₂,",OMML,MathType pending
+92,"oid₁≠oid₂, m₁≠ m₂, A₁=A₂=A,",OMML,MathType pending
+93,"BatchReceive(bid,rst)@b,",OMML,MathType pending
+94,"ReceiverAccept(A,oid₁,m₁,bid,rst)@r₁,",OMML,MathType pending
+95,"ReceiverAccept(A,oid₂,m₂,bid,rst)@r₂,",OMML,MathType pending
+96,"s₁<b, s₂<b, b<r₁<r₂.",OMML,MathType pending
+97,"(bid,rst)",OMML,MathType pending
+98,m₁≠ m₂,OMML,MathType pending
+99,A₁=A₂,OMML,MathType pending
+100,A₁≠ A₂,OMML,MathType pending
+101,"(bid,rst)",OMML,MathType pending
+102,Mτ⇏ Pτ,OMML,MathType pending
+103,Pτ⇒ Mτ⇔ Iτ,OMML,MathType pending
+104,"(A,oid,m)",OMML,MathType pending
+105,"(bid,rst)",OMML,MathType pending
+106,A,OMML,MathType pending
+107,A₁,OMML,MathType pending
+108,A₂,OMML,MathType pending
+109,A,OMML,MathType pending
+110,"(bid,rst)",OMML,MathType pending

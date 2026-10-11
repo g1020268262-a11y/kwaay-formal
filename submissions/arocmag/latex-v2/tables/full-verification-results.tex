@@ -1,0 +1,31 @@
+\begin{table}[htbp]
+  \centering
+  \caption{完整Tamarin验证结果及论证作用}
+  \label{tab:full-verification-results}
+  \footnotesize
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabularx}{\linewidth}{@{}L{0.035\linewidth}L{0.36\linewidth}L{0.12\linewidth}L{0.09\linewidth}L{0.045\linewidth}Y@{}}
+    \toprule
+    模型 & lemma名称 & 迹量词 & 结果 & 步数 & 论证作用 \\
+    \midrule
+    R & {\scriptsize\path{normal_relaxed_batch_exists}} & {\scriptsize exists-trace} & verified & 10 & 基本准入及一次接受可达 \\
+    R & {\scriptsize\path{one_send_two_accepts_exists}} & {\scriptsize exists-trace} & verified & 13 & 一源两接受的完整见证 \\
+    R & {\scriptsize\path{receiver_accept_has_send}} & {\scriptsize all-traces} & verified & 8 & 每个接受均有精确匹配发送 \\
+    R & {\scriptsize\path{receiver_accept_injective}} & {\scriptsize all-traces} & falsified & 13 & 来源复用的反例 \\
+    M & {\scriptsize\path{repeated_message_rejection_exists}} & {\scriptsize exists-trace} & verified & 4 & 消息重复拒绝分支可达 \\
+    M & {\scriptsize\path{same_party_different_messages_batch_exists}} & {\scriptsize exists-trace} & verified & 16 & 消息约束非替代性的见证 \\
+    M & {\scriptsize\path{accepted_batch_has_distinct_messages}} & {\scriptsize all-traces} & verified & 31 & 确认消息级目标成立 \\
+    M & {\scriptsize\path{receiver_accept_has_send}} & {\scriptsize all-traces} & verified & 8 & 每个接受均有精确匹配发送 \\
+    M & {\scriptsize\path{receiver_accept_injective}} & {\scriptsize all-traces} & verified & 33 & 排除同一精确来源复用 \\
+    P & {\scriptsize\path{same_party_rejection_exists}} & {\scriptsize exists-trace} & verified & 5 & 参与方重复拒绝分支可达 \\
+    P & {\scriptsize\path{distinct_party_batch_exists}} & {\scriptsize exists-trace} & verified & 17 & 有效不同参与方批次可达 \\
+    P & {\scriptsize\path{accepted_batch_has_distinct_parties}} & {\scriptsize all-traces} & verified & 31 & 确认参与方级目标成立 \\
+    P & {\scriptsize\path{receiver_accept_has_send}} & {\scriptsize all-traces} & verified & 8 & 每个接受均有精确匹配发送 \\
+    P & {\scriptsize\path{receiver_accept_injective}} & {\scriptsize all-traces} & verified & 33 & 目标对照的来源单射关系 \\
+    \bottomrule
+  \end{tabularx}
+  \par\smallskip
+  \begin{minipage}{\linewidth}
+    \scriptsize 注：R、M、P分别为无互异、消息互异、参与方互异约束模型；exists-trace为存在性，all-traces为全称性。步数为既有证明器记录，不代表运行时间或性能。
+  \end{minipage}
+\end{table}

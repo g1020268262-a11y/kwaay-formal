@@ -1,0 +1,128 @@
+[
+  {
+    "model": "rqv2_relaxed",
+    "lemma": "normal_relaxed_batch_exists",
+    "status": "verified",
+    "steps": "10",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "基本准入及一次接受可达"
+  },
+  {
+    "model": "rqv2_relaxed",
+    "lemma": "one_send_two_accepts_exists",
+    "status": "verified",
+    "steps": "13",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "一源两接受的完整见证"
+  },
+  {
+    "model": "rqv2_relaxed",
+    "lemma": "receiver_accept_has_send",
+    "status": "verified",
+    "steps": "8",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "每个接受均有精确匹配发送"
+  },
+  {
+    "model": "rqv2_relaxed",
+    "lemma": "receiver_accept_injective",
+    "status": "falsified",
+    "steps": "13",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "来源复用的反例"
+  },
+  {
+    "model": "rqv2_message_dedup",
+    "lemma": "repeated_message_rejection_exists",
+    "status": "verified",
+    "steps": "4",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "消息重复拒绝分支可达"
+  },
+  {
+    "model": "rqv2_message_dedup",
+    "lemma": "same_party_different_messages_batch_exists",
+    "status": "verified",
+    "steps": "16",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "消息约束非替代性的见证"
+  },
+  {
+    "model": "rqv2_message_dedup",
+    "lemma": "accepted_batch_has_distinct_messages",
+    "status": "verified",
+    "steps": "31",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "确认消息级目标成立"
+  },
+  {
+    "model": "rqv2_message_dedup",
+    "lemma": "receiver_accept_has_send",
+    "status": "verified",
+    "steps": "8",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "每个接受均有精确匹配发送"
+  },
+  {
+    "model": "rqv2_message_dedup",
+    "lemma": "receiver_accept_injective",
+    "status": "verified",
+    "steps": "33",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "排除同一精确来源复用"
+  },
+  {
+    "model": "rqv2_party_admission",
+    "lemma": "same_party_rejection_exists",
+    "status": "verified",
+    "steps": "5",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "参与方重复拒绝分支可达"
+  },
+  {
+    "model": "rqv2_party_admission",
+    "lemma": "distinct_party_batch_exists",
+    "status": "verified",
+    "steps": "17",
+    "comparison": "MATCH",
+    "type": "exists-trace",
+    "role": "有效不同参与方批次可达"
+  },
+  {
+    "model": "rqv2_party_admission",
+    "lemma": "accepted_batch_has_distinct_parties",
+    "status": "verified",
+    "steps": "31",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "确认参与方级目标成立"
+  },
+  {
+    "model": "rqv2_party_admission",
+    "lemma": "receiver_accept_has_send",
+    "status": "verified",
+    "steps": "8",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "每个接受均有精确匹配发送"
+  },
+  {
+    "model": "rqv2_party_admission",
+    "lemma": "receiver_accept_injective",
+    "status": "verified",
+    "steps": "33",
+    "comparison": "MATCH",
+    "type": "all-traces",
+    "role": "目标对照的来源单射关系"
+  }
+]

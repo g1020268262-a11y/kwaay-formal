@@ -1,0 +1,103 @@
+diff --git a/submissions/arocmag/latex-v2/sections/01-introduction.tex b/submissions/arocmag/latex-v2/sections/01-introduction.tex
+index 032ef5d..d220afc 100644
+--- a/submissions/arocmag/latex-v2/sections/01-introduction.tex
++++ b/submissions/arocmag/latex-v2/sections/01-introduction.tex
+@@ -2,7 +2,11 @@
+ 
+ \kwaay 是一种后量子、类似X3DH的可否认认证密钥交换协议\cite{collins2024kwaay}。其\batchreceive 操作在共享接收方状态下处理多个发送方关联输入；原文第5.1节（第21页）明确要求同一次调用中的元素对应不同参与方\cite{collins2024kwaayfull}。下文将这一要求称为批内参与方互异条件（distinct-party condition）。分析并非寻找协议规范遗漏的条件，而是考察该条件维护的批内关系，以及在条目均具有模型内匹配发送来源时，其他准入限制能否推出这一关系。
+ 
+-Signal、PQXDH等安全消息协议的形式化分析主要考察握手、会话和密钥安全性质\cite{cohngordon2020signal,bhargavan2024pqxdh}；Tamarin为描述安全协议的符号执行轨迹和验证迹性质提供了通用方法\cite{meier2013tamarin}。身份名称、单射一致性与会话组合方面的研究还说明，参与方表示、事件对应关系和组合层性质需要分别界定\cite{lupetti2006names,lowe1997hierarchy,cremers2023session}。这些研究为分析提供了方法和概念基础，但\batchreceive 中消息、发送实例与参与方三个比较维度的关系仍需结合其批次生命周期具体刻画。
++已有安全消息协议分析为研究提供了方法基础，但其主要分析对象与批内关系不同。Signal的形式化分析将X3DH和Double Ratchet建模为多阶段认证密钥交换，研究会话中的密钥安全；PQXDH的分析使用ProVerif和CryptoVerif考察认证、机密性、后量子前向安全及共同部署\cite{cohngordon2020signal,bhargavan2024pqxdh}。本文使用Tamarin的多集重写与迹性质验证方法\cite{meier2013tamarin}，抽取一次接收调用内的条目组合关系，不重复验证上述密码过程，也不由批次见证推断其密钥安全结论失效。
++
++身份名称与认证事件对应关系也有既有理论基础。Lupetti等讨论了名称在相关会话范围内的唯一性及其协议语义\cite{lupetti2006names}；Lowe的认证层次区分非单射一致性与单射一致性等性质\cite{lowe1997hierarchy}。本文假设参与方投影已正确建立，比较的是同一批次不同位置上的投影是否相同；所检查的来源单射性仅约束给定批次上下文内的发送—接受事件对应。因此，该问题既不是名称解释歧义，也不是重新提出身份唯一性或认证单射性理论。
++
++在组合层面，Cremers等分析多条棘轮会话链如何被管理和合并为会话交谈，说明单条链的性质不能直接代替交谈层面的失陷后安全分析\cite{cremers2023session}。本文沿用将组合边界单独建模的思路，但对象是一次\batchreceive 的输入条目及其参与方投影，而非多会话管理。研究区别在于：针对K-Waay已声明的批内条件，在相同生命周期下比较消息级限制与参与方级限制，并验证相关条目能否实际到达接受边界。
+ 
+ 同一参与方可以通过不同发送实例产生不同消息，因而批内消息互异性、发送—接受事件的单射关系和批内参与方互异性比较的是不同对象。静态地指出这些对象不同，并不能说明相应条目能否经过来源匹配、批次准入和顺序处理并产生接受事件。为此，需要回答三个相互关联的问题：移除目标条件后，重复参与方条目能否进入同一批次；一个完整元组的匹配发送来源能否对应同批两个接受事件；消息互异约束能否排除同一参与方的不同消息共同进入批次。研究边界限定在固定两槽的批次准入抽象，不将模型结果解释为完整K-Waay攻击或部署缺陷。
+ 
+@@ -10,8 +14,8 @@ Signal、PQXDH等安全消息协议的形式化分析主要考察握手、会话
+ 
+ 本文的主要贡献如下：
+ \begin{enumerate}[label=\arabic*)]
+-  \item 形式化刻画\batchreceive 的批内参与方互异条件，并区分参与方、发送实例和消息三个比较维度；
+-  \item 在共同的两槽生命周期上构造三种受控准入模型，比较消息互异约束与参与方互异约束的作用，并用发送来源对应性和批内来源单射性描述发送—接受事件关系；
++  \item 从\batchreceive 接口建立有明确省略边界的协议到模型映射，形式化刻画批内参与方互异条件，并区分参与方、发送实例和消息三个比较维度；
++  \item 在共同的两槽生命周期上构造三种受控准入模型，比较消息互异约束与参与方互异约束的作用，并用发送来源对应性和批内来源单射性描述发送—接受事件关系；通过14项性质及独立复核记录给出可核查的比较证据；
+   \item 给出并机器验证消息级限制不能替代参与方关系的完整可达见证：同一参与方的不同发送实例和消息各有匹配发送来源，经过共同批次生命周期后产生两个接受事件；同时利用目标对照确认批内参与方互异性成立且有效批次可达。
+ \end{enumerate}
+ 
+diff --git a/submissions/arocmag/latex-v2/sections/02-problem.tex b/submissions/arocmag/latex-v2/sections/02-problem.tex
+index 7e04472..02bc244 100644
+--- a/submissions/arocmag/latex-v2/sections/02-problem.tex
++++ b/submissions/arocmag/latex-v2/sections/02-problem.tex
+@@ -11,6 +11,8 @@
+ 
+ 原文第5.1节（第21页）要求同次\batchreceive 调用中的元素对应不同参与方\cite{collins2024kwaayfull}。该要求约束同一批次内元素之间的关系，并不要求某个参与方在整个执行中只出现一次，也不限制其只能产生一条消息。规范明确了目标关系，但未在该处指定由调用者、批次构造组件还是准入层负责维护。
+ 
++这一关系与原协议的分量解释有关。原文第4.2.1节将批次会话的参与方、会话标识及密钥组织为对应的向量分量；第5.1节的接收操作也按输入分量形成后续结果\cite{collins2024kwaayfull}。因此，不同位置所关联的参与方是否不同，影响批次中“位置—参与方—输出分量”的对应解释。本文仅以这一接口结构作为研究动机，不建模密钥输出或安全游戏查询，也不将重复投影解释为密钥错误。
++
+ 分析对象是候选条目完成组合之后、进入后续处理之前的边界，下文称为批次准入。“批次准入”仅概括这一分析边界，并非为K-Waay增加新算法。该边界需要刻画同次调用中各条目的参与方投影及其相互关系，而不是重新描述完整密码过程。
+ 
+ \subsection{比较维度与问题实例}
+@@ -27,6 +29,10 @@
+ 
+ 表\ref{tab:identity-coordinate-map}中的维度具有不同作用：槽位和$(\mathit{bid},\mathit{rst})$限定条目所在的批次上下文，消息分量区分符号消息，发送实例标识区分具体发送，参与方分量则是目标条件比较的对象。$A$表示符号模型中的协议主体，不自动等同于账户、公钥字节串或数据库记录；具体系统仍需说明实现对象到参与方投影的映射。
+ 
++从原始输入$S$到式\eqref{eq:abstract-entry}的映射进一步见表\ref{tab:source-to-abstraction}。该映射保留条目的参与方关联和共同调用上下文，将公钥、预密钥及密码处理压缩为抽象坐标与来源前提。其中，正确的参与方投影是模型假设，未由公钥编码或预密钥验证过程推导；$\oid$也不对应原协议由身份、密钥和消息等信息构成的会话标识。这是研究者建立的抽象映射，尚未证明完整协议到该模型的精化关系。
++
++\input{tables/source-to-abstraction}
++
+ 考虑候选条目$(A,\oid_1,m_1)$和$(A,\oid_2,m_2)$，其中$\oid_1\neq\oid_2$且$m_1\neq m_2$。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。
+ 
+ \subsection{研究问题}
+diff --git a/submissions/arocmag/latex-v2/sections/03-formal-modeling.tex b/submissions/arocmag/latex-v2/sections/03-formal-modeling.tex
+index 6c7304a..642da21 100644
+--- a/submissions/arocmag/latex-v2/sections/03-formal-modeling.tex
++++ b/submissions/arocmag/latex-v2/sections/03-formal-modeling.tex
+@@ -33,6 +33,8 @@ Tamarin使用多集重写规则描述状态转换，并以动作事实记录迹
+ 
+ 图\ref{fig:two-slot-lifecycle}给出了三种模型共用的两槽批次准入生命周期。发送生成、网络暴露、两槽收集、来源匹配和顺序处理在三个模型中保持一致，受控变化仅位于收集完成后的准入阶段；消息互异约束模型和参与方互异约束模型还设置了对应的拒绝分支。
+ 
++共同规则中的资源选择限定了比较的含义。持久的\texttt{!Party(A)}允许同一参与方多次发送，新鲜的$\oid$和$m$区分这些发送；持久的\texttt{!Sent}允许后续步骤重复读取同一来源，而线性槽位状态限制一次批次的收集和处理顺序。来源匹配同时检查$(A,\oid,m)$三个分量，不是只检查参与方是否曾发送。若缺少精确来源，处理规则不能产生相应接受事件；这只是抽象规则的使能条件，不表示实现中的密码验证失败。三种模型的七条共同规则保持一致，使消息约束未能替代参与方关系的结果不能归因于另换了发送或接收流程。
++
+ \subsection{准入模型与验证性质}
+ \label{subsec:configurations-properties}
+ 
+diff --git a/submissions/arocmag/latex-v2/sections/04-formal-analysis.tex b/submissions/arocmag/latex-v2/sections/04-formal-analysis.tex
+index 14f748f..468fc7f 100644
+--- a/submissions/arocmag/latex-v2/sections/04-formal-analysis.tex
++++ b/submissions/arocmag/latex-v2/sections/04-formal-analysis.tex
+@@ -40,7 +40,19 @@
+ 
+ 该模型的发送来源对应性和批内来源单射性也均验证通过。前者表明每个接受事件都有更早的完整元组匹配发送，后者排除一个匹配发送来源在同一批次和接收方上下文中对应两个不同接受事件。三项性质分别记录消息比较、匹配发送存在性和同一来源所对应的接受事件数，均不比较两个条目的参与方分量。按照第\ref{subsec:configurations-properties}节的规则语义，批内消息互异性与批内来源单射性在当前模型中相互蕴含，不能作为两项独立的累积保证。
+ 
+-替代性结论的关键证据是\path{same_party_different_messages_batch_exists}的验证结果。相应可达执行包含同一参与方$A$的两个条目$(A,\oid_1,m_1)$和$(A,\oid_2,m_2)$，其中$\oid_1\neq\oid_2$且$m_1\neq m_2$。两个条目各有自己的匹配$\mathsf{Send}$来源，且两个发送都早于同一次批次准入；随后，两个条目通过消息级准入，并在共同$(\mathit{bid},\mathit{rst})$中依次产生接受事件。该执行没有复用匹配发送来源，重复只出现在参与方投影上。
++替代性结论的关键证据是\path{same_party_different_messages_batch_exists}的验证结果。根据该性质及独立复核的可达执行，可将关键事件结构整理为
++\[
++  \begin{aligned}
++    &\mathsf{Send}(A,\oid_1,m_1)@s_1,\\
++    &\mathsf{Send}(A,\oid_2,m_2)@s_2,\\
++    &\oid_1\neq\oid_2,\quad m_1\neq m_2,\quad A_1=A_2=A,\\
++    &\mathsf{BatchReceive}(\mathit{bid},\mathit{rst})@b,\\
++    &\mathsf{ReceiverAccept}(A,\oid_1,m_1,\mathit{bid},\mathit{rst})@r_1,\\
++    &\mathsf{ReceiverAccept}(A,\oid_2,m_2,\mathit{bid},\mathit{rst})@r_2,\\
++    &s_1<b,\quad s_2<b,\quad b<r_1<r_2.
++  \end{aligned}
++\]
++上式是依据机器结果重构的关键事件投影，不是证明器直接导出的原始图；未规定两个发送之间的先后关系，也未列出执行中的其他事件。独立复核图还包含具有不同发送实例标识和消息分量的额外发送，故不能将所示两个发送视为整条执行的全部发送。两个所示条目经过两槽收集和消息级准入，在共同$(\mathit{bid},\mathit{rst})$中顺序处理，并各自读取匹配的来源事实。两个接受对应不同发送实例和消息，没有复用同一精确来源，重复只出现在参与方投影上。
+ 
+ 该机器见证将$m_1\neq m_2$且$A_1=A_2$的静态关系落实到完整的共同生命周期，并确认两个接受各有匹配发送来源。因此，消息级准入约束不能推出式\eqref{eq:distinct-party-objective}规定的批内参与方互异性。批内消息互异性和批内来源单射性的全称结果仍分别对应各自公式与复核记录，但不构成相互独立的增量证据。消息相等时的拒绝分支也存在可达执行（\path{repeated_message_rejection_exists}）；该结果仅说明分支可达，不保证所有重复消息最终均被拒绝。
+ 
+@@ -66,8 +78,9 @@
+ 
+ 三种模型形成连续的受控比较。无互异约束模型允许一个匹配发送来源对应同批两个接受事件，并产生批内来源单射性反例；消息互异约束模型排除这种来源复用形状，保持批内消息互异性和批内来源单射性，却仍允许同一参与方的不同消息进入同一批次；参与方互异约束模型直接保持目标关系，并保留有效批次。关键可达见证支持的结论是：消息级约束不能推出批内参与方互异性；当前模型中的批内消息互异性与批内来源单射性具有规则依赖，不能作为两项独立的累积证据。
+ 
+-其余7项支持结果均验证通过，包括无互异约束模型的正常路径、三个模型各自的发送来源对应性、消息互异约束和参与方互异约束模型的拒绝分支可达性，以及参与方互异约束模型的批内来源单射性。这些结果分别排除生命周期不可运行或无来源接受的解释，确认相应拒绝分支可达，并补充目标对照的来源关系。全部14项结果仍为13项验证通过、1项被反例否定，结果状态和证明步数均未改变。
++表\ref{tab:full-verification-results}给出全部14项结果，使核心结论与支持性质均可逐项核查。除表\ref{tab:key-verification-results}的7项核心结果外，其余结果确认基本准入与接受路径、三个模型的精确发送来源对应关系、两种拒绝分支的可达性，以及目标对照中的来源单射关系。无互异约束模型的正常路径性质只要求一次接受，不能据此断言两个槽位均已完成；拒绝分支性质也不保证所有无效输入最终被拒绝。
++
++\input{tables/full-verification-results}
+ 
+-后续独立复核重新执行了三个未修改模型，14项结果的状态和证明步数均与既有记录一致。相应记录构成独立复核证据，并非对历史运行日志的恢复。
+-% TODO(arocmag-anonymous-artifact-url): acceptance 前补入匿名复现材料URL；正文不暴露本地仓库路径。
++2026年9月16日的独立复核在WSL Ubuntu 24.04、Tamarin 1.12.0和Maude 3.5.1环境下重新执行了三个未修改模型。模型哈希与既有证据绑定一致，14项状态和证明步数均相符，共13项验证通过、1项被反例否定；复核另导出7个可达或反例图。表中的步数是证明器报告的搜索记录，不是运行时间、复杂度或模型性能指标。本次论文修订未重新运行证明器；这里使用的是独立复核记录，并非恢复历史运行日志。
+ 
