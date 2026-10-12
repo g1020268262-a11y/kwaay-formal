@@ -1,0 +1,219 @@
+{
+  "schema": "kwaay-arocmag-stage7-scientific-audit-v1",
+  "method": "saved-source/stdout/trace/manuscript parse only; no prover invocation",
+  "model_hashes": {
+    "rqv2_relaxed": "E5129575720020AA3F509782C2052FBF2114A540D013126F5A75D316CBABAF9D",
+    "rqv2_message_dedup": "90A196F5DA5C244026596283D001376427880CD64C5BEA3C6CFDFD4CCBA99184",
+    "rqv2_party_admission": "C35AF64CAC7F01182418CB999EA105214B8DA4F2295B670A9B3733F0BD976BBA"
+  },
+  "checks": {
+    "model_admission_conditions": {
+      "status": "PASS",
+      "evidence": {
+        "R_unconstrained": true,
+        "M_message_distinct": true,
+        "P_party_distinct": true
+      },
+      "detail": ""
+    },
+    "common_lifecycle": {
+      "status": "PASS",
+      "evidence": {
+        "rqv2_relaxed": [],
+        "rqv2_message_dedup": [],
+        "rqv2_party_admission": []
+      },
+      "detail": ""
+    },
+    "lemma_source_quantifiers": {
+      "status": "PASS",
+      "evidence": {
+        "records": 14,
+        "mismatches": []
+      },
+      "detail": ""
+    },
+    "saved_stdout_results": {
+      "status": "PASS",
+      "evidence": {
+        "result_counts": {
+          "verified": 13,
+          "falsified": 1
+        },
+        "quantifier_counts": {
+          "exists-trace": 6,
+          "all-traces": 8
+        },
+        "stdout_mismatches": []
+      },
+      "detail": ""
+    },
+    "trace_witness_mapping": {
+      "status": "PASS",
+      "evidence": {
+        "R_one_origin_two_accepts": true,
+        "M_same_party_distinct_messages": true,
+        "P_nonvacuous_distinct_party": true
+      },
+      "detail": ""
+    },
+    "manuscript_boundaries": {
+      "status": "PASS",
+      "evidence": {
+        "receiver_accept_is_abstract": true,
+        "sent_is_idealized_origin": true,
+        "fixed_two_slot_limit": true,
+        "manual_semantic_derivation_labelled": true,
+        "machine_witness_for_M_not_P": true,
+        "no_M0_M5_import": true,
+        "no_deployed_attack_claim": true
+      },
+      "detail": ""
+    }
+  },
+  "summary": {
+    "PASS": 6
+  },
+  "lemma_records": [
+    {
+      "model": "rqv2_relaxed",
+      "lemma": "normal_relaxed_batch_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 10,
+      "source_block_sha256": "39CB50ED2EEF6CD967444DD9F29375D5ABFBC45AA7A3B1E1205F01F133B650D4",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_relaxed-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_relaxed",
+      "lemma": "one_send_two_accepts_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 13,
+      "source_block_sha256": "D5128A5DDD76B86D9C12145AD99DE9E810E40B001B89EB9FA52DE6D46020B5A2",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_relaxed-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_relaxed",
+      "lemma": "receiver_accept_has_send",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 8,
+      "source_block_sha256": "338BFD7341D6C88704DF17AD78B1356D7A50543947DFE17A6F1A61714C08367C",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_relaxed-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_relaxed",
+      "lemma": "receiver_accept_injective",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "falsified",
+      "steps": 13,
+      "source_block_sha256": "194119160D52BC949AC29B4DBB858F349F8BA20A4DDD80B27AB1DB5F7D23C408",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_relaxed-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_message_dedup",
+      "lemma": "repeated_message_rejection_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 4,
+      "source_block_sha256": "2547C105D6F2D395C61160176D734B35F8FAAD17A26BEEBA6452711175A49C37",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_message_dedup-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_message_dedup",
+      "lemma": "same_party_different_messages_batch_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 16,
+      "source_block_sha256": "73ADD37F11B10CD9A0D585E0CB18DFC3DEF63EE21AC0E1C3A69CAB51B568033E",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_message_dedup-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_message_dedup",
+      "lemma": "accepted_batch_has_distinct_messages",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 31,
+      "source_block_sha256": "4D69CFA363B567CCCAE5C5F7A994795453632808D8F9559CC57C3E76A73BC9BB",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_message_dedup-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_message_dedup",
+      "lemma": "receiver_accept_has_send",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 8,
+      "source_block_sha256": "338BFD7341D6C88704DF17AD78B1356D7A50543947DFE17A6F1A61714C08367C",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_message_dedup-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_message_dedup",
+      "lemma": "receiver_accept_injective",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 33,
+      "source_block_sha256": "194119160D52BC949AC29B4DBB858F349F8BA20A4DDD80B27AB1DB5F7D23C408",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_message_dedup-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_party_admission",
+      "lemma": "same_party_rejection_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 5,
+      "source_block_sha256": "BBBF065C328F3BE510E7F225C22879FC29EB02DDD0D0F7DABDBEE3FA4AE5F7DA",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_party_admission-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_party_admission",
+      "lemma": "distinct_party_batch_exists",
+      "type": "exists-trace",
+      "quantifier": "Ex",
+      "status": "verified",
+      "steps": 17,
+      "source_block_sha256": "58340F2B40CDA5E4ECFFEE1165427058764C1B3323CC4A7FB21CFF9EB9D47F5A",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_party_admission-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_party_admission",
+      "lemma": "accepted_batch_has_distinct_parties",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 31,
+      "source_block_sha256": "4F5DA9E0490963A21F5B2572F64070C02E8A9E7B8FE8319FC29EDF770F0AEE1F",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_party_admission-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_party_admission",
+      "lemma": "receiver_accept_has_send",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 8,
+      "source_block_sha256": "338BFD7341D6C88704DF17AD78B1356D7A50543947DFE17A6F1A61714C08367C",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_party_admission-prove.stdout.txt"
+    },
+    {
+      "model": "rqv2_party_admission",
+      "lemma": "receiver_accept_injective",
+      "type": "all-traces",
+      "quantifier": "All",
+      "status": "verified",
+      "steps": 33,
+      "source_block_sha256": "194119160D52BC949AC29B4DBB858F349F8BA20A4DDD80B27AB1DB5F7D23C408",
+      "stdout": "reviews/2026-09-16-evidence/rqv2_party_admission-prove.stdout.txt"
+    }
+  ]
+}

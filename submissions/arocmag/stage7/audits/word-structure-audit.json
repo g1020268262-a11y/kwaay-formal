@@ -1,0 +1,367 @@
+{
+  "schema": "kwaay-arocmag-stage7-word-audit-v1",
+  "source": {
+    "path": "submissions/arocmag/word-final/K-Waay-AROCMAG-submission-stage6.docx",
+    "git_ref": "HEAD",
+    "sha256": "2C07651DB11CB41CD5F44A624DB1777875ADADEEBE01B4808D6B45015054390F"
+  },
+  "formula_checklist": "submissions/arocmag/stage7/qa/FORMULA_CHECKLIST_STAGE7.csv",
+  "checks": {
+    "docx_git_blob_and_stage6_hash": {
+      "status": "PASS",
+      "evidence": {
+        "sha256": "2C07651DB11CB41CD5F44A624DB1777875ADADEEBE01B4808D6B45015054390F",
+        "expected": "2C07651DB11CB41CD5F44A624DB1777875ADADEEBE01B4808D6B45015054390F"
+      },
+      "detail": ""
+    },
+    "docx_zip_integrity": {
+      "status": "PASS",
+      "evidence": null,
+      "detail": ""
+    },
+    "formula_sequence": {
+      "status": "PASS",
+      "evidence": {
+        "actual": 110,
+        "expected": 110,
+        "mismatches": []
+      },
+      "detail": ""
+    },
+    "formula_display_grouping": {
+      "status": "PASS",
+      "evidence": {
+        "display_paragraphs": 7
+      },
+      "detail": ""
+    },
+    "numbered_formula_labels": {
+      "status": "PASS",
+      "evidence": [
+        "(1)",
+        "(2)",
+        "(3)"
+      ],
+      "detail": ""
+    },
+    "formula_symbols_and_event_names": {
+      "status": "PASS",
+      "evidence": {
+        "required": [
+          "∀",
+          "⇒",
+          "⇔",
+          "⇏",
+          "≠",
+          "τ",
+          "ReceiverAccept",
+          "BatchReceive",
+          "Send",
+          "DistinctPartyPerBatch"
+        ],
+        "missing": []
+      },
+      "detail": ""
+    },
+    "mathtype_objects": {
+      "status": "BLOCKED",
+      "evidence": {
+        "omml": 110,
+        "ole_parts": [],
+        "ole_nodes": 0,
+        "ole_relationships": []
+      },
+      "detail": "No real MathType/OLE equation objects were found; the 110 equations remain editable OMML."
+    },
+    "document_structure": {
+      "status": "PASS",
+      "evidence": {
+        "chapters": 6,
+        "subsections": 13,
+        "tables": 6,
+        "figures": 2,
+        "references": 8,
+        "rq_count": 3
+      },
+      "detail": ""
+    },
+    "result_table": {
+      "status": "PASS",
+      "evidence": {
+        "rows": 14,
+        "status_counts": {
+          "verified": 13,
+          "falsified": 1
+        },
+        "binding_mismatches": []
+      },
+      "detail": ""
+    },
+    "source_hashes": {
+      "status": "PASS",
+      "evidence": {
+        "checked": 7,
+        "mismatches": []
+      },
+      "detail": ""
+    },
+    "protected_evidence_hashes": {
+      "status": "PASS",
+      "evidence": {
+        "checked": 200,
+        "mismatches": []
+      },
+      "detail": ""
+    },
+    "review_markup_and_hidden_content": {
+      "status": "PASS",
+      "evidence": {
+        "comment_parts": [],
+        "tracked_changes": 0,
+        "hidden_runs": 0
+      },
+      "detail": ""
+    },
+    "external_links_and_local_paths": {
+      "status": "PASS",
+      "evidence": {
+        "external_relationships": [],
+        "local_path_hits": []
+      },
+      "detail": ""
+    },
+    "anonymous_metadata": {
+      "status": "PASS",
+      "evidence": {
+        "creator": "Anonymous Author(s)",
+        "last_modified_by": "Anonymous Author(s)",
+        "title": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+        "subject": "AROCMAG Stage 6 contribution-restoration manuscript",
+        "keywords": "K-Waay; batch admission; distinct-party condition; Tamarin; formal verification"
+      },
+      "detail": ""
+    },
+    "page_setup": {
+      "status": "PASS",
+      "evidence": {
+        "section_count": 14,
+        "sections": [
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 1,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          },
+          {
+            "page_width_twips": 11906,
+            "page_height_twips": 16838,
+            "columns": 2,
+            "margin_top_twips": 1134,
+            "margin_bottom_twips": 850,
+            "margin_left_twips": 850,
+            "margin_right_twips": 850
+          }
+        ]
+      },
+      "detail": ""
+    },
+    "embedded_figures": {
+      "status": "PASS",
+      "evidence": [
+        {
+          "part": "word/media/image4.png",
+          "sha256": "AE6C5800ECFA64AB86200A6C73E25AA9248BA584825B9EEA8D0BC804E25C12AB",
+          "format": "PNG",
+          "pixels": [
+            1182,
+            1799
+          ],
+          "dpi": [
+            359.9942,
+            359.9942
+          ]
+        },
+        {
+          "part": "word/media/image5.png",
+          "sha256": "8A4804F82DC382DE777B726D21827703DA84C7E7920311F703619EB48DA06992",
+          "format": "PNG",
+          "pixels": [
+            1182,
+            1454
+          ],
+          "dpi": [
+            359.9942,
+            359.9942
+          ]
+        }
+      ],
+      "detail": "Article figures are embedded PNG files; this check does not claim vector graphics."
+    },
+    "wps_preview": {
+      "status": "PASS",
+      "evidence": {
+        "pages": 7,
+        "sha256": "1BF298F5385C72737CDB9320B5A1593235F92FFEA8295FA2061973F8D5F54649"
+      },
+      "detail": "The PDF producer is WPS Writer. Visual acceptance is recorded separately after page-by-page inspection."
+    },
+    "microsoft_word_render": {
+      "status": "BLOCKED",
+      "evidence": {
+        "microsoft_word_discovered": false
+      },
+      "detail": "Microsoft Word was not returned by the installed-app inventory."
+    }
+  },
+  "summary": {
+    "PASS": 16,
+    "BLOCKED": 2
+  },
+  "media": [
+    {
+      "part": "word/media/image4.png",
+      "sha256": "AE6C5800ECFA64AB86200A6C73E25AA9248BA584825B9EEA8D0BC804E25C12AB",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1799
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ]
+    },
+    {
+      "part": "word/media/image5.png",
+      "sha256": "8A4804F82DC382DE777B726D21827703DA84C7E7920311F703619EB48DA06992",
+      "format": "PNG",
+      "pixels": [
+        1182,
+        1454
+      ],
+      "dpi": [
+        359.9942,
+        359.9942
+      ]
+    }
+  ],
+  "metadata": {
+    "creator": "Anonymous Author(s)",
+    "last_modified_by": "Anonymous Author(s)",
+    "title": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+    "subject": "AROCMAG Stage 6 contribution-restoration manuscript",
+    "keywords": "K-Waay; batch admission; distinct-party condition; Tamarin; formal verification"
+  }
+}
