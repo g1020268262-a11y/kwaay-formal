@@ -1,0 +1,272 @@
+[
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(ct_l,K_l)",
+    "display": false,
+    "omml_text": "(ctl,Kl)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "(ct_k,K_k)",
+    "display": false,
+    "omml_text": "(ctk,Kk)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "(ct_s,K_s)",
+    "display": false,
+    "omml_text": "(cts,Ks)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "m=(ct_l,ct_k,ct_s),",
+    "display": true,
+    "omml_text": "m=(ctl,ctk,cts),",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "sid=\\mathsf{SID}(A,B,pk_A,pk_B,",
+    "display": true,
+    "omml_text": "sid=SID(A,B,pkA,pkB,",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "prekey_A,prekey_B,m),",
+    "display": true,
+    "omml_text": "prekeyA,prekeyB,m),",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "k=\\mathsf{KDF}(K_l,K_k,K_s,sid).",
+    "display": true,
+    "omml_text": "k=KDF(Kl,Kk,Ks,sid).",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "\\mathsf{SID}",
+    "display": false,
+    "omml_text": "SID",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "m",
+    "display": false,
+    "omml_text": "m",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k",
+    "display": false,
+    "omml_text": "k",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "sid",
+    "display": false,
+    "omml_text": "sid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k",
+    "display": false,
+    "omml_text": "k",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "S=\\bigl((pk_{A_i},prekey_{A_i},m_i)\\bigr)_{i=1}^{d},\\qquad d\\geq 1.",
+    "display": true,
+    "omml_text": "S=(pkAi,prekeyAi,mi))i=1d,d≥1.",
+    "structured_scripts": 6
+  },
+  {
+    "latex": "A_i",
+    "display": false,
+    "omml_text": "Ai",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "i",
+    "display": false,
+    "omml_text": "i",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}(S)\\;\\triangleq\\;",
+    "display": true,
+    "omml_text": "DistinctPartyPerBatch(S)≜",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\forall\\,i\\ne j,\\quad A_i\\ne A_j.",
+    "display": true,
+    "omml_text": "∀i≠j,Ai≠Aj.",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "sid",
+    "display": false,
+    "omml_text": "sid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k",
+    "display": false,
+    "omml_text": "k",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "ct_l",
+    "display": false,
+    "omml_text": "ctl",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "ct_k",
+    "display": false,
+    "omml_text": "ctk",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "ct_s",
+    "display": false,
+    "omml_text": "cts",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{SenderKey}(A,B,sid,k)",
+    "display": false,
+    "omml_text": "SenderKey(A,B,sid,k)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ReceiverKey}(B,A,sid,k)",
+    "display": false,
+    "omml_text": "ReceiverKey(B,A,sid,k)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{SendDone}(A,B,sid,k),",
+    "display": true,
+    "omml_text": "SendDone(A,B,sid,k),",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{RecvDone}(B,A,sid,k).",
+    "display": true,
+    "omml_text": "RecvDone(B,A,sid,k).",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{RecvDone}",
+    "display": false,
+    "omml_text": "RecvDone",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "rst",
+    "display": false,
+    "omml_text": "rst",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "bid",
+    "display": false,
+    "omml_text": "bid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "idx",
+    "display": false,
+    "omml_text": "idx",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{SenderSession}(A,B,m,sid,k)",
+    "display": false,
+    "omml_text": "SenderSession(A,B,m,sid,k)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}(B,A,bid,idx,rst,m,sid,k).",
+    "display": true,
+    "omml_text": "ReceiverAccept(B,A,bid,idx,rst,m,sid,k).",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "sid",
+    "display": false,
+    "omml_text": "sid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k",
+    "display": false,
+    "omml_text": "k",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{RecvDone}(B,A,sid,k)@r\\;\\Longrightarrow\\;",
+    "display": true,
+    "omml_text": "RecvDone(B,A,sid,k)@r⟹",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\exists s<r:\\mathsf{SendDone}(A,B,sid,k)@s.",
+    "display": true,
+    "omml_text": "∃s<r:SendDone(A,B,sid,k)@s.",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\theta=(A,B,m,sid,k)",
+    "display": false,
+    "omml_text": "θ=(A,B,m,sid,k)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\beta=(bid,rst)",
+    "display": false,
+    "omml_text": "β=(bid,rst)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "R(\\theta,\\beta,idx)@r",
+    "display": false,
+    "omml_text": "R(θ,β,idx)@r",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "R(\\theta,\\beta,i)@r_1\\land R(\\theta,\\beta,j)@r_2\n \\;",
+    "display": true,
+    "omml_text": "R(θ,β,i)@r1∧R(θ,β,j)@r2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\Longrightarrow\\;r_1=r_2.",
+    "display": true,
+    "omml_text": "⟹r1=r2.",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "(bid,rst)",
+    "display": false,
+    "omml_text": "(bid,rst)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "C_{\\mathrm{install}}\\text{-v2}",
+    "display": false,
+    "omml_text": "Cinstall-v2",
+    "structured_scripts": 1
+  }
+]

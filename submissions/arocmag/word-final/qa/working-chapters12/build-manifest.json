@@ -1,0 +1,169 @@
+{
+  "front_matter_and_introduction_blocks_preserved": 24,
+  "chapter3_onwards_blocks_preserved": 67,
+  "chapter3_onwards_c14n_sha256": "19f24007a5cafb747073f9de6e8b0aa9059ebc0ff8609142b728bd1c1af36f86",
+  "unchanged_package_parts": [
+    "[Content_Types].xml",
+    "_rels/.rels",
+    "word/_rels/document.xml.rels",
+    "word/media/image1.wmf",
+    "word/theme/theme1.xml",
+    "word/footer1.xml",
+    "word/header2.xml",
+    "word/header1.xml",
+    "word/settings.xml",
+    "word/fontTable.xml",
+    "word/numbering.xml",
+    "word/media/image3.emf",
+    "word/media/image2.wmf",
+    "word/styles.xml",
+    "word/media/image4.png",
+    "word/media/image5.png",
+    "word/header3.xml",
+    "word/header4.xml",
+    "word/footer2.xml",
+    "word/footer3.xml",
+    "docProps/thumbnail.wmf",
+    "docProps/app.xml",
+    "docProps/custom.xml"
+  ],
+  "changed_package_parts": [
+    "word/document.xml",
+    "docProps/core.xml"
+  ],
+  "tables": 3,
+  "omml": 76,
+  "new_omml": 45,
+  "new_structured_script_objects": 33,
+  "sections": 8,
+  "new_table_rows": [
+    [
+      "性质",
+      "检查目标",
+      "工具",
+      "适用边界"
+    ],
+    [
+      "P0-S",
+      "会话密钥不可推导",
+      "ProVerif",
+      "无泄露符号基线"
+    ],
+    [
+      "P0-O",
+      "split-KEM 分量有来源",
+      "ProVerif",
+      "分量级对应"
+    ],
+    [
+      "P1",
+      "接收完成存在匹配发送",
+      "ProVerif",
+      "完整参数、非单射"
+    ],
+    [
+      "P2",
+      "同批相同消息至多接受一次",
+      "Tamarin",
+      "固定两槽、同状态"
+    ],
+    [
+      "P3",
+      "同源输出的安装唯一性",
+      "Tamarin",
+      "条件化消费模型"
+    ],
+    [
+      "参与方互异",
+      "同批不同槽位关联不同参与方",
+      "Tamarin",
+      "独立准入原型"
+    ]
+  ],
+  "new_equations": [
+    {
+      "kind": "equation",
+      "label": "eq:core-transcript",
+      "number": "1",
+      "source_latex": "\n  m=(ct_l,ct_k,ct_s),\\\\\n  sid=\\mathsf{SID}(A,B,pk_A,pk_B,prekey_A,prekey_B,m),\\\\\n  k=\\mathsf{KDF}(K_l,K_k,K_s,sid).\n",
+      "layout_lines": [
+        "m=(ct_l,ct_k,ct_s),",
+        "sid=\\mathsf{SID}(A,B,pk_A,pk_B,",
+        "prekey_A,prekey_B,m),",
+        "k=\\mathsf{KDF}(K_l,K_k,K_s,sid)."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:batch-vector",
+      "number": "2",
+      "source_latex": "S=\\bigl((pk_{A_i},prekey_{A_i},m_i)\\bigr)_{i=1}^{d},\\qquad d\\geq 1.",
+      "layout_lines": [
+        "S=\\bigl((pk_{A_i},prekey_{A_i},m_i)\\bigr)_{i=1}^{d},\\qquad d\\geq 1."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:party-distinct",
+      "number": "3",
+      "source_latex": "\\mathsf{DistinctPartyPerBatch}(S)\\;\\triangleq\\;\n \\forall\\,i\\ne j,\\quad A_i\\ne A_j.",
+      "layout_lines": [
+        "\\mathsf{DistinctPartyPerBatch}(S)\\;\\triangleq\\;",
+        "\\forall\\,i\\ne j,\\quad A_i\\ne A_j."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:core-events",
+      "number": "4",
+      "source_latex": "\\mathsf{SendDone}(A,B,sid,k),\\qquad\n \\mathsf{RecvDone}(B,A,sid,k).",
+      "layout_lines": [
+        "\\mathsf{SendDone}(A,B,sid,k),",
+        "\\mathsf{RecvDone}(B,A,sid,k)."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:tamarin-accept",
+      "number": "5",
+      "source_latex": "\\mathsf{ReceiverAccept}(B,A,bid,idx,rst,m,sid,k).",
+      "layout_lines": [
+        "\\mathsf{ReceiverAccept}(B,A,bid,idx,rst,m,sid,k)."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:property-p1",
+      "number": "6",
+      "source_latex": "\\mathsf{RecvDone}(B,A,sid,k)@r\\;\\Longrightarrow\\;\n \\exists s<r:\\mathsf{SendDone}(A,B,sid,k)@s.",
+      "layout_lines": [
+        "\\mathsf{RecvDone}(B,A,sid,k)@r\\;\\Longrightarrow\\;",
+        "\\exists s<r:\\mathsf{SendDone}(A,B,sid,k)@s."
+      ]
+    },
+    {
+      "kind": "equation",
+      "label": "eq:property-p2",
+      "number": "7",
+      "source_latex": "R(\\theta,\\beta,i)@r_1\\land R(\\theta,\\beta,j)@r_2\n \\;\\Longrightarrow\\;r_1=r_2.",
+      "layout_lines": [
+        "R(\\theta,\\beta,i)@r_1\\land R(\\theta,\\beta,j)@r_2\n \\;",
+        "\\Longrightarrow\\;r_1=r_2."
+      ]
+    }
+  ],
+  "math_format": "native editable OMML, NOT MathType OLE",
+  "status": "部分更新工作稿：第1、2章已更新；后续章节尚待衔接；非最终可投稿版本。",
+  "prose_coverage": "Chinese characters in both approved sources match converted chapter blocks exactly",
+  "baseline_stage6_sha256": "2c07651db11cb41cd5f44a624db1777875adadeebe01b4808d6b45015054390f",
+  "previous_working_sha256": "03aa990783c22bc30706ebdda66edc1024d322974698046d072a6a802507fccd",
+  "working_sha256": "979adb1860629a4fc9348e9ed70f9dcf069a2f3ed0e768e4d9d1f2289935b7db",
+  "sources": {
+    "02-problem.tex": "2cf3ab86ad9665a1432d19a964570a39ffd38757f4ae631e3791f7dfb1f364ec",
+    "03-formal-modeling.tex": "79b472d89a8c72fd515ce6640b58006ec65673c2cce2470042617b960e55e30c"
+  },
+  "dependencies": {
+    "latex2mathml": "3.81.1",
+    "mathml2omml": "0.0.2"
+  }
+}
