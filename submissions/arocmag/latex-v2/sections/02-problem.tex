@@ -1,49 +1,47 @@
-\subsection{BatchReceive机制与批内参与方互异条件}
-\label{subsec:batchreceive-condition}
+% 第1章：K-Waay 协议及安全问题（精简定稿）
+% 依赖主工程已定义的 \kwaay、\batchreceive 宏。
+\subsection{K-Waay 核心密钥交换流程}
+\label{subsec:core-protocol}
 
-\kwaay 由KEM、数字签名和split-KEM等密码组件构成，其完整握手和计算安全证明不在本文分析范围内\cite{collins2024kwaay}。与批次问题直接相关的是接收侧接口：发送方调用\sendaction 产生协议消息；原文第4.1节说明，当多条发送方消息对应同一接收方临时状态时，接收方以该共享状态调用\batchreceive\cite{collins2024kwaayfull}。一次调用的输入可概括为
-\[
-  S=\bigl((\mathit{pk}_{j_1},\mathit{prek}_{j_1},m_{j_1}),\ldots,
-           (\mathit{pk}_{j_d},\mathit{prek}_{j_d},m_{j_d})\bigr),
-  \qquad d\geq 1,
-\]
-其中，每个分量包含所声称发送方的公钥、预密钥束和协议消息。该向量只表示一次接收操作会组合多个发送方关联输入，不涉及各分量的解封装和密钥派生过程。
+\kwaay 是面向异步通信的后量子可否认认证密钥交换协议，利用 KEM、签名和 split-KEM 实现发送方离线发起与接收方后续处理\cite{collins2024kwaay}。其核心接口包括密钥生成、预密钥初始化、发送及批量接收。本文关注 Figure~7 所示核心构造及完整稿中的接收接口，而非对原协议计算安全证明的重新推导\cite{collins2024kwaayfull}。
 
-原文第5.1节（第21页）要求同次\batchreceive 调用中的元素对应不同参与方\cite{collins2024kwaayfull}。该要求约束同一批次内元素之间的关系，并不要求某个参与方在整个执行中只出现一次，也不限制其只能产生一条消息。规范明确了目标关系，但未在该处指定由调用者、批次构造组件还是准入层负责维护。
-
-这一关系与原协议的分量解释有关。原文第4.2.1节将批次会话的参与方、会话标识及密钥组织为对应的向量分量；第5.1节的接收操作也按输入分量形成后续结果\cite{collins2024kwaayfull}。因此，不同位置所关联的参与方是否不同，影响批次中“位置—参与方—输出分量”的对应解释。本文仅以这一接口结构作为研究动机，不建模密钥输出或安全游戏查询，也不将重复投影解释为密钥错误。
-
-分析对象是候选条目完成组合之后、进入后续处理之前的边界，下文称为批次准入。“批次准入”仅概括这一分析边界，并非为K-Waay增加新算法。该边界需要刻画同次调用中各条目的参与方投影及其相互关系，而不是重新描述完整密码过程。
-
-\subsection{比较维度与问题实例}
-\label{subsec:identity-coordinates}
-
-为区分不同限制实际比较的对象，将参与方、发送实例和消息三个分量分别表示。批次准入所需的条目信息抽象为
+设发送方为 $A$、接收方为 $B$。双方发布带签名的预密钥材料；发送方先验证接收方预密钥签名，再分别针对接收方长期 KEM 公钥和临时 KEM 公钥封装，并结合自身 split-KEM 秘密材料与接收方 split-KEM 公钥生成第三个分量。将三份密文及对应共享秘密记为 $(ct_l,K_l)$、$(ct_k,K_k)$ 和 $(ct_s,K_s)$。核心消息、会话标识与会话密钥表示为
 \begin{equation}
-  E_i=(A_i,\oid_i,m_i),
-  \label{eq:abstract-entry}
+\begin{aligned}
+  m&=(ct_l,ct_k,ct_s),\\
+  sid&=\mathsf{SID}(A,B,pk_A,pk_B,prekey_A,prekey_B,m),\\
+  k&=\mathsf{KDF}(K_l,K_k,K_s,sid).
+\end{aligned}
+\label{eq:core-transcript}
 \end{equation}
-其中，$A_i$是参与方分量，$\oid_i$是发送实例标识，$m_i$是消息分量。中文稿中的$\oid$对应Tamarin源模型的$\mathit{sid}$，表示一次\texttt{SendMessage}规则实例化产生的发送实例，不是完整协议的会话标识、transcript或事件时间点。式\eqref{eq:abstract-entry}仅用于分析，不表示协议线路编码。
+其中，$\mathsf{SID}$ 是对原协议身份、公钥、预密钥和完整消息转录本的简记，并非新增的密码算法。发送方公开发送 $m$，会话密钥 $k$ 不随消息公开。接收方先验证所声称发送方的预密钥签名，再使用本地长期、临时和 split-KEM 秘密材料解封装相应密文，并按相同字段顺序计算 $sid$ 与 $k$；其接收方预密钥来自本地状态，而不是由网络消息替换。
 
-\input{tables/identity-coordinate-map}
+这里必须区分三种保证：\emph{解封装成功}表示局部密码处理可完成；\emph{密钥机密性}要求攻击者不能推导会话密钥；\emph{完整参数对应关系}则要求接收方的会话参数存在匹配的发送方完成过程。前两者不能直接推出第三者，这构成后文分析接收行为的起点。
 
-表\ref{tab:identity-coordinate-map}中的维度具有不同作用：槽位和$(\mathit{bid},\mathit{rst})$限定条目所在的批次上下文，消息分量区分符号消息，发送实例标识区分具体发送，参与方分量则是目标条件比较的对象。$A$表示符号模型中的协议主体，不自动等同于账户、公钥字节串或数据库记录；具体系统仍需说明实现对象到参与方投影的映射。
+\subsection{BatchReceive 批量接收机制}
+\label{subsec:batch-interface}
 
-从原始输入$S$到式\eqref{eq:abstract-entry}的映射进一步见表\ref{tab:source-to-abstraction}。该映射保留条目的参与方关联和共同调用上下文，将公钥、预密钥及密码处理压缩为抽象坐标与来源前提。其中，正确的参与方投影是模型假设，未由公钥编码或预密钥验证过程推导；$\oid$也不对应原协议由身份、密钥和消息等信息构成的会话标识。这是研究者建立的抽象映射，尚未证明完整协议到该模型的精化关系。
+异步场景下，多名发送方可能使用接收方已发布的同一临时预密钥。\kwaay 因而允许接收方针对共享的本地临时状态调用一次 \batchreceive，处理一个输入向量\cite{collins2024kwaayfull}：
+\begin{equation}
+ S=\bigl((pk_{A_i},prekey_{A_i},m_i)\bigr)_{i=1}^{d},\qquad d\geq 1.
+ \label{eq:batch-vector}
+\end{equation}
+每个位置关联一个发送方身份材料、预密钥束及消息；接收结果按照相应位置组织为密钥或失败值。原构造既有条目级失败处理，也有特定解封装失败导致的批次级失败，因此槽位中的局部计算不能无条件等同于最终批次成功返回。
 
-\input{tables/source-to-abstraction}
+完整稿第~5.1~节明确要求，一次 \batchreceive 调用的不同输入条目对应\emph{不同参与方}\cite{collins2024kwaayfull}。记 $A_i$ 为第 $i$ 个条目的参与方投影，该前置条件为
+\begin{equation}
+ \mathsf{DistinctPartyPerBatch}(S)\;\triangleq\;
+ \forall\,i\ne j,\quad A_i\ne A_j.
+ \label{eq:party-distinct}
+\end{equation}
+该要求仅约束同一次调用内的条目，不禁止同一参与方在其他批次或其他会话中再次发送。它比较的是参与方，而非消息字节、预密钥或发送发生。本文后续考察这一既有输入条件\emph{未被维持}时的放宽输入模型，不将所得反例称为满足原协议前置条件的执行。
 
-考虑候选条目$(A,\oid_1,m_1)$和$(A,\oid_2,m_2)$，其中$\oid_1\neq\oid_2$且$m_1\neq m_2$。二者来自不同发送实例并携带不同消息，但参与方投影相同。这一最小实例说明，消息或发送实例互异在静态关系上不能保证参与方互异；其是否构成模型中的实际行为，还需通过共同生命周期的可达性验证。
+% 图1预留位置：K-Waay 核心发送及 BatchReceive 交互示意。
+% 本轮不插入占位图片；图1在后续图形阶段制作并放置于本节末。
 
-\subsection{研究问题}
-\label{subsec:research-questions}
+\subsection{接收端安全问题与研究范围}
+\label{subsec:receiver-research-questions}
 
-基于上述区分，提出三个研究问题：
-\begin{enumerate}[label=\textbf{RQ\arabic*：},leftmargin=4.2em,labelsep=0.5em]
-  \item 移除批内参与方互异条件后，重复参与方条目能否进入同一批次并产生接受事件？
-  \item 一个匹配发送来源能否在同一批次和接收方上下文中对应两个\receiveraccept 事件？
-  \item 消息互异约束能否替代参与方互异条件，还是同一参与方的不同消息仍可同时获准进入批次？
-\end{enumerate}
+本文考察两个相互关联但并不等价的问题：其一，接收方完成会话时，是否存在身份、$sid$ 和 $k$ 均匹配的发送方完成事件；其二，即使一条消息具有匹配发送来源或通过显式密钥确认，在放宽批次输入条件后，它是否仍可在同一批次中被重复接受。前者属于\emph{完整参数对应关系}，后者属于\emph{批内接收发生唯一性}。重复接受可能产生何种上层效果，尚需额外说明接收输出的消费方式，不能从接收事件本身直接推出真实会话安装。
 
-为使验证差异能够归因于准入条件，三种模型保持发送、收集、来源匹配和顺序处理过程不变，仅调整准入阶段比较的维度。
-
+为分别回答上述问题，本文对核心密码处理建立 ProVerif 单次接收符号模型，对共享状态、槽位及发生顺序建立 Tamarin 有界批次模型，并在明确前提下比较加固变体。研究结论仅适用于各自的符号模型及假设，不替代 \kwaay 原有的计算安全结论。

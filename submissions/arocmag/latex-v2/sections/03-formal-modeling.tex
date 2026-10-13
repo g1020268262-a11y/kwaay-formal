@@ -1,67 +1,74 @@
-\subsection{安全目标与攻击者模型}
-\label{subsec:objective-adversary}
+% 第2章：形式化建模与安全性质（精简定稿）
+\subsection{攻击者模型与研究假设}
+\label{subsec:formal-adversary}
 
-设$B=(E_1,\ldots,E_n)$为有序批次，$\mathsf{party}(E_i)$表示条目$E_i$的参与方投影。批内参与方互异条件对应的目标为
+本文采用 Dolev--Yao 主动网络攻击者：攻击者可读取公开材料，拦截、重组、替换及重放消息，但只能使用符号模型允许的构造与消去规则。普通 KEM 封装可由公开公钥执行，因此攻击者能够构造新的 $ct_l$、$ct_k$；在没有相应 split-KEM 秘密材料时，不能凭空生成匹配的诚实 $ct_s$，但可以复用已观察到的分量。主要无泄露实验不开放秘密状态，独立泄露实验仅按各自模型解释。
+
+批次模型还允许攻击者在抽象输入边界选择条目及其槽位，包括重复投递已观察到的有效消息。这是\emph{模型中的批次组合能力}，并不证明攻击者能够操控真实部署的批次构造组件。下述 ProVerif 与 Tamarin 模型有不同的事件和密码学抽象，彼此结果不构成一条自动衔接的攻击轨迹。
+
+\subsection{ProVerif 核心模型}
+\label{subsec:proverif-core}
+
+ProVerif 模型保留式\eqref{eq:core-transcript}中的三密文消息、预密钥签名检查、KEM/split-KEM 解封装和密钥派生，以公开信道表示网络。发送方从网络获得声称的接收方预密钥；接收方使用本地保存的接收方预密钥与解封装秘密。模型采用\emph{单次接收抽象}，不包含 \batchreceive 的批次槽位与关闭状态。
+
+双方导出密钥时分别记录 $\mathsf{SenderKey}(A,B,sid,k)$ 与 $\mathsf{ReceiverKey}(B,A,sid,k)$；发送方完成和接收方完成分别记录
 \begin{equation}
-  \distinctparty(B)
-  \triangleq
-  \forall\,1\leq i<j\leq n,\quad
-  \mathsf{party}(E_i)\neq\mathsf{party}(E_j).
-  \label{eq:distinct-party-objective}
+ \mathsf{SendDone}(A,B,sid,k),\qquad
+ \mathsf{RecvDone}(B,A,sid,k).
+ \label{eq:core-events}
 \end{equation}
-该关系要求同批任意两个不同位置具有不同参与方投影，但不要求参与方、消息或发送实例在其他批次或其他执行中保持全局唯一。该定义适用于任意有限批次；机器分析采用最小非平凡情形$n=2$，此时目标化为$A_1\neq A_2$。
+发送方的完成事件位于核心消息输出之后；原始模型的接收完成事件位于成功解封装及密钥派生之后。另以分量发送和分量接受事件检查 split-KEM 来源。上述事件是\emph{模型观察点}，$\mathsf{RecvDone}$ 不表示真实软件已安装会话。独立的 HMAC 变体在接收完成前增加确认检查；具体机制及验证对照留待第3章。
 
-攻击者具有标准Dolev--Yao符号网络能力，并在候选条目暴露后控制两槽批次的组合。攻击者可以保留、重放、选择和排列已有条目，既可以在两个槽位重复同一元组，也可以选择由同一参与方产生、分别具有匹配发送来源的两个不同元组。接收处理要求存在与完整$(A,\oid,m)$匹配的发送来源。攻击者能够改变已有条目的组合方式，但不能据此生成诚实参与方内部状态或凭空构造匹配发送来源。
+\subsection{Tamarin 批次模型}
+\label{subsec:tamarin-batch}
 
-对批次组合的控制属于形式分析中的能力假设。模型固定为两个槽位，机器证据止于\receiveraccept 事件。因此，目标和攻击者能力均限定在候选条目形成之后、完整密码处理完成之前的批次准入边界。
+Tamarin 使用多集重写规则表达线性状态和事件先后关系\cite{meier2013tamarin}。接收状态实例以 $rst$ 标识，批次以 $bid$ 标识，同批槽位以 $idx$ 区分；输入收集、封闭、逐槽处理及批次完成或失败由线性事实约束。这些阶段是本文的\emph{符号建模分解}，并非原协议新增加的算法接口。V6/V7 用于验证状态和生命周期约束，其中 V7 为固定四槽模型；批内重放与后续加固主要采用固定两槽模型。
 
-\subsection{Tamarin模型与共同生命周期}
-\label{subsec:common-lifecycle}
+在历史重放模型中，发送完成事件为 $\mathsf{SenderSession}(A,B,m,sid,k)$；接收发生事件为
+\begin{equation}
+ \mathsf{ReceiverAccept}(B,A,bid,idx,rst,m,sid,k).
+ \label{eq:tamarin-accept}
+\end{equation}
+模型以持久的诚实会话来源事实抽象成功解封装与参数匹配，同时保留不同槽位对同一来源的重复读取可能性；它\emph{不独立重演} ProVerif 中的全部密码检查。HMAC-only 模型增加确认消息及对应接受事件；影响模型另引入有条件的输出消费与符号安装层。独立的 RQ-v2 准入原型只比较消息和参与方坐标，其发送发生标识并非协议会话标识 $sid$。这些理论的同名事件不能直接互换。
 
-Tamarin使用多集重写规则描述状态转换，并以动作事实记录迹性质引用的事件\cite{meier2013tamarin}。\texttt{SendMessage}规则复用持久事实\texttt{!Party(A)}，在每次实例化时生成新鲜值\texttt{\textasciitilde sid}和\texttt{\textasciitilde m}，形成一个发送实例及其消息。该规则记录$\mathsf{Send}(A,\oid,m)$，将$(A,\oid,m)$暴露到符号网络，并保存持久事实\texttt{!Sent(A,oid,m)}。其中，$\oid$标识模型中的一次发送实例，不表示完整协议会话或事件时间戳；\texttt{!Sent}是理想化的来源事实，不实现真实签名或认证过程。
+\subsection{安全性质与验证分工}
+\label{subsec:formal-properties}
 
-网络中的候选元组依次进入两个线性槽位。第一个收集状态保存$E_1$并开放第二个槽位，第二个状态保存$E_2$；两个槽位共享批次标识$\mathit{bid}$和接收方上下文$\mathit{rst}$。其中，$\mathit{rst}$仅表示模型中的共同上下文，不代表完整的接收方临时密码状态。
+本文将安全目标分层，而不视为可互相替代的单一认证性质。P0-S 检查发送方或接收方密钥事件中的 $k$ 是否可由攻击者推导；P0-O 检查已接受 split-KEM 分量是否具有匹配发送来源。P1 要求每个接收完成具有更早且参数完全一致的发送完成，形式为
+\begin{equation}
+ \mathsf{RecvDone}(B,A,sid,k)@r\;\Longrightarrow\;
+ \exists s<r:\mathsf{SendDone}(A,B,sid,k)@s.
+ \label{eq:property-p1}
+\end{equation}
+该性质为\emph{非单射对应关系}，即同一个发送完成可以匹配多次接收；它不能保证重放防护。
 
-收集完成后，准入规则依据相应模型的约束进入拒绝状态或顺序处理状态。获准路径先记录批次准入事件\batchreceive，再依次处理槽位1和槽位2。每个处理步骤都必须匹配相应的\texttt{!Sent(A,oid,m)}，随后记录包含$(A,\oid,m,\mathit{bid},\mathit{rst})$的\receiveraccept 事件。该事件表示条目完成来源匹配并到达抽象接受边界，不等同于网络输入、完整K-Waay会话接受或密钥安装。由于\texttt{!Sent}是持久事实，当同一完整元组占据两个槽位时，两个处理步骤可以读取同一来源事实；该事件对应关系正是后续验证的对象。
+P2 针对有界批次中的接收\emph{发生}。令 $\theta=(A,B,m,sid,k)$、$\beta=(bid,rst)$，$R(\theta,\beta,idx)@r$ 表示式\eqref{eq:tamarin-accept}中的接收事件，且发送来源的存在性与唯一性分别受相应引理约束。批内发生单射性的核心限制为
+\begin{equation}
+ R(\theta,\beta,i)@r_1\land R(\theta,\beta,j)@r_2
+ \;\Longrightarrow\;r_1=r_2.
+ \label{eq:property-p2}
+\end{equation}
+式\eqref{eq:property-p2}仅限制同一匹配消息及同一 $(bid,rst)$ 内的重复接受，不推出不同消息所属参与方必然不同。P3 则在显式的 $C_{\mathrm{install}}\text{-v2}$ 消费假设下检查同一匹配发送是否引起重复符号安装；具体输出来源和安装唯一性定义留到第4章。参与方级准入另由式\eqref{eq:party-distinct}刻画，不能由 P2 或精确消息去重直接替代。
 
-\begin{figure}[!t]
-  \centering
-  \input{figures/fig1-two-slot-lifecycle}
-  \caption{两槽批次准入的共同生命周期}
-  \label{fig:two-slot-lifecycle}
-\end{figure}
+\begin{center}
+\begin{minipage}{\linewidth}
+\centering
+\captionof{table}{安全性质与验证模型的对应关系}
+\label{tab:security-goal-map}
+\small
+\begin{tabularx}{\linewidth}{@{}lYlY@{}}
+\toprule
+性质 & 检查目标 & 工具 & 适用边界\\
+\midrule
+P0-S & 会话密钥不可推导 & ProVerif & 无泄露符号基线\\
+P0-O & split-KEM 分量有来源 & ProVerif & 分量级对应\\
+P1 & 接收完成存在匹配发送 & ProVerif & 完整参数、非单射\\
+P2 & 同批相同消息至多接受一次 & Tamarin & 固定两槽、同状态\\
+P3 & 同源输出的安装唯一性 & Tamarin & 条件化消费模型\\
+参与方互异 & 同批不同槽位关联不同参与方 & Tamarin & 独立准入原型\\
+\bottomrule
+\end{tabularx}
+\end{minipage}
+\end{center}
 
-图\ref{fig:two-slot-lifecycle}给出了三种模型共用的两槽批次准入生命周期。发送生成、网络暴露、两槽收集、来源匹配和顺序处理在三个模型中保持一致，受控变化仅位于收集完成后的准入阶段；消息互异约束模型和参与方互异约束模型还设置了对应的拒绝分支。
-
-共同规则中的资源选择限定了比较的含义。持久的\texttt{!Party(A)}允许同一参与方多次发送，新鲜的$\oid$和$m$区分这些发送；持久的\texttt{!Sent}允许后续步骤重复读取同一来源，而线性槽位状态限制一次批次的收集和处理顺序。来源匹配同时检查$(A,\oid,m)$三个分量，不是只检查参与方是否曾发送。若缺少精确来源，处理规则不能产生相应接受事件；这只是抽象规则的使能条件，不表示实现中的密码验证失败。三种模型的七条共同规则保持一致，使消息约束未能替代参与方关系的结果不能归因于另换了发送或接收流程。
-
-\subsection{准入模型与验证性质}
-\label{subsec:configurations-properties}
-
-表\ref{tab:admission-configurations}列出三种批次准入模型。无互异约束模型不比较消息或参与方分量，用于观察移除目标条件后的行为；消息互异约束模型仅要求$m_1\neq m_2$，用于检验消息关系能否替代参与方关系；参与方互异约束模型直接要求$A_1\neq A_2$，用作目标对照。三者仅改变同一抽象中的准入条件，不表示三套新协议或修复方案。
-
-\input{tables/admission-configurations}
-
-除代表性执行的可达性外，模型还检查发送来源对应性、批内来源单射性、批内消息互异性和批内参与方互异性。发送来源对应性要求每个\receiveraccept 都有一个更早且与完整$(A,\oid,m)$匹配的\sendaction。批内来源单射性（scoped occurrence injectivity）要求：在同一批次和接收方上下文中，不同接受事件不能对应同一个匹配发送来源。该性质描述本文作用域内的事件发生单射性，不是Lowe认证层次中的单射一致性\cite{lowe1997hierarchy}。表\ref{tab:verification-property-semantics}列出四类性质的量词范围。
-
-\input{tables/verification-property-semantics}
-
-批内来源单射性的前件可写为未编号式
-\[
-\begin{aligned}
-  \forall A,\oid,m,\mathit{bid},\mathit{rst},s,r_1,r_2:\quad
-  &\mathsf{Send}(A,\oid,m)@s \\
-  {}\land{}&\mathsf{ReceiverAccept}(A,\oid,m,\mathit{bid},\mathit{rst})@r_1 \\
-  {}\land{}&\mathsf{ReceiverAccept}(A,\oid,m,\mathit{bid},\mathit{rst})@r_2 \\
-  {}\land{}&s<r_1\land s<r_2
-  \quad\Longrightarrow\quad r_1=r_2.
-\end{aligned}
-\]
-该公式限制一个匹配发送来源在给定$(\mathit{bid},\mathit{rst})$中对应的接受事件数。虽然前件包含发送事件，但公式本身不保证每个接受都有来源；这一存在性由发送来源对应性另行断言。公式也不比较两个不同来源的参与方投影，因而不能直接确定批内包含多少个不同参与方。
-
-若分别以$P_\tau$、$M_\tau$和$I_\tau$表示迹$\tau$中的批内参与方互异性、批内消息互异性和批内来源单射性，则根据当前规则可人工推导
-\[
-  P_\tau\Rightarrow M_\tau,\qquad M_\tau\Leftrightarrow I_\tau.
-\]
-该关系依赖三个模型共用的新鲜消息生成和完整元组精确来源匹配规则，不能直接推广到允许消息复用或采用其他来源关系的模型。它来自对现有规则的人工迹语义推导，不是新增的Tamarin lemma或证明器运行，也不构成适用于任意协议的一般定理。三个性质仍具有不同的公式和量词对象。
-
+表\ref{tab:security-goal-map}概括两类工具的分工。ProVerif 负责单次核心过程的机密性及对应关系；Tamarin 负责有界状态化批次中的重复接受、条件化影响和准入比较。存在性见证与全称安全性质分别报告；后续各章仅在对应模型的范围内解释证明和反例，不将不同理论的事件拼接为未经验证的联合执行。
