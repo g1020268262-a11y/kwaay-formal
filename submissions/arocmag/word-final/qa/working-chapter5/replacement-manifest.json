@@ -1,0 +1,206 @@
+{
+  "base_working_sha256": "15c3ff0b9ca0199b64703980e2f6b773b427b8281e39f03f2d6f3675dffdd339",
+  "working_sha256": "b551c7cf3e949ed97e85e1adeea234bfdbbcbd8c096eb2af3d9a9decc7400fda",
+  "approved_source_sha256": "cdd6575d64dd9de1c919edc46f1d6d4eae0c9fe33e1794471e63b172e6e69e9a",
+  "prefix_blocks_preserved": 192,
+  "reference_tail_blocks_preserved": 11,
+  "old_chapter5_blocks_removed": 3,
+  "new_chapter5_blocks": 32,
+  "equation_numbers": [
+    30,
+    31
+  ],
+  "math_format": "editable OMML, not MathType OLE",
+  "chapter5_omml_count": 8,
+  "table4": [
+    [
+      "验证目标",
+      "修复前",
+      "修复后"
+    ],
+    [
+      "相同消息重复接受",
+      "可达",
+      "不可达"
+    ],
+    [
+      "批内接收单射性",
+      "不成立",
+      "成立"
+    ],
+    [
+      "HMAC 有效消息重复接受",
+      "可达",
+      "不可达"
+    ],
+    [
+      "同一消息携带不同标签",
+      "—",
+      "重复拒绝"
+    ],
+    [
+      "条件化重复安装",
+      "可达",
+      "不可达"
+    ],
+    [
+      "不同有效消息正常接收",
+      "可达",
+      "可达"
+    ]
+  ],
+  "figure4": "author-supplied italic reservation only; no image",
+  "unchanged_package_parts": [
+    "[Content_Types].xml",
+    "_rels/",
+    "_rels/.rels",
+    "docProps/",
+    "docProps/app.xml",
+    "docProps/custom.xml",
+    "docProps/thumbnail.wmf",
+    "word/",
+    "word/_rels/",
+    "word/_rels/document.xml.rels",
+    "word/fontTable.xml",
+    "word/footer1.xml",
+    "word/footer2.xml",
+    "word/header1.xml",
+    "word/header2.xml",
+    "word/numbering.xml",
+    "word/settings.xml",
+    "word/styles.xml",
+    "word/theme/",
+    "word/theme/theme1.xml"
+  ],
+  "verbatim_content_audit": "all author paragraphs, displays and table cells passed",
+  "visual_qa": "not performed; no WPS or Word opened; no preview PDF generated",
+  "remaining_issue": "原第5章结束语已按要求替换；当前第5章后直接接参考文献，第6章讨论和第7章结束语尚待提供。",
+  "source_records": [
+    {
+      "kind": "paragraph",
+      "source": "K-Waay 批内去重与组合加固"
+    },
+    {
+      "kind": "paragraph",
+      "source": "批内原子消息去重机制"
+    },
+    {
+      "kind": "paragraph",
+      "source": "针对第4章发现的批内重复接受问题，本文提出一种批内原子消息去重机制，在 BatchReceive 处理消息之前统一检查批次输入，避免同一合法消息在多个槽位中被重复接受。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "设同一批次包含消息 m₁ 和 m₂，其中 m=(ct_l,ct_k,ct_s) 为完整密文元组。接收方首先判断："
+    },
+    {
+      "kind": "equation",
+      "source": "m₁ = m₂",
+      "number": 30
+    },
+    {
+      "kind": "paragraph",
+      "source": "若相等，则判定存在重复消息，直接拒绝整个批次，不执行后续槽位处理；若不相等，则允许进入原有的密文解封装和密钥派生流程。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "为保证去重操作的原子性，本文将检查设置在批次封闭之后、任何槽位处理之前，并使用线性状态约束同一批次只能执行一次去重决策。因此，重复消息不会产生成功接收事件，也不会形成可供后续消费的接收输出。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "该机制不需要修改原有密码学原语，仅在批次处理入口增加消息唯一性检查，即可阻断同一消息的批内重复接受。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "原子去重机制的验证"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本文使用 Tamarin 对加入原子去重机制的接收过程进行验证。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "结果表明，原先可达的“一次发送、两次接收”攻击在修复后不再可达，批内相同消息至多接受一次及接收发生单射性均得到验证。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "对于重复输入，模型能够正常触发批次拒绝，且不会产生成功接收事件。在逐输出消费的条件下，重复接收导致的双重安装路径也被阻断。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "同时，两个不同且有效的消息仍能够完成正常批次处理，说明该机制能够在阻止重复接受的同时保留正常接收能力。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "HMAC 与原子去重的组合加固"
+    },
+    {
+      "kind": "paragraph",
+      "source": "为同时解决消息篡改导致的会话密钥失配和批内重复接受问题，本文将第3章的 HMAC 确认机制与原子去重机制结合，提出组合加固方案。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "改进后的接收过程分为三个阶段。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**首先，执行批内去重。** 接收方收集完整批次后，提取各输入中的基础消息 m，并检查是否存在重复。若存在重复消息，则直接拒绝批次。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**其次，执行密钥确认。** 对于通过去重检查的消息，接收方执行原有密文解封装与密钥派生，并验证："
+    },
+    {
+      "kind": "equation",
+      "source": "tagᵢ = HMAC(confirm_key(kᵢ), sidᵢ)",
+      "number": 31
+    },
+    {
+      "kind": "paragraph",
+      "source": "只有确认标签正确，才能接受相应消息。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**最后，完成批次处理。** 所有槽位均成功处理后，接收方完成批次并输出对应结果。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "组合方案使用基础密文消息 m 作为去重对象，而不是完整的 `(m,tag)`。因此，即使同一消息携带不同确认标签，也会被识别为重复输入，不能绕过去重检查。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "通过上述改进，**原子去重负责阻止重复接受，HMAC 负责确认发送与接收双方的会话参数一致性**，从而实现对两类安全问题的联合防护。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "【图4：K-Waay 组合加固后的接收处理流程，待插入。】"
+    },
+    {
+      "kind": "paragraph",
+      "source": "组合加固的安全性验证"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本文进一步使用 Tamarin 验证组合加固后的接收过程，并与修复前的结果进行对比，如表4所示。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "表4 接收端加固前后的安全性质对照"
+    },
+    {
+      "kind": "paragraph",
+      "source": "注：重复安装结果基于第4章定义的逐输出消费条件。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "验证结果表明，组合加固能够阻断合法消息的批内重复接受，保证相同基础消息不会在同一批次中产生多个成功接收事件。对于确认标签不正确的消息，接收方也无法完成相应的确认接收。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "此外，正常双消息接收和后续输出消费均保持可达，表明组合方案在满足安全检查要求的同时保留了正常批量接收功能。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**综上，本文通过在 BatchReceive 中增加处理前原子去重，并结合 HMAC 密钥确认，实现了对消息篡改和批内重复接受问题的分层加固。形式化验证表明，该方案能够有效阻断相应攻击路径，同时维持正常密钥交换和批次接收能力。**"
+    }
+  ]
+}

@@ -1,0 +1,457 @@
+{
+  "base_working_sha256": "979adb1860629a4fc9348e9ed70f9dcf069a2f3ed0e768e4d9d1f2289935b7db",
+  "working_sha256": "fcba177a332f4ba6a0b0102ebdc2b5df9476632d9319bce87233e9a9ec9bf24d",
+  "approved_source_sha256": "bc610fa15d942d5e4166af611c5f7111dc474f69c6eff00f0116519c7e3ca1f7",
+  "source": "source/chapter3-approved.md",
+  "prefix_blocks_preserved": 68,
+  "tail_blocks_preserved": 28,
+  "unchanged_package_parts": [
+    "[Content_Types].xml",
+    "_rels/.rels",
+    "word/_rels/document.xml.rels",
+    "word/media/image1.wmf",
+    "word/theme/theme1.xml",
+    "word/footer1.xml",
+    "word/header2.xml",
+    "word/header1.xml",
+    "word/settings.xml",
+    "word/fontTable.xml",
+    "word/numbering.xml",
+    "word/media/image3.emf",
+    "word/media/image2.wmf",
+    "word/styles.xml",
+    "word/media/image4.png",
+    "word/media/image5.png",
+    "word/header3.xml",
+    "word/header4.xml",
+    "word/footer2.xml",
+    "word/footer3.xml",
+    "docProps/thumbnail.wmf",
+    "docProps/app.xml",
+    "docProps/custom.xml"
+  ],
+  "chapter3_blocks": 76,
+  "heading_styles": {
+    "level1": "65",
+    "level2": "66",
+    "level3": "68"
+  },
+  "equation_numbers": [
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21
+  ],
+  "shared_secret_enumeration_numbered": false,
+  "math_format": "editable OMML, not MathType OLE",
+  "chapter3_omml_count": 65,
+  "table2": [
+    [
+      "安全性质",
+      "原始模型",
+      "HMAC 加固模型"
+    ],
+    [
+      "发送方会话密钥机密性",
+      "成立",
+      "成立"
+    ],
+    [
+      "接收方会话密钥机密性",
+      "成立",
+      "成立"
+    ],
+    [
+      "split-KEM 分量来源性质",
+      "成立",
+      "成立"
+    ],
+    [
+      "完整参数对应关系 P1",
+      "不成立",
+      "成立"
+    ],
+    [
+      "正常执行可达性",
+      "可达",
+      "可达"
+    ]
+  ],
+  "figure2_reserved_bookmark": "Fig2_Ciphertext_HMAC_Reserved",
+  "figure2_planned_caption": "图2 K-Waay 密文重组攻击及 HMAC 确认加固对照",
+  "source_text_equivalence_assertions": "all author paragraphs and displays passed",
+  "original_blocks_removed": 39,
+  "source_records": [
+    {
+      "kind": "paragraph",
+      "source": "K-Waay 消息篡改攻击与 HMAC 确认加固"
+    },
+    {
+      "kind": "paragraph",
+      "source": "消息篡改攻击的发现"
+    },
+    {
+      "kind": "paragraph",
+      "source": "针对 K-Waay 核心密钥交换过程中发送方与接收方的会话一致性问题，本文利用 ProVerif 对原始协议的消息处理和密钥派生过程进行形式化分析，**发现了一条能够诱导接收方接受篡改消息并产生会话密钥失配的攻击路径**。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "在该攻击中，攻击者无需获取发送方或接收方的长期秘密密钥，也无需破解 KEM 或 split-KEM 算法，而是利用公开密钥重新构造协议消息中的部分密文分量。接收方收到篡改后的消息后，仍能够完成预密钥验证、密文解封装和会话密钥派生，并在原始接收流程中触发接收完成事件。然而，由于接收方所处理的完整消息已经发生变化，其导出的会话标识及会话密钥与原发送方不一致，造成双方会话密钥失配。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本文首先验证了原始核心模型中的会话密钥机密性、split-KEM 分量来源及完整参数对应关系。其中，前两类安全性质成立，而接收方与发送方的完整参数对应关系不成立。该反例表明，**即使攻击者无法获得会话密钥，仍然能够破坏发送方与接收方之间的会话参数一致性，并使接收方在错误的会话参数下完成接收。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这种攻击与传统的会话密钥泄露攻击不同。攻击者的目标不是计算双方协商的密钥，而是通过修改传输消息，使接收方接受一个未与发送方完成过程匹配的会话，从而破坏密钥交换所需的双方一致性。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "攻击过程与形成原因"
+    },
+    {
+      "kind": "paragraph",
+      "source": "设合法发送方为 A，接收方为 B。根据第1章介绍的协议过程，发送方首先执行三组密钥封装，产生共享秘密 K_l、K_k、K_s 及相应的密文 ct_l、ct_k、ct_s。原始发送消息为："
+    },
+    {
+      "kind": "equation",
+      "source": "m_A = (ct_l, ct_k, ct_s)",
+      "number": 8,
+      "layout_lines": [
+        "m_A = (ct_l, ct_k, ct_s)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "发送方根据完整消息和身份、预密钥等信息计算会话标识 sid_A，并派生会话密钥："
+    },
+    {
+      "kind": "equation",
+      "source": "k_A = KDF(K_l, K_k, K_s, sid_A)",
+      "number": 9,
+      "layout_lines": [
+        "k_A = KDF(K_l, K_k, K_s, sid_A)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "攻击者在公开网络中截获消息 m_A 后，利用以下过程构造攻击消息。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**（1）截获并分解合法消息。** 攻击者取得发送方公开传输的密文元组，保留其中的 split-KEM 密文 ct_s。该分量由合法发送方利用其 split-KEM 秘密材料产生，接收方能够使用相应秘密材料对其进行解封装。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**（2）重新构造普通 KEM 密文。** 由于接收方长期 KEM 公钥和临时 KEM 公钥均为公开材料，攻击者可以分别执行封装操作，生成新的密文 ct_l' 和 ct_k'，以及对应的共享秘密 K_l' 和 K_k'。这一过程不需要接收方秘密密钥。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**（3）构造并投递篡改消息。** 攻击者将重新生成的两个普通 KEM 密文与保留的合法 split-KEM 密文组合，得到："
+    },
+    {
+      "kind": "equation",
+      "source": "m_B' = (ct_l', ct_k', ct_s)",
+      "number": 10,
+      "layout_lines": [
+        "m_B' = (ct_l', ct_k', ct_s)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "然后将 m_B' 发送给接收方 B，替代原始消息。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**（4）接收方处理篡改消息。** 接收方首先验证发送方的预密钥签名，然后使用本地长期 KEM、临时 KEM 及 split-KEM 秘密材料处理三个密文分量。由于三个密文分量在各自对应的解封装规则下均有效，接收方能够成功得到："
+    },
+    {
+      "kind": "equation",
+      "source": "K_l'、K_k'、K_s",
+      "number": null,
+      "layout_lines": [
+        "K_l'、K_k'、K_s"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "进而计算新的会话标识和密钥："
+    },
+    {
+      "kind": "equation",
+      "source": "sid_B' = SID(A, B, pk_A, pk_B, prekey_A, prekey_B, m_B')",
+      "number": 11,
+      "layout_lines": [
+        "sid_B' = SID(A, B, pk_A, pk_B, ",
+        "prekey_A, prekey_B, m_B')"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "k_B' = KDF(K_l', K_k', K_s, sid_B')",
+      "number": 12,
+      "layout_lines": [
+        "k_B' = KDF(K_l', K_k', K_s, sid_B')"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "**（5）接收方完成失配会话。** 在原始接收流程中，接收方成功解封装并完成密钥派生后，即记录 `RecvDone(B,A,sid_B',k_B')`。此时，原发送方记录的是其根据 m_A 生成的 sid_A 和 k_A，而接收方使用的是篡改消息 m_B' 对应的 sid_B' 和 k_B'。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "在本文采用的符号构造中，会话标识绑定完整密文消息，因此上述攻击执行满足："
+    },
+    {
+      "kind": "equation",
+      "source": "m_A ≠ m_B'",
+      "number": 13,
+      "layout_lines": [
+        "m_A ≠ m_B'"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "sid_A ≠ sid_B'",
+      "number": 14,
+      "layout_lines": [
+        "sid_A ≠ sid_B'"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "k_A ≠ k_B'",
+      "number": 15,
+      "layout_lines": [
+        "k_A ≠ k_B'"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "**攻击最终使发送方 A 与接收方 B 得到不同的会话密钥，而 B 仍执行了接收完成操作。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "该攻击成功的根本原因在于：**K-Waay 原始核心接收流程缺少对完整消息及其派生会话参数的显式确认。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "协议中的预密钥签名主要认证参与方预先发布的公钥材料，并不直接确认随后传输的完整密文元组。split-KEM 分量虽然提供了与合法发送方相关的密码学来源约束，但它只覆盖相应分量，不能阻止攻击者重新生成其他普通 KEM 密文。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，接收方能够验证部分密码分量的合法性，却未必能够确认当前派生的完整会话参数与发送方实际完成的会话一致。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "需要注意的是，攻击者虽然自行生成了 K_l' 和 K_k'，但无法通过公开的 ct_s 推导诚实 split-KEM 对应的 K_s，因而仍无法计算接收方派生的 k_B'。这与 ProVerif 中接收方会话密钥机密性成立的结果一致。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "综上，该攻击揭示了一个重要的安全问题：**接收方密钥不泄露，并不能阻止攻击者通过篡改协议消息破坏双方的会话密钥一致性。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "基于 HMAC 的接收确认加固"
+    },
+    {
+      "kind": "paragraph",
+      "source": "针对上述消息篡改攻击，本文提出在 K-Waay 核心密钥交换过程中引入基于 HMAC 的显式密钥确认机制，在保留原有 KEM、split-KEM 封装及密钥派生结构的基础上，增加接收方正式接受前的完整会话参数校验。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "该机制的设计目标是：**只有当接收方导出的会话参数与发送方生成确认标签时使用的参数一致，接收方才能完成当前密钥交换。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "发送方确认标签生成"
+    },
+    {
+      "kind": "paragraph",
+      "source": "发送方按照原协议生成三组共享秘密、密文消息 m_A、会话标识 sid_A 和会话密钥 k_A 后，进一步从会话密钥导出确认密钥，并计算 HMAC 标签："
+    },
+    {
+      "kind": "equation",
+      "source": "tag_A = HMAC(confirm_key(k_A), sid_A)",
+      "number": 16,
+      "layout_lines": [
+        "tag_A = HMAC(confirm_key(k_A), sid_A)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "其中，`confirm_key` 表示用于密钥确认的派生函数，HMAC 的输入为当前会话标识。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "由于 sid_A 已包含参与方身份、公钥、预密钥材料以及完整密文消息，该标签同时关联了会话密钥和完整会话转录本。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "发送方最终传输的消息由原始密文元组扩展为："
+    },
+    {
+      "kind": "equation",
+      "source": "M_A = (m_A, tag_A)",
+      "number": 17,
+      "layout_lines": [
+        "M_A = (m_A, tag_A)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "这一修改不改变原协议的三组 KEM/split-KEM 封装方式，而是在原有密钥派生过程之后增加确认信息。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "接收方确认检查"
+    },
+    {
+      "kind": "paragraph",
+      "source": "接收方收到 M_A 后，首先提取原始消息 m 和确认标签 tag，执行原有预密钥签名验证、密文解封装与密钥派生操作，得到本地会话标识 sid_B 和会话密钥 k_B。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "随后，接收方根据本地派生结果计算："
+    },
+    {
+      "kind": "equation",
+      "source": "tag_B = HMAC(confirm_key(k_B), sid_B)",
+      "number": 18,
+      "layout_lines": [
+        "tag_B = HMAC(confirm_key(k_B), sid_B)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "并验证："
+    },
+    {
+      "kind": "equation",
+      "source": "tag_B = tag",
+      "number": 19,
+      "layout_lines": [
+        "tag_B = tag"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "只有确认标签匹配，接收方才触发会话密钥接受和接收完成事件；若校验失败，则不能进入该模型中的正式接收完成路径。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这一机制使发送方与接收方的会话参数一致性成为接收完成的必要条件，而不再仅依赖各密文分量是否能够成功解封装。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "对消息篡改攻击的阻断"
+    },
+    {
+      "kind": "paragraph",
+      "source": "考虑第3.2节中的攻击。攻击者重新构造 ct_l' 和 ct_k' 后，接收方处理的消息变为 m_B'，由此派生的 sid_B' 和 k_B' 均与原发送方使用的参数不同。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，原发送方生成的确认标签："
+    },
+    {
+      "kind": "equation",
+      "source": "tag_A = HMAC(confirm_key(k_A), sid_A)",
+      "number": 20,
+      "layout_lines": [
+        "tag_A = HMAC(confirm_key(k_A), sid_A)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "不能作为篡改消息对应参数的有效确认标签。接收方根据自身参数计算的标签为："
+    },
+    {
+      "kind": "equation",
+      "source": "tag_B' = HMAC(confirm_key(k_B'), sid_B')",
+      "number": 21,
+      "layout_lines": [
+        "tag_B' = HMAC(confirm_key(k_B'), sid_B')"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "在无密钥泄露的符号模型中，攻击者无法为这组新的会话参数构造通过检查的确认标签。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，原本能够触发接收完成事件的消息重组路径，在加入 HMAC 确认后被阻断。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**HMAC 加固使攻击者即使能够构造可成功解封装的密文，也无法再利用该密文诱导接收方完成一个缺少匹配发送会话的执行。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "需要区分的是，确认标签校验并未检查消息在同一批次中是否已经使用。因此，该机制解决的是当前核心模型中的完整参数确认问题，而不是批次重放防护问题。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "HMAC 加固的形式化验证"
+    },
+    {
+      "kind": "paragraph",
+      "source": "为验证所提出机制的有效性，本文分别对原始 K-Waay 核心模型及加入 HMAC 确认的变体进行 ProVerif 分析。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "两个模型均保留原有的三组密钥封装、预密钥签名检查及会话密钥派生过程。加固变体在发送方增加确认标签生成，在接收方增加标签匹配检查，并使接收完成事件受确认结果约束；同时将发送完成事件安排在确认消息公开之前。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "对比验证主要考察会话密钥机密性、split-KEM 分量来源性质、完整参数对应关系以及正常执行可达性。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "表2 原始核心模型与 HMAC 加固模型的验证结果"
+    },
+    {
+      "kind": "paragraph",
+      "source": "注：结果对应无密钥泄露的符号配置；split-KEM 分量来源性质由独立的分量检查配置验证。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "原始模型中，ProVerif 找到了 `RecvDone(B,A,sid,k)` 缺少匹配 `SendDone(A,B,sid,k)` 的反例，对应第3.2节所述的消息篡改及会话密钥失配攻击。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "加入 HMAC 确认后，完整参数对应关系查询由 `false` 变为 `true`，表明所发现的接收方错误接受路径已在加固模型中得到阻断。同时，发送方和接收方会话密钥机密性、split-KEM 分量来源性质继续成立，正常密钥交换过程仍然可达。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "**上述结果验证了本文 HMAC 确认方案的有效性：它在无密钥泄露的符号模型中消除了所发现的完整会话参数失配接受路径，并保持了原有核心密钥交换的正常执行能力。**"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本文还对发送方签名秘密密钥泄露情形进行了独立验证；该配置下完整参数对应关系再次被反例否定，说明上述加固结论适用于所验证的无泄露条件，而不能直接推广至所有密钥泄露场景。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本章的研究表明，K-Waay 核心密钥交换中的密码分量合法性与双方会话密钥一致性是两个不同的安全目标。本文通过攻击建模发现了消息篡改导致的会话失配路径，并提出 HMAC 确认机制加以阻断，完成了从攻击发现到加固验证的研究过程。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "然而，HMAC 确认只能保证所验证范围内接受消息与发送会话之间的参数对应关系，不能限制同一条合法确认消息被重复处理的次数。对于 K-Waay 的 BatchReceive 接口，当批次输入约束未被维持时，合法确认消息仍可能在多个槽位中被重复接受。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，下一章进一步分析批量接收过程中的重复接受攻击及其安全影响。"
+    }
+  ]
+}

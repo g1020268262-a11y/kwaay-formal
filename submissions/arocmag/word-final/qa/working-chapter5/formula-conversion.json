@@ -1,0 +1,50 @@
+[
+  {
+    "latex": "m_{1}",
+    "display": false,
+    "omml_text": "m1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_{2}",
+    "display": false,
+    "omml_text": "m2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m=(\\mathit{ct}_{l},\\mathit{ct}_{k},\\mathit{ct}_{s})",
+    "display": false,
+    "omml_text": "m=(ctl,ctk,cts)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "m_{1} = m_{2}",
+    "display": true,
+    "omml_text": "m1=m2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "m",
+    "display": false,
+    "omml_text": "m",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "tag_{i} = \\mathsf{HMAC}(\\mathsf{confirm\\_key}(k_{i}), sid_{i})",
+    "display": true,
+    "omml_text": "tagi=HMAC(confirm_key(ki),sidi)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "m",
+    "display": false,
+    "omml_text": "m",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(m,\\mathit{tag})",
+    "display": false,
+    "omml_text": "(m,tag)",
+    "structured_scripts": 0
+  }
+]

@@ -1,0 +1,188 @@
+[
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "m",
+    "display": false,
+    "omml_text": "m",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{sid}",
+    "display": false,
+    "omml_text": "sid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k",
+    "display": false,
+    "omml_text": "k",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{tag} = \\mathsf{HMAC}(\\mathsf{confirm\\_key}(k), \\mathit{sid})",
+    "display": true,
+    "omml_text": "tag=HMAC(confirm_key(k),sid)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "M=(m,\\mathit{tag})",
+    "display": false,
+    "omml_text": "M=(m,tag)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ConfirmedSend}(A,B,m,\\mathit{sid},k,\\mathit{tag})",
+    "display": false,
+    "omml_text": "ConfirmedSend(A,B,m,sid,k,tag)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "M",
+    "display": false,
+    "omml_text": "M",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{bid}",
+    "display": false,
+    "omml_text": "bid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "idx_{1}",
+    "display": false,
+    "omml_text": "idx1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "idx_{2}",
+    "display": false,
+    "omml_text": "idx2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{rst}",
+    "display": false,
+    "omml_text": "rst",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "idx_{1}\\ne idx_{2}",
+    "display": false,
+    "omml_text": "idx1≠idx2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{ConfirmedReceiverAccept}",
+    "display": true,
+    "omml_text": "ConfirmedReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(B,A,\\mathit{bid},idx_{1},\\mathit{rst},m,\\mathit{sid},k,\\mathit{tag})",
+    "display": true,
+    "omml_text": "(B,A,bid,idx1,rst,m,sid,k,tag)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{ConfirmedReceiverAccept}",
+    "display": true,
+    "omml_text": "ConfirmedReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(B,A,\\mathit{bid},idx_{2},\\mathit{rst},m,\\mathit{sid},k,\\mathit{tag})",
+    "display": true,
+    "omml_text": "(B,A,bid,idx2,rst,m,sid,k,tag)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{BatchComplete}(B,\\mathit{bid},\\mathit{rst})",
+    "display": false,
+    "omml_text": "BatchComplete(B,bid,rst)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}",
+    "display": false,
+    "omml_text": "ReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{aid}",
+    "display": false,
+    "omml_text": "aid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "h",
+    "display": false,
+    "omml_text": "h",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{InstallSession}(B,h,A,\\mathit{sid},k)",
+    "display": true,
+    "omml_text": "InstallSession(B,h,A,sid,k)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{AcceptOutputCreated}",
+    "display": true,
+    "omml_text": "AcceptOutputCreated",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(aid_{1},B,A,\\mathit{bid},idx_{1},\\mathit{rst},m,\\mathit{sid},k)",
+    "display": true,
+    "omml_text": "(aid1,B,A,bid,idx1,rst,m,sid,k)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{AcceptOutputCreated}",
+    "display": true,
+    "omml_text": "AcceptOutputCreated",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(aid_{2},B,A,\\mathit{bid},idx_{2},\\mathit{rst},m,\\mathit{sid},k)",
+    "display": true,
+    "omml_text": "(aid2,B,A,bid,idx2,rst,m,sid,k)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "aid_{1}\\ne aid_{2}",
+    "display": false,
+    "omml_text": "aid1≠aid2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{InstallSession}(B,h_{1},A,\\mathit{sid},k)",
+    "display": true,
+    "omml_text": "InstallSession(B,h1,A,sid,k)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{InstallSession}(B,h_{2},A,\\mathit{sid},k)",
+    "display": true,
+    "omml_text": "InstallSession(B,h2,A,sid,k)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "h_{1}\\ne h_{2}",
+    "display": false,
+    "omml_text": "h1≠h2",
+    "structured_scripts": 2
+  }
+]
