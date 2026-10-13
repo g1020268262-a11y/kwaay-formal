@@ -1,0 +1,145 @@
+{
+  "base_sha256": "8a0f15e6da5325bd1091fceff92c106d4eaa50902728f975ed68640428471d4d",
+  "working_sha256": "aa34c2f7a8df2ddbea169232de23b9a560cf0f2a6027fb685df0f4bc676afad8",
+  "request_sha256": "18af11710f0b311a215d430520edebbc91dbf87c33442048c1007f8adac79a22",
+  "frontmatter_and_introduction_exact_author_text": true,
+  "protected_chapters": [
+    1,
+    4,
+    6
+  ],
+  "unchanged_display_math_paragraphs": 32,
+  "unchanged_table_numbers": [
+    2,
+    3,
+    4
+  ],
+  "unchanged_bibliography_entries": 8,
+  "cited_reference_numbers": [
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "uncited_references": [
+    {
+      "number": 1,
+      "entry": "CREMERS C, JACOMME C, NASKA A. Formal analysis of session-handling in secure messaging: lifting security from sessions to conversations[C]//32nd USENIX Security Symposium (USENIX Security 23). Anaheim, CA: USENIX Association, 2023: 1235-1252."
+    },
+    {
+      "number": 7,
+      "entry": "LUPETTI S, DILLEMA F W, STABELL-KULO T. Names in cryptographic protocols[C]//Proceedings of the 4th International Workshop on Security in Information Systems. Paphos, Cyprus: SciTePress, 2006: 185-194. DOI:10.5220/0002484701850194."
+    },
+    {
+      "number": 8,
+      "entry": "LOWE G. A hierarchy of authentication specifications[C]//Proceedings of the 10th Computer Security Foundations Workshop. Rockport, MA: IEEE Computer Society Press, 1997: 31-43. DOI:10.1109/CSFW.1997.596782."
+    }
+  ],
+  "reference2_to5_checked": "K-Waay proceedings; K-Waay full ePrint; Signal; PQXDH, respectively",
+  "unchanged_package_parts": [
+    "[Content_Types].xml",
+    "_rels/",
+    "_rels/.rels",
+    "docProps/",
+    "docProps/app.xml",
+    "docProps/custom.xml",
+    "docProps/thumbnail.wmf",
+    "word/",
+    "word/_rels/",
+    "word/_rels/document.xml.rels",
+    "word/fontTable.xml",
+    "word/footer1.xml",
+    "word/footer2.xml",
+    "word/header1.xml",
+    "word/header2.xml",
+    "word/numbering.xml",
+    "word/settings.xml",
+    "word/styles.xml",
+    "word/theme/",
+    "word/theme/theme1.xml"
+  ],
+  "final_chapter_titles": [
+    "引言",
+    "K-Waay协议及安全问题",
+    "形式化建模与安全性质",
+    "K-Waay 消息篡改攻击与 HMAC 确认加固",
+    "K-Waay 批内重放攻击与安全影响分析",
+    "K-Waay 批内去重与组合加固",
+    "结束语"
+  ],
+  "changes": [
+    {
+      "location": "中文标题",
+      "before": "K-Waay批次准入中参与方互异条件的形式化分析",
+      "after": "K-Waay 接收端安全问题的形式化分析与组合加固"
+    },
+    {
+      "location": "英文标题",
+      "before": "Formal Analysis of the Distinct-Party Condition in K-Waay Batch Admission",
+      "after": "Formal Analysis and Combined Hardening of Receiver-Side Security in K-Waay"
+    },
+    {
+      "location": "中文摘要",
+      "before": "摘  要：K-Waay的BatchReceive 要求同次调用中的输入元素分别对应不同参与方，但消息限制能否替代该条件需验证。基于共同生命周期构造无互异、消息互异和参与方互异三种固定两槽Tamarin准入模型。无互异模型允许一个匹配发送来源对应同批两个接受；人工语义推导表明，新鲜消息和精确来源匹配使消息互异性与批内来源单射性等价。机器可达见证显示，同一参与方的不同发送实例与消息各有匹配发送来源，可同批接受，故消息约束不能推出参与方互异性。参与方互异约束模型保持目标关系，有效批次可达。结论限于固定两槽准入抽象。",
+      "after": "摘 要： 针对 K-Waay 会话参数失配与批内重复接受问题，利用 ProVerif 和 Tamarin 分析核心交换与 BatchReceive。发现攻击者复用合法 split-KEM 密文、重构其他 KEM 密文，可使接收方在会话密钥未泄露时接受与发送方密钥不一致的会话。HMAC 密钥确认使无泄露模型中的完整参数对应关系由不成立转为成立。在未维持参与方互异条件的两槽模型中，合法确认消息仍可被重复接受；独立消费模型进一步验证了条件化重复符号安装。为此，提出处理前的批内原子消息去重，并与 HMAC 确认组合。验证表明，批内重复接受及条件化重复安装被阻断，批内接收单射性成立，正常批次处理与输出消费仍可达。"
+    },
+    {
+      "location": "中文关键词",
+      "before": "关键词：K-Waay；批次准入；批内参与方互异条件；Tamarin；形式化验证",
+      "after": "关键词： K-Waay；密文重组攻击；批内重放；HMAC 密钥确认；原子去重；ProVerif；Tamarin"
+    },
+    {
+      "location": "英文摘要",
+      "before": "Abstract: K-Waay requires inputs to one BatchReceive invocation to correspond to different parties, but whether message distinction can replace this same-batch condition requires verification. Three fixed-two-slot Tamarin admission models—unconstrained, message-constrained, and party-constrained—were constructed over a common lifecycle. The unconstrained model admitted two same-batch acceptance events supported by one matching sender origin. A manual semantic derivation under the fresh-message and exact-origin rules showed that same-batch message distinction and batch-scoped origin injectivity are equivalent in the message-constrained model. A machine-reachable execution nevertheless contained two distinct sender occurrences and messages from the same party, each with its own matching sender origin; both entered one batch and yielded two ReceiverAccept events. Thus message distinction does not imply same-batch party distinction. The party-constrained model preserved the target relation while retaining reachable valid distinct-party batches. These conclusions are limited to the fixed-two-slot batch-admission abstraction.",
+      "after": "Abstract: Receiver-side session mismatch and intra-batch duplicate acceptance in K-Waay were analyzed using ProVerif and Tamarin. The analysis identified a ciphertext recomposition attack: an adversary could reuse a legitimate split-KEM ciphertext and reconstruct other KEM ciphertexts, causing the receiver to accept a session key different from the sender's without learning that key. HMAC-based key confirmation restored full-parameter correspondence in the uncompromised symbolic model. However, when the distinct-party precondition was not maintained, a valid confirmed message could still be accepted twice within a two-slot batch. A separate output-consumption model further demonstrated conditional duplicate symbolic installations. An atomic, batch-local message deduplication mechanism was therefore proposed and combined with HMAC confirmation. Verification showed that duplicate acceptance and conditional duplicate installation were prevented, while batch-scoped acceptance injectivity and normal batch processing and output consumption remained achievable."
+    },
+    {
+      "location": "英文关键词",
+      "before": "Key words: K-Waay; batch admission; distinct-party condition; Tamarin; formal verification",
+      "after": "Key words: K-Waay; ciphertext recomposition attack; intra-batch replay; HMAC-based key confirmation; atomic deduplication; ProVerif; Tamarin"
+    },
+    {
+      "location": "首页非学术工作稿说明",
+      "before": "部分更新工作稿：第1、2章已更新；后续章节尚待衔接；非最终可投稿版本。",
+      "after": ""
+    },
+    {
+      "location": "第0章",
+      "before_paragraphs": 11,
+      "after_paragraphs": 8,
+      "author_text_exact": true
+    },
+    {
+      "location": "§2.3 有界批次模型表述",
+      "before": "Tamarin 使用多集重写规则表达线性状态和事件先后关系[6]。接收状态实例以 rst 标识，批次以 bid 标识，同批槽位以 idx 区分；输入收集、封闭、逐槽处理及批次完成或失败由线性事实约束。这些阶段是本文的符号建模分解，并非原协议新增加的算法接口。V6/V7 用于验证状态和生命周期约束，其中 V7 为固定四槽模型；批内重放与后续加固主要采用固定两槽模型。",
+      "after": "Tamarin 使用多集重写规则表达线性状态和事件先后关系[6]。接收状态实例以 rst 标识，批次以 bid 标识，同批槽位以 idx 区分；输入收集、封闭、逐槽处理及批次完成或失败由线性事实约束。这些阶段是本文的符号建模分解，并非原协议新增加的算法接口。有界批次模型用于验证状态和生命周期约束；批内重放与后续加固采用固定两槽模型。"
+    },
+    {
+      "location": "§2.3 删除独立 RQ-v2 原型说明",
+      "before": "模型以持久的诚实会话来源事实抽象成功解封装与参数匹配，同时保留不同槽位对同一来源的重复读取可能性；它不独立重演 ProVerif 中的全部密码检查。HMAC-only 模型增加确认消息及对应接受事件；影响模型另引入有条件的输出消费与符号安装层。独立的 RQ-v2 准入原型只比较消息和参与方坐标，其发送发生标识并非协议会话标识 sid。这些理论的同名事件不能直接互换。",
+      "after": "模型以持久的诚实会话来源事实抽象成功解封装与参数匹配，同时保留不同槽位对同一来源的重复读取可能性；它不独立重演 ProVerif 中的全部密码检查。HMAC-only 模型增加确认消息及对应接受事件；影响模型另引入有条件的输出消费与符号安装层。这些理论的同名事件不能直接互换。"
+    },
+    {
+      "location": "表1 删除参与方互异/独立准入原型行，并续接底线",
+      "before": "性质检查目标工具适用边界P0-S会话密钥不可推导ProVerif无泄露符号基线P0-Osplit-KEM 分量有来源ProVerif分量级对应P1接收完成存在匹配发送ProVerif完整参数、非单射P2同批相同消息至多接受一次Tamarin固定两槽、同状态P3同源输出的安装唯一性Tamarin条件化消费模型参与方互异同批不同槽位关联不同参与方Tamarin独立准入原型",
+      "after": "性质检查目标工具适用边界P0-S会话密钥不可推导ProVerif无泄露符号基线P0-Osplit-KEM 分量有来源ProVerif分量级对应P1接收完成存在匹配发送ProVerif完整参数、非单射P2同批相同消息至多接受一次Tamarin固定两槽、同状态P3同源输出的安装唯一性Tamarin条件化消费模型"
+    },
+    {
+      "location": "§2.4 删除独立准入比较验证任务",
+      "before": "表1概括两类工具的分工。ProVerif 负责单次核心过程的机密性及对应关系；Tamarin 负责有界状态化批次中的重复接受、条件化影响和准入比较。存在性见证与全称安全性质分别报告；后续各章仅在对应模型的范围内解释证明和反例，不将不同理论的事件拼接为未经验证的联合执行。",
+      "after": "表1概括两类工具的分工。ProVerif 负责单次核心过程的机密性及对应关系；Tamarin 负责有界状态化批次中的重复接受、条件化影响。存在性见证与全称安全性质分别报告；后续各章仅在对应模型的范围内解释证明和反例，不将不同理论的事件拼接为未经验证的联合执行。"
+    },
+    {
+      "location": "§3.4 明确两个模型各自发送完成观察点",
+      "before": "两个模型均保留原有的三组密钥封装、预密钥签名检查及会话密钥派生过程。加固变体在发送方增加确认标签生成，在接收方增加标签匹配检查，并使接收完成事件受确认结果约束；同时将发送完成事件安排在确认消息公开之前。",
+      "after": "两个模型均保留原有的三组密钥封装、预密钥签名检查及会话密钥派生过程。加固变体在发送方增加确认标签生成，在接收方增加标签匹配检查，并使接收完成事件受确认结果约束。原始模型在基础密文消息公开之后记录发送完成事件；HMAC 加固模型在确认消息公开之前记录发送完成事件。原始模型与加固模型分别依据基础消息发送和确认消息发送过程设置发送完成观察点，相关对应关系验证结果应结合各自事件定义理解。"
+    },
+    {
+      "location": "§5.4 使用作者指定的分模型限定总结",
+      "before": "综上，本文通过在 BatchReceive 中增加处理前原子去重，并结合 HMAC 密钥确认，实现了对消息篡改和批内重复接受问题的分层加固。形式化验证表明，该方案能够有效阻断相应攻击路径，同时维持正常密钥交换和批次接收能力。",
+      "after": "第3章的 ProVerif 验证表明，HMAC 密钥确认能够在无密钥泄露的核心模型中恢复完整会话参数对应关系。本节 Tamarin 验证进一步表明，在固定两槽批次模型中，原子去重与 HMAC 组合能够阻断相同消息的重复接受，并在指定消费条件下排除相应的重复安装路径，同时保留不同有效消息正常接收与消费的可达性。"
+    }
+  ],
+  "visual_qa": "Actually opened the updated DOCX in WPS Office 12.1.0.28505 and scrolled through all seven pages at 110 percent. Inspected titles, both abstracts and keyword lists, introduction and its three contributions, sections2.3/2.4 and table1 bottom line, section3.4 and table2, unchanged chapter4/table3, section5.4/table4, conclusion and references. No obvious text/formula overflow, overlapping paragraphs, clipped tables or new blank pages observed. Closed without saving. No new PDF or image files generated."
+}

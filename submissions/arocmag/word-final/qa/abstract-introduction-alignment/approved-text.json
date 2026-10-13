@@ -1,0 +1,19 @@
+{
+  "title_cn": "K-Waay 接收端安全问题的形式化分析与组合加固",
+  "title_en": "Formal Analysis and Combined Hardening of Receiver-Side Security in K-Waay",
+  "abstract_cn": "针对 K-Waay 会话参数失配与批内重复接受问题，利用 ProVerif 和 Tamarin 分析核心交换与 BatchReceive。发现攻击者复用合法 split-KEM 密文、重构其他 KEM 密文，可使接收方在会话密钥未泄露时接受与发送方密钥不一致的会话。HMAC 密钥确认使无泄露模型中的完整参数对应关系由不成立转为成立。在未维持参与方互异条件的两槽模型中，合法确认消息仍可被重复接受；独立消费模型进一步验证了条件化重复符号安装。为此，提出处理前的批内原子消息去重，并与 HMAC 确认组合。验证表明，批内重复接受及条件化重复安装被阻断，批内接收单射性成立，正常批次处理与输出消费仍可达。",
+  "abstract_en": "Receiver-side session mismatch and intra-batch duplicate acceptance in K-Waay were analyzed using ProVerif and Tamarin. The analysis identified a ciphertext recomposition attack: an adversary could reuse a legitimate split-KEM ciphertext and reconstruct other KEM ciphertexts, causing the receiver to accept a session key different from the sender's without learning that key. HMAC-based key confirmation restored full-parameter correspondence in the uncompromised symbolic model. However, when the distinct-party precondition was not maintained, a valid confirmed message could still be accepted twice within a two-slot batch. A separate output-consumption model further demonstrated conditional duplicate symbolic installations. An atomic, batch-local message deduplication mechanism was therefore proposed and combined with HMAC confirmation. Verification showed that duplicate acceptance and conditional duplicate installation were prevented, while batch-scoped acceptance injectivity and normal batch processing and output consumption remained achievable.",
+  "keywords_cn": "K-Waay；密文重组攻击；批内重放；HMAC 密钥确认；原子去重；ProVerif；Tamarin",
+  "keywords_en": "K-Waay; ciphertext recomposition attack; intra-batch replay; HMAC-based key confirmation; atomic deduplication; ProVerif; Tamarin",
+  "intro": [
+    "随着后量子密码技术的发展，安全消息协议逐渐采用基于密钥封装机制（Key Encapsulation Mechanism，KEM）的密钥交换方案，以应对量子计算对传统公钥密码体系的潜在威胁。K-Waay 是一种面向异步通信的后量子可否认认证密钥交换协议，通过 KEM、数字签名与 split-KEM 实现类似 X3DH 的密钥交换功能[2-3]。该协议支持发送方离线发起会话，并通过 BatchReceive 机制处理多个发送方使用同一接收方临时状态生成的消息。然而，接收方能否正确确认完整会话参数，以及批量处理过程中是否存在重复接受行为，仍需要结合具体接收流程进行分析。",
+    "已有研究对安全消息协议的认证与密钥安全性进行了深入分析。例如，Signal 协议的形式化研究系统考察了密钥交换及后续消息处理中的安全性质[4]，PQXDH 的形式化验证进一步研究了后量子密钥协商的认证和机密性[5]。这些研究为分析后量子消息协议提供了方法基础，但密钥机密性、发送与接收会话参数一致性以及批次内部的接收唯一性是不同的安全目标。尤其对于采用多个密码分量构造会话密钥的协议，单个分量的来源合法性并不必然意味着接收方接受的完整消息与发送方实际生成的消息一致；对于批量接收机制，单条消息的有效性验证也不能直接保证该消息不会被重复处理。",
+    "针对上述问题，本文首先利用 ProVerif 对 K-Waay 核心密钥交换过程进行形式化分析，发现一条密文重组攻击路径。攻击者能够保留合法发送方产生的 split-KEM 密文，同时利用公开密钥重新构造其他 KEM 密文，使接收方在成功解封装后接受篡改消息，进而导出与发送方不同的会话标识及会话密钥。该攻击不需要获得接收方会话密钥，说明会话密钥机密性成立并不足以保证双方会话参数一致。为阻断该攻击，本文提出基于 HMAC 的密钥确认机制，使接收方在完成接收前验证由会话密钥及完整转录本标识生成的确认标签。",
+    "进一步地，本文使用 Tamarin 分析 K-Waay 的 BatchReceive 机制，发现在参与方互异前置条件未得到维持的情况下，即使消息已经通过 HMAC 确认，攻击者仍能够将同一合法消息重复投递至同一批次的不同槽位，造成一个发送会话对应多个接收事件。在逐输出独立消费的条件下，重复接收还可能进一步产生具有相同会话参数的多个本地安装事件。针对这一问题，本文提出处理前批内原子消息去重机制，并与 HMAC 确认相结合，在消息接受之前统一检查重复输入，从而实现会话参数确认与批内接收唯一性的分层保护。",
+    "本文主要贡献如下：",
+    "1. **发现 K-Waay 核心消息篡改攻击并提出修复方案。** 通过 ProVerif 构造密文重组攻击，揭示接收方在会话密钥未泄露的情况下仍可能接受失配会话的问题；提出 HMAC 密钥确认机制，并验证其能够恢复无泄露模型中的完整会话参数对应关系。",
+    "2. **发现 HMAC 确认后的批内重复接受问题并分析安全影响。** 利用 Tamarin 构造合法确认消息的批内重放路径，证明同一发送消息能够对应两个不同接收事件，并在独立的条件化消费模型中验证重复接收可能造成的重复安装后果。",
+    "3. **提出批内原子去重与 HMAC 组合加固方案。** 在批次处理前增加完整消息去重检查，阻断重复输入产生多个成功接收事件；进一步结合 HMAC 确认，通过形式化验证表明组合方案能够阻断相应攻击路径，同时保持正常密钥交换与批次处理能力。"
+  ],
+  "summary5": "第3章的 ProVerif 验证表明，HMAC 密钥确认能够在无密钥泄露的核心模型中恢复完整会话参数对应关系。本节 Tamarin 验证进一步表明，在固定两槽批次模型中，原子去重与 HMAC 组合能够阻断相同消息的重复接受，并在指定消费条件下排除相应的重复安装路径，同时保留不同有效消息正常接收与消费的可达性。"
+}
