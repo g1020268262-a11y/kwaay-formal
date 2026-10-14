@@ -1,0 +1,563 @@
+{
+  "base_sha256": "aa34c2f7a8df2ddbea169232de23b9a560cf0f2a6027fb685df0f4bc676afad8",
+  "working_sha256": "7c4176b61c7f8594acb394836ba55ca8a5ca4af974bce696e60d8641e65809c0",
+  "authority": "retained official-template-converted.docx and artifact.md; published PDF observations are secondary",
+  "academic_text_preserved": true,
+  "caption_whitespace_only": [
+    {
+      "before": "表 1　安全性质与验证模型的对应关系",
+      "after": "表 1　安全性质与验证模型的对应关系"
+    },
+    {
+      "before": "表2 原始核心模型与 HMAC 加固模型的验证结果",
+      "after": "表 2　原始核心模型与 HMAC 加固模型的验证结果"
+    },
+    {
+      "before": "表3 批内重放攻击与安全影响验证结果",
+      "after": "表 3　批内重放攻击与安全影响验证结果"
+    },
+    {
+      "before": "表4 接收端加固前后的安全性质对照",
+      "after": "表 4　接收端加固前后的安全性质对照"
+    }
+  ],
+  "omml_objects_preserved": 148,
+  "section_geometry_preserved": true,
+  "table_cell_text_preserved": true,
+  "body_bold_runs_normalized": 28,
+  "marker_citations_superscripted": 8,
+  "narrative_citations_kept_baseline": [],
+  "equation_alignment": "official center tab2548/right tab4914; all expressions and numbers preserved",
+  "modified_parts": [
+    "word/document.xml",
+    "word/styles.xml"
+  ],
+  "role_changes": [
+    {
+      "block": 0,
+      "role": "40",
+      "format": [
+        "Arial",
+        "黑体",
+        32
+      ],
+      "text_prefix": "K-Waay 接收端安全问题的形式化分析与组合加固"
+    },
+    {
+      "block": 2,
+      "role": "43",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "（作者单位、城市、邮编待补）"
+    },
+    {
+      "block": 3,
+      "role": "abstract/keywords/metadata",
+      "format": "楷体/TNR 9pt; distinct labels"
+    },
+    {
+      "block": 4,
+      "role": "abstract/keywords/metadata",
+      "format": "楷体/TNR 9pt; distinct labels"
+    },
+    {
+      "block": 5,
+      "role": "abstract/keywords/metadata",
+      "format": "楷体/TNR 9pt; distinct labels"
+    },
+    {
+      "block": 6,
+      "role": "42",
+      "format": [
+        "Times New Roman",
+        "宋体",
+        24
+      ],
+      "text_prefix": "Formal Analysis and Combined Hardening of Rec"
+    },
+    {
+      "block": 8,
+      "role": "43",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "(Affiliation, city, postal code, and country "
+    },
+    {
+      "block": 9,
+      "role": "abstract/keywords/metadata",
+      "format": "楷体/TNR 9pt; distinct labels"
+    },
+    {
+      "block": 10,
+      "role": "abstract/keywords/metadata",
+      "format": "楷体/TNR 9pt; distinct labels"
+    },
+    {
+      "block": 12,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "引言"
+    },
+    {
+      "block": 21,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "K-Waay协议及安全问题"
+    },
+    {
+      "block": 22,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "K-Waay 核心密钥交换流程"
+    },
+    {
+      "block": 28,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "BatchReceive 批量接收机制"
+    },
+    {
+      "block": 35,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "接收端安全问题与研究范围"
+    },
+    {
+      "block": 38,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "形式化建模与安全性质"
+    },
+    {
+      "block": 39,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "攻击者模型与研究假设"
+    },
+    {
+      "block": 42,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "ProVerif 核心模型"
+    },
+    {
+      "block": 47,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "Tamarin 批次模型"
+    },
+    {
+      "block": 52,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "安全性质与验证分工"
+    },
+    {
+      "block": 60,
+      "role": "77",
+      "format": [
+        "Times New Roman",
+        "宋体",
+        16
+      ],
+      "text_prefix": "表 1　安全性质与验证模型的对应关系"
+    },
+    {
+      "block": 64,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "K-Waay 消息篡改攻击与 HMAC 确认加固"
+    },
+    {
+      "block": 65,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "消息篡改攻击的发现"
+    },
+    {
+      "block": 70,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "攻击过程与形成原因"
+    },
+    {
+      "block": 97,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "基于 HMAC 的接收确认加固"
+    },
+    {
+      "block": 100,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "发送方确认标签生成"
+    },
+    {
+      "block": 108,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "接收方确认检查"
+    },
+    {
+      "block": 116,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "对消息篡改攻击的阻断"
+    },
+    {
+      "block": 126,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "HMAC 加固的形式化验证"
+    },
+    {
+      "block": 130,
+      "role": "77",
+      "format": [
+        "Times New Roman",
+        "宋体",
+        16
+      ],
+      "text_prefix": "表2 原始核心模型与 HMAC 加固模型的验证结果"
+    },
+    {
+      "block": 139,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "K-Waay 批内重放攻击与安全影响分析"
+    },
+    {
+      "block": 140,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "批内重放攻击场景"
+    },
+    {
+      "block": 143,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "HMAC 确认后的批内重放攻击"
+    },
+    {
+      "block": 144,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "攻击过程"
+    },
+    {
+      "block": 156,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "攻击原因及验证"
+    },
+    {
+      "block": 161,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "重复接受的安全影响"
+    },
+    {
+      "block": 163,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "上层消费模型"
+    },
+    {
+      "block": 168,
+      "role": "68",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        18
+      ],
+      "text_prefix": "条件化重复安装攻击"
+    },
+    {
+      "block": 181,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "形式化验证结果与分析"
+    },
+    {
+      "block": 183,
+      "role": "77",
+      "format": [
+        "Times New Roman",
+        "宋体",
+        16
+      ],
+      "text_prefix": "表3 批内重放攻击与安全影响验证结果"
+    },
+    {
+      "block": 188,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "K-Waay 批内去重与组合加固"
+    },
+    {
+      "block": 189,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "批内原子消息去重机制"
+    },
+    {
+      "block": 196,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "原子去重机制的验证"
+    },
+    {
+      "block": 201,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "HMAC 与原子去重的组合加固"
+    },
+    {
+      "block": 212,
+      "role": "66",
+      "format": [
+        "Arial",
+        "黑体",
+        18
+      ],
+      "text_prefix": "组合加固的安全性验证"
+    },
+    {
+      "block": 214,
+      "role": "77",
+      "format": [
+        "Times New Roman",
+        "宋体",
+        16
+      ],
+      "text_prefix": "表4 接收端加固前后的安全性质对照"
+    },
+    {
+      "block": 220,
+      "role": "65",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "结束语"
+    },
+    {
+      "block": 223,
+      "role": "82",
+      "format": [
+        "Arial",
+        "黑体",
+        21
+      ],
+      "text_prefix": "参考文献"
+    },
+    {
+      "block": 224,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "CREMERS C, JACOMME C, NASKA A. Formal analysi"
+    },
+    {
+      "block": 225,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "COLLINS D, HUGUENIN-DUMITTAN L, NGUYEN N K, e"
+    },
+    {
+      "block": 226,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "COLLINS D, HUGUENIN-DUMITTAN L, NGUYEN N K, e"
+    },
+    {
+      "block": 228,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "COHN-GORDON K, CREMERS C, DOWLING B, et al. A"
+    },
+    {
+      "block": 229,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "BHARGAVAN K, JACOMME C, KIEFER F, et al. Form"
+    },
+    {
+      "block": 230,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "MEIER S, SCHMIDT B, CREMERS C, et al. The TAM"
+    },
+    {
+      "block": 231,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "LUPETTI S, DILLEMA F W, STABELL-KULO T. Names"
+    },
+    {
+      "block": 232,
+      "role": "84",
+      "format": [
+        "Times New Roman",
+        "楷体",
+        15
+      ],
+      "text_prefix": "LOWE G. A hierarchy of authentication specifi"
+    }
+  ],
+  "visual_qa": "pending WPS verification"
+}

@@ -1,0 +1,509 @@
+{
+  "before_sha256": "970293ebb2dde1d7ee17b0a57c64c5cd3c6f9c58e602cdbbaadad0021bb2355e",
+  "after_sha256": "442c08e16ee0a979212180676faed37077b5fc1f171f5e5c4ebae1cc98744c13",
+  "source_sha256": "79a7884c93e492c9e9c102d211ce7d10e65be832d9637e43cd9d12a582ff7571",
+  "other_chapters_canonical_preserved": true,
+  "unchanged_package_parts": [
+    "[Content_Types].xml",
+    "_rels/",
+    "_rels/.rels",
+    "docProps/",
+    "docProps/app.xml",
+    "docProps/core.xml",
+    "docProps/custom.xml",
+    "docProps/thumbnail.wmf",
+    "word/",
+    "word/_rels/",
+    "word/_rels/document.xml.rels",
+    "word/fontTable.xml",
+    "word/footer1.xml",
+    "word/footer2.xml",
+    "word/header1.xml",
+    "word/header2.xml",
+    "word/numbering.xml",
+    "word/settings.xml",
+    "word/styles.xml",
+    "word/theme/",
+    "word/theme/theme1.xml",
+    "word/media/kwaay-confirmed-figure1.png",
+    "word/media/kwaay-confirmed-figure2.png",
+    "word/media/kwaay-confirmed-figure3.png",
+    "word/media/kwaay-combined-figure4-monochrome.png"
+  ],
+  "heading_styles": {
+    "level1": "65",
+    "level2": "66",
+    "level3": "68"
+  },
+  "new_math_objects": 39,
+  "numbered_definitions": [
+    21,
+    22
+  ],
+  "trace_equations": "editable OMML, intentionally unnumbered",
+  "table3": [
+    [
+      "安全层次",
+      "影响或损失",
+      "证据性质"
+    ],
+    [
+      "批次准入",
+      "同一参与方能够占据多个批次位置",
+      "模型规则及可达执行"
+    ],
+    [
+      "接收对应关系",
+      "一次合法发送可能产生两次成功接收，接收单射性失效",
+      "Tamarin 验证"
+    ],
+    [
+      "参与方身份语义",
+      "不同合法消息仍可属于同一参与方，消息唯一性不足以维持参与方互异",
+      "Tamarin 验证"
+    ],
+    [
+      "输出归属与安全接口",
+      "重复参与方输入需要额外的结果区分规则，原有参与方索引关系不能直接扩展",
+      "协议接口语义分析"
+    ],
+    [
+      "上层会话处理",
+      "重复接收在逐项独立消费条件下可能产生重复安装",
+      "独立消费模型验证"
+    ]
+  ],
+  "source_equivalence": "every paragraph, formula and table cell passed",
+  "wording_changes": [],
+  "visual_review": "Deferred under existing user instruction; WPS not opened",
+  "pending": [
+    "Chapter4 closing transition refers to participant admission, while current unchanged chapter5 still covers message dedup/composition",
+    "Old chapter5 retains equations30/31; gap23–29 awaits chapter5 replacement and final numbering review",
+    "Final physical table/formula wrapping and page layout need actual rendered review"
+  ],
+  "source_records": [
+    {
+      "kind": "paragraph",
+      "source": "K-Waay 批内参与方互异假设及其安全影响分析",
+      "actual": "K-Waay 批内参与方互异假设及其安全影响分析"
+    },
+    {
+      "kind": "paragraph",
+      "source": "参与方互异假设与安全分析场景",
+      "actual": "参与方互异假设与安全分析场景"
+    },
+    {
+      "kind": "paragraph",
+      "source": "K-Waay 通过 BatchReceive 在共享接收状态下处理多个发送方消息。原协议明确要求，同一次批量接收中的不同输入条目对应不同参与方。该条件不仅限定了批次的合法输入范围，也维持了参与方身份与批次接收结果之间的预期对应关系。",
+      "actual": "K-Waay 通过 BatchReceive 在共享接收状态下处理多个发送方消息。原协议明确要求，同一次批量接收中的不同输入条目对应不同参与方。该条件不仅限定了批次的合法输入范围，也维持了参与方身份与批次接收结果之间的预期对应关系。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "设批次 B=(E₁,…,Eₙ)，party(Eᵢ) 表示第 i 个条目关联的协议参与方，则原协议的参与方互异要求可形式化为：",
+      "actual": "设批次 B=(E1,…,En)，party(Ei) 表示第 i 个条目关联的协议参与方，则原协议的参与方互异要求可形式化为："
+    },
+    {
+      "kind": "equation",
+      "source": "DistinctPartyPerBatch(B) ⇔ ∀i≠j, party(Eᵢ)≠party(Eⱼ)",
+      "actual": "DistinctPartyPerBatch(B)⇔∀i≠j,party(Ei)≠party(Ej)(21)",
+      "number": 21,
+      "lines": [
+        "DistinctPartyPerBatch(B) ",
+        "⇔  ∀i≠j, party(Eᵢ)≠party(Eⱼ)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "与消息唯一性不同，该条件限制的是参与方身份。同一参与方可以生成多个合法会话和不同消息，但这些消息不能以同一参与方身份同时占据一个 BatchReceive 批次中的多个位置。",
+      "actual": "与消息唯一性不同，该条件限制的是参与方身份。同一参与方可以生成多个合法会话和不同消息，但这些消息不能以同一参与方身份同时占据一个 BatchReceive 批次中的多个位置。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "为考察这一假设的安全作用，本文使用 Tamarin 建立固定两槽的批次接收模型，将输入条目抽象为：",
+      "actual": "为考察这一假设的安全作用，本文使用 Tamarin 建立固定两槽的批次接收模型，将输入条目抽象为："
+    },
+    {
+      "kind": "equation",
+      "source": "Eᵢ = (Aᵢ, sidᵢ, mᵢ)",
+      "actual": "Ei=(Ai,sidi,mi)(22)",
+      "number": 22,
+      "lines": [
+        "Eᵢ = (Aᵢ, sidᵢ, mᵢ)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "其中 Aᵢ 表示协议参与方身份，sidᵢ 和 mᵢ 分别表示发送会话及消息。模型保留发送来源与接收事件之间的关系，但有意取消批次准入阶段的参与方互异检查，使攻击者能够将属于同一参与方的有效输入安排到不同槽位。",
+      "actual": "其中 Ai 表示协议参与方身份，sidi 和 mi 分别表示发送会话及消息。模型保留发送来源与接收事件之间的关系，但有意取消批次准入阶段的参与方互异检查，使攻击者能够将属于同一参与方的有效输入安排到不同槽位。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "该分析关注的是原协议前置条件未被维持时的安全边界，而不是声称满足原协议合法输入条件的执行已经违反其安全保证。",
+      "actual": "该分析关注的是原协议前置条件未被维持时的安全边界，而不是声称满足原协议合法输入条件的执行已经违反其安全保证。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "参与方互异条件缺失后的安全性质损失",
+      "actual": "参与方互异条件缺失后的安全性质损失"
+    },
+    {
+      "kind": "paragraph",
+      "source": "重复参与方准入与接收单射性失效",
+      "actual": "重复参与方准入与接收单射性失效"
+    },
+    {
+      "kind": "paragraph",
+      "source": "移除参与方互异约束后，批次接收过程不再限制同一参与方占据多个输入位置。攻击者能够利用网络消息的可重放性，将来自同一发送方的有效消息重复提交至共享接收状态下的不同槽位。",
+      "actual": "移除参与方互异约束后，批次接收过程不再限制同一参与方占据多个输入位置。攻击者能够利用网络消息的可重放性，将来自同一发送方的有效消息重复提交至共享接收状态下的不同槽位。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "在放宽约束的 Tamarin 模型中，存在以下执行关系：",
+      "actual": "在放宽约束的 Tamarin 模型中，存在以下执行关系："
+    },
+    {
+      "kind": "equation",
+      "source": "Send(A, sid, m) @ s",
+      "actual": "Send(A,sid,m)@s",
+      "number": null,
+      "lines": [
+        "Send(A, sid, m) @ s"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "ReceiverAccept(A, sid, m, bid, rst) @ r₁",
+      "actual": "ReceiverAccept(A,sid,m,bid,rst)@r1",
+      "number": null,
+      "lines": [
+        "ReceiverAccept",
+        "(A, sid, m, bid, rst) @ r₁"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "ReceiverAccept(A, sid, m, bid, rst) @ r₂",
+      "actual": "ReceiverAccept(A,sid,m,bid,rst)@r2",
+      "number": null,
+      "lines": [
+        "ReceiverAccept",
+        "(A, sid, m, bid, rst) @ r₂"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "其中：",
+      "actual": "其中："
+    },
+    {
+      "kind": "equation",
+      "source": "s < r₁ < r₂",
+      "actual": "s<r1<r2",
+      "number": null,
+      "lines": [
+        "s < r₁ < r₂"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "两个接收事件具有相同的参与方、会话、消息、批次及接收状态，但属于不同的事件发生。",
+      "actual": "两个接收事件具有相同的参与方、会话、消息、批次及接收状态，但属于不同的事件发生。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "Tamarin 验证确认该执行路径可达，`one_send_two_accepts_exists` 成立，而 `receiver_accept_injective` 被反例否定。与此同时，每个接收事件均具有匹配发送来源的性质仍然成立。",
+      "actual": "Tamarin 验证确认该执行路径可达，one_send_two_accepts_exists 成立，而 receiver_accept_injective 被反例否定。与此同时，每个接收事件均具有匹配发送来源的性质仍然成立。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这表明，发送来源对应关系成立，并不足以保证接收发生的唯一性。当参与方互异约束缺失时，同一合法发送可以在一个批次中产生多个成功接收事件，破坏接收单射性。",
+      "actual": "这表明，发送来源对应关系成立，并不足以保证接收发生的唯一性。当参与方互异约束缺失时，同一合法发送可以在一个批次中产生多个成功接收事件，破坏接收单射性。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这一结果与第3章的消息重放分析相互印证，但第3章关注具体消息的重复接受，本章关注的是取消参与方级约束后，批次处理所允许的执行集合发生了变化。",
+      "actual": "这一结果与第3章的消息重放分析相互印证，但第3章关注具体消息的重复接受，本章关注的是取消参与方级约束后，批次处理所允许的执行集合发生了变化。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "合法不同消息导致的批次身份约束失效",
+      "actual": "合法不同消息导致的批次身份约束失效"
+    },
+    {
+      "kind": "paragraph",
+      "source": "同一消息的重复接受并非参与方互异条件缺失后的唯一问题。",
+      "actual": "同一消息的重复接受并非参与方互异条件缺失后的唯一问题。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "考虑同一参与方 A 分别发起两次合法发送：",
+      "actual": "考虑同一参与方 A 分别发起两次合法发送："
+    },
+    {
+      "kind": "equation",
+      "source": "Send(A, sid₁, m₁)",
+      "actual": "Send(A,sid1,m1)",
+      "number": null,
+      "lines": [
+        "Send(A, sid₁, m₁)"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "Send(A, sid₂, m₂)",
+      "actual": "Send(A,sid2,m2)",
+      "number": null,
+      "lines": [
+        "Send(A, sid₂, m₂)"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "其中：",
+      "actual": "其中："
+    },
+    {
+      "kind": "equation",
+      "source": "sid₁≠sid₂，m₁≠m₂",
+      "actual": "sid1≠sid2m1≠m2",
+      "number": null,
+      "lines": [
+        "sid₁≠sid₂",
+        "m₁≠m₂"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "两个消息分别具有合法的发送来源，不存在将同一发送事件重复解释为两个不同发送事件的问题。",
+      "actual": "两个消息分别具有合法的发送来源，不存在将同一发送事件重复解释为两个不同发送事件的问题。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "如果批次只执行消息去重，由于 m₁≠m₂，两个条目能够通过检查，并在同一批次中成功接受。然而，这两个条目仍属于同一参与方：",
+      "actual": "如果批次只执行消息去重，由于 m1≠m2，两个条目能够通过检查，并在同一批次中成功接受。然而，这两个条目仍属于同一参与方："
+    },
+    {
+      "kind": "equation",
+      "source": "party(E₁)=party(E₂)=A",
+      "actual": "party(E1)=party(E2)=A",
+      "number": null,
+      "lines": [
+        "party(E₁)=party(E₂)=A"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，即使消息互异和接收单射性均成立，原协议要求的 `DistinctPartyPerBatch` 仍然不成立。",
+      "actual": "因此，即使消息互异和接收单射性均成立，原协议要求的 DistinctPartyPerBatch 仍然不成立。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "Tamarin 验证给出了同一参与方、不同会话和不同消息同时成功接受的执行见证。对应模型中的消息互异与接收单射性均得到验证，说明上述现象并非由消息重放造成，而是参与方身份约束未得到维护的结果。",
+      "actual": "Tamarin 验证给出了同一参与方、不同会话和不同消息同时成功接受的执行见证。对应模型中的消息互异与接收单射性均得到验证，说明上述现象并非由消息重放造成，而是参与方身份约束未得到维护的结果。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这一反例揭示了更深层的安全边界：消息级唯一性约束与参与方级身份约束并不等价。修复重复接受问题，并不意味着恢复了原协议的批次身份语义。",
+      "actual": "这一反例揭示了更深层的安全边界：消息级唯一性约束与参与方级身份约束并不等价。修复重复接受问题，并不意味着恢复了原协议的批次身份语义。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "参与方互异缺失对协议身份与输出语义的影响",
+      "actual": "参与方互异缺失对协议身份与输出语义的影响"
+    },
+    {
+      "kind": "paragraph",
+      "source": "批次参与方归属关系的变化",
+      "actual": "批次参与方归属关系的变化"
+    },
+    {
+      "kind": "paragraph",
+      "source": "K-Waay 的 BatchReceive 不仅处理消息，还需要将接收结果关联到相应发送方。在原协议规定的合法输入范围内，不同输入条目具有不同的参与方索引，因而可以利用该索引对应各参与方的输入和输出分量。",
+      "actual": "K-Waay 的 BatchReceive 不仅处理消息，还需要将接收结果关联到相应发送方。在原协议规定的合法输入范围内，不同输入条目具有不同的参与方索引，因而可以利用该索引对应各参与方的输入和输出分量。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "例如，满足参与方互异条件的批次可以表示为：",
+      "actual": "例如，满足参与方互异条件的批次可以表示为："
+    },
+    {
+      "kind": "equation",
+      "source": "槽位1：参与方 A → 接收结果1",
+      "actual": "槽位1：参与方A→接收结果1",
+      "number": null,
+      "lines": [
+        "槽位1：参与方 A → 接收结果1"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "槽位2：参与方 B → 接收结果2",
+      "actual": "槽位2：参与方B→接收结果2",
+      "number": null,
+      "lines": [
+        "槽位2：参与方 B → 接收结果2"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "其中 A≠B。",
+      "actual": "其中 A≠B。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "当该条件被移除后，模型允许：",
+      "actual": "当该条件被移除后，模型允许："
+    },
+    {
+      "kind": "equation",
+      "source": "槽位1：参与方 A → 接收结果1",
+      "actual": "槽位1：参与方A→接收结果1",
+      "number": null,
+      "lines": [
+        "槽位1：参与方 A → 接收结果1"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "槽位2：参与方 A → 接收结果2",
+      "actual": "槽位2：参与方A→接收结果2",
+      "number": null,
+      "lines": [
+        "槽位2：参与方 A → 接收结果2"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "这时两个不同接收位置具有相同的参与方归属，原本预期由不同参与方构成的批次身份关系不再成立。",
+      "actual": "这时两个不同接收位置具有相同的参与方归属，原本预期由不同参与方构成的批次身份关系不再成立。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "值得注意的是，这一问题不要求两个消息相同，也不要求两个接收结果使用相同密钥。即使两个会话和消息完全不同，相同参与方仍可能对应两个批次位置。",
+      "actual": "值得注意的是，这一问题不要求两个消息相同，也不要求两个接收结果使用相同密钥。即使两个会话和消息完全不同，相同参与方仍可能对应两个批次位置。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，参与方互异约束保护的并非单纯的消息内容唯一性，而是批次内部的参与方身份组织关系。",
+      "actual": "因此，参与方互异约束保护的并非单纯的消息内容唯一性，而是批次内部的参与方身份组织关系。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "对密钥输出及安全接口的潜在影响",
+      "actual": "对密钥输出及安全接口的潜在影响"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这种身份关系还具有协议接口层面的意义。",
+      "actual": "这种身份关系还具有协议接口层面的意义。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "在 K-Waay 原论文中，BatchReceive 的输入包含按参与方索引 j 组织的公钥、预密钥和消息，接收方计算相应的密钥分量 k_j。其安全模型也通过参与方索引访问对应的会话结果，例如 `KEY(i,s,j)` 和 `TEST(i,s,j)`。",
+      "actual": "在 K-Waay 原论文中，BatchReceive 的输入包含按参与方索引 j 组织的公钥、预密钥和消息，接收方计算相应的密钥分量 kj。其安全模型也通过参与方索引访问对应的会话结果，例如 KEY(i,s,j) 和 TEST(i,s,j)。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "在满足参与方互异条件时，同一次批次中的每个参与方索引对应一个接收输入及其结果分量，协议可以在规定的输入范围内使用这一索引关系。",
+      "actual": "在满足参与方互异条件时，同一次批次中的每个参与方索引对应一个接收输入及其结果分量，协议可以在规定的输入范围内使用这一索引关系。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "如果允许同一参与方 j 重复进入一个批次，则可能出现：",
+      "actual": "如果允许同一参与方 j 重复进入一个批次，则可能出现："
+    },
+    {
+      "kind": "equation",
+      "source": "参与方 j → 输入条目1 → 接收结果1",
+      "actual": "参与方j→输入条目1→接收结果1",
+      "number": null,
+      "lines": [
+        "参与方 j → 输入条目1 → 接收结果1"
+      ]
+    },
+    {
+      "kind": "equation",
+      "source": "参与方 j → 输入条目2 → 接收结果2",
+      "actual": "参与方j→输入条目2→接收结果2",
+      "number": null,
+      "lines": [
+        "参与方 j → 输入条目2 → 接收结果2"
+      ]
+    },
+    {
+      "kind": "paragraph",
+      "source": "此时，仅依赖参与方索引 j 已不足以区分两个批次位置，还需要额外明确消息、位置或会话坐标之间的对应方式。",
+      "actual": "此时，仅依赖参与方索引 j 已不足以区分两个批次位置，还需要额外明确消息、位置或会话坐标之间的对应方式。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这意味着，放宽原有参与方互异条件后，需要重新界定重复参与方场景下的结果归属和接口选择规则，否则无法直接沿用原协议在合法输入域内建立的参与方索引关系。",
+      "actual": "这意味着，放宽原有参与方互异条件后，需要重新界定重复参与方场景下的结果归属和接口选择规则，否则无法直接沿用原协议在合法输入域内建立的参与方索引关系。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这里的安全影响是批次身份归属语义不再由原有前置条件保证，而不是已经证明密钥发生混淆或泄露。原论文没有规定重复参与方索引下的完整输出选择语义，本文现有两槽准入模型也没有直接建模输出密钥或 `KEY`、`TEST` 查询，因此不将这种接口依赖进一步表述为已验证的密钥安全失效。",
+      "actual": "这里的安全影响是批次身份归属语义不再由原有前置条件保证，而不是已经证明密钥发生混淆或泄露。原论文没有规定重复参与方索引下的完整输出选择语义，本文现有两槽准入模型也没有直接建模输出密钥或 KEY、TEST 查询，因此不将这种接口依赖进一步表述为已验证的密钥安全失效。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "重复接受的上层传播风险与综合分析",
+      "actual": "重复接受的上层传播风险与综合分析"
+    },
+    {
+      "kind": "paragraph",
+      "source": "除了参与方身份关系变化，重复接收还可能影响后续会话处理。",
+      "actual": "除了参与方身份关系变化，重复接收还可能影响后续会话处理。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "对于第4.2.1节中同一合法消息被重复接受的执行，如果上层组件在批次完成后分别处理每个成功接收输出，且不依据消息或会话参数合并重复结果，那么两个接收事件可能进一步产生两个独立的会话安装事件。",
+      "actual": "对于第4.2.1节中同一合法消息被重复接受的执行，如果上层组件在批次完成后分别处理每个成功接收输出，且不依据消息或会话参数合并重复结果，那么两个接收事件可能进一步产生两个独立的会话安装事件。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "为分析这一影响，本文在独立的接收输出消费模型中，为每个成功接收创建独立输出记录，并规定批次完成后逐项消费这些输出。",
+      "actual": "为分析这一影响，本文在独立的接收输出消费模型中，为每个成功接收创建独立输出记录，并规定批次完成后逐项消费这些输出。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "形式化验证表明，在该条件下，一次合法发送产生两次成功接收并进一步触发两次安装的执行路径可达；相应的同源安装唯一性性质被反例否定。",
+      "actual": "形式化验证表明，在该条件下，一次合法发送产生两次成功接收并进一步触发两次安装的执行路径可达；相应的同源安装唯一性性质被反例否定。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "这一结果说明，批次级重复接受可能不只停留在接收事件层面，还可能在缺少上层合并机制的情况下传播为重复的本地会话处理动作。",
+      "actual": "这一结果说明，批次级重复接受可能不只停留在接收事件层面，还可能在缺少上层合并机制的情况下传播为重复的本地会话处理动作。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "但这一结论具有明确的适用条件：该消费模型基于重复消息的放宽接收场景，独立于本章的参与方准入比较模型；它不能用于证明同一参与方的两个不同消息必然导致重复安装，也不代表实际 K-Waay 实现必然产生会话克隆。",
+      "actual": "但这一结论具有明确的适用条件：该消费模型基于重复消息的放宽接收场景，独立于本章的参与方准入比较模型；它不能用于证明同一参与方的两个不同消息必然导致重复安装，也不代表实际 K-Waay 实现必然产生会话克隆。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "综合现有形式化分析，移除参与方互异约束所涉及的安全影响可归纳为表3。",
+      "actual": "综合现有形式化分析，移除参与方互异约束所涉及的安全影响可归纳为表3。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "表3 参与方互异条件缺失后的安全影响及证据",
+      "actual": "表3 参与方互异条件缺失后的安全影响及证据"
+    },
+    {
+      "kind": "paragraph",
+      "source": "由此可见，`DistinctPartyPerBatch` 的作用不能简化为阻止同一消息重放。其更重要的意义在于维持 K-Waay 批次处理所依赖的参与方身份关系，使批内不同接收位置具有原协议预期的不同参与方归属。",
+      "actual": "由此可见，DistinctPartyPerBatch 的作用不能简化为阻止同一消息重放。其更重要的意义在于维持 K-Waay 批次处理所依赖的参与方身份关系，使批内不同接收位置具有原协议预期的不同参与方归属。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "本文的分析进一步表明，HMAC 确认和批内消息去重分别能够改善会话参数一致性与消息接收唯一性，却不能代替参与方互异约束。即使两种消息级防护均发挥作用，同一参与方的不同合法消息仍可能进入同一批次，导致批次身份约束失效。",
+      "actual": "本文的分析进一步表明，HMAC 确认和批内消息去重分别能够改善会话参数一致性与消息接收唯一性，却不能代替参与方互异约束。即使两种消息级防护均发挥作用，同一参与方的不同合法消息仍可能进入同一批次，导致批次身份约束失效。"
+    },
+    {
+      "kind": "paragraph",
+      "source": "因此，维护 K-Waay 原协议的批次安全语义，还需要独立保证参与方级的输入约束。下一章将针对这一问题设计参与方准入机制，并验证其在阻止重复参与方进入批次的同时，是否仍能保留不同参与方合法批次的正常执行能力。",
+      "actual": "因此，维护 K-Waay 原协议的批次安全语义，还需要独立保证参与方级的输入约束。下一章将针对这一问题设计参与方准入机制，并验证其在阻止重复参与方进入批次的同时，是否仍能保留不同参与方合法批次的正常执行能力。"
+    }
+  ]
+}

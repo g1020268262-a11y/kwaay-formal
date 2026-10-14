@@ -1,0 +1,236 @@
+[
+  {
+    "latex": "B=(E_{1},…,E_{n})",
+    "display": false,
+    "omml_text": "B=(E1,…,En)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{party}(E_{i})",
+    "display": false,
+    "omml_text": "party(Ei)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "i",
+    "display": false,
+    "omml_text": "i",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}(B)",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch(B)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\Leftrightarrow   \\forall i\\ne j, \\mathsf{party}(E_{i})\\ne \\mathsf{party}(E_{j})",
+    "display": false,
+    "omml_text": "⇔∀i≠j,party(Ei)≠party(Ej)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "E_{i} = (A_{i}, sid_{i}, m_{i})",
+    "display": false,
+    "omml_text": "Ei=(Ai,sidi,mi)",
+    "structured_scripts": 4
+  },
+  {
+    "latex": "A_{i}",
+    "display": false,
+    "omml_text": "Ai",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "sid_{i}",
+    "display": false,
+    "omml_text": "sidi",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_{i}",
+    "display": false,
+    "omml_text": "mi",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{Send}(A, \\mathit{sid}, m) @ s",
+    "display": false,
+    "omml_text": "Send(A,sid,m)@s",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}",
+    "display": false,
+    "omml_text": "ReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(A, \\mathit{sid}, m, \\mathit{bid}, \\mathit{rst}) @ r_{1}",
+    "display": false,
+    "omml_text": "(A,sid,m,bid,rst)@r1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}",
+    "display": false,
+    "omml_text": "ReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(A, \\mathit{sid}, m, \\mathit{bid}, \\mathit{rst}) @ r_{2}",
+    "display": false,
+    "omml_text": "(A,sid,m,bid,rst)@r2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "s < r_{1} < r_{2}",
+    "display": false,
+    "omml_text": "s<r1<r2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{Send}(A, sid_{1}, m_{1})",
+    "display": false,
+    "omml_text": "Send(A,sid1,m1)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{Send}(A, sid_{2}, m_{2})",
+    "display": false,
+    "omml_text": "Send(A,sid2,m2)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "sid_{1}\\ne sid_{2}",
+    "display": false,
+    "omml_text": "sid1≠sid2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "m_{1}\\ne m_{2}",
+    "display": false,
+    "omml_text": "m1≠m2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "m_{1}\\ne m_{2}",
+    "display": false,
+    "omml_text": "m1≠m2",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{party}(E_{1})=\\mathsf{party}(E_{2})=A",
+    "display": false,
+    "omml_text": "party(E1)=party(E2)=A",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{槽位1：}\\text{参与方} A \\to  \\text{接收结果1}",
+    "display": false,
+    "omml_text": "槽位1：参与方A→接收结果1",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{槽位2：}\\text{参与方} B \\to  \\text{接收结果2}",
+    "display": false,
+    "omml_text": "槽位2：参与方B→接收结果2",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "A\\ne B",
+    "display": false,
+    "omml_text": "A≠B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{槽位1：}\\text{参与方} A \\to  \\text{接收结果1}",
+    "display": false,
+    "omml_text": "槽位1：参与方A→接收结果1",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{槽位2：}\\text{参与方} A \\to  \\text{接收结果2}",
+    "display": false,
+    "omml_text": "槽位2：参与方A→接收结果2",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "j",
+    "display": false,
+    "omml_text": "j",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "k_j",
+    "display": false,
+    "omml_text": "kj",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{KEY}(i,s,j)",
+    "display": false,
+    "omml_text": "KEY(i,s,j)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{TEST}(i,s,j)",
+    "display": false,
+    "omml_text": "TEST(i,s,j)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "j",
+    "display": false,
+    "omml_text": "j",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{参与方} j \\to  \\text{输入条目1} \\to  \\text{接收结果1}",
+    "display": false,
+    "omml_text": "参与方j→输入条目1→接收结果1",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\text{参与方} j \\to  \\text{输入条目2} \\to  \\text{接收结果2}",
+    "display": false,
+    "omml_text": "参与方j→输入条目2→接收结果2",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "j",
+    "display": false,
+    "omml_text": "j",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{KEY}",
+    "display": false,
+    "omml_text": "KEY",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{TEST}",
+    "display": false,
+    "omml_text": "TEST",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch",
+    "structured_scripts": 0
+  }
+]

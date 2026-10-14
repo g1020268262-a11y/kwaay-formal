@@ -1,0 +1,34 @@
+{
+  "before_sha256": "1979d77b3c68d64c984da58ee1297fddba9396ef56708e34ee520a05ac3fd210",
+  "after_sha256": "53f3f862f92b8b9699ebaee2ecebac954fce6d43472255f725ed23167ba2d30f",
+  "figures": [
+    {
+      "figure": 1,
+      "top_hidden_pixels": 60,
+      "crop_top_percent": 5.525,
+      "display_width_cm": 8.683625,
+      "display_height_cm": 6.1529
+    },
+    {
+      "figure": 2,
+      "top_hidden_pixels": 66,
+      "crop_top_percent": 6.077,
+      "display_width_cm": 8.683625,
+      "display_height_cm": 6.116919444444444
+    },
+    {
+      "figure": 3,
+      "top_hidden_pixels": 54,
+      "crop_top_percent": 4.972,
+      "display_width_cm": 8.683625,
+      "display_height_cm": 6.1888805555555555
+    }
+  ],
+  "bitmap_bytes_unchanged": true,
+  "only_package_part_changed": "word/document.xml",
+  "all_prose_math_caption_text_preserved": true,
+  "figure1_fullwidth_section_boundaries_removed": true,
+  "figure4": "Already has no embedded top title; unchanged",
+  "crop_method": "Word native a:srcRect display crop; originals retained; no raster regeneration",
+  "visual_review": "Original images inspected to choose safe title-band cuts; WPS/full pagination review not performed"
+}

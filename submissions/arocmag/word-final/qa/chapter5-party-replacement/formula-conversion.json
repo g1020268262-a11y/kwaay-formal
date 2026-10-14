@@ -1,0 +1,212 @@
+[
+  {
+    "latex": "B=(E_{1},…,E_{n})",
+    "display": false,
+    "omml_text": "B=(E1,…,En)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}(B)",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch(B)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\Leftrightarrow   \\forall i\\ne j, \\mathsf{party}(E_{i})\\ne \\mathsf{party}(E_{j})",
+    "display": false,
+    "omml_text": "⇔∀i≠j,party(Ei)≠party(Ej)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\forall i\\ne j, m_{i}\\ne m_{j}",
+    "display": false,
+    "omml_text": "∀i≠j,mi≠mj",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "m_{1}",
+    "display": false,
+    "omml_text": "m1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_{2}",
+    "display": false,
+    "omml_text": "m2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{Bind}(E_{i})",
+    "display": false,
+    "omml_text": "Bind(Ei)",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "E_{i}",
+    "display": false,
+    "omml_text": "Ei",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathsf{Bind}(E_{i})=\\mathsf{party}(E_{i})",
+    "display": false,
+    "omml_text": "Bind(Ei)=party(Ei)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathsf{Admit}(B) \\Leftrightarrow  \\forall i\\ne j, \\mathsf{Bind}(E_{i})\\ne \\mathsf{Bind}(E_{j})",
+    "display": false,
+    "omml_text": "Admit(B)⇔∀i≠j,Bind(Ei)≠Bind(Ej)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "i",
+    "display": false,
+    "omml_text": "i",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "j",
+    "display": false,
+    "omml_text": "j",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{Bind}(E_{i})=\\mathsf{Bind}(E_{j})",
+    "display": false,
+    "omml_text": "Bind(Ei)=Bind(Ej)",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "E_{1}=(A,sid_{1},m_{1})",
+    "display": false,
+    "omml_text": "E1=(A,sid1,m1)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "E_{2}=(A,sid_{2},m_{2})",
+    "display": false,
+    "omml_text": "E2=(A,sid2,m2)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "sid_{1}",
+    "display": false,
+    "omml_text": "sid1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "sid_{2}",
+    "display": false,
+    "omml_text": "sid2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_{1}",
+    "display": false,
+    "omml_text": "m1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_{2}",
+    "display": false,
+    "omml_text": "m2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "A\\ne B",
+    "display": false,
+    "omml_text": "A≠B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{Bind}(E)",
+    "display": false,
+    "omml_text": "Bind(E)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}",
+    "display": false,
+    "omml_text": "ReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(A_{1},sid_{1},m_{1},\\mathit{bid},\\mathit{rst}) @ r_{1}",
+    "display": false,
+    "omml_text": "(A1,sid1,m1,bid,rst)@r1",
+    "structured_scripts": 4
+  },
+  {
+    "latex": "\\mathsf{ReceiverAccept}",
+    "display": false,
+    "omml_text": "ReceiverAccept",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(A_{2},sid_{2},m_{2},\\mathit{bid},\\mathit{rst}) @ r_{2}",
+    "display": false,
+    "omml_text": "(A2,sid2,m2,bid,rst)@r2",
+    "structured_scripts": 4
+  },
+  {
+    "latex": "r_{1}",
+    "display": false,
+    "omml_text": "r1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "r_{2}",
+    "display": false,
+    "omml_text": "r2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "A_{1}\\ne A_{2}",
+    "display": false,
+    "omml_text": "A1≠A2",
+    "structured_scripts": 2
+  }
+]

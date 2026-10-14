@@ -1,0 +1,16 @@
+{
+  "before_sha256": "442c08e16ee0a979212180676faed37077b5fc1f171f5e5c4ebae1cc98744c13",
+  "after_sha256": "1979d77b3c68d64c984da58ee1297fddba9396ef56708e34ee520a05ac3fd210",
+  "scale": 0.75,
+  "old_size_cm": [
+    18.00225,
+    13.50168888888889
+  ],
+  "new_size_cm": [
+    13.50168888888889,
+    10.126266666666666
+  ],
+  "only_change": "Figure1 wp:extent and picture transform extents",
+  "image_bytes_prose_caption_sections_other_figures_preserved": true,
+  "visual_review": "WPS not opened; final visual pagination review deferred"
+}

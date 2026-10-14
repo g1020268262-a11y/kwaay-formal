@@ -1,0 +1,380 @@
+[
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "K_l",
+    "display": false,
+    "omml_text": "Kl",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_k",
+    "display": false,
+    "omml_text": "Kk",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_s",
+    "display": false,
+    "omml_text": "Ks",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_A = (\\mathit{ct}_{l}, \\mathit{ct}_{k}, \\mathit{ct}_{s})",
+    "display": false,
+    "omml_text": "mA=(ctl,ctk,cts)",
+    "structured_scripts": 4
+  },
+  {
+    "latex": "\\mathit{sid}_{A}",
+    "display": false,
+    "omml_text": "sidA",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "k_A = \\mathsf{KDF}(K_l, K_k, K_s, \\mathit{sid}_{A})",
+    "display": false,
+    "omml_text": "kA=KDF(Kl,Kk,Ks,sidA)",
+    "structured_scripts": 5
+  },
+  {
+    "latex": "m_A",
+    "display": false,
+    "omml_text": "mA",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{ct}_{s}",
+    "display": false,
+    "omml_text": "cts",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_s",
+    "display": false,
+    "omml_text": "Ks",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{ct}_{l}'",
+    "display": false,
+    "omml_text": "ctl′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{ct}_{k}'",
+    "display": false,
+    "omml_text": "ctk′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_l'",
+    "display": false,
+    "omml_text": "Kl′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_k'",
+    "display": false,
+    "omml_text": "Kk′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "m_B' = (\\mathit{ct}_{l}', \\mathit{ct}_{k}', \\mathit{ct}_{s})",
+    "display": false,
+    "omml_text": "mB′=(ctl′,ctk′,cts)",
+    "structured_scripts": 4
+  },
+  {
+    "latex": "m_B'",
+    "display": false,
+    "omml_text": "mB′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "K_l'",
+    "display": false,
+    "omml_text": "Kl′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_k'",
+    "display": false,
+    "omml_text": "Kk′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_s",
+    "display": false,
+    "omml_text": "Ks",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{sid}_{B}' = \\mathsf{SID}(A, B, \\mathit{pk}_{A}, \\mathit{pk}_{B},",
+    "display": false,
+    "omml_text": "sidB′=SID(A,B,pkA,pkB,",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "\\mathit{prekey}_{A}, \\mathit{prekey}_{B}, m_B')",
+    "display": false,
+    "omml_text": "prekeyA,prekeyB,mB′)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "k_B' = \\mathsf{KDF}(K_l', K_k', K_s, \\mathit{sid}_{B}')",
+    "display": false,
+    "omml_text": "kB′=KDF(Kl′,Kk′,Ks,sidB′)",
+    "structured_scripts": 5
+  },
+  {
+    "latex": "m_A \\ne  m_B'",
+    "display": false,
+    "omml_text": "mA≠mB′",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathit{sid}_{A} \\ne  \\mathit{sid}_{B}'",
+    "display": false,
+    "omml_text": "sidA≠sidB′",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "k_A \\ne  k_B'",
+    "display": false,
+    "omml_text": "kA≠kB′",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "K_l'",
+    "display": false,
+    "omml_text": "Kl′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_k'",
+    "display": false,
+    "omml_text": "Kk′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{ct}_{s}",
+    "display": false,
+    "omml_text": "cts",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "K_s",
+    "display": false,
+    "omml_text": "Ks",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "k_B'",
+    "display": false,
+    "omml_text": "kB′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "k_A",
+    "display": false,
+    "omml_text": "kA",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{tag}_{A} = \\mathsf{HMAC}(\\mathsf{confirm\\_key}(k_A), \\mathit{sid}_{A})",
+    "display": false,
+    "omml_text": "tagA=HMAC(confirm_key(kA),sidA)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "\\mathit{sid}_{A}",
+    "display": false,
+    "omml_text": "sidA",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "M_A = (m_A, \\mathit{tag}_{A})",
+    "display": false,
+    "omml_text": "MA=(mA,tagA)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "\\mathit{sid}_{B}",
+    "display": false,
+    "omml_text": "sidB",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "k_B",
+    "display": false,
+    "omml_text": "kB",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{tag}_{B} = \\mathsf{HMAC}(\\mathsf{confirm\\_key}(k_B), \\mathit{sid}_{B})",
+    "display": false,
+    "omml_text": "tagB=HMAC(confirm_key(kB),sidB)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "\\mathit{tag}_{B} = \\mathit{tag}_{A}",
+    "display": false,
+    "omml_text": "tagB=tagA",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "\\mathit{ct}_{l}'",
+    "display": false,
+    "omml_text": "ctl′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{ct}_{k}'",
+    "display": false,
+    "omml_text": "ctk′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{sid}_{B}'",
+    "display": false,
+    "omml_text": "sidB′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "k_B'",
+    "display": false,
+    "omml_text": "kB′",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "A",
+    "display": false,
+    "omml_text": "A",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "M = (m, \\mathit{tag})",
+    "display": false,
+    "omml_text": "M=(m,tag)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{tag} = \\mathsf{HMAC}(\\mathsf{confirm\\_key}(k), \\mathit{sid})",
+    "display": false,
+    "omml_text": "tag=HMAC(confirm_key(k),sid)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "M",
+    "display": false,
+    "omml_text": "M",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "B",
+    "display": false,
+    "omml_text": "B",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{idx}_{1}",
+    "display": false,
+    "omml_text": "idx1",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{idx}_{2}",
+    "display": false,
+    "omml_text": "idx2",
+    "structured_scripts": 1
+  },
+  {
+    "latex": "\\mathit{bid}",
+    "display": false,
+    "omml_text": "bid",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathit{rst}",
+    "display": false,
+    "omml_text": "rst",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "m = (\\mathit{ct}_{l}, \\mathit{ct}_{k}, \\mathit{ct}_{s})",
+    "display": false,
+    "omml_text": "m=(ctl,ctk,cts)",
+    "structured_scripts": 3
+  },
+  {
+    "latex": "i",
+    "display": false,
+    "omml_text": "i",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "j",
+    "display": false,
+    "omml_text": "j",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "i \\ne  j\\land m_i = m_j",
+    "display": false,
+    "omml_text": "i≠j∧mi=mj",
+    "structured_scripts": 2
+  },
+  {
+    "latex": "m",
+    "display": false,
+    "omml_text": "m",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "(m, \\mathit{tag})",
+    "display": false,
+    "omml_text": "(m,tag)",
+    "structured_scripts": 0
+  },
+  {
+    "latex": "\\mathsf{DistinctPartyPerBatch}",
+    "display": false,
+    "omml_text": "DistinctPartyPerBatch",
+    "structured_scripts": 0
+  }
+]
