@@ -1,0 +1,31 @@
+{
+  "before_trial_sha256": "8b32f00e72669108fd07fe09c54711a094c67226b9caaf9c33dd070c36220d90",
+  "after_sha256": "a33fadf6d13d89b18e6fec29c52ce0ca078b568a3d65979121b8d66a3dad5a9b",
+  "baseline_sha256": "664c86135f21e3ff265d3fe2f0666be4a51b6df6ca8ebe97bbd58463734a3d2c",
+  "changes": [
+    {
+      "figure": 3,
+      "mode": "Grouped picture and editable native caption; current-column centered, margin-top float, top/bottom wrap",
+      "image_size_unchanged": [
+        3126105,
+        2227997
+      ],
+      "group_height": 2558197,
+      "text_no_overlap": true
+    },
+    {
+      "figure": 4,
+      "mode": "Grouped picture and editable native caption; current-column centered, margin-top float, top/bottom wrap",
+      "image_size_unchanged": [
+        3126105,
+        2084070
+      ],
+      "group_height": 2414270,
+      "text_no_overlap": true
+    }
+  ],
+  "all_other_body_blocks_and_package_parts_preserved": true,
+  "academic_text_math_images_and_numbering_preserved": true,
+  "replaced_failed_trial": "Removed all paragraph frames, which did not eliminate WPS inline-block gaps",
+  "visual_review": "pending"
+}

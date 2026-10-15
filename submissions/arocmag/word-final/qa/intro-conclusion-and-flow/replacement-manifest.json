@@ -1,0 +1,16 @@
+{
+  "before_sha256": "167c8462fea8c60ea9dbab45165da3a4819b136ce246d95d49e79ca6b6e15c66",
+  "after_sha256": "19809cfa91e560e2e369d027bb57e8dd1ac20f2e971496432e76bd61d01bdd9c",
+  "source_sha256": "80ddd83adffdea2c9bb0b2fe37aa79fa7f2e3605605fce5e167ffcad1b2ad234",
+  "intro_paragraphs": 7,
+  "conclusion_paragraphs": 2,
+  "author_text_exact": true,
+  "all_other_academic_blocks_preserved": true,
+  "abstracts_preserved": true,
+  "figure_trial_removed": "Both floating groups replaced by original inline picture/caption pairs",
+  "figure3_new_position": "After first two mechanism overview paragraphs of3.5, before the basic-message definition",
+  "figure4_new_position": "After3.6 summary and before chapter4; citation remains in3.5",
+  "image_sizes_crops_media_bytes_unchanged": true,
+  "only_changed_part": "word/document.xml",
+  "visual_review": "pending"
+}

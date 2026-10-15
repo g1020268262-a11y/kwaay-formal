@@ -1,0 +1,100 @@
+{
+  "before_sha256": "664c86135f21e3ff265d3fe2f0666be4a51b6df6ca8ebe97bbd58463734a3d2c",
+  "after_sha256": "8b32f00e72669108fd07fe09c54711a094c67226b9caaf9c33dd070c36220d90",
+  "only_changed_part": "word/document.xml",
+  "only_change": "Native top/bottom paragraph frames for five existing picture-caption pairs; explicit no forced page break",
+  "body_text_order_math_table_image_bytes_preserved": true,
+  "frames": [
+    {
+      "figure": 1,
+      "image_block": 32,
+      "caption_block": 33,
+      "caption": "图1 K-Waay核心发送与批量接收流程",
+      "frame": {
+        "w": "4923",
+        "hRule": "auto",
+        "wrap": "notBeside",
+        "hAnchor": "text",
+        "vAnchor": "text",
+        "xAlign": "center",
+        "y": "0",
+        "hSpace": "0",
+        "vSpace": "80",
+        "anchorLock": "1"
+      }
+    },
+    {
+      "figure": 2,
+      "image_block": 90,
+      "caption_block": 91,
+      "caption": "图2 K-Waay密文重组攻击流程",
+      "frame": {
+        "w": "4923",
+        "hRule": "auto",
+        "wrap": "notBeside",
+        "hAnchor": "text",
+        "vAnchor": "text",
+        "xAlign": "center",
+        "y": "0",
+        "hSpace": "0",
+        "vSpace": "80",
+        "anchorLock": "1"
+      }
+    },
+    {
+      "figure": 3,
+      "image_block": 124,
+      "caption_block": 125,
+      "caption": "图3 K-Waay批内重复接受与条件化安全影响示意",
+      "frame": {
+        "w": "4923",
+        "hRule": "auto",
+        "wrap": "notBeside",
+        "hAnchor": "text",
+        "vAnchor": "text",
+        "xAlign": "center",
+        "y": "0",
+        "hSpace": "0",
+        "vSpace": "80",
+        "anchorLock": "1"
+      }
+    },
+    {
+      "figure": 4,
+      "image_block": 140,
+      "caption_block": 141,
+      "caption": "图4 K-Waay消息级组合加固后的发送与批量接收流程",
+      "frame": {
+        "w": "4923",
+        "hRule": "auto",
+        "wrap": "notBeside",
+        "hAnchor": "text",
+        "vAnchor": "text",
+        "xAlign": "center",
+        "y": "0",
+        "hSpace": "0",
+        "vSpace": "80",
+        "anchorLock": "1"
+      }
+    },
+    {
+      "figure": 5,
+      "image_block": 263,
+      "caption_block": 264,
+      "caption": "图5 K-Waay批次身份绑定准入流程",
+      "frame": {
+        "w": "4923",
+        "hRule": "auto",
+        "wrap": "notBeside",
+        "hAnchor": "text",
+        "vAnchor": "text",
+        "xAlign": "center",
+        "y": "0",
+        "hSpace": "0",
+        "vSpace": "80",
+        "anchorLock": "1"
+      }
+    }
+  ],
+  "visual_review": "pending"
+}

@@ -1,0 +1,7 @@
+{
+  "before_sha256": "19809cfa91e560e2e369d027bb57e8dd1ac20f2e971496432e76bd61d01bdd9c",
+  "after_sha256": "595fb83cc3b7702115cc142b441e714b43490dd60aad5940959da940deee7d85",
+  "change": "Figure3 picture/caption pair moved after deduplication-key explanation in3.5",
+  "all_other_blocks_identical": true,
+  "all_non_document_parts_unchanged": true
+}

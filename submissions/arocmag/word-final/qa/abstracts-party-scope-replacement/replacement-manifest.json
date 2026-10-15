@@ -1,0 +1,45 @@
+{
+  "before_sha256": "a33fadf6d13d89b18e6fec29c52ce0ca078b568a3d65979121b8d66a3dad5a9b",
+  "after_sha256": "167c8462fea8c60ea9dbab45165da3a4819b136ce246d95d49e79ca6b6e15c66",
+  "changed_blocks": [
+    3,
+    4,
+    9,
+    10
+  ],
+  "only_package_part_changed": "word/document.xml",
+  "academic_source_text_exact": true,
+  "all_other_body_blocks_and_picture_layout_preserved": true,
+  "existing_template_pPr_and_font_properties_preserved": true,
+  "changes": [
+    {
+      "block": 3,
+      "before": "摘 要： 针对 K-Waay 会话参数失配与批内重复接受问题，利用 ProVerif 和 Tamarin 分析核心交换与 BatchReceive。发现攻击者复用合法 split-KEM 密文、重构其他 KEM 密文，可使接收方在会话密钥未泄露时接受与发送方密钥不一致的会话。HMAC 密钥确认使无泄露模型中的完整参数对应关系由不成立转为成立。在未维持参与方互异条件的两槽模型中，合法确认消息仍可被重复接受；独立消费模型进一步验证了条件化重复符号安装。为此，提出处理前的批内原子消息去重，并与 HMAC 确认组合。验证表明，批内重复接受及条件化重复安装被阻断，批内接收单射性成立，正常批次处理与输出消费仍可达。",
+      "after": "摘 要： 后量子认证密钥交换协议 K-Waay 通过批量接收机制提高异步通信效率，但其接收安全不仅涉及会话参数的一致性，还依赖批次内参与方的身份约束。为分析相关安全条件的作用，采用 ProVerif 和 Tamarin 对协议接收过程进行形式化研究。结果表明，密文重组攻击可导致收发双方会话参数失配，HMAC 密钥确认能够阻断相应攻击路径；批内原子消息去重虽可防止相同消息重复接受，却无法保证不同输入对应不同参与方。进一步分析发现，同一参与方的不同合法消息仍可能违反原协议的批次身份约束。针对这一问题，提出基于参与方绑定的批次准入机制，并通过形式化验证证明其在固定两槽模型中能够恢复参与方互异性质，同时保持合法批次的正常执行。研究结果揭示了消息级保护与批次身份约束的不同安全作用，为 K-Waay 接收端安全加固提供了依据。",
+      "pPr_preserved": true,
+      "label_bold_body_regular": true
+    },
+    {
+      "block": 4,
+      "before": "关键词： K-Waay；密文重组攻击；批内重放；HMAC 密钥确认；原子去重；ProVerif；Tamarin",
+      "after": "关键词： K-Waay；形式化验证；密文重组；批次身份约束；参与方绑定；HMAC",
+      "pPr_preserved": true,
+      "label_bold_body_regular": true
+    },
+    {
+      "block": 9,
+      "before": "Abstract: Receiver-side session mismatch and intra-batch duplicate acceptance in K-Waay were analyzed using ProVerif and Tamarin. The analysis identified a ciphertext recomposition attack: an adversary could reuse a legitimate split-KEM ciphertext and reconstruct other KEM ciphertexts, causing the receiver to accept a session key different from the sender's without learning that key. HMAC-based key confirmation restored full-parameter correspondence in the uncompromised symbolic model. However, when the distinct-party precondition was not maintained, a valid confirmed message could still be accepted twice within a two-slot batch. A separate output-consumption model further demonstrated conditional duplicate symbolic installations. An atomic, batch-local message deduplication mechanism was therefore proposed and combined with HMAC confirmation. Verification showed that duplicate acceptance and conditional duplicate installation were prevented, while batch-scoped acceptance injectivity and normal batch processing and output consumption remained achievable.",
+      "after": "Abstract: K-Waay, a post-quantum authenticated key exchange protocol, improves the efficiency of asynchronous communication through batch reception. However, its receiver-side security depends not only on session parameter consistency but also on party-identity constraints within each batch. To investigate these security conditions, ProVerif and Tamarin are employed to formally analyze the protocol's receiving process. The results show that a ciphertext recomposition attack can cause a session parameter mismatch between the sender and receiver, while HMAC-based key confirmation prevents the corresponding attack. Although atomic intra-batch message deduplication prevents duplicate acceptance of identical messages, it cannot ensure that distinct batch entries correspond to distinct parties. Further analysis demonstrates that different legitimate messages from the same party can still violate the protocol's distinct-party condition. To address this issue, a party-binding-based batch admission mechanism is proposed. Formal verification shows that the mechanism restores the distinct-party property in a fixed two-slot model while preserving the reachability of valid batch executions. These findings clarify the different security roles of message-level protection and batch-level identity constraints, providing a formal basis for strengthening receiver-side security in K-Waay.",
+      "pPr_preserved": true,
+      "label_bold_body_regular": true
+    },
+    {
+      "block": 10,
+      "before": "Key words: K-Waay; ciphertext recomposition attack; intra-batch replay; HMAC-based key confirmation; atomic deduplication; ProVerif; Tamarin",
+      "after": "Keywords: K-Waay; formal verification; ciphertext recomposition; batch identity constraints; party binding; HMAC",
+      "pPr_preserved": true,
+      "label_bold_body_regular": true
+    }
+  ],
+  "visual_review": "Not performed; picture-layout work remains paused; no WPS opened this turn"
+}
